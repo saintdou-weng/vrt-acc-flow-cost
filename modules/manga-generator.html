@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>漫畫自動生成引擎</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;700;900&family=Share+Tech+Mono&family=Zen+Antique+Soft&display=swap');
+
+:root {
+  --ink: #0d0d0d;
+  --paper: #f7f3ec;
+  --red: #c0392b;
+  --amber: #d35400;
+  --muted: #888;
+  --panel-border: 3px solid var(--ink);
+  --gutter: 5px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--paper);
+  font-family: 'Noto Serif TC', serif;
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+/* ─── HEADER ─── */
+header {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 4px solid var(--red);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+header h1 {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 22px;
+  letter-spacing: 3px;
+  color: var(--red);
+}
+header .subtitle {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: #666;
+  margin-top: 2px;
+}
+.header-right {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* ─── SETUP SCREEN ─── */
+#setup-screen {
+  max-width: 820px;
+  margin: 40px auto;
+  padding: 0 24px 60px;
+}
+
+.setup-card {
+  background: #fff;
+  border: var(--panel-border);
+  padding: 28px;
+  margin-bottom: 20px;
+  box-shadow: 4px 4px 0 #ddd;
+}
+
+.card-title {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #eee;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-title .num {
+  background: var(--ink);
+  color: var(--paper);
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  font-family: 'Share Tech Mono', monospace;
+  flex-shrink: 0;
+}
+
+label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-family: 'Share Tech Mono', monospace;
+  margin-bottom: 6px;
+  margin-top: 14px;
+}
+label:first-child { margin-top: 0; }
+
+input[type=text], textarea, select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #e0e0e0;
+  background: #fafafa;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 13px;
+  color: var(--ink);
+  outline: none;
+  transition: border 0.2s;
+}
+input:focus, textarea:focus, select:focus { border-color: var(--ink); background: #fff; }
+
+#big-text {
+  height: 220px;
+  resize: vertical;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.text-stats {
+  display: flex;
+  gap: 20px;
+  margin-top: 8px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+.text-stats .stat strong { color: var(--ink); }
+
+/* Style toggles */
+.toggle-row {
+  display: flex;
+  gap: 0;
+  border: 2px solid var(--ink);
+  width: fit-content;
+  overflow: hidden;
+}
+.toggle-row button {
+  padding: 7px 16px;
+  border: none;
+  border-right: 2px solid var(--ink);
+  background: transparent;
+  cursor: pointer;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 12px;
+  transition: all 0.15s;
+  color: #666;
+}
+.toggle-row button:last-child { border-right: none; }
+.toggle-row button.on { background: var(--ink); color: var(--paper); }
+.toggle-row button:hover:not(.on) { background: #f0f0f0; }
+
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Chunk preview */
+#chunk-preview {
+  display: none;
+  margin-top: 16px;
+}
+.chunk-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-height: 100px;
+  overflow-y: auto;
+  padding: 8px;
+  background: #fafafa;
+  border: 1px solid #eee;
+}
+.chunk-pill {
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: 3px 10px;
+  font-size: 10px;
+  font-family: 'Share Tech Mono', monospace;
+  border-radius: 12px;
+  color: #555;
+  cursor: default;
+}
+.chunk-pill.done { background: #e8f5e9; border-color: #a5d6a7; color: #2e7d32; }
+.chunk-pill.active { background: #fff3e0; border-color: #ffcc02; color: #e65100; animation: pulse 1s infinite; }
+.chunk-pill.error { background: #fdecea; border-color: #ef9a9a; color: #c62828; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+
+/* BIG LAUNCH BUTTON */
+#btn-launch {
+  width: 100%;
+  padding: 18px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 18px;
+  letter-spacing: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 4px 4px 0 #8b1a1a;
+}
+#btn-launch:hover { background: #a93226; transform: translate(-1px,-1px); box-shadow: 5px 5px 0 #8b1a1a; }
+#btn-launch:disabled { background: #bbb; box-shadow: 4px 4px 0 #888; cursor: not-allowed; transform: none; }
+
+/* ─── PROGRESS BAR ─── */
+#progress-bar-wrap {
+  display: none;
+  background: var(--ink);
+  padding: 14px 32px;
+  position: sticky;
+  top: 62px;
+  z-index: 40;
+}
+#progress-bar-wrap.show { display: block; }
+.pb-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: #aaa;
+  margin-bottom: 6px;
+}
+.pb-labels strong { color: #fff; }
+.pb-track {
+  height: 6px;
+  background: #333;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.pb-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--red), var(--amber));
+  border-radius: 3px;
+  transition: width 0.6s ease;
+  width: 0%;
+}
+#current-task-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* ─── MANGA VIEWER ─── */
+#manga-viewer {
+  display: none;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+#manga-viewer.show { display: block; }
+
+.episode-group {
+  margin-bottom: 48px;
+}
+.episode-title-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--ink);
+}
+.episode-title-bar .ep-badge {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+.episode-title-bar h2 {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 20px;
+}
+.episode-title-bar .ep-chars {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'Share Tech Mono', monospace;
+}
+
+/* ─── MANGA PAGE ─── */
+.manga-page {
+  background: #fff;
+  border: var(--panel-border);
+  box-shadow: 5px 5px 0 #aaa;
+  margin-bottom: 28px;
+  position: relative;
+  break-inside: avoid;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.page-topbar {
+  background: var(--ink);
+  color: #aaa;
+  padding: 6px 14px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+.page-topbar strong { color: #fff; }
+
+/* ─── MANGA GRID ─── */
+.manga-grid {
+  display: grid;
+  background: var(--ink);
+  gap: var(--gutter);
+  padding: var(--gutter);
+}
+
+/* Layout types */
+.layout-A { grid-template-columns: 1fr 1fr;       grid-template-rows: 180px 130px 130px; }
+.layout-B { grid-template-columns: 2fr 1fr;       grid-template-rows: 200px 160px; }
+.layout-C { grid-template-columns: 1fr 1fr 1fr;   grid-template-rows: 200px 140px; }
+.layout-D { grid-template-columns: 1fr;           grid-template-rows: 180px 140px 140px; }
+.layout-E { grid-template-columns: 1fr 2fr;       grid-template-rows: 180px 180px; }
+
+/* Panel */
+.panel {
+  background: var(--paper);
+  position: relative;
+  overflow: hidden;
+  cursor: zoom-in;
+}
+.panel.span2 { grid-column: span 2; }
+.panel.span3 { grid-column: 1 / -1; }
+.panel.rowspan2 { grid-row: span 2; }
+
+/* Art layer */
+.panel-art {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.panel-art svg { width: 100%; height: 100%; }
+
+/* Caption */
+.panel-caption {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  background: rgba(0,0,0,0.82);
+  color: #fff;
+  padding: 5px 10px;
+  font-size: 10.5px;
+  line-height: 1.55;
+  z-index: 10;
+  font-family: 'Noto Serif TC', serif;
+}
+
+/* Bubble */
+.bubble {
+  position: absolute;
+  background: #fff;
+  border: 2px solid var(--ink);
+  padding: 4px 9px;
+  font-size: 10.5px;
+  line-height: 1.45;
+  max-width: 60%;
+  z-index: 12;
+  box-shadow: 2px 2px 0 #ccc;
+  border-radius: 14px;
+  font-family: 'Noto Serif TC', serif;
+}
+.bubble b { font-size: 9px; display: block; color: #888; margin-bottom: 1px; }
+.bubble.thought { border-style: dashed; font-style: italic; border-radius: 40px; }
+.bubble.tl { top:8px; left:8px; }
+.bubble.tr { top:8px; right:8px; }
+.bubble.bl { bottom:30px; left:8px; }
+.bubble.br { bottom:30px; right:8px; }
+/* Tail */
+.bubble.tl::after { content:''; position:absolute; bottom:-9px; left:18px; border:5px solid transparent; border-top-color:var(--ink); }
+.bubble.tr::after { content:''; position:absolute; bottom:-9px; right:18px; border:5px solid transparent; border-top-color:var(--ink); }
+.bubble.bl::after { content:''; position:absolute; top:-9px; left:18px; border:5px solid transparent; border-bottom-color:var(--ink); }
+.bubble.br::after { content:''; position:absolute; top:-9px; right:18px; border:5px solid transparent; border-bottom-color:var(--ink); }
+
+/* SFX */
+.sfx {
+  position: absolute;
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 30px;
+  font-weight: 900;
+  color: var(--red);
+  -webkit-text-stroke: 1.5px var(--ink);
+  z-index: 8;
+  transform: rotate(-8deg);
+  right: 8px; top: 8px;
+  opacity: 0.75;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+}
+
+/* Panel loading skeleton */
+.panel-skeleton {
+  background: repeating-linear-gradient(135deg, #f0ece2 0px, #f0ece2 10px, #e8e4da 10px, #e8e4da 20px);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 8px;
+}
+.skel-dots { display: flex; gap: 4px; }
+.skel-dots span {
+  width: 5px; height: 5px;
+  background: #bbb;
+  border-radius: 50%;
+  animation: sdot 0.7s infinite alternate;
+}
+.skel-dots span:nth-child(2) { animation-delay:.2s }
+.skel-dots span:nth-child(3) { animation-delay:.4s }
+@keyframes sdot { from{opacity:.3;transform:scale(.8)} to{opacity:1;transform:scale(1)} }
+
+/* Page number stamp */
+.page-stamp {
+  position: absolute;
+  bottom: 4px; right: 8px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: rgba(0,0,0,0.2);
+  z-index: 20;
+  pointer-events: none;
+}
+
+/* ─── CHARACTER SHEET ─── */
+#char-sheet {
+  display: none;
+  background: #fff;
+  border: var(--panel-border);
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 4px 4px 0 #ddd;
+}
+#char-sheet.show { display: block; }
+#char-sheet h3 {
+  font-family: 'Zen Antique Soft', serif;
+  font-size: 15px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #eee;
+}
+.char-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.char-card {
+  background: #fafafa;
+  border: 1px solid #e0e0e0;
+  padding: 10px 14px;
+  font-size: 11px;
+  line-height: 1.6;
+  min-width: 180px;
+}
+.char-card strong { font-size: 13px; display: block; margin-bottom: 3px; }
+.char-card .char-role { font-size: 9px; color: var(--red); font-family: 'Share Tech Mono', monospace; text-transform: uppercase; margin-bottom: 4px; }
+
+/* ─── MODAL ZOOM ─── */
+#zoom-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+}
+#zoom-overlay.show { display: flex; }
+#zoom-img {
+  max-width: 90vw; max-height: 90vh;
+  background: #fff;
+  padding: 20px;
+  overflow-y: auto;
+  box-shadow: 0 0 60px rgba(0,0,0,0.5);
+}
+
+/* Misc */
+.mono { font-family: 'Share Tech Mono', monospace; }
+.tag { background: #eee; padding: 2px 8px; font-size: 10px; font-family: 'Share Tech Mono', monospace; border-radius: 2px; }
+.tag.red { background: #fdecea; color: var(--red); }
+.tag.green { background: #e8f5e9; color: #2e7d32; }
+.error-banner {
+  background: #fdecea;
+  border-left: 4px solid var(--red);
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #c62828;
+  margin: 8px 0;
+}
+.info-box {
+  background: #fffde7;
+  border-left: 3px solid #fbc02d;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: #5d4037;
+  line-height: 1.6;
+  margin-top: 12px;
+}
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+</style>
+  <link rel="stylesheet" href="../acc-module-shell.css">
+  <script defer src="../acc-module-shell.js"></script>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div>
+    <h1>漫畫自動引擎</h1>
+    <div class="subtitle">AUTO MANGA PIPELINE · AI SEQUENTIAL GENERATION</div>
+  </div>
+  <div class="header-right">
+    <span id="hdr-status" class="tag" style="display:none;"></span>
+    <button id="btn-restart" onclick="restartSetup()" style="display:none; background:transparent; border:1px solid #444; color:#aaa; padding:5px 12px; cursor:pointer; font-family:'Noto Serif TC',serif; font-size:11px;">← 重新開始</button>
+  </div>
+</header>
+
+<!-- PROGRESS BAR -->
+<div id="progress-bar-wrap">
+  <div class="pb-labels">
+    <span>生成進度 <strong id="pb-done">0</strong> / <strong id="pb-total">0</strong> 頁</span>
+    <span id="pb-pct">0%</span>
+  </div>
+  <div class="pb-track"><div class="pb-fill" id="pb-fill"></div></div>
+  <div id="current-task-label">準備中…</div>
+</div>
+
+<!-- SETUP SCREEN -->
+<div id="setup-screen">
+
+  <div class="setup-card">
+    <div class="card-title"><div class="num">1</div> 貼入故事文字</div>
+    <label>故事內容（可貼入1萬~5萬字，系統自動切段）</label>
+    <textarea id="big-text" placeholder="貼上你的小說、劇本、故事文字…
+
+系統會自動：
+① 分析人物出場並建立角色檔
+② 依場景/段落切割成若干批次
+③ 序列生成每一頁漫畫，全程自動"></textarea>
+    <div class="text-stats">
+      <div class="stat">字數：<strong id="stat-chars">0</strong></div>
+      <div class="stat">預估批次：<strong id="stat-chunks">—</strong></div>
+      <div class="stat">預估頁數：<strong id="stat-pages">—</strong></div>
+      <div class="stat">預估時間：<strong id="stat-time">—</strong></div>
+    </div>
+    <div id="chunk-preview">
+      <label>切割預覽</label>
+      <div class="chunk-list" id="chunk-list"></div>
+    </div>
+  </div>
+
+  <div class="setup-card">
+    <div class="card-title"><div class="num">2</div> 作品設定</div>
+    <div class="options-grid">
+      <div>
+        <label>作品標題</label>
+        <input type="text" id="work-title" placeholder="我的漫畫作品" />
+        <label>漫畫風格</label>
+        <div class="toggle-row" id="style-toggle">
+          <button class="on" data-val="japanese">日式</button>
+          <button data-val="american">美式</button>
+          <button data-val="realistic">寫實</button>
+        </div>
+      </div>
+      <div>
+        <label>色彩模式</label>
+        <div class="toggle-row" id="color-toggle">
+          <button class="on" data-val="bw">黑白</button>
+          <button data-val="color">彩色</button>
+        </div>
+        <label style="margin-top:16px;">分頁密度</label>
+        <div class="toggle-row" id="density-toggle">
+          <button data-val="light">疏（~500字/頁）</button>
+          <button class="on" data-val="normal">中（~1000字/頁）</button>
+          <button data-val="dense">密（~1500字/頁）</button>
+        </div>
+      </div>
+    </div>
+    <div class="info-box">
+      💡 <strong>人物自動提取</strong>：系統會在生成前先讓 AI 分析全文，自動識別主要人物的外觀、性格與關係，並在整個生成過程中保持一致。你也可以在下方補充。
+    </div>
+    <label style="margin-top:16px;">補充人物/場景說明（選填，優先套用）</label>
+    <textarea id="extra-char-notes" style="height:70px; font-size:12px;" placeholder="例：主角陳凱 — 17歲男生，黑色亂髮，左臉有疤，藍色校服&#10;場景：2085年台北，廢墟都市"></textarea>
+  </div>
+
+  <div id="launch-error" class="error-banner" style="display:none;"></div>
+
+  <button id="btn-launch" onclick="launchPipeline()">▶ 開始自動生成漫畫</button>
+
+</div>
+
+<!-- MANGA VIEWER -->
+<div id="manga-viewer">
+  <div id="char-sheet">
+    <h3>📋 自動識別角色檔</h3>
+    <div class="char-cards" id="char-cards-list"></div>
+  </div>
+  <div id="episodes-container"></div>
+</div>
+
+<!-- ZOOM OVERLAY -->
+<div id="zoom-overlay" onclick="this.classList.remove('show')">
+  <div id="zoom-img" onclick="event.stopPropagation()"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+const S = {
+  style: 'japanese',
+  color: 'bw',
+  density: 'normal',
+  title: '',
+  rawText: '',
+  extraNotes: '',
+  chunks: [],         // [{id, text, episodeNum, pageNum, chunkLabel}]
+  characters: [],     // [{name, role, appearance, personality}]
+  pages: {},          // {chunkId: pageData}
+  running: false,
+  done: 0,
+  total: 0,
+};
+
+const DENSITY_MAP = { light: 500, normal: 1000, dense: 1500 };
+
+// ═══════════════════════════════════════════
+//  TEXT ANALYSIS & CHUNKING
+// ═══════════════════════════════════════════
+function smartChunk(text, charsPerChunk) {
+  // Split on chapter/section markers first
+  const chapterRe = /^[\s\n]*(第[一二三四五六七八九十百\d]+[章節集回部]|Chapter\s*\d+|CHAPTER\s*\d+|[一二三四五六七八九十]+、)/m;
+  let segments = [];
+
+  // Try to split on natural chapter breaks
+  const parts = text.split(/\n{2,}/); // paragraphs
+  let buf = '';
+  let segIndex = 0;
+
+  for (const p of parts) {
+    const trimmed = p.trim();
+    if (!trimmed) continue;
+    // Chapter heading → force new segment
+    if (chapterRe.test(trimmed) && buf.length > 200) {
+      segments.push(buf.trim());
+      buf = trimmed + '\n\n';
+    } else {
+      buf += trimmed + '\n\n';
+      if (buf.length >= charsPerChunk) {
+        segments.push(buf.trim());
+        buf = '';
+      }
+    }
+  }
+  if (buf.trim()) segments.push(buf.trim());
+
+  // Build chunk objects
+  const PAGES_PER_EP = 5;
+  return segments.map((text, i) => ({
+    id: i,
+    text,
+    pageNum: i + 1,
+    episodeNum: Math.floor(i / PAGES_PER_EP) + 1,
+    chunkLabel: `P.${i+1}`,
+    status: 'pending', // pending | active | done | error
+  }));
+}
+
+// ═══════════════════════════════════════════
+//  UI HELPERS
+// ═══════════════════════════════════════════
+function $(id) { return document.getElementById(id); }
+
+function setToggle(groupId, val) {
+  document.querySelectorAll(`#${groupId} button`).forEach(b => {
+    b.classList.toggle('on', b.dataset.val === val);
+  });
+}
+
+document.querySelectorAll('.toggle-row').forEach(row => {
+  row.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      row.querySelectorAll('button').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      if (row.id === 'style-toggle') S.style = btn.dataset.val;
+      if (row.id === 'color-toggle') S.color = btn.dataset.val;
+      if (row.id === 'density-toggle') { S.density = btn.dataset.val; updateStats(); }
+    });
+  });
+});
+
+$('big-text').addEventListener('input', updateStats);
+
+function updateStats() {
+  const text = $('big-text').value;
+  S.rawText = text;
+  const len = text.length;
+  $('stat-chars').textContent = len.toLocaleString();
+  if (len < 50) {
+    $('stat-chunks').textContent = '—';
+    $('stat-pages').textContent = '—';
+    $('stat-time').textContent = '—';
+    $('chunk-preview').style.display = 'none';
+    return;
+  }
+  const cpc = DENSITY_MAP[S.density];
+  const chunks = smartChunk(text, cpc);
+  S.chunks = chunks;
+  $('stat-chunks').textContent = chunks.length;
+  $('stat-pages').textContent = chunks.length;
+  const mins = Math.ceil(chunks.length * 12 / 60);
+  $('stat-time').textContent = mins < 2 ? '~1分鐘' : `約${mins}分鐘`;
+
+  // Show chunk pills
+  $('chunk-preview').style.display = 'block';
+  const list = $('chunk-list');
+  list.innerHTML = chunks.map((c,i) => `<div class="chunk-pill" id="cpill-${i}">${c.chunkLabel}</div>`).join('');
+}
+
+// ═══════════════════════════════════════════
+//  MAIN PIPELINE
+// ═══════════════════════════════════════════
+async function launchPipeline() {
+  const text = $('big-text').value.trim();
+  if (text.length < 100) { showErr('請貼入至少100字的故事文字！'); return; }
+
+  S.rawText = text;
+  S.title = $('work-title').value.trim() || '我的漫畫';
+  S.extraNotes = $('extra-char-notes').value.trim();
+  const cpc = DENSITY_MAP[S.density];
+  S.chunks = smartChunk(text, cpc);
+  S.total = S.chunks.length;
+  S.done = 0;
+  S.pages = {};
+  S.characters = [];
+
+  if (S.chunks.length === 0) { showErr('文字太短，無法切割！'); return; }
+
+  // Switch to viewer mode
+  $('setup-screen').style.display = 'none';
+  $('manga-viewer').classList.add('show');
+  $('progress-bar-wrap').classList.add('show');
+  $('btn-restart').style.display = 'block';
+  $('hdr-status').style.display = 'inline';
+
+  updateProgress(0, S.total, '正在分析人物角色…');
+
+  // STEP 1: Extract characters from full text
+  try {
+    await extractCharacters(text, S.extraNotes);
+    renderCharSheet();
+  } catch(e) {
+    console.warn('角色提取失敗，繼續生成:', e);
+  }
+
+  // STEP 2: Sequential page generation
+  S.running = true;
+  for (let i = 0; i < S.chunks.length; i++) {
+    if (!S.running) break;
+    const chunk = S.chunks[i];
+    setPillStatus(i, 'active');
+    updateProgress(i, S.total, `生成第 ${chunk.pageNum} 頁 — ${chunk.chunkLabel}…`);
+
+    // Ensure episode container exists
+    ensureEpisodeContainer(chunk.episodeNum, chunk.pageNum);
+
+    // Insert skeleton
+    insertSkeleton(chunk.id, chunk.episodeNum, chunk.pageNum);
+
+    try {
+      const pageData = await generatePageAPI(chunk, S.characters, S.style, S.color, S.title);
+      S.pages[chunk.id] = pageData;
+      chunk.status = 'done';
+      replaceSkeleton(chunk.id, chunk.episodeNum, chunk.pageNum, pageData);
+      setPillStatus(i, 'done');
+      S.done++;
+      updateProgress(S.done, S.total, `第 ${chunk.pageNum} 頁完成`);
+    } catch(e) {
+      chunk.status = 'error';
+      setPillStatus(i, 'error');
+      markSkeletonError(chunk.id, e.message);
+    }
+
+    // Small delay to avoid rate limiting
+    if (i < S.chunks.length - 1) await sleep(800);
+  }
+
+  updateProgress(S.done, S.total, S.done === S.total ? '✓ 全部生成完成！' : `完成 ${S.done}/${S.total} 頁`);
+  $('hdr-status').textContent = `✓ ${S.done}/${S.total} 頁`;
+  $('hdr-status').className = 'tag green';
+}
+
+function showErr(msg) {
+  $('launch-error').textContent = msg;
+  $('launch-error').style.display = 'block';
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ═══════════════════════════════════════════
+//  API: EXTRACT CHARACTERS
+// ═══════════════════════════════════════════
+async function extractCharacters(text, extraNotes) {
+  // Use first ~8000 chars for analysis
+  const sample = text.slice(0, 8000);
+
+  const prompt = `分析以下故事文字，提取所有出場人物的詳細資料。
+
+故事文字：
+${sample}
+
+${extraNotes ? '補充說明：\n' + extraNotes : ''}
+
+請嚴格以JSON格式回應，不要任何其他文字：
+{
+  "characters": [
+    {
+      "name": "角色名",
+      "role": "主角/配角/反派/其他",
+      "appearance": "詳細外觀（髮色、髮型、眼睛、身形、服裝特徵）",
+      "personality": "個性特徵",
+      "signature": "辨識標誌（如疤痕、飾品）"
+    }
+  ],
+  "worldSetting": "世界觀/背景設定摘要",
+  "era": "時代（如現代/古代/未來/架空）"
+}
+
+最多提取8個主要人物。`;
+
+  const res = await callAPI(prompt, 800);
+  const j = safeParseJSON(res);
+  if (j?.characters) {
+    S.characters = j.characters;
+    S.worldSetting = j.worldSetting || '';
+    S.era = j.era || '現代';
+  }
+}
+
+// ═══════════════════════════════════════════
+//  API: GENERATE ONE PAGE
+// ═══════════════════════════════════════════
+async function generatePageAPI(chunk, characters, style, colorMode, workTitle) {
+  const styleDesc = {
+    japanese: '日式少年漫畫：清晰輪廓線、誇張表情與動態、速度線、網點陰影、情緒爆炸格',
+    american: '美式超級英雄漫畫：粗獷線條、強烈陰影、大字體音效、動態構圖、厚重色塊',
+    realistic: '寫實漫畫：細膩線條、電影式構圖、精確比例、光影層次、電影感運鏡'
+  }[style];
+
+  const colorDesc = colorMode === 'color'
+    ? '彩色渲染，用豐富色彩傳達情緒'
+    : '黑白墨水，用濃淡陰影與網點表達';
+
+  const charBlock = characters.length > 0
+    ? '【固定人物（每頁必須外觀一致，不得改變）】\n' +
+      characters.map(c => `▸ ${c.name}（${c.role}）：${c.appearance}；個性：${c.personality}${c.signature ? '；標誌：'+c.signature : ''}`).join('\n')
+    : '【人物】依故事自行判斷';
+
+  const worldBlock = S.worldSetting ? `【世界觀】${S.worldSetting}（${S.era}）` : '';
+
+  const prompt = `你是專業漫畫分鏡師。根據故事段落生成一頁漫畫的完整分格描述。
+
+【作品】${workTitle} — 第${chunk.pageNum}頁
+【風格】${styleDesc}
+【色彩】${colorDesc}
+${worldBlock}
+${charBlock}
+
+【本段故事】
+${chunk.text}
+
+輸出格式：嚴格JSON，不要任何其他文字。
+
+{
+  "pageTitle": "本頁小標（10字內，可選）",
+  "layoutType": "A|B|C|D|E",
+  "panels": [
+    {
+      "id": 1,
+      "span": "normal|span2|span3|rowspan2",
+      "sceneDesc": "場景視覺描述（構圖+人物+動作+背景，40字內）",
+      "cameraAngle": "遠景|中景|近景|特寫|俯角|仰角",
+      "caption": "敘事旁白（選填，25字內）",
+      "dialogues": [
+        {"char": "角色名", "text": "對話內容", "type": "speech|thought|shout", "pos": "tl|tr|bl|br"}
+      ],
+      "sfx": "音效（選填）",
+      "mood": "緊張|平靜|喜悅|悲傷|憤怒|恐懼|震驚",
+      "focusChar": "主要人物名（選填）"
+    }
+  ]
+}
+
+layoutType說明：
+A=2列×3行(各格normal) B=左寬右窄×2行 C=3列×2行 D=1列×3行 E=左窄右寬×2行
+根據故事節奏選最適合的版型。共生成6個panels，大小搭配要有韻律感。
+重點：人物外觀必須與固定設定一致，世界觀不得改變。`;
+
+  const raw = await callAPI(prompt, 1000);
+  return safeParseJSON(raw);
+}
+
+// ═══════════════════════════════════════════
+//  CORE API CALL
+// ═══════════════════════════════════════════
+async function callAPI(prompt, maxTokens = 1000) {
+  if (typeof window.accClaudeRequest !== 'function') throw new Error('ACC AI 服務尚未載入，請重新開啟頁面');
+  const d = await window.accClaudeRequest({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: maxTokens,
+    messages: [{ role: 'user', content: prompt }]
+  });
+  return d.content.map(b => b.text || '').join('');
+}
+
+function safeParseJSON(raw) {
+  try {
+    const clean = raw.replace(/```json|```/g, '').trim();
+    return JSON.parse(clean);
+  } catch(e) {
+    // Try to extract JSON object
+    const m = raw.match(/\{[\s\S]*\}/);
+    if (m) {
+      try { return JSON.parse(m[0]); } catch {}
+    }
+    console.warn('JSON parse failed:', raw.slice(0,200));
+    return null;
+  }
+}
+
+// ═══════════════════════════════════════════
+//  RENDER: CHARACTER SHEET
+// ═══════════════════════════════════════════
+function renderCharSheet() {
+  if (!S.characters.length) return;
+  const sheet = $('char-sheet');
+  sheet.classList.add('show');
+  const list = $('char-cards-list');
+  list.innerHTML = S.characters.map(c => `
+    <div class="char-card">
+      <strong>${c.name}</strong>
+      <div class="char-role">${c.role}</div>
+      <div>外觀：${c.appearance}</div>
+      ${c.personality ? `<div>個性：${c.personality}</div>` : ''}
+      ${c.signature ? `<div>標誌：${c.signature}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════
+//  RENDER: EPISODES & PAGES
+// ═══════════════════════════════════════════
+function ensureEpisodeContainer(epNum, pageNum) {
+  const container = $('episodes-container');
+  let epDiv = $(`ep-group-${epNum}`);
+  if (!epDiv) {
+    epDiv = document.createElement('div');
+    epDiv.className = 'episode-group';
+    epDiv.id = `ep-group-${epNum}`;
+    const epTitle = `第${epNum}集`;
+    const totalEp = Math.ceil(S.total / 5);
+    epDiv.innerHTML = `
+      <div class="episode-title-bar">
+        <span class="ep-badge">第 ${epNum} 集</span>
+        <h2>${S.title}</h2>
+        <span class="ep-chars mono">EP ${epNum} / ${totalEp}</span>
+      </div>
+      <div class="ep-pages" id="ep-pages-${epNum}"></div>
+    `;
+    container.appendChild(epDiv);
+  }
+}
+
+function insertSkeleton(chunkId, epNum, pageNum) {
+  const pages = $(`ep-pages-${epNum}`);
+  if (!pages) return;
+  const wrap = document.createElement('div');
+  wrap.id = `page-wrap-${chunkId}`;
+  wrap.className = 'manga-page';
+  wrap.innerHTML = `
+    <div class="page-topbar"><strong>P.${pageNum}</strong><span>生成中…</span></div>
+    <div class="manga-grid layout-A">
+      ${Array(6).fill(0).map(() => `<div class="panel panel-skeleton"><div class="skel-dots"><span></span><span></span><span></span></div></div>`).join('')}
+    </div>
+  `;
+  pages.appendChild(wrap);
+  wrap.scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+
+function replaceSkeleton(chunkId, epNum, pageNum, pageData) {
+  const wrap = $(`page-wrap-${chunkId}`);
+  if (!wrap || !pageData) return;
+
+  const layoutClass = 'layout-' + (pageData.layoutType || 'A');
+  const panels = pageData.panels || [];
+
+  wrap.innerHTML = `
+    <div class="page-topbar">
+      <span><strong>P.${pageNum}</strong> ${pageData.pageTitle ? '— ' + esc(pageData.pageTitle) : ''}</span>
+      <span class="mono" style="font-size:9px;">${S.style} · ${S.color === 'color' ? '彩色' : '黑白'}</span>
+    </div>
+    <div class="manga-grid ${layoutClass}">
+      ${panels.map((p, i) => renderPanelHTML(p, i, S.color, S.style, chunkId)).join('')}
+    </div>
+    <div class="page-stamp">P.${pageNum}</div>
+  `;
+}
+
+function markSkeletonError(chunkId, msg) {
+  const wrap = $(`page-wrap-${chunkId}`);
+  if (!wrap) return;
+  wrap.innerHTML = `
+    <div class="page-topbar" style="background:#c0392b;"><strong style="color:#fff;">生成失敗</strong></div>
+    <div style="padding:20px; font-size:12px; color:#c0392b;">${esc(msg || '未知錯誤')}</div>
+  `;
+}
+
+// ═══════════════════════════════════════════
+//  RENDER: PANEL
+// ═══════════════════════════════════════════
+function renderPanelHTML(panel, index, colorMode, style, seed) {
+  const spanClass = panel.span === 'span2' ? 'span2' : panel.span === 'span3' ? 'span3' : panel.span === 'rowspan2' ? 'rowspan2' : '';
+  const isColor = colorMode === 'color';
+
+  const artSvg = buildPanelArt(panel, index, seed, isColor, style);
+
+  const captionHTML = panel.caption
+    ? `<div class="panel-caption">${esc(panel.caption)}</div>` : '';
+
+  const dialoguesHTML = (panel.dialogues || []).slice(0,2).map((d, di) => {
+    const pos = d.pos || (di === 0 ? 'tl' : 'br');
+    const typeClass = d.type === 'thought' ? ' thought' : '';
+    return `<div class="bubble ${pos}${typeClass}"><b>${esc(d.char)}</b>${esc(d.text)}</div>`;
+  }).join('');
+
+  const sfxHTML = panel.sfx ? `<div class="sfx">${esc(panel.sfx)}</div>` : '';
+
+  return `
+    <div class="panel ${spanClass}" onclick="zoomPanel(this, ${index}, ${seed})">
+      <div class="panel-art">${artSvg}</div>
+      ${captionHTML}
+      ${dialoguesHTML}
+      ${sfxHTML}
+    </div>`;
+}
+
+// ═══════════════════════════════════════════
+//  SVG ART GENERATION
+// ═══════════════════════════════════════════
+function buildPanelArt(panel, panelIndex, chunkSeed, isColor, style) {
+  const seed = (chunkSeed * 31 + panelIndex * 17 + 7) & 0xFFFFFF;
+  const rng = mkrng(seed);
+  const mood = panel.mood || '平靜';
+  const angle = panel.cameraAngle || '中景';
+
+  // Color palettes per mood
+  const palettes = {
+    '緊張': isColor ? ['#ff4136','#ff851b','#ffdc00','#111'] : ['#000','#222','#666','#999'],
+    '憤怒': isColor ? ['#c0392b','#e67e22','#f39c12','#111'] : ['#000','#111','#444','#888'],
+    '喜悅': isColor ? ['#2ecc40','#01ff70','#7fdbff','#fff'] : ['#ddd','#aaa','#666','#333'],
+    '悲傷': isColor ? ['#0074d9','#7fdbff','#b10dc9','#eee'] : ['#aaa','#777','#444','#111'],
+    '平靜': isColor ? ['#3d9970','#7fdbff','#f0f4f8','#fff'] : ['#e0e0e0','#aaa','#666','#222'],
+    '恐懼': isColor ? ['#111111','#6c3483','#1a5276','#333'] : ['#000','#111','#333','#777'],
+    '震驚': isColor ? ['#ff851b','#ffdc00','#fff','#000'] : ['#ddd','#bbb','#555','#000'],
+  };
+  const pal = palettes[mood] || palettes['平靜'];
+
+  const W = 200, H = 180;
+
+  let art = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+
+  // Background
+  art += `<rect width="${W}" height="${H}" fill="${pal[2]}"/>`;
+
+  if (angle === '遠景') {
+    art += drawWideScene(rng, pal, W, H, style);
+  } else if (angle === '特寫') {
+    art += drawCloseup(rng, pal, W, H, style, mood);
+  } else if (angle === '俯角') {
+    art += drawBirdEye(rng, pal, W, H, style);
+  } else if (angle === '仰角') {
+    art += drawWormEye(rng, pal, W, H, style);
+  } else {
+    art += drawMidShot(rng, pal, W, H, style, mood, panel);
+  }
+
+  // Manga-style overlays
+  if (style === 'japanese' && (mood === '緊張' || mood === '震驚' || mood === '憤怒')) {
+    art += drawSpeedLines(rng, W, H, pal[0]);
+  }
+  if (style === 'american') {
+    art += drawHatchLines(rng, W, H);
+  }
+
+  art += '</svg>';
+  return art;
+}
+
+function mkrng(seed) {
+  let s = seed;
+  return (min=0, max=1) => {
+    s = (s * 1664525 + 1013904223) & 0x7FFFFFFF;
+    return min + ((s / 0x7FFFFFFF) * (max - min));
+  };
+}
+
+function drawWideScene(rng, pal, W, H) {
+  let s = '';
+  // Sky gradient
+  s += `<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${pal[2]}"/><stop offset="100%" stop-color="${pal[1]}" stop-opacity="0.5"/></linearGradient></defs>`;
+  s += `<rect width="${W}" height="${H*0.65}" fill="url(#sky)"/>`;
+  s += `<rect y="${H*0.65}" width="${W}" height="${H*0.35}" fill="${pal[1]}" opacity="0.7"/>`;
+  s += `<line x1="0" y1="${H*0.65}" x2="${W}" y2="${H*0.65}" stroke="${pal[3]}" stroke-width="1.5"/>`;
+  // Buildings
+  for (let i=0;i<6;i++) {
+    const bx = rng(i*25, i*25+20);
+    const bh = rng(20,70);
+    const bw = rng(14,28);
+    s += `<rect x="${bx}" y="${H*0.65-bh}" width="${bw}" height="${bh}" fill="${pal[0]}" opacity="${rng(0.6,1)}" stroke="${pal[3]}" stroke-width="0.8"/>`;
+    // Windows
+    for (let wr=0;wr<3;wr++) {
+      for (let wc=0;wc<2;wc++) {
+        s += `<rect x="${bx+3+wc*7}" y="${H*0.65-bh+6+wr*10}" width="4" height="5" fill="${pal[2]}" opacity="${rng(0.3,1)}"/>`;
+      }
+    }
+  }
+  // Ground figures
+  for (let i=0;i<3;i++) {
+    const fx = rng(20,W-20);
+    s += `<ellipse cx="${fx}" cy="${H*0.65+4}" rx="3" ry="5" fill="${pal[3]}"/>`;
+  }
+  return s;
+}
+
+function drawCloseup(rng, pal, W, H, style, mood) {
+  let s = '';
+  const cx = W/2, cy = H*0.48;
+  // Background emotion lines
+  if (mood === '震驚' || mood === '緊張') {
+    for (let i=0;i<16;i++) {
+      const a = (i/16)*Math.PI*2;
+      s += `<line x1="${cx}" y1="${cy}" x2="${cx+Math.cos(a)*160}" y2="${cy+Math.sin(a)*160}" stroke="${pal[0]}" stroke-width="${rng(0.3,1.5)}" opacity="0.25"/>`;
+    }
+  }
+  // Face
+  s += `<ellipse cx="${cx}" cy="${cy}" rx="45" ry="52" fill="${pal[1]}" opacity="0.9"/>`;
+  // Hair blob
+  const hairY = cy - 30;
+  s += `<ellipse cx="${cx}" cy="${hairY}" rx="50" ry="32" fill="${pal[0]}" opacity="0.85"/>`;
+  // Side hair
+  s += `<ellipse cx="${cx-42}" cy="${cy}" rx="12" ry="28" fill="${pal[0]}" opacity="0.8"/>`;
+  s += `<ellipse cx="${cx+42}" cy="${cy}" rx="12" ry="28" fill="${pal[0]}" opacity="0.8"/>`;
+  // Eyes
+  const eyeY = cy + 2;
+  const eyeRx = style === 'japanese' ? 10 : 7;
+  const eyeRy = style === 'japanese' ? 13 : 8;
+  s += `<ellipse cx="${cx-16}" cy="${eyeY}" rx="${eyeRx}" ry="${eyeRy}" fill="${pal[3]}"/>`;
+  s += `<ellipse cx="${cx+16}" cy="${eyeY}" rx="${eyeRx}" ry="${eyeRy}" fill="${pal[3]}"/>`;
+  if (style === 'japanese') {
+    s += `<circle cx="${cx-13}" cy="${eyeY-3}" r="3.5" fill="white"/>`;
+    s += `<circle cx="${cx+19}" cy="${eyeY-3}" r="3.5" fill="white"/>`;
+    // Eyelashes
+    s += `<path d="M${cx-26} ${eyeY-6} Q${cx-20} ${eyeY-15} ${cx-12} ${eyeY-13}" stroke="${pal[3]}" stroke-width="1.5" fill="none"/>`;
+    s += `<path d="M${cx+26} ${eyeY-6} Q${cx+20} ${eyeY-15} ${cx+12} ${eyeY-13}" stroke="${pal[3]}" stroke-width="1.5" fill="none"/>`;
+  }
+  // Nose
+  s += `<path d="M${cx-4} ${cy+10} Q${cx} ${cy+18} ${cx+4} ${cy+10}" stroke="${pal[3]}" stroke-width="1.2" fill="none" opacity="0.5"/>`;
+  // Mouth (expression by mood)
+  if (mood === '喜悅' || mood === '平靜') {
+    s += `<path d="M${cx-14} ${cy+22} Q${cx} ${cy+32} ${cx+14} ${cy+22}" stroke="${pal[3]}" stroke-width="2" fill="none"/>`;
+  } else if (mood === '悲傷') {
+    s += `<path d="M${cx-14} ${cy+28} Q${cx} ${cy+20} ${cx+14} ${cy+28}" stroke="${pal[3]}" stroke-width="2" fill="none"/>`;
+    // Tears
+    s += `<ellipse cx="${cx-14}" cy="${eyeY+18}" rx="3" ry="6" fill="#7fdbff" opacity="0.7"/>`;
+  } else if (mood === '憤怒' || mood === '緊張') {
+    s += `<line x1="${cx-14}" y1="${cy+26}" x2="${cx+14}" y2="${cy+26}" stroke="${pal[3]}" stroke-width="2"/>`;
+    // Angry veins
+    s += `<path d="M${cx+28} ${cy-20} L${cx+40} ${cy-28} L${cx+36} ${cy-18}" stroke="${pal[0]}" stroke-width="2" fill="none"/>`;
+  } else {
+    s += `<path d="M${cx-10} ${cy+24} L${cx+10} ${cy+24}" stroke="${pal[3]}" stroke-width="1.5"/>`;
+  }
+  return s;
+}
+
+function drawBirdEye(rng, pal, W, H) {
+  let s = '';
+  s += `<rect width="${W}" height="${H}" fill="${pal[2]}" opacity="0.8"/>`;
+  // Grid floor
+  for (let i=0;i<8;i++) {
+    s += `<line x1="${i*28}" y1="0" x2="${i*28+H}" y2="${H}" stroke="${pal[3]}" stroke-width="0.4" opacity="0.3"/>`;
+    s += `<line x1="0" y1="${i*24}" x2="${W}" y2="${i*24}" stroke="${pal[3]}" stroke-width="0.4" opacity="0.3"/>`;
+  }
+  // Top-down figures
+  for (let i=0;i<3;i++) {
+    const fx = rng(20, W-20), fy = rng(20, H-20);
+    s += `<circle cx="${fx}" cy="${fy}" r="${rng(6,12)}" fill="${pal[0]}" opacity="0.8"/>`;
+    s += `<ellipse cx="${fx}" cy="${fy+14}" rx="${rng(4,8)}" ry="${rng(8,16)}" fill="${pal[1]}" opacity="0.7"/>`;
+    // Shadow
+    s += `<ellipse cx="${fx+3}" cy="${fy+20}" rx="${rng(6,10)}" ry="3" fill="${pal[3]}" opacity="0.2"/>`;
+  }
+  return s;
+}
+
+function drawWormEye(rng, pal, W, H) {
+  let s = '';
+  // Sky
+  s += `<rect width="${W}" height="${H}" fill="${pal[2]}"/>`;
+  // Tall dramatic buildings from below
+  for (let i=0;i<4;i++) {
+    const bx = i*52 - 10;
+    const bw = rng(40,55);
+    const converge = W/2 + (bx + bw/2 - W/2) * 0.1;
+    s += `<polygon points="${bx},${H} ${converge},0 ${converge+bw*0.3},0 ${bx+bw},${H}" fill="${pal[0]}" opacity="${rng(0.7,1)}"/>`;
+    // windows
+    for (let wr=0;wr<5;wr++) {
+      const wy = H*0.2 + wr*H*0.14;
+      s += `<rect x="${bx+10}" y="${wy}" width="8" height="10" fill="${pal[2]}" opacity="${rng(0.2,0.9)}"/>`;
+    }
+  }
+  // Figure at bottom center
+  const fig = W/2;
+  s += `<ellipse cx="${fig}" cy="${H-8}" rx="16" ry="24" fill="${pal[1]}" opacity="0.9"/>`;
+  s += `<circle cx="${fig}" cy="${H-38}" r="12" fill="${pal[1]}" opacity="0.9"/>`;
+  return s;
+}
+
+function drawMidShot(rng, pal, W, H, style, mood, panel) {
+  let s = '';
+  // BG texture
+  s += `<rect width="${W}" height="${H}" fill="${pal[2]}"/>`;
+  // Simple bg lines
+  for (let i=0;i<5;i++) {
+    s += `<line x1="${rng(0,W)}" y1="0" x2="${rng(0,W)}" y2="${H}" stroke="${pal[1]}" stroke-width="${rng(0.2,0.8)}" opacity="0.3"/>`;
+  }
+
+  const numFigs = panel?.dialogues?.length > 1 ? 2 : 1;
+  const positions = numFigs === 2 ? [W*0.3, W*0.7] : [W*0.5];
+
+  positions.forEach((fx, fi) => {
+    const headY = H*0.28 + rng(fi,10);
+    const bodyH = H*0.5;
+    const bodyW = rng(fi+1, 10) + 30;
+
+    // Body
+    s += `<rect x="${fx-bodyW/2}" y="${headY+22}" width="${bodyW}" height="${bodyH}" rx="5" fill="${pal[fi===0?0:1]}" opacity="0.85"/>`;
+    // Head
+    s += `<ellipse cx="${fx}" cy="${headY}" rx="18" ry="20" fill="${pal[2]}" opacity="0.95"/>`;
+    // Hair
+    s += `<ellipse cx="${fx}" cy="${headY-8}" rx="20" ry="14" fill="${pal[fi===0?3:0]}" opacity="0.9"/>`;
+    // Eyes
+    if (style === 'japanese') {
+      s += `<ellipse cx="${fx-7}" cy="${headY+2}" rx="6" ry="7" fill="${pal[3]}"/>`;
+      s += `<ellipse cx="${fx+7}" cy="${headY+2}" rx="6" ry="7" fill="${pal[3]}"/>`;
+      s += `<circle cx="${fx-5}" cy="${headY}" r="2" fill="white"/>`;
+      s += `<circle cx="${fx+9}" cy="${headY}" r="2" fill="white"/>`;
+    } else {
+      s += `<ellipse cx="${fx-7}" cy="${headY+2}" rx="5" ry="5" fill="${pal[3]}"/>`;
+      s += `<ellipse cx="${fx+7}" cy="${headY+2}" rx="5" ry="5" fill="${pal[3]}"/>`;
+    }
+    // Arms
+    s += `<line x1="${fx-bodyW/2}" y1="${headY+35}" x2="${fx-bodyW/2-18}" y2="${headY+70}" stroke="${pal[fi===0?0:1]}" stroke-width="8" stroke-linecap="round" opacity="0.85"/>`;
+    s += `<line x1="${fx+bodyW/2}" y1="${headY+35}" x2="${fx+bodyW/2+18}" y2="${headY+70}" stroke="${pal[fi===0?0:1]}" stroke-width="8" stroke-linecap="round" opacity="0.85"/>`;
+    // Legs
+    s += `<line x1="${fx-8}" y1="${headY+22+bodyH}" x2="${fx-10}" y2="${H}" stroke="${pal[fi===0?0:1]}" stroke-width="9" stroke-linecap="round" opacity="0.85"/>`;
+    s += `<line x1="${fx+8}" y1="${headY+22+bodyH}" x2="${fx+10}" y2="${H}" stroke="${pal[fi===0?0:1]}" stroke-width="9" stroke-linecap="round" opacity="0.85"/>`;
+  });
+
+  // Ground shadow
+  s += `<ellipse cx="${W/2}" cy="${H}" rx="${W*0.4}" ry="10" fill="${pal[3]}" opacity="0.1"/>`;
+
+  return s;
+}
+
+function drawSpeedLines(rng, W, H, color) {
+  let s = '';
+  const cx = W/2, cy = H/2;
+  for (let i=0;i<20;i++) {
+    const a = (i/20)*Math.PI*2 + rng(0,0.15);
+    const len = rng(80,160);
+    s += `<line x1="${cx}" y1="${cy}" x2="${cx+Math.cos(a)*len}" y2="${cy+Math.sin(a)*len}" stroke="${color}" stroke-width="${rng(0.2,1.2)}" opacity="${rng(0.05,0.2)}"/>`;
+  }
+  return s;
+}
+
+function drawHatchLines(rng, W, H) {
+  let s = '';
+  for (let i=0;i<8;i++) {
+    const x1 = rng(0,W), y1 = rng(0,H/2);
+    const x2 = x1 + rng(-30,30), y2 = y1 + rng(H*0.3,H*0.7);
+    s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#000" stroke-width="${rng(0.2,0.8)}" opacity="${rng(0.03,0.1)}"/>`;
+  }
+  return s;
+}
+
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════════════════
+//  PROGRESS
+// ═══════════════════════════════════════════
+function updateProgress(done, total, label) {
+  const pct = total > 0 ? Math.round((done/total)*100) : 0;
+  $('pb-done').textContent = done;
+  $('pb-total').textContent = total;
+  $('pb-pct').textContent = pct + '%';
+  $('pb-fill').style.width = pct + '%';
+  $('current-task-label').textContent = label;
+  $('hdr-status').textContent = `${pct}% (${done}/${total})`;
+  $('hdr-status').className = done === total && total > 0 ? 'tag green' : 'tag red';
+}
+
+function setPillStatus(i, status) {
+  const pill = $(`cpill-${i}`);
+  if (pill) {
+    pill.className = 'chunk-pill ' + status;
+    if (status === 'active') pill.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+// ═══════════════════════════════════════════
+//  ZOOM
+// ═══════════════════════════════════════════
+function zoomPanel(el, index, seed) {
+  const overlay = $('zoom-overlay');
+  const img = $('zoom-img');
+  img.innerHTML = el.outerHTML;
+  img.querySelector('.panel').style.cssText = 'width:500px;height:400px;cursor:default;';
+  overlay.classList.add('show');
+}
+
+// ═══════════════════════════════════════════
+//  RESTART
+// ═══════════════════════════════════════════
+function restartSetup() {
+  if (S.running && S.done < S.total) {
+    if (!confirm('生成尚未完成，確定要重新開始嗎？')) return;
+    S.running = false;
+  }
+  $('setup-screen').style.display = 'block';
+  $('manga-viewer').classList.remove('show');
+  $('progress-bar-wrap').classList.remove('show');
+  $('episodes-container').innerHTML = '';
+  $('char-cards-list').innerHTML = '';
+  $('char-sheet').classList.remove('show');
+  $('btn-restart').style.display = 'none';
+  $('hdr-status').style.display = 'none';
+  updateStats();
+}
+</script>
+</body>
+</html>

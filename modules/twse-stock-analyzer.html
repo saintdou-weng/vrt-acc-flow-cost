@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TWSE 上市財報分析器｜官方資料 V3</title>
+<style>
+
+/* ══════════════════════════════════════════════════
+   CSS 全域設定 — 淺色珍珠金融風格
+   ══════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  /* 金色系（加深以在淺色背景維持可讀性）*/
+  --G1:#B8870C; --G2:#D4A520; --G3:#8B6508; --G4:#5E4308;
+  --GLOW:rgba(184,135,12,.14); --GBRD:rgba(184,135,12,.18);
+  /* 背景系（溫暖米白 / 珍珠白調）*/
+  --BG0:#F6F4EE; --BG1:#EEEAE0; --BG2:#E5E0D4; --BG3:#DAD4C6;
+  --CARD:#FFFFFF; --CARD2:#FAFAF6;
+  /* 功能色（較深，確保在白底清晰）*/
+  --GRN:#1A7A48; --GRND:rgba(26,122,72,.10);
+  --RED:#C0262C; --REDD:rgba(192,38,44,.10);
+  --BLU:#1458B0; --PUR:#7418A0; --ORG:#D45000;
+  /* 文字 */
+  --T0:#080818; --T1:#1A1A32; --T2:#52527A; --T3:#9898B8;
+  /* 字體 */
+  --F:'Segoe UI','Microsoft JhengHei','微軟正黑體',system-ui,sans-serif
+}
+
+body{
+  font-family:var(--F);
+  background:var(--BG0);
+  color:var(--T1);
+  min-height:100vh;
+  overflow-x:hidden;
+  /* 細膩背景光暈 */
+  background-image:
+    radial-gradient(ellipse at 15% 8%,  rgba(184,135,12,.06) 0%, transparent 45%),
+    radial-gradient(ellipse at 85% 92%, rgba(20,88,176,.04)  0%, transparent 45%),
+    radial-gradient(ellipse at 50% 50%, rgba(230,225,210,.6) 0%, transparent 80%);
+}
+
+/* 滾動條 */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--BG1)}
+::-webkit-scrollbar-thumb{background:var(--G3);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--G1)}
+
+/* ══════ HEADER ══════ */
+#HDR{
+  background:linear-gradient(180deg,rgba(255,252,244,1) 0%,rgba(248,244,234,.97) 100%);
+  border-bottom:2px solid rgba(184,135,12,.22);
+  padding:10px 18px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:300;
+  backdrop-filter:blur(20px);
+  box-shadow:0 2px 20px rgba(184,135,12,.10),0 1px 0 rgba(184,135,12,.15);
+}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-ico{
+  font-size:26px;
+  filter:drop-shadow(0 2px 6px rgba(184,135,12,.3));
+  animation:bob 3s ease-in-out infinite;
+}
+@keyframes bob{0%,100%{transform:translateY(0)} 50%{transform:translateY(-2px)}}
+.logo-name{
+  font-size:16px;font-weight:900;letter-spacing:2px;
+  background:linear-gradient(135deg,#8B6508 0%,#C89010 45%,#8B6508 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.logo-sub{font-size:9px;color:var(--T3);letter-spacing:3px;margin-top:2px;text-transform:uppercase}
+
+.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.mkt-row{display:flex;align-items:center;gap:8px;font-size:12px}
+.live-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--GRN);box-shadow:0 0 5px rgba(26,122,72,.6);
+  animation:pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.45;transform:scale(.82)}}
+.mkt-label{color:var(--T2);font-size:11px}
+.idx-main{font-weight:800;font-size:13px}
+.hdr-meta{font-size:10px;color:var(--T3)}
+
+/* ══════ TICKER TAPE ══════ */
+#TICK{
+  background:linear-gradient(90deg,var(--BG1) 0%,var(--CARD) 30%,var(--CARD) 70%,var(--BG1) 100%);
+  border-bottom:1px solid rgba(184,135,12,.15);
+  overflow:hidden;padding:7px 0;user-select:none;
+}
+.tick-wrap{
+  display:inline-flex;gap:40px;
+  animation:scroll-ticker 80s linear infinite;
+  white-space:nowrap;
+}
+.tick-wrap:hover{animation-play-state:paused}
+@keyframes scroll-ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ti{display:inline-flex;align-items:center;gap:8px;font-size:12px;padding:0 4px}
+.ti-code{color:var(--G1);font-weight:800;font-size:11px}
+.ti-sep{color:var(--T3);margin:0 2px}
+
+/* ══════ NAV TABS ══════ */
+#NAV{
+  background:var(--CARD);
+  border-bottom:1px solid rgba(184,135,12,.18);
+  display:flex;overflow-x:auto;padding:0 12px;
+  scrollbar-width:none;
+  box-shadow:0 1px 8px rgba(0,0,0,.05);
+}
+#NAV::-webkit-scrollbar{display:none}
+.ntb{
+  padding:12px 15px;background:none;border:none;
+  color:var(--T2);cursor:pointer;font-size:13px;font-family:var(--F);
+  white-space:nowrap;border-bottom:2px solid transparent;
+  transition:color .2s,border-color .2s;
+  display:flex;align-items:center;gap:6px;position:relative;
+}
+.ntb:hover{color:var(--G1)}
+.ntb.on{color:var(--G1);border-bottom-color:var(--G1);font-weight:700}
+.ntb.on::after{
+  content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
+  width:40px;height:2px;background:var(--G1);
+  box-shadow:0 0 6px rgba(184,135,12,.5);
+}
+
+/* ══════ MAIN WRAP ══════ */
+#WRAP{padding:14px;max-width:1380px;margin:0 auto}
+.page{display:none}.page.on{display:block}
+
+/* ══════ GRID ══════ */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+@media(max-width:1000px){.g4,.g5{grid-template-columns:1fr 1fr 1fr}}
+@media(max-width:760px){.g3,.g4,.g5{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.g2,.g3,.g4,.g5{grid-template-columns:1fr}}
+
+/* ══════ CARD ══════ */
+.card{
+  background:var(--CARD);
+  border:1px solid rgba(184,135,12,.15);
+  border-radius:14px;padding:16px;
+  margin-bottom:14px;position:relative;overflow:hidden;
+  box-shadow:0 2px 12px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.04);
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent 0%,rgba(184,135,12,.4) 50%,transparent 100%);
+}
+.card::after{
+  content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(184,135,12,.025) 0%,transparent 55%);
+  pointer-events:none;
+}
+.ct{
+  font-size:12px;font-weight:800;color:var(--G1);
+  margin-bottom:14px;display:flex;align-items:center;gap:8px;
+  letter-spacing:1.2px;text-transform:uppercase;
+}
+.ct-icon{font-size:15px}
+
+/* ══════ METRIC CARD ══════ */
+.mc{
+  background:var(--BG1);
+  border:1px solid rgba(184,135,12,.18);
+  border-radius:11px;padding:14px;text-align:center;
+  position:relative;overflow:hidden;transition:all .2s;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+}
+.mc:hover{border-color:rgba(184,135,12,.45);box-shadow:0 4px 16px rgba(184,135,12,.12);transform:translateY(-1px)}
+.mc::before{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--G1),transparent);opacity:.45;
+}
+.mc-lbl{font-size:10px;color:var(--T2);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
+.mc-val{font-size:24px;font-weight:900;color:var(--G1);line-height:1;margin-bottom:5px}
+.mc-chg{font-size:12px}
+
+/* 顏色工具 */
+.up{color:var(--GRN)}.dn{color:var(--RED)}.neu{color:var(--T2)}
+.tg{color:var(--G1)}.tgn{color:var(--GRN)}.tr{color:var(--RED)}.tb{color:var(--BLU)}.tp{color:var(--PUR)}.to{color:var(--ORG)}
+.t2{color:var(--T2)}.t3{color:var(--T3)}
+
+/* ══════ STOCK CARD ══════ */
+.sc{
+  background:var(--CARD2);
+  border:1px solid rgba(184,135,12,.15);
+  border-radius:12px;padding:14px;cursor:pointer;
+  transition:transform .2s,border-color .2s,box-shadow .2s;
+  position:relative;overflow:hidden;
+  box-shadow:0 1px 5px rgba(0,0,0,.06);
+}
+.sc:hover{
+  transform:translateY(-3px);
+  border-color:rgba(184,135,12,.5);
+  box-shadow:0 8px 28px rgba(184,135,12,.14),0 2px 8px rgba(0,0,0,.08);
+}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(184,135,12,.3),transparent)}
+.sch{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.sc-code{font-size:16px;font-weight:900;color:var(--G1);letter-spacing:.5px}
+.sc-name{font-size:12px;color:var(--T2);margin-top:2px}
+.sc-price{font-size:22px;font-weight:900;text-align:right;line-height:1.1}
+.sc-chg{font-size:12px;text-align:right;margin-top:3px}
+.ai-bar{height:5px;background:var(--BG2);border-radius:3px;overflow:hidden;margin:8px 0}
+.ai-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--G3),var(--G1));transition:width .6s cubic-bezier(.34,1.56,.64,1)}
+.ss{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px}
+.si-lbl{font-size:9px;color:var(--T3);text-transform:uppercase;letter-spacing:.5px}
+.si-val{font-size:12px;font-weight:700;margin-top:2px}
+
+/* ══════ BADGE ══════ */
+.bdg{display:inline-block;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px}
+.bdg-b{background:rgba(26,122,72,.12);color:#146B38;border:1px solid rgba(26,122,72,.4)}
+.bdg-s{background:rgba(192,38,44,.10);color:#A8202A;border:1px solid rgba(192,38,44,.4)}
+.bdg-h{background:rgba(20,88,176,.10);color:#1050A0;border:1px solid rgba(20,88,176,.4)}
+
+/* ══════ INDUSTRY RANK ══════ */
+.irc{
+  background:var(--CARD2);
+  border:1px solid rgba(184,135,12,.15);
+  border-radius:11px;padding:14px;margin-bottom:10px;
+  display:flex;align-items:center;gap:14px;
+  cursor:pointer;transition:all .2s;
+  box-shadow:0 1px 4px rgba(0,0,0,.05);
+}
+.irc:hover{border-color:rgba(184,135,12,.45);box-shadow:0 4px 18px rgba(184,135,12,.12);transform:translateX(4px)}
+.rank-num{font-size:24px;font-weight:900;min-width:36px;text-align:center}
+.rank-num.r1{color:#B8870C;text-shadow:0 1px 8px rgba(184,135,12,.35)}
+.rank-num.r2{color:#8A8A8A}
+.rank-num.r3{color:#A07832}
+.rank-num.rn{color:var(--T3)}
+.ir-info{flex:1}
+.ir-name{font-size:15px;font-weight:800;color:var(--T1)}
+.ir-stks{font-size:11px;color:var(--T2);margin-top:3px}
+.ir-right{text-align:right}
+.ir-sc{font-size:22px;font-weight:900;color:var(--G1)}
+.ir-tr{font-size:11px;margin-top:3px}
+
+/* ══════ DETAIL PANELS ══════ */
+.as{margin-bottom:16px}
+.ast{
+  font-size:11px;font-weight:800;color:var(--G1);
+  padding:8px 0;border-bottom:1px solid rgba(184,135,12,.18);margin-bottom:11px;
+  display:flex;align-items:center;gap:7px;
+  text-transform:uppercase;letter-spacing:1px;
+}
+.dr{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:6px 0;border-bottom:1px solid rgba(0,0,0,.05);
+}
+.dr-lbl{font-size:12px;color:var(--T2)}
+.dr-val{font-size:13px;font-weight:700;color:var(--T1)}
+.zone-card{background:var(--BG1);border-radius:9px;padding:12px;text-align:center;border:1px solid rgba(184,135,12,.15);box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.zone-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--T2);margin-bottom:6px}
+.zone-val{font-size:16px;font-weight:900}
+.z-buy{color:#146B38}.z-sel{color:#A8202A}.z-stp{color:#C45000}.z-t1{color:#1050A0}.z-t2{color:#7418A0}
+
+/* 籌碼條 */
+.chip-row{margin:6px 0}
+.chip-meta{display:flex;justify-content:space-between;margin-bottom:3px}
+.chip-track{height:7px;background:var(--BG2);border-radius:4px;overflow:hidden;position:relative}
+.chip-fill-p{height:100%;background:linear-gradient(90deg,rgba(26,122,72,.4),var(--GRN));border-radius:4px}
+.chip-fill-n{height:100%;background:linear-gradient(90deg,var(--RED),rgba(192,38,44,.4));border-radius:4px;margin-left:auto}
+
+/* ══════ SENTIMENT ══════ */
+.sent-bar{display:flex;height:20px;border-radius:10px;overflow:hidden;margin:10px 0;box-shadow:inset 0 1px 4px rgba(0,0,0,.12)}
+.sb-bull{background:linear-gradient(90deg,rgba(26,122,72,.35),var(--GRN))}
+.sb-neut{background:var(--BG2)}
+.sb-bear{background:linear-gradient(90deg,var(--RED),rgba(192,38,44,.35))}
+
+/* ══════ CHART CONTAINERS ══════ */
+.cc{position:relative;background:var(--CARD2);border-radius:9px;padding:12px;margin-bottom:12px;border:1px solid rgba(184,135,12,.12);box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.cc-title{font-size:10px;color:var(--T2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+
+/* ══════ BACKTEST ══════ */
+.bt-row{
+  background:var(--CARD2);
+  border:1px solid rgba(184,135,12,.15);
+  border-radius:10px;padding:12px;margin-bottom:10px;
+  transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.05);
+}
+.bt-row:hover{border-color:rgba(184,135,12,.4);box-shadow:0 4px 14px rgba(184,135,12,.10)}
+.bt-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.bt-ret{font-size:20px;font-weight:900}
+.bt-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;font-size:12px}
+.bt-stat-lbl{font-size:9px;color:var(--T3);text-transform:uppercase;letter-spacing:.5px}
+
+/* ══════ FORMS ══════ */
+select,button{font-family:var(--F)}
+select{
+  background:var(--CARD);
+  border:1px solid rgba(184,135,12,.28);
+  color:var(--T1);padding:8px 12px;border-radius:8px;font-size:13px;
+  cursor:pointer;outline:none;transition:all .2s;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23B8870C'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;
+  box-shadow:0 1px 3px rgba(0,0,0,.06);
+}
+select:focus{border-color:var(--G1);box-shadow:0 0 0 3px rgba(184,135,12,.12)}
+.btn{
+  padding:9px 18px;
+  background:linear-gradient(135deg,var(--G3) 0%,var(--G1) 55%,var(--G2) 100%);
+  color:#fff;border:none;border-radius:9px;
+  font-size:13px;font-weight:800;cursor:pointer;
+  transition:all .2s;letter-spacing:.5px;
+  box-shadow:0 2px 10px rgba(184,135,12,.28);
+}
+.btn:hover{box-shadow:0 4px 18px rgba(184,135,12,.4);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+
+/* ══════ LOADING ══════ */
+.ld-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;gap:16px}
+.spinner{
+  width:40px;height:40px;
+  border:3px solid rgba(184,135,12,.18);
+  border-top-color:var(--G1);border-radius:50%;
+  animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ══════ REC REASON ══════ */
+.reason{
+  font-size:12px;color:var(--T2);line-height:1.7;
+  background:linear-gradient(135deg,rgba(184,135,12,.06),rgba(184,135,12,.03));
+  padding:12px;border-radius:9px;
+  border-left:3px solid var(--G1);margin-top:10px;
+  border-top:1px solid rgba(184,135,12,.12);
+  border-bottom:1px solid rgba(184,135,12,.12);
+  border-right:1px solid rgba(184,135,12,.08);
+}
+
+/* ══════ SCORE RING ══════ */
+.score-ring{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:72px;height:72px;border-radius:50%;
+  border:3px solid;font-size:24px;font-weight:900;
+  position:relative;
+}
+
+/* ══════ UTILS ══════ */
+.fb{display:flex;justify-content:space-between;align-items:center}
+.fl{display:flex;align-items:center;gap:8px}
+.dvd{height:1px;background:rgba(184,135,12,.15);margin:12px 0}
+.mb8{margin-bottom:8px}.mb14{margin-bottom:14px}
+.tsm{font-size:12px}.txs{font-size:10px}.txxs{font-size:9px}
+
+/* ══════ CANDLE-LIKE MINI SPARKLINE ══════ */
+.sparkwrap{display:inline-flex;align-items:flex-end;gap:1px;height:24px}
+.spark-bar{width:3px;border-radius:1px;transition:height .3s}
+
+/* ══════ RESPONSIVE ══════ */
+@media(max-width:768px){
+  .logo-sub{display:none}
+  .logo-name{font-size:13px}
+  #WRAP{padding:10px}
+  .mc-val{font-size:20px}
+  .sc-price{font-size:18px}
+  .rank-num{font-size:18px}
+}
+@media(max-width:480px){
+  #HDR{padding:8px 12px}
+  .logo-name{font-size:12px}
+  .ntb{padding:10px 10px;font-size:12px}
+}
+/* ── 連線狀態 & 警示列 ── */
+.conn-st{font-size:9px;font-weight:900;letter-spacing:.08em;padding:2px 8px;border-radius:10px;border:1px solid transparent;white-space:nowrap}
+.st-on {color:#1A7A48;background:rgba(26,122,72,.12);border-color:rgba(26,122,72,.35)}
+.st-dl {color:#B8870C;background:rgba(184,135,12,.12);border-color:rgba(184,135,12,.35)}
+.st-off{color:#C0262C;background:rgba(192,38,44,.12);border-color:rgba(192,38,44,.35)}
+#warnBar{background:rgba(192,38,44,.08);color:#C0262C;border-bottom:1px solid rgba(192,38,44,.25);padding:7px 16px;font-size:12px;font-weight:700;text-align:center}
+
+
+/* === V2 官方上市財報分析器追加樣式 === */
+:root{--OK:#1A7A48;--WARN:#B8870C;--ERR:#C0262C}
+body{padding-bottom:40px}
+#HDR .logo-sub{letter-spacing:1.5px}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.inp{background:var(--CARD);border:1px solid rgba(184,135,12,.28);color:var(--T1);padding:8px 11px;border-radius:8px;font-size:13px;outline:none;min-width:170px}
+.inp:focus{border-color:var(--G1);box-shadow:0 0 0 3px rgba(184,135,12,.12)}
+.btn.secondary{background:var(--CARD);color:var(--G3);border:1px solid rgba(184,135,12,.3);box-shadow:none}
+.btn.secondary:hover{background:var(--BG1)}
+.data-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:800;border:1px solid}
+.data-badge.ok{color:var(--OK);background:rgba(26,122,72,.08);border-color:rgba(26,122,72,.25)}
+.data-badge.warn{color:var(--WARN);background:rgba(184,135,12,.08);border-color:rgba(184,135,12,.25)}
+.data-badge.err{color:var(--ERR);background:rgba(192,38,44,.08);border-color:rgba(192,38,44,.25)}
+.table-wrap{overflow:auto;border:1px solid rgba(184,135,12,.14);border-radius:10px;background:#fff}
+.tbl{border-collapse:collapse;width:100%;min-width:1040px;font-size:11px}
+.tbl th{position:sticky;top:0;background:#F2EEE4;color:#5E4308;padding:9px 8px;text-align:right;border-bottom:1px solid rgba(184,135,12,.25);white-space:nowrap;z-index:2}
+.tbl th:first-child,.tbl th:nth-child(2),.tbl td:first-child,.tbl td:nth-child(2){text-align:left}
+.tbl td{padding:8px;border-bottom:1px solid rgba(0,0,0,.055);text-align:right;white-space:nowrap}
+.tbl tbody tr{cursor:pointer;transition:.15s}
+.tbl tbody tr:hover{background:#FFF9EA}
+.tbl .code{font-weight:900;color:var(--G3)}
+.tbl .name{font-weight:800}
+.pill{display:inline-block;border-radius:999px;padding:2px 7px;font-size:9px;font-weight:800;background:var(--BG1);color:var(--T2)}
+.score{font-size:17px;font-weight:900}
+.score.good{color:var(--OK)} .score.mid{color:var(--WARN)} .score.bad{color:var(--ERR)}
+.coverage{height:5px;border-radius:4px;background:var(--BG2);overflow:hidden;min-width:58px}
+.coverage>i{display:block;height:100%;background:linear-gradient(90deg,var(--G3),var(--G1))}
+.diag-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:9px}
+.diag{background:var(--CARD2);border:1px solid rgba(184,135,12,.14);border-radius:9px;padding:10px;font-size:11px}
+.diag strong{display:block;margin-bottom:4px;color:var(--T1)}
+.diag small{display:block;color:var(--T3);line-height:1.5;word-break:break-all}
+.kvgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(max-width:850px){.kvgrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.kvgrid{grid-template-columns:1fr}.inp{min-width:100%;width:100%}}
+.kv{background:var(--BG1);border:1px solid rgba(184,135,12,.14);border-radius:9px;padding:10px}
+.kv .k{font-size:9px;color:var(--T3);margin-bottom:4px}.kv .v{font-size:15px;font-weight:900;color:var(--T1)}
+.analysis-box{background:linear-gradient(135deg,#FFF9EA,#FBFAF6);border:1px solid rgba(184,135,12,.2);border-left:4px solid var(--G1);border-radius:10px;padding:13px;line-height:1.8;font-size:12px;color:var(--T2)}
+.warning-box{background:rgba(192,38,44,.06);border:1px solid rgba(192,38,44,.18);border-radius:9px;padding:10px;font-size:11px;color:#8A2024;line-height:1.7}
+.empty{padding:40px 10px;text-align:center;color:var(--T3)}
+.sec-label{font-size:10px;color:var(--T3);letter-spacing:.8px;text-transform:uppercase;margin:13px 0 7px;font-weight:800}
+#detailBack{margin-bottom:10px}
+.hist-table{min-width:700px}
+.source-line{font-size:9px;color:var(--T3);margin-top:5px;line-height:1.5}
+.notice{font-size:11px;line-height:1.7;color:var(--T2);background:#FFF9EA;border:1px solid rgba(184,135,12,.18);padding:9px 11px;border-radius:8px;margin-bottom:11px}
+
+</style>
+  <link rel="stylesheet" href="../acc-module-shell.css">
+  <script defer src="../acc-module-shell.js"></script>
+</head>
+<body>
+<header id="HDR">
+  <div class="logo">
+    <span class="logo-ico">📑</span>
+    <div>
+      <div class="logo-name">TWSE 上市財報分析器 V3</div>
+      <div class="logo-sub">OFFICIAL TWSE OPENAPI · LISTED ONLY · FINANCIAL DATA FIRST</div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div class="mkt-row"><div class="live-dot" id="liveDot"></div><span class="conn-st st-dl" id="connSt">連線中</span><span id="coverageTop" class="mkt-label">官方資料載入中</span></div>
+    <div class="hdr-meta">資料來源：臺灣證券交易所 OpenAPI（上市公司） · GAS Server-side JSONP</div>
+    <div class="hdr-meta" id="updTime">最後更新：--</div>
+  </div>
+</header>
+<div id="warnBar" style="display:none"></div>
+<nav id="NAV">
+  <button class="ntb on" data-t="dash" onclick="showTab('dash')">📊 財報儀表板</button>
+  <button class="ntb" data-t="rank" onclick="showTab('rank')">🏭 產業排行</button>
+  <button class="ntb" data-t="detail" onclick="showTab('detail')">🔎 個股財報</button>
+  <button class="ntb" data-t="diag" onclick="showTab('diag')">🛠 資料診斷</button>
+</nav>
+<main id="WRAP">
+  <section id="tab-dash" class="page on">
+    <div class="notice"><b>V2 改版原則：</b>只建立「上市（TWSE）」公司母體；財務分析只採 TWSE 官方月營收、財報與公開估值資料。任何官方欄位抓不到時顯示「—」，不以亂數、模擬基本面或第三方資料補值。</div>
+    <div class="card">
+      <div class="ct"><span class="ct-icon">🌐</span>官方資料總覽</div>
+      <div class="g5">
+        <div class="mc"><div class="mc-lbl">上市公司</div><div class="mc-val" id="kCompanies">--</div><div class="mc-chg">TWSE listed universe</div></div>
+        <div class="mc"><div class="mc-lbl">最新月營收公司</div><div class="mc-val" id="kMonthly">--</div><div class="mc-chg" id="kMonthLabel">--</div></div>
+        <div class="mc"><div class="mc-lbl">營收年增 > 0</div><div class="mc-val" id="kGrowth">--</div><div class="mc-chg">最新公告月</div></div>
+        <div class="mc"><div class="mc-lbl">營業利益率 > 0</div><div class="mc-val" id="kProfitable">--</div><div class="mc-chg">最新累計財報</div></div>
+        <div class="mc"><div class="mc-lbl">官方資料成功率</div><div class="mc-val" id="kApi">--</div><div class="mc-chg">端點連線</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct"><span class="ct-icon">🧮</span>財務篩選</div>
+      <div class="toolbar">
+        <input class="inp" id="q" placeholder="輸入代號或公司名稱" oninput="renderMainTable()">
+        <select id="industryF" onchange="renderMainTable()"><option value="">全部產業</option></select>
+        <select id="sortF" onchange="renderMainTable()">
+          <option value="score">財務體質分數 ↓</option>
+          <option value="mYoY">月營收 YoY ↓</option>
+          <option value="ytdYoY">累計營收 YoY ↓</option>
+          <option value="opm">營益率 ↓</option>
+          <option value="eps">累計 EPS ↓</option>
+          <option value="rev">月營收金額 ↓</option>
+          <option value="pe">PE 低→高（參考）</option>
+        </select>
+        <button class="btn" onclick="refreshOfficial(true)">↻ 重新抓官方資料</button>
+        <span id="modeBadge" class="data-badge warn">載入中</span>
+      </div>
+      <div class="source-line">財務體質分數 = 成長30% + 獲利35% + 資產負債25% + EPS10%。屬透明規則型篩選，不是保證股價漲跌的 AI 預言；缺失欄位採中性分數並降低「資料完整度」。</div>
+      <div class="table-wrap" style="margin-top:10px"><table class="tbl"><thead><tr>
+        <th>代號</th><th>公司</th><th>產業</th><th>財務分數</th><th>完整度</th><th>月營收(億元)</th><th>月YoY</th><th>累計營收(億元)</th><th>累計YoY</th><th>營益率</th><th>累計EPS</th><th>負債比</th><th>收盤價*</th><th>PE*</th>
+      </tr></thead><tbody id="mainRows"></tbody></table></div>
+      <div class="source-line">* 收盤價 / PE 來自同一個 TWSE 官方 OpenAPI，僅作估值參考，不納入「財務體質分數」。</div>
+    </div>
+  </section>
+
+  <section id="tab-rank" class="page">
+    <div class="card"><div class="ct"><span class="ct-icon">🏭</span>產業財務排行</div><div id="industryRank"></div></div>
+  </section>
+
+  <section id="tab-detail" class="page">
+    <div id="detailEmpty" class="card"><div class="empty">請從「財報儀表板」點選一家公司，或在下方搜尋。</div></div>
+    <div class="card" id="detailSearchCard">
+      <div class="toolbar"><input class="inp" id="detailQ" placeholder="輸入上市公司代號，例如 1476" onkeydown="if(event.key==='Enter')openBySearch()"><button class="btn" onclick="openBySearch()">開啟財報</button></div>
+    </div>
+    <div id="detailPane" style="display:none"></div>
+  </section>
+
+  <section id="tab-diag" class="page">
+    <div class="card">
+      <div class="ct"><span class="ct-icon">🛠</span>官方資料連線診斷</div>
+      <div class="warning-box"><b>本機 HTML 必須使用 GAS。</b> Chrome 以 file:// 開啟時 origin 是 null，TWSE OpenAPI 不允許跨網域讀取；V3 改用 GAS 在伺服器端抓官方資料，再以 JSONP 回傳，因此不受 CORS 限制。</div>
+      <div class="toolbar" style="margin-top:10px"><input class="inp" style="min-width:360px;max-width:100%;flex:1" id="gasUrl" placeholder="必填：自己的 GAS Web App /exec URL"><button class="btn secondary" onclick="saveGas()">儲存並連線 GAS</button><button class="btn" onclick="refreshOfficial(true)">測試全部端點</button></div>
+      <div class="source-line">GAS relay 僅抓 TWSE 官方白名單端點；本機頁面用 JSONP 取得 GAS 回傳，不再對 TWSE 或 GAS 使用跨網域 fetch。</div><div class="source-line" style="color:var(--GRN);font-weight:700">✅ 成功後 Console 不應再出現 openapi.twse.com.tw 的 CORS 錯誤。</div><div class="source-line" style="margin-top:4px">📌 預設只抓 20 家研究池，避免全市場財報一次傳輸過大。</div>
+      <div class="diag-grid" id="diagGrid" style="margin-top:12px"></div>
+    </div>
+    <div class="card"><div class="ct"><span class="ct-icon">📚</span>本版使用的官方資料</div><div id="sourceList"></div></div>
+  </section>
+</main>
+<script>
+'use strict';
+const BASE='https://openapi.twse.com.tw/v1';
+const EP={
+ basic:'/opendata/t187ap03_L', monthly:'/opendata/t187ap05_L',
+ inc_ci:'/opendata/t187ap06_L_ci', inc_basi:'/opendata/t187ap06_L_basi', inc_bd:'/opendata/t187ap06_L_bd', inc_fh:'/opendata/t187ap06_L_fh', inc_ins:'/opendata/t187ap06_L_ins', inc_mim:'/opendata/t187ap06_L_mim',
+ bs_ci:'/opendata/t187ap07_L_ci', bs_basi:'/opendata/t187ap07_L_basi', bs_bd:'/opendata/t187ap07_L_bd', bs_fh:'/opendata/t187ap07_L_fh', bs_ins:'/opendata/t187ap07_L_ins', bs_mim:'/opendata/t187ap07_L_mim',
+ valuation:'/exchangeReport/BWIBBU_ALL', price:'/exchangeReport/STOCK_DAY_ALL', history:'/opendata/t187ap17_L'
+};
+const STUDY_CODES=['1451','1467','1473','1460','1417','4439','4438','1477','4441','1476','2331','2332','2352','2353','2312','2376','2345','2382','2357','3231'];
+const STUDY_LABEL='20家研究池：10家成衣/紡織＋10家AI/科技（全部TWSE上市）';
+const INCOME_KEYS=['inc_ci','inc_basi','inc_bd','inc_fh','inc_ins','inc_mim'];
+const BS_KEYS=['bs_ci','bs_basi','bs_bd','bs_fh','bs_ins','bs_mim'];
+const G={raw:{},rows:[],byCode:{},diag:{},updated:null,selected:null,history:null,fromCache:false};
+const CACHE_KEY='twse_fin_v3_cache', GAS_KEY='twse_fin_v3_gas', OLD_GAS_KEY='twse_fin_v2_gas';
+const safeStore=(()=>{try{localStorage.setItem('__twse_v2_test','1');localStorage.removeItem('__twse_v2_test');return localStorage}catch(e){const mem={};return {getItem:k=>(k in mem?mem[k]:null),setItem:(k,v)=>{mem[k]=String(v)},removeItem:k=>{delete mem[k]}}}})();
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const n=v=>{if(v===null||v===undefined||v==='')return null;const x=Number(String(v).replace(/,/g,'').replace(/%/g,''));return Number.isFinite(x)?x:null};
+const pct=v=>v==null?'—':`${v>=0?'':'−'}${Math.abs(v).toFixed(1)}%`;
+const num=(v,d=1)=>v==null?'—':Number(v).toLocaleString('zh-TW',{minimumFractionDigits:d,maximumFractionDigits:d});
+const moneyYiFromK=v=>{const x=n(v);return x==null?null:x/100000};
+const fmtYi=v=>v==null?'—':`${num(v,2)}`;
+const scoreClass=v=>v>=70?'good':v>=55?'mid':'bad';
+const colorCls=v=>v==null?'neu':v>0?'up':v<0?'dn':'neu';
+const clamp=(x,a=0,b=100)=>Math.max(a,Math.min(b,x));
+function first(obj, keys){for(const k of keys){if(obj&&Object.prototype.hasOwnProperty.call(obj,k)&&obj[k]!==''&&obj[k]!=null)return obj[k]}return null}
+function findKeyValue(obj, tokens){if(!obj)return null;const ks=Object.keys(obj);const key=ks.find(k=>tokens.every(t=>k.includes(t)));return key?obj[key]:null}
+function codeOf(o){return String(first(o,['公司代號','Code','股票代號','證券代號'])||'').trim()}
+function nameOf(o){return String(first(o,['公司名稱','Name','公司簡稱','證券名稱'])||'').trim()}
+function rocToAd(y){const x=n(y);return x!=null&&x<1911?x+1911:x}
+function periodOf(o){const y=rocToAd(first(o,['年度','Year']));const q=n(first(o,['季別','Season','季']));return {y,q,key:(y||0)*10+(q||0),label:y&&q?`${y}Q${q}`:(y?String(y):'—')}}
+function monthLabel(v){const s=String(v||'').replace(/\D/g,''); if(s.length===5){return `${Number(s.slice(0,3))+1911}-${s.slice(3)}`} if(s.length>=6){return `${s.slice(0,4)}-${s.slice(4,6)}`} return v||'—'}
+function setStatus(state,msg=''){
+ const map={online:['ONLINE','st-on','var(--GRN)'],partial:['PARTIAL','st-dl','#B8870C'],offline:['OFFLINE','st-off','var(--RED)'],loading:['連線中','st-dl','#B8870C'],cache:['CACHE','st-dl','#B8870C']};
+ const [txt,cls,dot]=map[state]||map.loading; $('connSt').textContent=txt; $('connSt').className='conn-st '+cls; $('liveDot').style.background=dot; if(msg)$('coverageTop').textContent=msg;
+}
+function warn(msg){$('warnBar').style.display=msg?'block':'none';$('warnBar').textContent=msg||''}
+function getGas(){return (safeStore.getItem(GAS_KEY)||safeStore.getItem(OLD_GAS_KEY)||'').trim()}
+function normalizeGas(v){v=String(v||'').trim();return /^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec(?:[?#].*)?$/i.test(v)?v:''}
+async function saveGas(){const raw=$('gasUrl').value.trim(),v=normalizeGas(raw);if(!v){alert('GAS 網址格式不正確。請貼部署後以 /exec 結尾的 Web App URL。');return}safeStore.setItem(GAS_KEY,v);$('gasUrl').value=v;await refreshOfficial(true)}
+function gasJsonp(params,ms=45000){return new Promise((resolve,reject)=>{
+ const gas=normalizeGas(getGas());if(!gas)return reject(new Error('尚未設定 GAS /exec URL'));
+ const cb='__twse_jsonp_'+Date.now()+'_'+Math.random().toString(36).slice(2);let done=false;const sc=document.createElement('script');let tm;
+ const cleanup=()=>{if(done)return;done=true;if(tm)clearTimeout(tm);try{delete window[cb]}catch(e){window[cb]=undefined}sc.remove()};
+ window[cb]=(payload)=>{cleanup();resolve(payload)};
+ sc.onerror=()=>{cleanup();reject(new Error('GAS JSONP 載入失敗；請確認 Web App 已部署為「任何人」可存取'))};
+ const q=new URLSearchParams({...params,callback:cb,_:Date.now()});sc.src=gas+(gas.includes('?')?'&':'?')+q.toString();
+ tm=setTimeout(()=>{cleanup();reject(new Error('GAS JSONP timeout '+ms+'ms'))},ms);document.head.appendChild(sc);
+ })}
+async function fetchBundle(keys){
+ const start=performance.now();const payload=await gasJsonp({mode:'bundle',keys:keys.join(','),codes:STUDY_CODES.join(',')},60000);
+ if(!payload||payload.ok!==true||!payload.data)throw new Error(payload&&payload.error?payload.error:'GAS bundle 回傳格式錯誤');
+ const sd=payload.diag||{};for(const k of keys){const d=sd[k]||{};G.diag[k]={ok:!!d.ok,mode:d.ok?'GAS-JSONP':'FAIL',rows:d.rows||0,ms:d.ms||Math.round(performance.now()-start),url:BASE+EP[k],error:d.error||''}}
+ return payload.data;
+}
+async function fetchOfficial(key,codes=[]){
+ const start=performance.now();const payload=await gasJsonp({mode:'one',key,codes:(codes||[]).join(',')},35000);
+ if(!payload||payload.ok!==true||!Array.isArray(payload.data)){const err=payload&&payload.error?payload.error:'GAS one 回傳格式錯誤';G.diag[key]={ok:false,mode:'FAIL',rows:0,ms:Math.round(performance.now()-start),url:BASE+EP[key],error:err};throw new Error(err)}
+ G.diag[key]={ok:true,mode:'GAS-JSONP',rows:payload.data.length,ms:Math.round(performance.now()-start),url:BASE+EP[key]};return payload.data;
+}
+function latestByCode(rows){const m={};for(const o of rows||[]){const c=codeOf(o);if(!/^\d{4}$/.test(c))continue;const p=periodOf(o);if(!m[c]||p.key>=periodOf(m[c]).key)m[c]=o}return m}
+function mapByCode(rows){const m={};for(const o of rows||[]){const c=codeOf(o);if(/^\d{4}$/.test(c))m[c]=o}return m}
+function combineLayout(keys){return latestByCode(keys.flatMap(k=>G.raw[k]||[]))}
+function parseIncome(o){if(!o)return {};
+ const revenue=n(first(o,['營業收入']))??n(findKeyValue(o,['收入']));
+ const cost=n(first(o,['營業成本']))??n(findKeyValue(o,['成本']));
+ const gross=n(first(o,['營業毛利（毛損）','營業毛利(毛損)','營業毛利']))??n(findKeyValue(o,['毛利']));
+ const opex=n(first(o,['營業費用']))??n(findKeyValue(o,['營業費用']));
+ const op=n(first(o,['營業利益（損失）','營業利益(損失)','營業利益']))??n(findKeyValue(o,['營業利益']));
+ const pretax=n(first(o,['稅前淨利（淨損）','稅前淨利(淨損)','稅前淨利']))??n(findKeyValue(o,['稅前','淨利']));
+ const net=n(first(o,['本期淨利（淨損）','本期淨利(淨損)','本期淨利']))??n(findKeyValue(o,['本期','淨利']));
+ const parent=n(first(o,['淨利（淨損）歸屬於母公司業主','淨利(淨損)歸屬於母公司業主']))??n(findKeyValue(o,['母公司業主']));
+ const eps=n(first(o,['基本每股盈餘（元）','基本每股盈餘(元)','基本每股盈餘']))??n(findKeyValue(o,['每股盈餘']));
+ return {revenue,cost,gross,opex,op,pretax,net,parent,eps,period:periodOf(o)}
+}
+function parseBS(o){if(!o)return {};
+ const ca=n(first(o,['流動資產']))??n(findKeyValue(o,['流動資產'])); const ta=n(first(o,['資產總計']))??n(findKeyValue(o,['資產','總計']));
+ const cl=n(first(o,['流動負債']))??n(findKeyValue(o,['流動負債'])); const tl=n(first(o,['負債總計']))??n(findKeyValue(o,['負債','總計']));
+ const eq=n(first(o,['權益總計']))??n(findKeyValue(o,['權益','總計'])); const capital=n(first(o,['股本']))??n(findKeyValue(o,['股本']));
+ const retained=n(first(o,['保留盈餘']))??n(findKeyValue(o,['保留盈餘'])); const bvps=n(first(o,['每股參考淨值']))??n(findKeyValue(o,['每股','淨值']));
+ return {ca,ta,cl,tl,eq,capital,retained,bvps,period:periodOf(o)}
+}
+function parseMonthly(o){if(!o)return {};
+ return {period:first(o,['資料年月']), rev:n(first(o,['營業收入-當月營收'])), prev:n(first(o,['營業收入-上月營收'])), lastY:n(first(o,['營業收入-去年當月營收'])), mom:n(first(o,['營業收入-上月比較增減(%)'])), yoy:n(first(o,['營業收入-去年同月增減(%)'])), ytd:n(first(o,['累計營業收入-當月累計營收'])), ytdLast:n(first(o,['累計營業收入-去年累計營收'])), ytdYoy:n(first(o,['累計營業收入-前期比較增減(%)']))}
+}
+function metricScore(x,lo,hi,invert=false){if(x==null)return 50;let z=clamp((x-lo)/(hi-lo)*100);return invert?100-z:z}
+function financialScore(r){
+ const vals=[];const add=(v,w)=>{vals.push({v,w,known:v!=null})};
+ add(r.mYoY,0.15);add(r.ytdYoY,0.15);add(r.gm,0.08);add(r.opm,0.17);add(r.nm,0.10);add(r.debt,0.16);add(r.current,0.09);add(r.eps,0.10);
+ const scores=[metricScore(r.mYoY,-20,30),metricScore(r.ytdYoY,-15,25),metricScore(r.gm,5,35),metricScore(r.opm,-5,20),metricScore(r.nm,-5,18),metricScore(r.debt,25,75,true),metricScore(r.current,70,250),metricScore(r.eps,-1,8)];
+ const weights=vals.map(x=>x.w);const s=scores.reduce((a,x,i)=>a+x*weights[i],0)/weights.reduce((a,b)=>a+b,0);const known=vals.filter(x=>x.known).reduce((a,x)=>a+x.w,0)/weights.reduce((a,b)=>a+b,0)*100;return {score:s,coverage:known};
+}
+function buildRows(){
+ const basic=mapByCode(G.raw.basic), monthly=mapByCode(G.raw.monthly), income=combineLayout(INCOME_KEYS), bs=combineLayout(BS_KEYS), val=mapByCode(G.raw.valuation), price=mapByCode(G.raw.price);
+ const codes=Object.keys(basic).filter(c=>/^\d{4}$/.test(c)&&STUDY_CODES.includes(c)); const rows=[];
+ for(const c of codes){const b=basic[c]||{},m=parseMonthly(monthly[c]),inc=parseIncome(income[c]),bal=parseBS(bs[c]); const rev=inc.revenue, gross=inc.gross, op=inc.op, net=inc.parent??inc.net;
+  const r={code:c,name:nameOf(b)||nameOf(monthly[c])||nameOf(income[c])||nameOf(price[c]),industry:String(first(b,['產業別','產業類別'])||'未分類'),monthly:m,inc,bal,
+   mRev:moneyYiFromK(m.rev),mYoY:m.yoy,ytdRev:moneyYiFromK(m.ytd),ytdYoY:m.ytdYoy,
+   finRev:moneyYiFromK(rev),grossYi:moneyYiFromK(gross),opYi:moneyYiFromK(op),netYi:moneyYiFromK(net),gm:rev&&gross!=null?gross/rev*100:null,opm:rev&&op!=null?op/rev*100:null,nm:rev&&net!=null?net/rev*100:null,eps:inc.eps,
+   assetsYi:moneyYiFromK(bal.ta),liabYi:moneyYiFromK(bal.tl),equityYi:moneyYiFromK(bal.eq),debt:bal.ta&&bal.tl!=null?bal.tl/bal.ta*100:null,current:bal.cl&&bal.ca!=null?bal.ca/bal.cl*100:null,
+   close:n(first(price[c],['ClosingPrice','收盤價'])),change:n(first(price[c],['Change','漲跌價差'])),pe:n(first(val[c],['PEratio','本益比'])),pb:n(first(val[c],['PBratio','股價淨值比'])),dy:n(first(val[c],['DividendYield','殖利率(%)','殖利率']))};
+  Object.assign(r,financialScore(r)); rows.push(r);
+ }
+ G.rows=rows;G.byCode=Object.fromEntries(rows.map(r=>[r.code,r]));
+}
+function compactRows(){return G.rows.map(r=>({code:r.code,name:r.name,industry:r.industry,mRev:r.mRev,mYoY:r.mYoY,ytdRev:r.ytdRev,ytdYoY:r.ytdYoY,finRev:r.finRev,grossYi:r.grossYi,opYi:r.opYi,netYi:r.netYi,gm:r.gm,opm:r.opm,nm:r.nm,eps:r.eps,assetsYi:r.assetsYi,liabYi:r.liabYi,equityYi:r.equityYi,debt:r.debt,current:r.current,close:r.close,change:r.change,pe:r.pe,pb:r.pb,dy:r.dy,score:r.score,coverage:r.coverage,monthly:r.monthly,inc:r.inc,bal:r.bal}))}
+function saveCache(){try{safeStore.setItem(CACHE_KEY,JSON.stringify({at:Date.now(),rows:compactRows()}))}catch(e){}}
+function loadCache(){try{const j=JSON.parse(safeStore.getItem(CACHE_KEY)||'null');if(!j||!Array.isArray(j.rows)||!j.rows.length)return false;G.rows=j.rows;G.byCode=Object.fromEntries(j.rows.map(r=>[r.code,r]));G.updated=new Date(j.at);G.fromCache=true;return true}catch(e){return false}}
+function sourceSpecs(){return [
+ ['上市公司基本資料','t187ap03_L','建立上市公司母體與產業分類'],['上市公司每月營收','t187ap05_L','最新月營收、YoY、累計營收'],['上市公司綜合損益表','t187ap06_L_*','營收、毛利、營業利益、淨利、EPS；依產業版型合併'],['上市公司資產負債表','t187ap07_L_*','資產、負債、權益、流動比率'],['上市公司獲利能力分析','t187ap17_L','個股歷年季度獲利趨勢；點進個股時才載入'],['每日收盤行情','STOCK_DAY_ALL','僅估值參考，不進財務體質分數'],['每日PE/PB/殖利率','BWIBBU_ALL','僅估值參考，不進財務體質分數']];}
+function renderSources(){$('sourceList').innerHTML=sourceSpecs().map(x=>`<div class="dr"><div><b>${esc(x[0])}</b><div class="source-line">${esc(x[2])}</div></div><div class="tg">${esc(x[1])}</div></div>`).join('')}
+function renderDiag(){const keys=Object.keys(EP).filter(k=>k!=='history');$('diagGrid').innerHTML=keys.map(k=>{const d=G.diag[k];if(!d)return `<div class="diag"><strong>${esc(k)}</strong><span class="data-badge warn">尚未測試</span><small>${esc(BASE+EP[k])}</small></div>`;return `<div class="diag"><strong>${esc(k)}</strong><span class="data-badge ${d.ok?'ok':'err'}">${d.ok?d.mode:'FAIL'}</span> <span>${d.rows||0}筆 · ${d.ms||0}ms</span><small>${esc(d.error||d.note||d.url)}</small></div>`}).join('')}
+function renderKpis(){const a=G.rows;$('kCompanies').textContent=a.length||'--';$('kMonthly').textContent=a.filter(x=>x.mRev!=null).length;$('kGrowth').textContent=a.filter(x=>x.mYoY!=null&&x.mYoY>0).length;$('kProfitable').textContent=a.filter(x=>x.opm!=null&&x.opm>0).length;const ds=Object.values(G.diag).filter(d=>d&&d.mode!=='HISTORY');const ok=ds.filter(d=>d.ok).length;$('kApi').textContent=ds.length?`${Math.round(ok/ds.length*100)}%`:'--';const periods=a.map(x=>x.monthly&&x.monthly.period).filter(Boolean).sort();$('kMonthLabel').textContent=periods.length?monthLabel(periods.at(-1)):'--'}
+function populateIndustry(){const sel=$('industryF'),cur=sel.value;const inds=[...new Set(G.rows.map(r=>r.industry).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'zh-Hant'));sel.innerHTML='<option value="">全部產業</option>'+inds.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');if(inds.includes(cur))sel.value=cur}
+function filteredRows(){const q=$('q').value.trim().toLowerCase(), ind=$('industryF').value,sort=$('sortF').value;let a=G.rows.filter(r=>(!q||r.code.includes(q)||r.name.toLowerCase().includes(q))&&(!ind||r.industry===ind));const key={score:'score',mYoY:'mYoY',ytdYoY:'ytdYoY',opm:'opm',eps:'eps',rev:'mRev'}[sort];if(sort==='pe')a.sort((x,y)=>(x.pe??1e9)-(y.pe??1e9));else a.sort((x,y)=>(y[key]??-1e99)-(x[key]??-1e99));return a}
+function renderMainTable(){if(!$('mainRows'))return;const a=filteredRows();$('mainRows').innerHTML=a.length?a.map(r=>`<tr onclick="openStock('${r.code}')"><td class="code">${r.code}</td><td class="name">${esc(r.name)}</td><td><span class="pill">${esc(r.industry)}</span></td><td><span class="score ${scoreClass(r.score)}">${num(r.score,0)}</span></td><td><div style="display:flex;align-items:center;gap:6px;justify-content:flex-end"><span>${num(r.coverage,0)}%</span><span class="coverage"><i style="width:${clamp(r.coverage)}%"></i></span></div></td><td>${fmtYi(r.mRev)}</td><td class="${colorCls(r.mYoY)}">${pct(r.mYoY)}</td><td>${fmtYi(r.ytdRev)}</td><td class="${colorCls(r.ytdYoY)}">${pct(r.ytdYoY)}</td><td class="${colorCls(r.opm)}">${pct(r.opm)}</td><td class="${colorCls(r.eps)}">${num(r.eps,2)}</td><td>${pct(r.debt)}</td><td>${num(r.close,2)}</td><td>${num(r.pe,2)}</td></tr>`).join(''):`<tr><td colspan="14"><div class="empty">沒有符合條件的上市公司資料</div></td></tr>`}
+function renderIndustryRank(){const g={};for(const r of G.rows){if(!g[r.industry])g[r.industry]=[];g[r.industry].push(r)}const a=Object.entries(g).map(([k,v])=>({name:k,n:v.length,score:v.reduce((s,x)=>s+x.score,0)/v.length,growth:v.filter(x=>x.mYoY!=null).reduce((s,x)=>s+x.mYoY,0)/Math.max(1,v.filter(x=>x.mYoY!=null).length),opm:v.filter(x=>x.opm!=null).reduce((s,x)=>s+x.opm,0)/Math.max(1,v.filter(x=>x.opm!=null).length)})).sort((x,y)=>y.score-x.score);$('industryRank').innerHTML=a.map((x,i)=>`<div class="irc" onclick="$('industryF').value='${esc(x.name)}';showTab('dash');renderMainTable()"><div class="rank-num ${i===0?'r1':i===1?'r2':i===2?'r3':'rn'}">${i+1}</div><div class="ir-info"><div class="ir-name">${esc(x.name)}</div><div class="ir-stks">${x.n} 家上市公司 · 平均月營收YoY ${pct(x.growth)} · 平均營益率 ${pct(x.opm)}</div></div><div class="ir-right"><div class="ir-sc">${num(x.score,0)}</div><div class="ir-tr">財務體質平均</div></div></div>`).join('')}
+function explain(r){const out=[];if(r.mYoY!=null)out.push(`最新月營收年增 ${pct(r.mYoY)}，${r.mYoY>=10?'需求/出貨動能偏強':r.mYoY>=0?'仍維持正成長':'目前仍較去年同期衰退'}。`);if(r.opm!=null)out.push(`累計營益率 ${pct(r.opm)}，${r.opm>=15?'屬高獲利轉換':r.opm>=5?'本業獲利為正':r.opm>=0?'本業接近低利潤區':'本業仍為營業虧損'}。`);if(r.eps!=null)out.push(`最新累計 EPS ${num(r.eps,2)} 元。`);if(r.debt!=null)out.push(`負債比 ${pct(r.debt)}，${r.debt<45?'資產負債結構相對保守':r.debt<65?'屬中等槓桿':'槓桿偏高，需再看金融業/產業特性'}。`);if(r.coverage<65)out.push(`目前官方欄位完整度僅 ${num(r.coverage,0)}%，模型信心應下修，不應只看單一分數。`);return out.join(' ')||'目前官方欄位不足，暫不下財務結論。'}
+function kv(k,v,cls=''){return `<div class="kv"><div class="k">${esc(k)}</div><div class="v ${cls}">${v}</div></div>`}
+function stockDetailHtml(r){const p=r.inc?.period?.label||'最新累計';const mp=monthLabel(r.monthly?.period);return `<div class="card"><button id="detailBack" class="btn secondary" onclick="showTab('dash')">← 回財報列表</button><div class="fb" style="gap:10px;flex-wrap:wrap"><div><div style="font-size:24px;font-weight:900;color:var(--G3)">${r.code} ${esc(r.name)}</div><div class="source-line">${esc(r.industry)} · 財報期間 ${esc(p)} · 月營收 ${esc(mp)}</div></div><div style="text-align:right"><div class="score ${scoreClass(r.score)}" style="font-size:30px">${num(r.score,0)}</div><div class="source-line">財務體質分數 · 完整度 ${num(r.coverage,0)}%</div></div></div></div>
+ <div class="card"><div class="ct">📌 最新官方月營收</div><div class="kvgrid">${kv('當月營收',fmtYi(r.mRev)+' 億元')}${kv('月營收 YoY',pct(r.mYoY),colorCls(r.mYoY))}${kv('累計營收',fmtYi(r.ytdRev)+' 億元')}${kv('累計營收 YoY',pct(r.ytdYoY),colorCls(r.ytdYoY))}</div></div>
+ <div class="card"><div class="ct">💼 ${esc(p)} 累計損益（官方財報）</div><div class="kvgrid">${kv('累計營收',fmtYi(r.finRev)+' 億元')}${kv('累計毛利',fmtYi(r.grossYi)+' 億元')}${kv('累計營業利益',fmtYi(r.opYi)+' 億元',colorCls(r.opYi))}${kv('累計歸母/本期淨利',fmtYi(r.netYi)+' 億元',colorCls(r.netYi))}${kv('毛利率',pct(r.gm))}${kv('營益率',pct(r.opm),colorCls(r.opm))}${kv('淨利率',pct(r.nm),colorCls(r.nm))}${kv('累計 EPS',num(r.eps,2)+' 元',colorCls(r.eps))}</div><div class="source-line">季財報金額以「累計」口徑呈現；例如 Q2 為上半年累計，不把它誤標成單季 Q2。</div></div>
+ <div class="card"><div class="ct">🏦 資產負債表</div><div class="kvgrid">${kv('資產總計',fmtYi(r.assetsYi)+' 億元')}${kv('負債總計',fmtYi(r.liabYi)+' 億元')}${kv('權益總計',fmtYi(r.equityYi)+' 億元')}${kv('負債比',pct(r.debt))}${kv('流動比率',pct(r.current))}${kv('每股淨值',num(r.bal?.bvps,2)+' 元')}</div></div>
+ <div class="card"><div class="ct">💹 TWSE估值參考（不納入財務分數）</div><div class="kvgrid">${kv('官方收盤價',num(r.close,2)+' 元')}${kv('本益比 PE',num(r.pe,2)+' ×')}${kv('股價淨值比 PB',num(r.pb,2)+' ×')}${kv('殖利率',pct(r.dy))}</div></div>
+ <div class="card"><div class="ct">🧠 財報解讀</div><div class="analysis-box">${esc(explain(r))}</div></div>
+ <div class="card"><div class="fb"><div class="ct" style="margin:0">📚 官方歷年獲利趨勢</div><button class="btn" onclick="loadHistory('${r.code}')">抓取 t187ap17_L 歷史</button></div><div id="historyPane"><div class="source-line" style="margin-top:10px">為避免首頁一次抓取大型歷史資料，此端點僅在需要時載入。</div></div></div>`}
+function openStock(code){const r=G.byCode[code];if(!r)return;G.selected=code;$('detailPane').style.display='block';$('detailEmpty').style.display='none';$('detailPane').innerHTML=stockDetailHtml(r);showTab('detail');window.scrollTo({top:0,behavior:'smooth'})}
+function openBySearch(){const q=$('detailQ').value.trim();const r=G.byCode[q]||G.rows.find(x=>x.name.includes(q));if(r)openStock(r.code);else alert('找不到這家上市公司或資料尚未載入。')}
+async function loadHistory(code){const pane=$('historyPane');pane.innerHTML='<div class="ld-wrap"><div class="spinner"></div><div>抓取官方歷年獲利資料...</div></div>';try{let rows=G.history;if(!rows){rows=await fetchOfficial('history',[code]);G.history=rows}const a=rows.filter(x=>codeOf(x)===code).map(x=>({y:rocToAd(first(x,['年度'])),q:n(first(x,['季別'])),rev:n(first(x,['營業收入(百萬元)','營業收入（百萬元）'])),gm:n(first(x,['毛利率(%)','毛利率（%）','毛利率'])),opm:n(first(x,['營業利益率(%)','營業利益率（%）','營業利益率'])),pretax:n(first(x,['稅前純益率(%)','稅前純益率（%）','稅前純益率'])),net:n(first(x,['稅後純益率(%)','稅後純益率（%）','稅後純益率']))})).sort((x,y)=>(y.y*10+y.q)-(x.y*10+x.q)).slice(0,16);pane.innerHTML=a.length?`<div class="table-wrap" style="margin-top:10px"><table class="tbl hist-table"><thead><tr><th>年度</th><th>季</th><th>營業收入(億元)</th><th>毛利率</th><th>營業利益率</th><th>稅前純益率</th><th>稅後純益率</th></tr></thead><tbody>${a.map(x=>`<tr style="cursor:default"><td>${x.y}</td><td>Q${x.q}</td><td>${x.rev==null?'—':num(x.rev/100,2)}</td><td>${pct(x.gm)}</td><td>${pct(x.opm)}</td><td>${pct(x.pretax)}</td><td>${pct(x.net)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">官方歷史端點沒有找到此公司資料。</div>';renderDiag()}catch(e){pane.innerHTML=`<div class="warning-box">歷史端點抓取失敗：${esc(e.message)}。不會用模擬資料替代。</div>`;renderDiag()}}
+function showTab(t){document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));document.querySelectorAll('.ntb').forEach(x=>x.classList.remove('on'));const p=$('tab-'+t);if(p)p.classList.add('on');const b=document.querySelector(`.ntb[data-t="${t}"]`);if(b)b.classList.add('on');if(t==='rank')renderIndustryRank();if(t==='diag'){renderDiag();renderSources()}}
+function renderAll(){renderKpis();populateIndustry();renderMainTable();renderIndustryRank();renderDiag();renderSources();$('updTime').textContent='最後更新：'+(G.updated?G.updated.toLocaleString('zh-TW'):'--')}
+async function refreshOfficial(manual=false){
+ const gas=normalizeGas(getGas());G.diag={};renderDiag();
+ if(!gas){
+   const cached=loadCache();
+   if(cached){renderAll();setStatus('cache','尚未設定 GAS，先顯示最近快取');$('modeBadge').textContent='舊快取（非即時）';$('modeBadge').className='data-badge warn';warn('本機 HTML 無法直接讀取 TWSE OpenAPI。請到「資料診斷」貼上 GAS /exec URL；目前只顯示快取，沒有模擬資料。')}
+   else{setStatus('offline','需要 GAS JSONP Relay');$('modeBadge').textContent='等待 GAS';$('modeBadge').className='data-badge err';warn('本機 HTML 的 origin 為 null，TWSE 官方 API 會被 CORS 擋住。請到「資料診斷」貼上 GAS /exec URL；設定一次後會記住。');renderDiag()}
+   return;
+ }
+ setStatus('loading','GAS 正在伺服器端抓 TWSE 官方資料');warn('');$('modeBadge').textContent='GAS→TWSE 更新中';$('modeBadge').className='data-badge warn';
+ const keys=['basic','monthly',...INCOME_KEYS,...BS_KEYS,'valuation','price'];
+ try{
+   const out=await fetchBundle(keys);Object.assign(G.raw,out);const successful=keys.filter(k=>G.diag[k]?.ok).length;
+   if((G.raw.basic||[]).length){buildRows();G.updated=new Date();G.fromCache=false;saveCache();renderAll();const state=successful===keys.length?'online':'partial';setStatus(state,`TWSE 官方端點 ${successful}/${keys.length} 成功`);$('modeBadge').textContent=`GAS JSONP ${successful}/${keys.length}`;$('modeBadge').className='data-badge '+(state==='online'?'ok':'warn');if(successful<keys.length)warn(`部分官方端點失敗（${successful}/${keys.length}成功）。已保留成功資料；缺失欄位顯示 —，請到「資料診斷」查看。`)}
+   else throw new Error('上市公司基本資料端點沒有回傳資料');
+ }catch(e){
+   const cached=loadCache();if(cached){renderAll();setStatus('cache','GAS/TWSE 失敗，顯示最近快取');$('modeBadge').textContent='舊快取（非即時）';$('modeBadge').className='data-badge warn';warn(`GAS/TWSE 更新失敗：${e.message}。目前顯示最近快取，沒有使用模擬資料。`)}else{setStatus('offline','GAS/TWSE 無法取得');$('modeBadge').textContent='無資料';$('modeBadge').className='data-badge err';warn(`GAS/TWSE 無法取得官方資料：${e.message}。請確認 GAS Web App 已部署為「任何人」可存取。`);renderDiag()}
+ }
+}
+(function init(){
+ const oldGas=normalizeGas(safeStore.getItem(OLD_GAS_KEY)||'');if(!safeStore.getItem(GAS_KEY)&&oldGas)safeStore.setItem(GAS_KEY,oldGas);$('gasUrl').value=getGas();renderSources();
+ if(loadCache()){renderAll();setStatus('cache','先顯示快取，背景經 GAS 更新官方資料');$('modeBadge').textContent='快取→GAS更新中';$('modeBadge').className='data-badge warn'}
+ refreshOfficial(false);
+})();
+</script>
+</body>
+</html>

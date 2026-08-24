@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>影片智能分析器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f2ee;
+    --bg2: #ede9e3;
+    --surface: #ffffff;
+    --surface2: #faf8f5;
+    --border: #ddd8d0;
+    --border2: #e8e3dc;
+    --text: #2a2520;
+    --text2: #6b6560;
+    --text3: #9b9590;
+    --accent: #c0622a;
+    --accent2: #e07840;
+    --accent-bg: #fdf0e8;
+    --accent-border: #f0c8a0;
+    --green: #2d7a4f;
+    --green-bg: #eaf5ee;
+    --blue: #2560a8;
+    --blue-bg: #e8f0fb;
+    --red: #c0302a;
+    --red-bg: #fdecea;
+    --yellow: #a07010;
+    --yellow-bg: #fdf6e0;
+    --purple: #7040a8;
+    --purple-bg: #f0eaf8;
+    --shadow: 0 2px 12px rgba(0,0,0,0.06);
+    --shadow2: 0 4px 24px rgba(0,0,0,0.09);
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+  ::selection { background: #f0c8a044; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* HEADER */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow);
+  }
+  .header-logo {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .header-title { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); }
+  .header-sub { font-size: 12px; color: var(--text3); margin-top: 1px; }
+
+  /* MAIN LAYOUT */
+  .main { max-width: 820px; margin: 0 auto; padding: 28px 20px 60px; }
+
+  /* INPUT SECTION */
+  .input-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .platform-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .platform-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 11px; border-radius: 20px; font-size: 12px; font-weight: 500;
+    background: var(--bg2); border: 1px solid var(--border2); color: var(--text2);
+    transition: all 0.2s;
+  }
+  .platform-badge.active { background: var(--accent-bg); border-color: var(--accent-border); color: var(--accent); }
+
+  /* DRAG DROP ZONE */
+  .drop-zone {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 28px 20px;
+    text-align: center;
+    background: var(--surface2);
+    transition: all 0.25s;
+    cursor: pointer;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .drop-zone.drag-over {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+  }
+  .drop-zone input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .drop-icon { font-size: 32px; margin-bottom: 8px; }
+  .drop-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .drop-sub { font-size: 12px; color: var(--text3); }
+  .drop-formats { display: flex; gap: 6px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
+  .fmt-tag {
+    font-size: 11px; padding: 2px 8px; border-radius: 10px;
+    background: var(--bg2); border: 1px solid var(--border2); color: var(--text2);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* URL INPUT */
+  .url-row { display: flex; gap: 10px; }
+  .url-input {
+    flex: 1; background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 11px 16px; color: var(--text); font-size: 13px;
+    font-family: 'JetBrains Mono', monospace; transition: all 0.2s;
+  }
+  .url-input:focus { outline: none; border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 3px var(--accent-bg); }
+  .url-input::placeholder { color: var(--text3); }
+  .analyze-btn {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none; border-radius: 10px; padding: 11px 22px;
+    color: white; font-weight: 600; font-size: 14px; cursor: pointer;
+    transition: all 0.2s; white-space: nowrap;
+    font-family: 'Noto Sans TC', sans-serif;
+  }
+  .analyze-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(192,98,42,0.3); }
+  .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+  .error-msg { margin-top: 10px; font-size: 13px; color: var(--red); padding: 8px 12px; background: var(--red-bg); border-radius: 8px; }
+
+  /* PROGRESS */
+  .progress-bar {
+    height: 3px; background: var(--bg2); border-radius: 2px; margin-top: 14px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; width: 30%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    animation: slide 1.4s ease-in-out infinite;
+  }
+  @keyframes slide { 0%{margin-left:-30%} 100%{margin-left:130%} }
+
+  /* LOADING */
+  .loading-state {
+    text-align: center; padding: 44px 20px; color: var(--text2);
+  }
+  .loading-spin { font-size: 36px; animation: spin 2s linear infinite; display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* RESULT */
+  .result { animation: fadeUp 0.45s ease; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+  /* VIDEO PLAYER */
+  .video-embed {
+    border-radius: var(--radius); overflow: hidden; margin-bottom: 18px;
+    aspect-ratio: 16/9; background: #000; box-shadow: var(--shadow2);
+  }
+  .video-embed iframe { width: 100%; height: 100%; border: none; display: block; }
+
+  /* LOCAL VIDEO */
+  .local-video-wrap {
+    border-radius: var(--radius); overflow: hidden; margin-bottom: 18px;
+    background: #000; box-shadow: var(--shadow2);
+  }
+  .local-video-wrap video { width: 100%; max-height: 360px; display: block; }
+
+  /* TITLE CARD */
+  .title-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+  }
+  .title-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+  .video-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text); line-height: 1.35; flex: 1; }
+  .badge-row { display: flex; gap: 7px; flex-wrap: wrap; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 11px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .meta-row { display: flex; gap: 18px; font-size: 13px; color: var(--text2); flex-wrap: wrap; }
+  .meta-item { display: flex; align-items: center; gap: 5px; }
+
+  /* CATEGORY BAR */
+  .category-bar {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px; margin-bottom: 14px;
+  }
+  .cat-item {
+    background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 12px; padding: 14px 12px; text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .cat-icon { font-size: 22px; margin-bottom: 4px; }
+  .cat-label { font-size: 11px; color: var(--text2); font-weight: 500; }
+  .cat-value { font-size: 13px; color: var(--text); font-weight: 600; }
+
+  /* SECTION CARDS */
+  .sec {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+  }
+  .sec-label {
+    font-size: 10px; letter-spacing: 2px; color: var(--accent); font-weight: 700;
+    text-transform: uppercase; margin-bottom: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sec-label::after { content:''; flex:1; height:1px; background:var(--border2); }
+  .summary-text { font-size: 14px; color: var(--text); line-height: 1.9; }
+
+  /* HIGHLIGHT BOX */
+  .highlight-box {
+    background: linear-gradient(135deg, #fff8f3, #fdf0e8);
+    border: 1px solid var(--accent-border); border-left: 4px solid var(--accent);
+    border-radius: 10px; padding: 16px 18px; margin-bottom: 14px;
+  }
+  .highlight-label { font-size: 10px; letter-spacing: 2px; color: var(--accent); font-weight: 700; margin-bottom: 8px; font-family: 'JetBrains Mono', monospace; }
+  .highlight-text { font-size: 14px; color: var(--text); line-height: 1.8; font-style: italic; }
+
+  /* KEY POINTS */
+  .kp-list { list-style: none; }
+  .kp-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border2); align-items: flex-start; }
+  .kp-item:last-child { border-bottom: none; }
+  .kp-num {
+    background: var(--accent-bg); color: var(--accent);
+    border-radius: 8px; width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .kp-text { font-size: 14px; color: var(--text); line-height: 1.7; }
+
+  /* MUSIC SECTION */
+  .music-card {
+    background: linear-gradient(135deg, #f8f0ff, #ede0ff);
+    border: 1px solid #d4b8f0; border-radius: var(--radius);
+    padding: 20px 22px; margin-bottom: 14px;
+  }
+  .music-info { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+  .music-field label { font-size: 11px; color: var(--purple); font-weight: 600; display: block; margin-bottom: 2px; }
+  .music-field span { font-size: 13px; color: var(--text); }
+
+  /* TAGS */
+  .tags { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 4px; }
+  .tag {
+    font-size: 12px; padding: 4px 12px; border-radius: 20px;
+    background: var(--bg2); border: 1px solid var(--border2); color: var(--text2);
+    font-weight: 500;
+  }
+
+  /* HISTORY */
+  .history-section { margin-top: 28px; }
+  .history-label { font-size: 11px; color: var(--text3); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; font-family: 'JetBrains Mono', monospace; }
+  .history-list { display: flex; flex-direction: column; gap: 6px; }
+  .history-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+    background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 10px; cursor: pointer; transition: all 0.2s;
+  }
+  .history-item:hover { border-color: var(--accent-border); background: var(--accent-bg); }
+  .history-icon { font-size: 18px; }
+  .history-title { flex: 1; font-size: 13px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .history-time { font-size: 11px; color: var(--text3); font-family: 'JetBrains Mono', monospace; }
+
+  /* TIPS */
+  .tips-card {
+    background: var(--surface); border: 1px solid var(--border2);
+    border-radius: var(--radius); padding: 20px 22px;
+  }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .tip-item { display: flex; gap: 8px; font-size: 13px; color: var(--text2); align-items: flex-start; padding: 6px 0; }
+  .tip-dot { color: var(--accent); font-size: 16px; line-height: 1.4; flex-shrink: 0; }
+  @media(max-width:560px) { .tips-grid { grid-template-columns: 1fr; } .music-info { grid-template-columns: 1fr; } }
+
+  /* SENTIMENT */
+  .sent-positive { background: var(--green-bg); color: var(--green); border: 1px solid #b0dfc0; }
+  .sent-neutral { background: var(--yellow-bg); color: var(--yellow); border: 1px solid #e0c870; }
+  .sent-negative { background: var(--red-bg); color: var(--red); border: 1px solid #f0b0b0; }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border2); margin: 14px 0; }
+</style>
+  <link rel="stylesheet" href="../acc-module-shell.css">
+  <script defer src="../acc-module-shell.js"></script>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-logo">🎬</div>
+  <div>
+    <div class="header-title">影片智能分析器</div>
+    <div class="header-sub">AI 深度解析 · 支援多平台 · 拖曳上傳</div>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- INPUT CARD -->
+  <div class="input-card">
+
+    <!-- Platform Badges -->
+    <div class="platform-badges" id="platformBadges">
+      <span class="platform-badge" data-p="youtube">▶ YouTube</span>
+      <span class="platform-badge" data-p="tiktok">♪ TikTok</span>
+      <span class="platform-badge" data-p="xiaohongshu">✿ 小紅書</span>
+      <span class="platform-badge" data-p="instagram">📷 Instagram</span>
+      <span class="platform-badge" data-p="twitter">𝕏 X/Twitter</span>
+      <span class="platform-badge" data-p="bilibili">📺 Bilibili</span>
+      <span class="platform-badge" data-p="facebook">👍 Facebook</span>
+      <span class="platform-badge" data-p="spotify">🎵 Spotify</span>
+      <span class="platform-badge" data-p="local">📁 本地檔案</span>
+    </div>
+
+    <!-- Drag Drop Zone -->
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept="video/*,audio/*,.mp4,.mov,.avi,.mkv,.webm,.mp3,.wav,.flac,.m4a">
+      <div class="drop-icon">📂</div>
+      <div class="drop-title">拖曳影片 / 音樂檔案到這裡</div>
+      <div class="drop-sub">或點擊選擇檔案</div>
+      <div class="drop-formats">
+        <span class="fmt-tag">MP4</span>
+        <span class="fmt-tag">MOV</span>
+        <span class="fmt-tag">AVI</span>
+        <span class="fmt-tag">MKV</span>
+        <span class="fmt-tag">WEBM</span>
+        <span class="fmt-tag">MP3</span>
+        <span class="fmt-tag">WAV</span>
+        <span class="fmt-tag">FLAC</span>
+        <span class="fmt-tag">M4A</span>
+      </div>
+    </div>
+
+    <!-- URL Input -->
+    <div class="url-row">
+      <input class="url-input" id="urlInput" type="text" placeholder="或貼上影片連結... YouTube · TikTok · Instagram · Bilibili · Spotify · 小紅書">
+      <button class="analyze-btn" id="analyzeBtn" onclick="doAnalyze()">🔍 分析</button>
+    </div>
+    <div id="errorMsg" style="display:none"></div>
+    <div class="progress-bar" id="progressBar" style="display:none"><div class="progress-fill"></div></div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading-state" id="loadingState" style="display:none">
+    <div class="loading-spin">🤖</div>
+    <div style="margin-top:12px;font-size:15px;color:var(--text2)" id="loadingMsg">AI 正在分析影片內容...</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px">這可能需要 15–40 秒，請稍候</div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="result" style="display:none"></div>
+
+  <!-- HISTORY -->
+  <div class="history-section" id="historySection" style="display:none">
+    <div class="history-label">最近分析記錄</div>
+    <div class="history-list" id="historyList"></div>
+  </div>
+
+  <!-- TIPS -->
+  <div class="tips-card" id="tipsCard">
+    <div class="sec-label">使用說明</div>
+    <div class="tips-grid">
+      <div class="tip-item"><span class="tip-dot">▶</span>支援貼上 YouTube、TikTok、Instagram、Bilibili、X/Twitter、小紅書、Spotify 等連結</div>
+      <div class="tip-item"><span class="tip-dot">📂</span>可直接拖曳本地影片或音樂檔案到上方區域進行分析</div>
+      <div class="tip-item"><span class="tip-dot">🎵</span>音樂類內容自動辨識歌手、專輯、曲風、歌詞主題等資訊</div>
+      <div class="tip-item"><span class="tip-dot">📝</span>長片（30分鐘以上）將提供 300 字以上完整講解與章節摘要</div>
+      <div class="tip-item"><span class="tip-dot">🏷️</span>自動依內容類型分類：教學、娛樂、新聞、美食、旅遊、音樂等</div>
+      <div class="tip-item"><span class="tip-dot">⚠️</span>部分平台因隱私設定限制，分析結果可能有所不同</div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+const PLATFORM_DETECT = {
+  youtube: /(?:youtube\.com\/(?:watch\?v=|shorts\/|live\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+  tiktok: /tiktok\.com/,
+  xiaohongshu: /xiaohongshu\.com|xhslink\.com/,
+  instagram: /instagram\.com/,
+  twitter: /twitter\.com|x\.com/,
+  bilibili: /bilibili\.com/,
+  facebook: /facebook\.com|fb\.watch/,
+  spotify: /spotify\.com/,
+};
+const PLATFORM_META = {
+  youtube:    { name:'YouTube',   icon:'▶',  color:'#c0622a' },
+  tiktok:     { name:'TikTok',    icon:'♪',  color:'#2d7a4f' },
+  xiaohongshu:{ name:'小紅書',    icon:'✿',  color:'#c0302a' },
+  instagram:  { name:'Instagram', icon:'📷', color:'#7040a8' },
+  twitter:    { name:'X/Twitter', icon:'𝕏',  color:'#2560a8' },
+  bilibili:   { name:'Bilibili',  icon:'📺', color:'#2560a8' },
+  facebook:   { name:'Facebook',  icon:'👍', color:'#2560a8' },
+  spotify:    { name:'Spotify',   icon:'🎵', color:'#2d7a4f' },
+  local:      { name:'本地檔案',  icon:'📁', color:'#6b6560' },
+  unknown:    { name:'未知平台',  icon:'🎬', color:'#6b6560' },
+};
+const CONTENT_EMOJI = {
+  '教學':'📚','娛樂':'🎭','新聞':'📰','生活':'🏠','美食':'🍜',
+  '旅遊':'✈️','音樂':'🎵','遊戲':'🎮','體育':'⚽','科技':'💻',
+  '財經':'📈','健康':'💪','藝術':'🎨','時尚':'👗','其他':'🎬'
+};
+
+let currentUrl = '';
+let currentPlatform = 'unknown';
+let localFile = null;
+let history = (() => {
+  try {
+    return JSON.parse(localStorage.getItem('vrt_video_history') || '[]')
+      .filter(Boolean)
+      .map(h => ({...h, time: new Date(h.time || Date.now())}));
+  } catch (e) { return []; }
+})();
+
+// --- Detect platform from URL
+function detectPlatform(url) {
+  for (const [k,v] of Object.entries(PLATFORM_DETECT)) {
+    if (v.test(url)) return k;
+  }
+  return 'unknown';
+}
+function getYouTubeId(url) {
+  const m = url.match(PLATFORM_DETECT.youtube);
+  return m ? m[1] : null;
+}
+
+// --- Highlight active badge
+const urlInput = document.getElementById('urlInput');
+urlInput.addEventListener('input', () => {
+  const url = urlInput.value.trim();
+  const p = detectPlatform(url);
+  document.querySelectorAll('.platform-badge').forEach(b => {
+    b.classList.toggle('active', b.dataset.p === p);
+  });
+});
+urlInput.addEventListener('keydown', e => { if (e.key === 'Enter') doAnalyze(); });
+
+// --- Drag & Drop
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+['dragenter','dragover'].forEach(ev => {
+  dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+});
+['dragleave','drop'].forEach(ev => {
+  dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.remove('drag-over'); });
+});
+dropZone.addEventListener('drop', e => {
+  const f = e.dataTransfer.files[0];
+  if (f) handleLocalFile(f);
+});
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) handleLocalFile(fileInput.files[0]);
+});
+
+function handleLocalFile(file) {
+  localFile = file;
+  urlInput.value = '';
+  document.querySelectorAll('.platform-badge').forEach(b => b.classList.toggle('active', b.dataset.p === 'local'));
+  const icon = file.type.startsWith('audio') ? '🎵' : '🎬';
+  dropZone.querySelector('.drop-title').textContent = icon + ' ' + file.name;
+  dropZone.querySelector('.drop-sub').textContent = (file.size/1048576).toFixed(1) + ' MB — 點擊分析';
+  doAnalyze();
+}
+
+// --- Main analyze
+async function doAnalyze() {
+  const url = urlInput.value.trim();
+  if (!url && !localFile) { showError('請貼上連結或拖曳檔案'); return; }
+
+  hideError();
+  showLoading(true);
+  hideResult();
+  document.getElementById('tipsCard').style.display = 'none';
+
+  try {
+    let analysisData;
+    if (localFile) {
+      analysisData = await analyzeLocalFile(localFile);
+    } else {
+      const p = detectPlatform(url);
+      currentUrl = url;
+      currentPlatform = p;
+      analysisData = await analyzeURL(url, p);
+    }
+    renderResult(analysisData);
+    addHistory(analysisData);
+  } catch(e) {
+    showError('分析失敗：' + e.message);
+  }
+  showLoading(false);
+}
+
+// --- Analyze URL via Claude API
+async function analyzeURL(url, platform) {
+  const pName = PLATFORM_META[platform]?.name || platform;
+  updateLoadingMsg(`正在透過 AI 搜尋 ${pName} 影片資訊...`);
+
+  const isMusic = platform === 'spotify' || url.includes('music');
+  const systemPrompt = buildSystemPrompt(isMusic);
+  const userMsg = `請搜尋並深度分析這個影片/內容連結：\n${url}\n平台：${pName}\n\n請用網路搜尋找出詳細資訊並完整分析。`;
+
+  const raw = await callClaude(systemPrompt, userMsg, true);
+  return parseJSON(raw, { url, platform });
+}
+
+// --- Analyze local file
+async function analyzeLocalFile(file) {
+  updateLoadingMsg(`正在分析本地${file.type.startsWith('audio')?'音樂':'影片'}檔案...`);
+  const isAudio = file.type.startsWith('audio');
+  const isMusic = isAudio || /\.(mp3|wav|flac|m4a|ogg)$/i.test(file.name);
+
+  const systemPrompt = buildSystemPrompt(isMusic);
+  const userMsg = `這是一個本地${isMusic?'音樂':'影片'}檔案：\n檔案名稱：${file.name}\n檔案大小：${(file.size/1048576).toFixed(1)} MB\n檔案類型：${file.type}\n\n請根據檔案名稱推測並分析內容，提供詳細的分析報告。`;
+
+  const raw = await callClaude(systemPrompt, userMsg, false);
+  const parsed = parseJSON(raw, { url: '', platform: 'local' });
+  parsed._localFile = file;
+  parsed._isAudio = isAudio;
+  return parsed;
+}
+
+function buildSystemPrompt(isMusic) {
+  const base = `你是一個專業的影片與內容分析師，擅長分析各大平台的影片、音樂、直播等多媒體內容。
+請務必用繁體中文回應，輸出純 JSON，不加任何 markdown 代碼塊。
+
+JSON 格式如下：
+{
+  "title": "標題",
+  "platform": "平台名稱",
+  "creator": "創作者/頻道名稱",
+  "duration": "時長，如 12:34 或 1小時23分",
+  "isLong": true或false（30分鐘以上為長片）,
+  "contentType": "類型（教學/娛樂/新聞/生活/美食/旅遊/音樂/遊戲/體育/科技/財經/健康/藝術/時尚/其他）",
+  "sentiment": "正面/中立/負面",
+  "targetAudience": "目標受眾",
+  "language": "影片語言",
+  "publishDate": "發布日期（如能找到）",
+  "viewCount": "觀看次數（如能找到）",
+  "summary": "詳細摘要（一般影片200字以上，長片300字以上，請完整描述影片的主要內容、結構、核心訊息）",
+  "highlights": "最值得關注的亮點（2-3句）",
+  "keyPoints": ["重點1","重點2","重點3","重點4","重點5","重點6"],
+  "chapters": ["章節1（如有）","章節2"],
+  "topics": ["主題標籤1","主題標籤2","主題標籤3","主題標籤4"],
+  "music": ${isMusic ? `{
+    "artist": "歌手/樂團",
+    "album": "專輯",
+    "genre": "曲風（如 Pop/Rock/Jazz/Electronic/Classical/Hip-Hop/R&B/Folk/Country/K-pop/C-pop/台語/古典等）",
+    "releaseYear": "發行年份",
+    "mood": "情緒氣氛（如 輕快/憂鬱/激昂/治癒/浪漫/慵懶）",
+    "lyricsTheme": "歌詞主題",
+    "instruments": "主要樂器",
+    "tempo": "節奏快慢（快/中/慢）"
+  }` : 'null'},
+  "recommendation": "推薦指數（⭐到⭐⭐⭐⭐⭐）及推薦原因"
+}`;
+  return base;
+}
+
+async function callClaude(systemPrompt, userMsg, useSearch) {
+  const body = {
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 1000,
+    system: systemPrompt,
+    messages: [{ role: 'user', content: userMsg }],
+  };
+  if (useSearch) body.tools = [{ type: 'web_search_20250305', name: 'web_search' }];
+
+  if (typeof window.accClaudeRequest !== 'function') throw new Error('ACC AI 服務尚未載入，請重新開啟頁面');
+  const data = await window.accClaudeRequest(body);
+  return data.content.filter(b => b.type === 'text').map(b => b.text).join('\n');
+}
+
+function parseJSON(raw, fallback) {
+  try {
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const start = clean.indexOf('{');
+    const end = clean.lastIndexOf('}');
+    if (start !== -1 && end !== -1) return JSON.parse(clean.slice(start, end+1));
+  } catch(e) {}
+  return {
+    title: '無法解析標題', platform: PLATFORM_META[fallback.platform]?.name || '未知',
+    creator: '未知', duration: '未知', isLong: false,
+    contentType: '其他', sentiment: '中立', targetAudience: '一般大眾',
+    language: '未知', publishDate: '', viewCount: '',
+    summary: raw || '無法取得摘要，請確認連結是否正確或稍後再試。',
+    highlights: '', keyPoints: ['請確認連結有效','部分平台可能有存取限制'],
+    chapters: [], topics: ['分析失敗'], music: null,
+    recommendation: '無法評分',
+  };
+}
+
+// --- Render result
+function renderResult(d) {
+  const pMeta = PLATFORM_META[currentPlatform] || PLATFORM_META.unknown;
+  const ytId = currentPlatform === 'youtube' ? getYouTubeId(currentUrl) : null;
+  const isMusic = d.contentType === '音樂' || (d.music && d.music.artist);
+  const sentClass = d.sentiment === '正面' ? 'sent-positive' : d.sentiment === '負面' ? 'sent-negative' : 'sent-neutral';
+  const sentEmoji = d.sentiment === '正面' ? '😊' : d.sentiment === '負面' ? '😔' : '😐';
+  const cEmoji = CONTENT_EMOJI[d.contentType] || '🎬';
+
+  let html = '<div class="result">';
+
+  // Video embed
+  if (ytId) {
+    html += `<div class="video-embed"><iframe src="https://www.youtube.com/embed/${ytId}" allowfullscreen></iframe></div>`;
+  } else if (d._localFile && !d._isAudio) {
+    const objURL = URL.createObjectURL(d._localFile);
+    html += `<div class="local-video-wrap"><video controls src="${objURL}"></video></div>`;
+  } else if (d._localFile && d._isAudio) {
+    const objURL = URL.createObjectURL(d._localFile);
+    html += `<div class="sec" style="margin-bottom:14px"><div class="sec-label">本地音樂播放</div><audio controls style="width:100%;margin-top:4px" src="${objURL}"></audio></div>`;
+  }
+
+  // Title card
+  html += `<div class="title-card">
+    <div class="title-top">
+      <div class="video-title">${esc(d.title)}</div>
+      <div class="badge-row">
+        <span class="badge" style="background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border)">${cEmoji} ${esc(d.contentType||'其他')}</span>
+        <span class="badge ${sentClass}">${sentEmoji} ${esc(d.sentiment||'中立')}</span>
+        ${d.isLong ? '<span class="badge" style="background:var(--blue-bg);color:var(--blue);border:1px solid #b0c8f0">📽 長片</span>' : ''}
+        ${isMusic ? '<span class="badge" style="background:var(--purple-bg);color:var(--purple);border:1px solid #c8a8f0">🎵 音樂</span>' : ''}
+      </div>
+    </div>
+    <div class="meta-row">
+      ${d.creator ? `<span class="meta-item">👤 ${esc(d.creator)}</span>` : ''}
+      <span class="meta-item">${pMeta.icon} ${esc(d.platform||pMeta.name)}</span>
+      ${d.duration && d.duration!=='未知' ? `<span class="meta-item">⏱ ${esc(d.duration)}</span>` : ''}
+      ${d.language && d.language!=='未知' ? `<span class="meta-item">🌐 ${esc(d.language)}</span>` : ''}
+      ${d.publishDate ? `<span class="meta-item">📅 ${esc(d.publishDate)}</span>` : ''}
+      ${d.viewCount ? `<span class="meta-item">👁 ${esc(d.viewCount)}</span>` : ''}
+      ${d.targetAudience ? `<span class="meta-item">🎯 ${esc(d.targetAudience)}</span>` : ''}
+    </div>
+  </div>`;
+
+  // Category bar
+  html += `<div class="category-bar">
+    <div class="cat-item"><div class="cat-icon">${cEmoji}</div><div class="cat-label">內容類型</div><div class="cat-value">${esc(d.contentType||'其他')}</div></div>
+    <div class="cat-item"><div class="cat-icon">${sentEmoji}</div><div class="cat-label">情緒走向</div><div class="cat-value">${esc(d.sentiment||'中立')}</div></div>
+    ${d.isLong ? '<div class="cat-item"><div class="cat-icon">📽</div><div class="cat-label">影片長度</div><div class="cat-value">長片</div></div>' : '<div class="cat-item"><div class="cat-icon">⏱</div><div class="cat-label">影片長度</div><div class="cat-value">短/中片</div></div>'}
+    ${d.recommendation ? `<div class="cat-item"><div class="cat-icon">⭐</div><div class="cat-label">推薦指數</div><div class="cat-value" style="font-size:11px">${esc(d.recommendation.split('（')[0])}</div></div>` : ''}
+  </div>`;
+
+  // Highlights
+  if (d.highlights) {
+    html += `<div class="highlight-box"><div class="highlight-label">★ 精華亮點</div><div class="highlight-text">${esc(d.highlights)}</div></div>`;
+  }
+
+  // Summary
+  html += `<div class="sec"><div class="sec-label">詳細摘要${d.isLong ? '（長片精華）' : ''}</div><div class="summary-text">${esc(d.summary).replace(/\n/g,'<br>')}</div></div>`;
+
+  // Music card
+  if (isMusic && d.music) {
+    const m = d.music;
+    html += `<div class="music-card">
+      <div class="sec-label" style="color:#7040a8">🎵 音樂詳細資訊</div>
+      <div class="music-info">
+        ${m.artist ? `<div class="music-field"><label>歌手 / 樂團</label><span>${esc(m.artist)}</span></div>` : ''}
+        ${m.album ? `<div class="music-field"><label>專輯</label><span>${esc(m.album)}</span></div>` : ''}
+        ${m.genre ? `<div class="music-field"><label>曲風</label><span>${esc(m.genre)}</span></div>` : ''}
+        ${m.releaseYear ? `<div class="music-field"><label>發行年份</label><span>${esc(m.releaseYear)}</span></div>` : ''}
+        ${m.mood ? `<div class="music-field"><label>情緒氣氛</label><span>${esc(m.mood)}</span></div>` : ''}
+        ${m.tempo ? `<div class="music-field"><label>節奏</label><span>${esc(m.tempo)}</span></div>` : ''}
+        ${m.instruments ? `<div class="music-field"><label>主要樂器</label><span>${esc(m.instruments)}</span></div>` : ''}
+        ${m.lyricsTheme ? `<div class="music-field"><label>歌詞主題</label><span>${esc(m.lyricsTheme)}</span></div>` : ''}
+      </div>
+    </div>`;
+  }
+
+  // Key Points
+  if (d.keyPoints?.length) {
+    html += `<div class="sec"><div class="sec-label">重點整理</div><ul class="kp-list">`;
+    d.keyPoints.forEach((pt, i) => {
+      html += `<li class="kp-item"><span class="kp-num">${i+1}</span><span class="kp-text">${esc(pt)}</span></li>`;
+    });
+    html += `</ul></div>`;
+  }
+
+  // Chapters
+  if (d.chapters?.length > 0) {
+    html += `<div class="sec"><div class="sec-label">章節結構</div><ul class="kp-list">`;
+    d.chapters.forEach((ch, i) => {
+      html += `<li class="kp-item"><span class="kp-num" style="background:var(--blue-bg);color:var(--blue)">§</span><span class="kp-text">${esc(ch)}</span></li>`;
+    });
+    html += `</ul></div>`;
+  }
+
+  // Recommendation
+  if (d.recommendation && d.recommendation !== '無法評分') {
+    html += `<div class="sec"><div class="sec-label">推薦評價</div><div class="summary-text">${esc(d.recommendation)}</div></div>`;
+  }
+
+  // Tags
+  if (d.topics?.length) {
+    html += `<div class="tags">` + d.topics.map(t => `<span class="tag"># ${esc(t)}</span>`).join('') + `</div>`;
+  }
+
+  html += '</div>';
+
+  const resultEl = document.getElementById('result');
+  resultEl.innerHTML = html;
+  resultEl.style.display = 'block';
+}
+
+function addHistory(d) {
+  history.unshift({ title: d.title, platform: currentPlatform, url: currentUrl, time: new Date(), contentType: d.contentType });
+  if (history.length > 5) history.pop();
+  try { localStorage.setItem('vrt_video_history', JSON.stringify(history)); } catch (e) {}
+  renderHistory();
+}
+function renderHistory() {
+  if (!history.length) return;
+  document.getElementById('historySection').style.display = 'block';
+  const list = document.getElementById('historyList');
+  list.innerHTML = history.map((h, i) => {
+    const p = PLATFORM_META[h.platform] || PLATFORM_META.unknown;
+    const cEmoji = CONTENT_EMOJI[h.contentType] || '🎬';
+    return `<div class="history-item" onclick="reloadHistory(${i})">
+      <span class="history-icon">${cEmoji}</span>
+      <span class="history-title">${esc(h.title)}</span>
+      <span style="color:var(--text3);font-size:13px">${p.icon} ${p.name}</span>
+      <span class="history-time">${h.time.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'})}</span>
+    </div>`;
+  }).join('');
+}
+function reloadHistory(i) {
+  if (history[i].url) {
+    urlInput.value = history[i].url;
+    doAnalyze();
+  }
+}
+
+// --- UI helpers
+function showLoading(show) {
+  document.getElementById('loadingState').style.display = show ? 'block' : 'none';
+  document.getElementById('progressBar').style.display = show ? 'block' : 'none';
+  document.getElementById('analyzeBtn').disabled = show;
+  document.getElementById('analyzeBtn').textContent = show ? '分析中...' : '🔍 分析';
+}
+function hideResult() { document.getElementById('result').style.display = 'none'; }
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = '⚠ ' + msg;
+  el.className = 'error-msg';
+  el.style.display = 'block';
+}
+function hideError() { document.getElementById('errorMsg').style.display = 'none'; }
+function updateLoadingMsg(msg) { document.getElementById('loadingMsg').textContent = msg; }
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+renderHistory();
+</script>
+</body>
+</html>

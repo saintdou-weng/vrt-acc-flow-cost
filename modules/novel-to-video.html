@@ -1,0 +1,2212 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小說影片引擎</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;700;900&family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+:root {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --surface2: #1a1a26;
+  --border: #2a2a3d;
+  --accent: #7c5cfc;
+  --accent2: #fc5c7d;
+  --gold: #f5c518;
+  --text: #e8e8f0;
+  --muted: #666680;
+  --green: #22c55e;
+  --glow: 0 0 20px rgba(124,92,252,0.3);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  font-family: 'Noto Serif TC', serif;
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Animated background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse 80% 50% at 20% 20%, rgba(124,92,252,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(252,92,125,0.06) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── HEADER ─── */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,10,15,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo-mark {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  box-shadow: var(--glow);
+}
+
+header h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hdr-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  margin-top: 1px;
+}
+
+.hdr-right {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.badge {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 1px;
+}
+.badge-idle { background: rgba(102,102,128,0.2); color: var(--muted); border: 1px solid var(--border); }
+.badge-running { background: rgba(124,92,252,0.2); color: var(--accent); border: 1px solid rgba(124,92,252,0.4); animation: pulse-badge 1.5s infinite; }
+.badge-done { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+@keyframes pulse-badge { 0%,100%{opacity:1} 50%{opacity:0.6} }
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 5px 14px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+  letter-spacing: 1px;
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ─── PROGRESS ─── */
+#progress-wrap {
+  display: none;
+  position: sticky;
+  top: 60px;
+  z-index: 90;
+  background: rgba(10,10,15,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 32px;
+}
+#progress-wrap.show { display: block; }
+
+.pb-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.pb-track {
+  flex: 1;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.pb-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 2px;
+  transition: width 0.5s ease;
+  width: 0%;
+  box-shadow: 0 0 8px rgba(124,92,252,0.6);
+}
+.pb-text {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  white-space: nowrap;
+  min-width: 100px;
+  text-align: right;
+}
+.pb-text strong { color: var(--accent); }
+.pb-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 5px;
+  letter-spacing: 1px;
+}
+
+/* Chunk pills */
+.chunk-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+  max-height: 60px;
+  overflow-y: auto;
+}
+.cpill {
+  padding: 2px 8px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: var(--surface);
+}
+.cpill.active { border-color: var(--accent); color: var(--accent); background: rgba(124,92,252,0.1); animation: pulse-badge 1s infinite; }
+.cpill.done { border-color: rgba(34,197,94,0.4); color: var(--green); background: rgba(34,197,94,0.08); }
+.cpill.error { border-color: rgba(252,92,125,0.4); color: var(--accent2); background: rgba(252,92,125,0.08); }
+
+/* ─── SETUP ─── */
+#setup-screen {
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  margin: 40px auto 80px;
+  padding: 0 24px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.5;
+}
+
+.card-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--accent);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.card-title .num {
+  width: 22px; height: 22px;
+  background: rgba(124,92,252,0.2);
+  border: 1px solid rgba(124,92,252,0.4);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+label {
+  display: block;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 7px;
+  margin-top: 18px;
+}
+label:first-of-type { margin-top: 0; }
+
+input[type=text], textarea, select {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: 'Noto Serif TC', serif;
+  font-size: 13px;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: rgba(124,92,252,0.6);
+  box-shadow: 0 0 0 3px rgba(124,92,252,0.1);
+}
+textarea { resize: vertical; }
+
+#big-text {
+  height: 200px;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.text-stats {
+  display: flex;
+  gap: 24px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.stat {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+}
+.stat strong { color: var(--accent); }
+
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Toggle buttons */
+.toggle-row {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.toggle-row button {
+  padding: 6px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--muted);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+.toggle-row button.on {
+  background: rgba(124,92,252,0.2);
+  border-color: rgba(124,92,252,0.6);
+  color: var(--accent);
+}
+.toggle-row button:hover:not(.on) { border-color: var(--muted); color: var(--text); }
+
+.info-box {
+  background: rgba(245,197,24,0.05);
+  border: 1px solid rgba(245,197,24,0.2);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 11px;
+  color: rgba(245,197,24,0.8);
+  line-height: 1.6;
+  margin-top: 16px;
+}
+
+/* Launch button */
+#btn-launch {
+  width: 100%;
+  padding: 18px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(124,92,252,0.4);
+}
+#btn-launch::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+}
+#btn-launch:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(124,92,252,0.5); }
+#btn-launch:disabled { background: var(--surface2); box-shadow: none; cursor: not-allowed; transform: none; color: var(--muted); }
+
+.error-banner {
+  background: rgba(252,92,125,0.1);
+  border: 1px solid rgba(252,92,125,0.3);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--accent2);
+  margin-bottom: 12px;
+  display: none;
+}
+
+/* ─── VIDEO PLAYER ─── */
+#video-screen {
+  display: none;
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+#video-screen.show { display: block; }
+
+/* Scene strip at top */
+.scene-strip {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.scene-thumb {
+  flex-shrink: 0;
+  width: 80px;
+  height: 50px;
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.scene-thumb.active { border-color: var(--accent); box-shadow: 0 0 10px rgba(124,92,252,0.4); }
+.scene-thumb:hover:not(.active) { border-color: var(--muted); }
+.scene-thumb canvas { width: 100%; height: 100%; display: block; }
+.scene-thumb .thumb-num {
+  position: absolute; bottom: 2px; right: 4px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  color: rgba(255,255,255,0.6);
+}
+
+/* Main player */
+.player-wrap {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+  align-items: start;
+}
+
+.player-main {
+  background: #000;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  aspect-ratio: 16/9;
+}
+
+#main-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Subtitle overlay */
+.subtitle-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  pointer-events: none;
+}
+.subtitle-char {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: rgba(124,92,252,0.9);
+  letter-spacing: 2px;
+  margin-bottom: 3px;
+}
+.subtitle-text {
+  background: rgba(0,0,0,0.75);
+  color: #fff;
+  padding: 6px 20px;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 15px;
+  line-height: 1.6;
+  text-align: center;
+  max-width: 85%;
+  border-radius: 4px;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+  backdrop-filter: blur(4px);
+}
+.subtitle-text.empty { display: none; }
+
+/* Caption bar */
+.caption-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%);
+  padding: 12px 16px;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 12px;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.6;
+  pointer-events: none;
+}
+
+/* Player controls */
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(18,18,26,0.95);
+  border-top: 1px solid var(--border);
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  transition: opacity 0.3s;
+}
+.player-controls.hidden-ctrl { opacity: 0; }
+.player-main:hover .player-controls { opacity: 1 !important; }
+
+.ctrl-btn {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.ctrl-btn:hover { background: rgba(255,255,255,0.1); }
+
+.time-track {
+  flex: 1;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+}
+.time-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 2px;
+  pointer-events: none;
+  transition: width 0.1s linear;
+}
+.time-text {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Right panel */
+.player-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sidebar-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+.sidebar-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+/* Script list */
+.script-list {
+  max-height: 300px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.script-item {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.script-item:hover { background: var(--surface2); border-color: var(--border); }
+.script-item.active { background: rgba(124,92,252,0.1); border-color: rgba(124,92,252,0.3); }
+.script-item .si-num {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+.script-item .si-text {
+  color: var(--text);
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.script-item.active .si-num { color: var(--accent); }
+
+/* Export button */
+#btn-export {
+  width: 100%;
+  padding: 12px;
+  background: rgba(124,92,252,0.15);
+  border: 1px solid rgba(124,92,252,0.4);
+  border-radius: 8px;
+  color: var(--accent);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+#btn-export:hover { background: rgba(124,92,252,0.25); box-shadow: var(--glow); }
+#btn-export:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Export progress */
+#export-status {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 6px;
+  display: none;
+}
+
+/* Episode groups */
+.ep-group {
+  margin-bottom: 40px;
+}
+.ep-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.ep-badge {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  padding: 3px 10px;
+  background: rgba(124,92,252,0.1);
+  border: 1px solid rgba(124,92,252,0.3);
+  border-radius: 12px;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+.ep-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* Loading skeleton */
+.skeleton-scene {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  aspect-ratio: 16/9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+}
+.skel-spinner {
+  width: 32px; height: 32px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.skel-text {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 2px;
+}
+
+/* Scenes grid below player */
+.scenes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+.scene-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.scene-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+.scene-card.active-scene { border-color: var(--accent); box-shadow: 0 0 15px rgba(124,92,252,0.3); }
+.scene-card canvas { width: 100%; aspect-ratio: 16/9; display: block; }
+.scene-card-info {
+  padding: 8px 10px;
+}
+.scene-card-num {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+}
+.scene-card-desc {
+  font-size: 11px;
+  color: var(--text);
+  margin-top: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Zoom modal */
+#zoom-modal {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.9);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+}
+#zoom-modal.show { display: flex; }
+#zoom-canvas-wrap {
+  background: #000;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 90vw;
+  max-height: 90vh;
+  box-shadow: 0 0 60px rgba(124,92,252,0.3);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* Char cards */
+.char-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.char-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 11px;
+  line-height: 1.6;
+  min-width: 140px;
+  max-width: 200px;
+}
+.char-card strong { color: var(--accent); font-size: 13px; display: block; margin-bottom: 2px; }
+.char-card .role { font-family: 'Share Tech Mono', monospace; font-size: 8px; color: var(--accent2); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+
+select option { background: var(--surface2); }
+</style>
+  <link rel="stylesheet" href="../acc-module-shell.css">
+  <script defer src="../acc-module-shell.js"></script>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-mark">🎬</div>
+  <div>
+    <h1>NOVEL · VIDEO · ENGINE</h1>
+    <div class="hdr-sub">AI SEQUENTIAL SCENE GENERATOR v1.0</div>
+  </div>
+  <div class="hdr-right">
+    <span id="hdr-badge" class="badge badge-idle">IDLE</span>
+    <button class="btn-ghost" id="btn-restart" onclick="restartSetup()" style="display:none">← 重新開始</button>
+  </div>
+</header>
+
+<!-- PROGRESS -->
+<div id="progress-wrap">
+  <div class="pb-row">
+    <div class="pb-track"><div class="pb-fill" id="pb-fill"></div></div>
+    <div class="pb-text">場景 <strong id="pb-done">0</strong> / <strong id="pb-total">0</strong> &nbsp;<strong id="pb-pct">0%</strong></div>
+  </div>
+  <div class="pb-label" id="pb-label">準備中…</div>
+  <div class="chunk-pills" id="chunk-pills"></div>
+</div>
+
+<!-- SETUP SCREEN -->
+<div id="setup-screen">
+
+  <div class="card">
+    <div class="card-title"><div class="num">1</div> 貼入故事文字</div>
+    <label>故事內容（1萬～5萬字，系統自動切段分析）</label>
+    <textarea id="big-text" placeholder="貼上你的小說、劇本、故事文字…
+
+系統會自動：
+① 分析人物出場，建立角色卡
+② 依場景切割成若干批次
+③ 序列生成每一個分鏡畫面
+④ 組合成可播放的影片格式
+⑤ 支援匯出 WebM 影片"></textarea>
+    <div class="text-stats">
+      <div class="stat">字數：<strong id="stat-chars">0</strong></div>
+      <div class="stat">預估場景：<strong id="stat-scenes">—</strong></div>
+      <div class="stat">預估時長：<strong id="stat-duration">—</strong></div>
+      <div class="stat">預估時間：<strong id="stat-time">—</strong></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="num">2</div> 影片設定</div>
+    <div class="options-grid">
+      <div>
+        <label>作品標題</label>
+        <input type="text" id="work-title" placeholder="我的影片作品" />
+        <label>畫面風格</label>
+        <div class="toggle-row" id="style-toggle">
+          <button class="on" data-val="cinematic">電影感</button>
+          <button data-val="anime">動漫</button>
+          <button data-val="noir">黑色</button>
+          <button data-val="scifi">科幻</button>
+        </div>
+      </div>
+      <div>
+        <label>畫面比例</label>
+        <div class="toggle-row" id="ratio-toggle">
+          <button class="on" data-val="16:9">16:9</button>
+          <button data-val="2.35:1">寬幕</button>
+          <button data-val="9:16">直式</button>
+        </div>
+        <label style="margin-top:16px;">每場景時長</label>
+        <div class="toggle-row" id="duration-toggle">
+          <button data-val="3">3秒</button>
+          <button class="on" data-val="5">5秒</button>
+          <button data-val="8">8秒</button>
+        </div>
+      </div>
+    </div>
+    <div class="info-box">
+      🎬 <strong>AI 自動生成</strong>：每個場景包含動態背景、人物動作、字幕對話與場景轉場。生成完成後可直接在瀏覽器播放，並匯出為 WebM 影片檔。
+    </div>
+    <label>補充人物/場景說明（選填）</label>
+    <textarea id="extra-notes" style="height:60px; font-size:12px;" placeholder="例：主角陳凱 — 17歲，黑色亂髮，藍色夾克&#10;場景：2085年台北，廢墟都市風格"></textarea>
+  </div>
+
+  <div id="launch-error" class="error-banner"></div>
+  <button id="btn-launch" onclick="launchPipeline()">▶ 開始生成影片</button>
+</div>
+
+<!-- VIDEO SCREEN -->
+<div id="video-screen">
+  <div id="episodes-container"></div>
+</div>
+
+<!-- ZOOM MODAL -->
+<div id="zoom-modal" onclick="this.classList.remove('show')">
+  <div id="zoom-canvas-wrap" onclick="event.stopPropagation()">
+    <canvas id="zoom-canvas"></canvas>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+const S = {
+  running: false,
+  done: 0,
+  total: 0,
+  scenes: [],       // all rendered scene objects
+  style: 'cinematic',
+  ratio: '16:9',
+  sceneDuration: 5,
+  title: '',
+  currentScene: 0,
+  playing: false,
+  playTimer: null,
+  playFrame: 0,
+  exportFrames: [],
+};
+
+const $ = id => document.getElementById(id);
+
+// ═══════════════════════════════════════════
+//  TEXT STATS
+// ═══════════════════════════════════════════
+$('big-text').addEventListener('input', updateStats);
+function updateStats() {
+  const txt = $('big-text').value.trim();
+  const chars = txt.length;
+  $('stat-chars').textContent = chars.toLocaleString();
+  if (chars < 100) {
+    $('stat-scenes').textContent = '—';
+    $('stat-duration').textContent = '—';
+    $('stat-time').textContent = '—';
+    return;
+  }
+  const density = 300; // chars per scene
+  const scenes = Math.max(3, Math.round(chars / density));
+  const dur = scenes * S.sceneDuration;
+  const mins = Math.floor(dur / 60);
+  const secs = dur % 60;
+  const estMin = Math.ceil(scenes * 0.4);
+  $('stat-scenes').textContent = scenes;
+  $('stat-duration').textContent = mins > 0 ? `${mins}分${secs}秒` : `${secs}秒`;
+  $('stat-time').textContent = `約 ${estMin} 分鐘`;
+}
+
+// Toggle handlers
+document.querySelectorAll('.toggle-row').forEach(row => {
+  row.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      row.querySelectorAll('button').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      const id = row.id;
+      const val = btn.dataset.val;
+      if (id === 'style-toggle') S.style = val;
+      if (id === 'ratio-toggle') S.ratio = val;
+      if (id === 'duration-toggle') { S.sceneDuration = parseInt(val); updateStats(); }
+    });
+  });
+});
+
+// ═══════════════════════════════════════════
+//  CHUNK TEXT
+// ═══════════════════════════════════════════
+function chunkText(text, chunkSize = 1200) {
+  // Split by paragraphs first
+  const paras = text.split(/\n\s*\n/).filter(p => p.trim().length > 30);
+  const chunks = [];
+  let cur = '';
+  for (const p of paras) {
+    if (cur.length + p.length > chunkSize && cur.length > 200) {
+      chunks.push(cur.trim());
+      cur = p;
+    } else {
+      cur += '\n\n' + p;
+    }
+  }
+  if (cur.trim().length > 50) chunks.push(cur.trim());
+  // Fallback: split by fixed size if no paragraphs
+  if (chunks.length === 0) {
+    for (let i = 0; i < text.length; i += chunkSize) {
+      chunks.push(text.slice(i, i + chunkSize));
+    }
+  }
+  return chunks.slice(0, 40); // max 40 chunks
+}
+
+// ═══════════════════════════════════════════
+//  LAUNCH
+// ═══════════════════════════════════════════
+async function launchPipeline() {
+  const text = $('big-text').value.trim();
+  const title = $('work-title').value.trim() || '我的影片';
+  const extraNotes = $('extra-notes').value.trim();
+
+  if (text.length < 100) {
+    showError('請貼入至少 100 字的故事內容');
+    return;
+  }
+
+  S.title = title;
+  S.running = true;
+  S.done = 0;
+  S.scenes = [];
+
+  // UI switch
+  $('btn-launch').disabled = true;
+  $('launch-error').style.display = 'none';
+
+  // Setup screen stays visible initially, show progress
+  $('progress-wrap').classList.add('show');
+  setBadge('running', '生成中');
+
+  // 1. Analyze characters
+  updateProgress(0, 1, '分析人物角色中…');
+  let charInfo = {};
+  try {
+    charInfo = await analyzeCharacters(text, extraNotes);
+  } catch (e) {
+    charInfo = { characters: [], world: '現代都市' };
+  }
+
+  // 2. Chunk text
+  const chunks = chunkText(text);
+  S.total = chunks.length;
+
+  // Build chunk pills
+  const pillsEl = $('chunk-pills');
+  pillsEl.innerHTML = chunks.map((_, i) => `<span class="cpill" id="cpill-${i}">場景組 ${i+1}</span>`).join('');
+
+  updateProgress(0, S.total, '開始生成場景…');
+
+  // Show video screen
+  $('setup-screen').style.display = 'none';
+  $('video-screen').classList.add('show');
+  $('btn-restart').style.display = '';
+
+  // 3. Build episode groups (every 5 chunks = 1 episode)
+  const epSize = 5;
+  const epCount = Math.ceil(chunks.length / epSize);
+  const container = $('episodes-container');
+  container.innerHTML = '';
+
+  // Pre-create episode groups and skeleton cards
+  for (let ep = 0; ep < epCount; ep++) {
+    const epDiv = document.createElement('div');
+    epDiv.className = 'ep-group';
+    epDiv.id = `ep-${ep}`;
+    const epChunks = chunks.slice(ep * epSize, (ep + 1) * epSize);
+    epDiv.innerHTML = `
+      <div class="ep-header">
+        <span class="ep-badge">EP ${ep + 1}</span>
+        <span class="ep-title" id="ep-title-${ep}">${title} — 第 ${ep + 1} 集</span>
+      </div>
+      <div class="scenes-grid" id="ep-scenes-${ep}">
+        ${epChunks.map((_, i) => `
+          <div class="scene-card skeleton-scene" id="scard-${ep * epSize + i}" style="aspect-ratio:16/9;">
+            <div class="skel-spinner"></div>
+            <div class="skel-text">SCENE ${ep * epSize + i + 1}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    container.appendChild(epDiv);
+  }
+
+  // 4. Generate scenes sequentially
+  for (let i = 0; i < chunks.length; i++) {
+    const pill = $(`cpill-${i}`);
+    if (pill) { pill.className = 'cpill active'; pill.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+    updateProgress(i, S.total, `生成場景 ${i + 1} / ${S.total}…`);
+
+    try {
+      const sceneData = await generateScene(chunks[i], charInfo, i, chunks.length);
+      const canvas = renderSceneToCanvas(sceneData, i);
+
+      // Replace skeleton
+      const cardEl = $(`scard-${i}`);
+      if (cardEl) {
+        cardEl.className = 'scene-card';
+        cardEl.innerHTML = '';
+        cardEl.appendChild(canvas);
+        const info = document.createElement('div');
+        info.className = 'scene-card-info';
+        info.innerHTML = `
+          <div class="scene-card-num">SCENE ${i + 1}</div>
+          <div class="scene-card-desc">${sceneData.caption || sceneData.location || '場景 ' + (i+1)}</div>
+        `;
+        cardEl.appendChild(info);
+        cardEl.onclick = () => openScenePlayer(i);
+      }
+
+      S.scenes.push({ ...sceneData, canvas, index: i });
+      if (pill) pill.className = 'cpill done';
+    } catch (e) {
+      console.error('Scene generation error:', e);
+      if (pill) pill.className = 'cpill error';
+      // Push placeholder
+      S.scenes.push({ index: i, caption: '場景 ' + (i+1), dialogues: [], location: '', mood: 'neutral', canvas: null });
+    }
+
+    S.done = i + 1;
+    updateProgress(S.done, S.total, S.done === S.total ? '✓ 生成完成' : `生成場景 ${S.done + 1} / ${S.total}…`);
+  }
+
+  // Done
+  S.running = false;
+  setBadge('done', '完成');
+  updateProgress(S.total, S.total, '✓ 所有場景生成完畢');
+
+  // Show first scene player
+  if (S.scenes.length > 0) openScenePlayer(0);
+}
+
+// ═══════════════════════════════════════════
+//  AI CALLS
+// ═══════════════════════════════════════════
+async function callAI(systemPrompt, userPrompt, maxTokens = 800) {
+  if (typeof window.accClaudeRequest !== 'function') throw new Error('ACC AI 服務尚未載入，請重新開啟頁面');
+  const data = await window.accClaudeRequest({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: maxTokens,
+    system: systemPrompt,
+    messages: [{ role: 'user', content: userPrompt }]
+  });
+  if (data.error) throw new Error(data.error.message);
+  return data.content.map(c => c.text || '').join('');
+}
+
+async function analyzeCharacters(text, extraNotes) {
+  const sample = text.slice(0, 3000);
+  const sys = `你是故事分析師。只回傳 JSON，不要任何說明文字或 markdown。`;
+  const usr = `分析以下故事，提取主要人物和世界觀背景。
+額外說明：${extraNotes || '無'}
+故事開頭：
+${sample}
+
+回傳格式（只回 JSON）：
+{"characters":[{"name":"名字","role":"protagonist/antagonist/supporting","appearance":"外觀描述","personality":"性格"}],"world":"世界觀描述","genre":"故事類型","tone":"整體基調"}`;
+  const raw = await callAI(sys, usr, 600);
+  try {
+    const clean = raw.replace(/```json|```/g, '').trim();
+    return JSON.parse(clean);
+  } catch { return { characters: [], world: '現代都市', genre: '故事', tone: '中性' }; }
+}
+
+async function generateScene(chunkText, charInfo, index, total) {
+  const sys = `你是電影分鏡師。只回傳 JSON，不要任何說明文字或 markdown。`;
+  const charDesc = (charInfo.characters || []).slice(0, 3).map(c => `${c.name}(${c.role}):${c.appearance}`).join('; ');
+  const usr = `根據以下故事片段，生成電影分鏡資料。
+故事類型：${charInfo.genre || '故事'} | 基調：${charInfo.tone || '中性'} | 世界觀：${charInfo.world || '現代'}
+主要人物：${charDesc || '待定'}
+畫面風格：${S.style}
+場景序號：${index + 1}/${total}
+
+故事片段：
+${chunkText.slice(0, 800)}
+
+回傳格式（只回 JSON）：
+{
+  "location": "場景地點（10字內）",
+  "caption": "場景敘述（20字內）",
+  "mood": "喜悅|悲傷|緊張|憤怒|震驚|平靜|懸疑|恐懼",
+  "time": "白天|夜晚|黃昏|清晨",
+  "shotType": "closeup|midshot|wideshot|birdeye|wormeye",
+  "characters": ["出現的人物名"],
+  "action": "主要動作（15字內）",
+  "dialogues": [
+    {"char": "角色名", "text": "台詞（20字內）", "type": "speech|thought"}
+  ],
+  "sfx": "音效文字（可空）",
+  "transition": "fade|cut|wipe|dissolve"
+}`;
+  const raw = await callAI(sys, usr, 500);
+  try {
+    const clean = raw.replace(/```json|```/g, '').trim();
+    return JSON.parse(clean);
+  } catch {
+    return {
+      location: `場景 ${index + 1}`,
+      caption: chunkText.slice(0, 30) + '…',
+      mood: 'neutral',
+      time: '白天',
+      shotType: 'midshot',
+      characters: [],
+      action: '',
+      dialogues: [],
+      sfx: '',
+      transition: 'cut'
+    };
+  }
+}
+
+// ═══════════════════════════════════════════
+//  CANVAS RENDERER
+// ═══════════════════════════════════════════
+function getCanvasSize() {
+  if (S.ratio === '16:9') return [960, 540];
+  if (S.ratio === '2.35:1') return [960, 408];
+  if (S.ratio === '9:16') return [540, 960];
+  return [960, 540];
+}
+
+function seededRng(seed) {
+  let s = seed;
+  return (a = 0, b = 1) => {
+    s = (s * 16807 + 0) % 2147483647;
+    return a + ((s / 2147483647) * (b - a));
+  };
+}
+
+// Style palettes
+const PALETTES = {
+  cinematic: {
+    喜悅: ['#2d1b00','#f5c518','#fff8e7','#1a0a00'],
+    悲傷: ['#0a1628','#1e3a5f','#8ab4d4','#c8dce8'],
+    緊張: ['#1a0505','#8b0000','#d4504a','#f5e0de'],
+    憤怒: ['#1a0000','#cc2200','#ff5533','#ffe0da'],
+    震驚: ['#05050f','#1a1a4a','#5555cc','#d0d0ff'],
+    恐懼: ['#000005','#050520','#3a3a80','#b0b0d8'],
+    懸疑: ['#0a0a05','#2a2a15','#888844','#e0e0b0'],
+    平靜: ['#051520','#0a3050','#4488bb','#c0ddf0'],
+    neutral: ['#101018','#1a2030','#506080','#c8d8e8'],
+  },
+  anime: {
+    喜悅: ['#ff6eb4','#ffe066','#fff0fa','#ff3399'],
+    悲傷: ['#1a2060','#3355bb','#88aaee','#ddeeff'],
+    緊張: ['#2a0020','#aa0066','#ff44aa','#ffddee'],
+    憤怒: ['#300000','#cc1100','#ff6633','#ffe8e0'],
+    震驚: ['#10003a','#5500cc','#aa66ff','#eeddff'],
+    恐懼: ['#050018','#200055','#6633cc','#ccbbff'],
+    懸疑: ['#001a0a','#005533','#33aa77','#ccffee'],
+    平靜: ['#003344','#006688','#33bbdd','#ddf5ff'],
+    neutral: ['#1a1a2a','#2a2a44','#6666aa','#ddddff'],
+  },
+  noir: {
+    喜悅: ['#1a1a10','#555530','#aaa860','#f5f0d0'],
+    悲傷: ['#050505','#111111','#444444','#aaaaaa'],
+    緊張: ['#0a0000','#2a0000','#660000','#ddbbbb'],
+    憤怒: ['#050000','#200000','#550000','#ccaaaa'],
+    震驚: ['#000000','#111122','#333366','#aaaacc'],
+    恐懼: ['#000000','#050505','#222222','#888888'],
+    懸疑: ['#000a05','#001a10','#004422','#88cc99'],
+    平靜: ['#050510','#10101a','#333344','#aaaacc'],
+    neutral: ['#0a0a0a','#1a1a1a','#444444','#cccccc'],
+  },
+  scifi: {
+    喜悅: ['#001a10','#003322','#00aa66','#aaffdd'],
+    悲傷: ['#000a20','#001040','#003388','#88aade'],
+    緊張: ['#0a0a00','#222200','#888800','#ffff44'],
+    憤怒: ['#100500','#330a00','#aa3300','#ffaa44'],
+    震驚: ['#000010','#000030','#0000aa','#44aaff'],
+    恐懼: ['#000005','#000015','#000055','#4466cc'],
+    懸疑: ['#001010','#002a2a','#007777','#44dddd'],
+    平靜: ['#001505','#002a10','#005533','#44bb88'],
+    neutral: ['#050a10','#0a1420','#1a3050','#44aacc'],
+  },
+};
+
+function getPalette(mood) {
+  const styleMap = PALETTES[S.style] || PALETTES.cinematic;
+  return styleMap[mood] || styleMap.neutral;
+}
+
+function renderSceneToCanvas(scene, index) {
+  const [W, H] = getCanvasSize();
+  const canvas = document.createElement('canvas');
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  const rng = seededRng(index * 1337 + 7);
+  const pal = getPalette(scene.mood || 'neutral');
+  const shot = scene.shotType || 'midshot';
+  const time = scene.time || '白天';
+
+  // Draw background
+  drawBackground(ctx, W, H, rng, pal, shot, time, scene.mood || 'neutral', S.style);
+
+  // Draw characters
+  if (shot === 'closeup') {
+    drawCloseupFace(ctx, W, H, rng, pal, scene.mood || 'neutral', S.style);
+  } else if (shot === 'wideshot') {
+    drawWideFigures(ctx, W, H, rng, pal, scene);
+  } else if (shot === 'birdeye') {
+    drawBirdeyeView(ctx, W, H, rng, pal);
+  } else if (shot === 'wormeye') {
+    drawWormeyeView(ctx, W, H, rng, pal);
+  } else {
+    drawMidFigures(ctx, W, H, rng, pal, scene, S.style);
+  }
+
+  // Cinematic bars
+  if (S.ratio === '2.35:1') {
+    const barH = H * 0.06;
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, W, barH);
+    ctx.fillRect(0, H - barH, W, barH);
+  }
+
+  // Caption overlay at top
+  if (scene.caption) {
+    const grad = ctx.createLinearGradient(0, 0, 0, H * 0.18);
+    grad.addColorStop(0, 'rgba(0,0,0,0.75)');
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H * 0.18);
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.font = `${Math.round(W * 0.016)}px "Noto Serif TC", serif`;
+    ctx.fillText(scene.caption, W * 0.03, H * 0.07);
+  }
+
+  // Scene number
+  ctx.fillStyle = 'rgba(255,255,255,0.25)';
+  ctx.font = `${Math.round(W * 0.011)}px "Share Tech Mono", monospace`;
+  ctx.fillText(`SCENE ${String(index + 1).padStart(3, '0')}`, W * 0.03, H * 0.96);
+
+  // SFX
+  if (scene.sfx) {
+    ctx.save();
+    ctx.translate(W * 0.72, H * 0.25);
+    ctx.rotate(-0.12);
+    ctx.fillStyle = pal[0] === '#000000' ? '#ff4444' : pal[3];
+    ctx.font = `bold ${Math.round(W * 0.045)}px "Noto Serif TC", serif`;
+    ctx.strokeStyle = 'rgba(0,0,0,0.8)';
+    ctx.lineWidth = 4;
+    ctx.strokeText(scene.sfx, 0, 0);
+    ctx.fillText(scene.sfx, 0, 0);
+    ctx.restore();
+  }
+
+  // Dialogue subtitle at bottom
+  if (scene.dialogues && scene.dialogues.length > 0) {
+    const dlg = scene.dialogues[0];
+    const subGrad = ctx.createLinearGradient(0, H * 0.78, 0, H);
+    subGrad.addColorStop(0, 'rgba(0,0,0,0)');
+    subGrad.addColorStop(1, 'rgba(0,0,0,0.65)');
+    ctx.fillStyle = subGrad;
+    ctx.fillRect(0, H * 0.78, W, H * 0.22);
+
+    // Character name
+    ctx.fillStyle = 'rgba(255,200,50,0.9)';
+    ctx.font = `${Math.round(W * 0.013)}px "Share Tech Mono", monospace`;
+    ctx.textAlign = 'center';
+    ctx.fillText(dlg.char || '', W / 2, H * 0.87);
+
+    // Dialogue text
+    ctx.fillStyle = 'rgba(255,255,255,0.95)';
+    ctx.font = `${Math.round(W * 0.018)}px "Noto Serif TC", serif`;
+    ctx.fillText(dlg.text || '', W / 2, H * 0.93);
+    ctx.textAlign = 'left';
+  }
+
+  return canvas;
+}
+
+// ─── Draw functions ───
+function drawBackground(ctx, W, H, rng, pal, shot, time, mood, style) {
+  // Base gradient
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  if (time === '夜晚') {
+    grad.addColorStop(0, '#020510');
+    grad.addColorStop(1, pal[0]);
+  } else if (time === '黃昏') {
+    grad.addColorStop(0, '#1a0820');
+    grad.addColorStop(0.4, '#cc4400');
+    grad.addColorStop(1, pal[0]);
+  } else if (time === '清晨') {
+    grad.addColorStop(0, '#0a1030');
+    grad.addColorStop(0.5, '#ff9966');
+    grad.addColorStop(1, pal[1]);
+  } else {
+    grad.addColorStop(0, pal[2]);
+    grad.addColorStop(1, pal[1]);
+  }
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  if (shot === 'wideshot' || shot === 'birdeye') {
+    drawCityscape(ctx, W, H, rng, pal, time);
+  } else {
+    drawRoomBg(ctx, W, H, rng, pal, style, mood);
+  }
+
+  // Atmosphere particles
+  drawParticles(ctx, W, H, rng, pal, time, mood);
+}
+
+function drawCityscape(ctx, W, H, rng, pal, time) {
+  // Ground
+  ctx.fillStyle = pal[0];
+  ctx.fillRect(0, H * 0.65, W, H * 0.35);
+
+  // Horizon line
+  ctx.strokeStyle = pal[3];
+  ctx.lineWidth = 1.5;
+  ctx.globalAlpha = 0.4;
+  ctx.beginPath();
+  ctx.moveTo(0, H * 0.65);
+  ctx.lineTo(W, H * 0.65);
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  // Buildings
+  const numBuildings = 8 + Math.floor(rng(0, 5));
+  for (let i = 0; i < numBuildings; i++) {
+    const bx = rng(i * (W / numBuildings) - 10, i * (W / numBuildings) + W / numBuildings * 0.7);
+    const bh = rng(H * 0.15, H * 0.5);
+    const bw = rng(W * 0.04, W * 0.1);
+    const by = H * 0.65 - bh;
+
+    ctx.fillStyle = pal[0];
+    ctx.globalAlpha = rng(0.7, 1);
+    ctx.fillRect(bx, by, bw, bh);
+
+    // Windows
+    ctx.globalAlpha = 0.6;
+    const wRows = Math.floor(bh / 18);
+    const wCols = Math.floor(bw / 10);
+    for (let wr = 0; wr < wRows; wr++) {
+      for (let wc = 0; wc < wCols; wc++) {
+        if (rng(0, 1) > 0.4) {
+          ctx.fillStyle = time === '夜晚' ? `rgba(255,240,180,${rng(0.3,0.9)})` : `rgba(150,190,220,${rng(0.1,0.4)})`;
+          ctx.fillRect(bx + 3 + wc * 10, by + 5 + wr * 18, 5, 7);
+        }
+      }
+    }
+    ctx.globalAlpha = 1;
+
+    // Building outline
+    ctx.strokeStyle = pal[3];
+    ctx.lineWidth = 0.8;
+    ctx.globalAlpha = 0.3;
+    ctx.strokeRect(bx, by, bw, bh);
+    ctx.globalAlpha = 1;
+  }
+
+  // Moon/Sun
+  if (time === '夜晚') {
+    ctx.fillStyle = '#f5f0d0';
+    ctx.globalAlpha = 0.9;
+    ctx.beginPath();
+    ctx.arc(W * 0.8, H * 0.12, W * 0.025, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  } else if (time === '黃昏') {
+    const sunGrad = ctx.createRadialGradient(W * 0.6, H * 0.5, 0, W * 0.6, H * 0.5, W * 0.08);
+    sunGrad.addColorStop(0, 'rgba(255,200,50,0.9)');
+    sunGrad.addColorStop(1, 'rgba(255,100,0,0)');
+    ctx.fillStyle = sunGrad;
+    ctx.fillRect(0, 0, W, H);
+  }
+}
+
+function drawRoomBg(ctx, W, H, rng, pal, style, mood) {
+  // Floor
+  ctx.fillStyle = pal[0];
+  ctx.globalAlpha = 0.8;
+  ctx.fillRect(0, H * 0.7, W, H * 0.3);
+  ctx.globalAlpha = 1;
+
+  // Perspective lines
+  ctx.strokeStyle = pal[3];
+  ctx.lineWidth = 0.5;
+  ctx.globalAlpha = 0.15;
+  const vp = { x: W / 2, y: H * 0.4 };
+  for (let i = 0; i < 5; i++) {
+    const px = W * 0.1 + (W * 0.8 / 4) * i;
+    ctx.beginPath();
+    ctx.moveTo(vp.x, vp.y);
+    ctx.lineTo(px, H);
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  if (style === 'scifi') {
+    // Tech grid
+    ctx.strokeStyle = pal[2];
+    ctx.lineWidth = 0.5;
+    ctx.globalAlpha = 0.15;
+    for (let i = 0; i < 12; i++) {
+      ctx.beginPath();
+      ctx.moveTo(W / 12 * i, 0);
+      ctx.lineTo(W / 12 * i, H);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, H / 12 * i);
+      ctx.lineTo(W, H / 12 * i);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // Emotion speed lines
+  if (mood === '緊張' || mood === '恐懼' || mood === '震驚') {
+    ctx.strokeStyle = pal[3];
+    ctx.globalAlpha = 0.07;
+    const cx = W * rng(0.3, 0.7), cy = H * rng(0.3, 0.6);
+    for (let i = 0; i < 24; i++) {
+      const a = (i / 24) * Math.PI * 2;
+      ctx.lineWidth = rng(0.5, 2.5);
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(a) * W * 0.8, cy + Math.sin(a) * H * 0.8);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+}
+
+function drawParticles(ctx, W, H, rng, pal, time, mood) {
+  const count = 20;
+  for (let i = 0; i < count; i++) {
+    const px = rng(0, W), py = rng(0, H);
+    const r = rng(0.5, 2.5);
+    ctx.fillStyle = pal[2];
+    ctx.globalAlpha = rng(0.03, 0.15);
+    ctx.beginPath();
+    ctx.arc(px, py, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // Rain for 悲傷
+  if (mood === '悲傷') {
+    ctx.strokeStyle = pal[2];
+    ctx.lineWidth = 0.8;
+    ctx.globalAlpha = 0.2;
+    for (let i = 0; i < 30; i++) {
+      const rx = rng(0, W), ry = rng(0, H);
+      ctx.beginPath();
+      ctx.moveTo(rx, ry);
+      ctx.lineTo(rx - 3, ry + 12);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+}
+
+function drawCloseupFace(ctx, W, H, rng, pal, mood, style) {
+  const cx = W / 2, cy = H * 0.46;
+  const faceRx = W * 0.1, faceRy = H * 0.22;
+
+  // Neck
+  ctx.fillStyle = pal[1];
+  ctx.globalAlpha = 0.9;
+  ctx.fillRect(cx - W * 0.04, cy + faceRy * 0.7, W * 0.08, H * 0.2);
+
+  // Face
+  ctx.fillStyle = pal[1];
+  ctx.globalAlpha = 0.95;
+  ctx.beginPath();
+  ctx.ellipse(cx, cy, faceRx, faceRy, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+
+  // Hair
+  ctx.fillStyle = pal[0];
+  ctx.globalAlpha = 0.9;
+  ctx.beginPath();
+  ctx.ellipse(cx, cy - faceRy * 0.55, faceRx * 1.15, faceRy * 0.65, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // Side hair
+  ctx.beginPath();
+  ctx.ellipse(cx - faceRx * 0.95, cy, faceRx * 0.35, faceRy * 0.55, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(cx + faceRx * 0.95, cy, faceRx * 0.35, faceRy * 0.55, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+
+  const eyeY = cy + H * 0.01;
+  const eyeRx = style === 'anime' ? W * 0.022 : W * 0.016;
+  const eyeRy = style === 'anime' ? H * 0.05 : H * 0.03;
+
+  // Eyes
+  ctx.fillStyle = pal[3];
+  ctx.beginPath();
+  ctx.ellipse(cx - W * 0.035, eyeY, eyeRx, eyeRy, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(cx + W * 0.035, eyeY, eyeRx, eyeRy, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  if (style === 'anime') {
+    // Eye shine
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.beginPath();
+    ctx.ellipse(cx - W * 0.028, eyeY - eyeRy * 0.3, eyeRx * 0.35, eyeRy * 0.3, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(cx + W * 0.042, eyeY - eyeRy * 0.3, eyeRx * 0.35, eyeRy * 0.3, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Nose
+  ctx.strokeStyle = pal[3];
+  ctx.lineWidth = 1.5;
+  ctx.globalAlpha = 0.5;
+  ctx.beginPath();
+  ctx.moveTo(cx - W * 0.01, cy + H * 0.06);
+  ctx.quadraticCurveTo(cx, cy + H * 0.09, cx + W * 0.01, cy + H * 0.06);
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  // Mouth by mood
+  ctx.strokeStyle = pal[3];
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round';
+  const mx = cx, my = cy + faceRy * 0.55;
+  ctx.beginPath();
+  if (mood === '喜悅' || mood === '平靜') {
+    ctx.moveTo(mx - W * 0.03, my);
+    ctx.quadraticCurveTo(mx, my + H * 0.03, mx + W * 0.03, my);
+  } else if (mood === '悲傷') {
+    ctx.moveTo(mx - W * 0.03, my + H * 0.02);
+    ctx.quadraticCurveTo(mx, my - H * 0.015, mx + W * 0.03, my + H * 0.02);
+    // Tears
+    ctx.fillStyle = '#7fdbff';
+    ctx.globalAlpha = 0.7;
+    ctx.beginPath();
+    ctx.ellipse(cx - W * 0.03, eyeY + H * 0.07, W * 0.007, H * 0.025, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  } else if (mood === '憤怒' || mood === '緊張') {
+    ctx.moveTo(mx - W * 0.03, my + H * 0.01);
+    ctx.lineTo(mx + W * 0.03, my + H * 0.01);
+    // Eyebrows angry
+    ctx.strokeStyle = pal[3];
+    ctx.lineWidth = 3;
+    ctx.moveTo(cx - W * 0.055, eyeY - eyeRy - H * 0.02);
+    ctx.lineTo(cx - W * 0.015, eyeY - eyeRy - H * 0.005);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx + W * 0.055, eyeY - eyeRy - H * 0.02);
+    ctx.lineTo(cx + W * 0.015, eyeY - eyeRy - H * 0.005);
+  } else if (mood === '震驚') {
+    ctx.beginPath();
+    ctx.ellipse(mx, my, W * 0.02, H * 0.025, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = pal[3];
+    ctx.stroke();
+    return;
+  } else {
+    ctx.moveTo(mx - W * 0.025, my + H * 0.005);
+    ctx.lineTo(mx + W * 0.025, my + H * 0.005);
+  }
+  ctx.stroke();
+}
+
+function drawWideFigures(ctx, W, H, rng, pal, scene) {
+  const numFigs = Math.min(scene.characters ? scene.characters.length : 1, 3);
+  const positions = numFigs === 1 ? [W * 0.5]
+    : numFigs === 2 ? [W * 0.32, W * 0.68]
+    : [W * 0.2, W * 0.5, W * 0.8];
+
+  positions.forEach((fx, fi) => {
+    const figH = H * 0.42;
+    const figW = W * 0.055;
+    const by = H * 0.65 - figH;
+
+    // Shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.2)';
+    ctx.beginPath();
+    ctx.ellipse(fx, H * 0.65, figW * 1.5, H * 0.02, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Body
+    ctx.fillStyle = pal[fi % 2 === 0 ? 0 : 1];
+    ctx.globalAlpha = 0.85;
+    ctx.fillRect(fx - figW / 2, by + figH * 0.3, figW, figH * 0.55);
+
+    // Head
+    ctx.fillStyle = pal[1];
+    ctx.globalAlpha = 0.95;
+    ctx.beginPath();
+    ctx.arc(fx, by + figH * 0.18, figW * 0.85, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Hair
+    ctx.fillStyle = pal[fi === 0 ? 3 : 0];
+    ctx.beginPath();
+    ctx.arc(fx, by + figH * 0.1, figW * 0.9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    // Legs
+    ctx.strokeStyle = pal[fi % 2 === 0 ? 0 : 1];
+    ctx.lineWidth = figW * 0.4;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(fx - figW * 0.2, by + figH * 0.85);
+    ctx.lineTo(fx - figW * 0.25, H * 0.65);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(fx + figW * 0.2, by + figH * 0.85);
+    ctx.lineTo(fx + figW * 0.25, H * 0.65);
+    ctx.stroke();
+  });
+}
+
+function drawBirdeyeView(ctx, W, H, rng, pal) {
+  // Grid floor
+  ctx.strokeStyle = pal[3];
+  ctx.lineWidth = 0.5;
+  ctx.globalAlpha = 0.2;
+  for (let i = 0; i < 10; i++) {
+    ctx.beginPath();
+    ctx.moveTo(W / 10 * i, 0); ctx.lineTo(W / 10 * i, H); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, H / 10 * i); ctx.lineTo(W, H / 10 * i); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  for (let i = 0; i < 3; i++) {
+    const fx = rng(W * 0.15, W * 0.85), fy = rng(H * 0.15, H * 0.85);
+    // Shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    ctx.beginPath();
+    ctx.ellipse(fx + 5, fy + 10, W * 0.025, H * 0.015, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Head
+    ctx.fillStyle = pal[0];
+    ctx.globalAlpha = 0.85;
+    ctx.beginPath();
+    ctx.arc(fx, fy, W * 0.022, 0, Math.PI * 2);
+    ctx.fill();
+    // Body
+    ctx.fillStyle = pal[1];
+    ctx.beginPath();
+    ctx.ellipse(fx, fy + H * 0.04, W * 0.015, H * 0.035, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+}
+
+function drawWormeyeView(ctx, W, H, rng, pal) {
+  const vp = { x: W / 2, y: H * 0.85 };
+  // Tall buildings converging upward
+  for (let i = 0; i < 4; i++) {
+    const bx = i * (W / 3.5) - W * 0.05;
+    const bw = W * 0.2 + rng(0, W * 0.08);
+    const converge = vp.x + (bx + bw / 2 - vp.x) * 0.08;
+
+    ctx.fillStyle = pal[0];
+    ctx.globalAlpha = rng(0.7, 1);
+    ctx.beginPath();
+    ctx.moveTo(bx, H);
+    ctx.lineTo(converge, 0);
+    ctx.lineTo(converge + bw * 0.3, 0);
+    ctx.lineTo(bx + bw, H);
+    ctx.closePath();
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    // Windows
+    for (let wr = 0; wr < 6; wr++) {
+      const wy = H * 0.05 + wr * H * 0.14;
+      ctx.fillStyle = pal[2];
+      ctx.globalAlpha = rng(0.2, 0.8);
+      ctx.fillRect(bx + bw * 0.15, wy, bw * 0.2, H * 0.06);
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  // Figure at bottom
+  const fX = W / 2;
+  ctx.fillStyle = pal[1];
+  ctx.globalAlpha = 0.9;
+  ctx.fillRect(fX - W * 0.025, H * 0.75, W * 0.05, H * 0.15);
+  ctx.beginPath();
+  ctx.arc(fX, H * 0.72, W * 0.025, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+}
+
+function drawMidFigures(ctx, W, H, rng, pal, scene, style) {
+  const numFigs = scene.dialogues && scene.dialogues.length > 1 ? 2 : 1;
+  const positions = numFigs === 2 ? [W * 0.32, W * 0.68] : [W * 0.5];
+
+  positions.forEach((fx, fi) => {
+    const headR = W * 0.04;
+    const headY = H * 0.3;
+    const bodyW = W * 0.065;
+    const bodyH = H * 0.32;
+    const bodyY = headY + headR * 1.2;
+
+    // Shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.15)';
+    ctx.beginPath();
+    ctx.ellipse(fx, H * 0.88, bodyW * 1.2, H * 0.02, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Body
+    ctx.fillStyle = pal[fi === 0 ? 0 : 1];
+    ctx.globalAlpha = 0.88;
+    ctx.beginPath();
+    ctx.roundRect(fx - bodyW / 2, bodyY, bodyW, bodyH, [4, 4, 0, 0]);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    // Arms
+    ctx.strokeStyle = pal[fi === 0 ? 0 : 1];
+    ctx.lineWidth = bodyW * 0.35;
+    ctx.lineCap = 'round';
+    ctx.globalAlpha = 0.88;
+    ctx.beginPath();
+    ctx.moveTo(fx - bodyW / 2, bodyY + bodyH * 0.2);
+    ctx.lineTo(fx - bodyW / 2 - W * 0.035, bodyY + bodyH * 0.55);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(fx + bodyW / 2, bodyY + bodyH * 0.2);
+    ctx.lineTo(fx + bodyW / 2 + W * 0.035, bodyY + bodyH * 0.55);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    // Legs
+    ctx.lineWidth = bodyW * 0.38;
+    ctx.beginPath();
+    ctx.moveTo(fx - bodyW * 0.22, bodyY + bodyH);
+    ctx.lineTo(fx - bodyW * 0.25, H * 0.88);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(fx + bodyW * 0.22, bodyY + bodyH);
+    ctx.lineTo(fx + bodyW * 0.25, H * 0.88);
+    ctx.stroke();
+
+    // Head
+    ctx.fillStyle = pal[1];
+    ctx.globalAlpha = 0.95;
+    ctx.beginPath();
+    ctx.ellipse(fx, headY, headR, headR * 1.12, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Hair
+    ctx.fillStyle = pal[fi === 0 ? 3 : 0];
+    ctx.beginPath();
+    ctx.ellipse(fx, headY - headR * 0.35, headR * 1.1, headR * 0.75, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    // Eyes
+    if (style === 'anime') {
+      ctx.fillStyle = pal[3];
+      ctx.beginPath();
+      ctx.ellipse(fx - headR * 0.42, headY + headR * 0.1, headR * 0.22, headR * 0.3, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(fx + headR * 0.42, headY + headR * 0.1, headR * 0.22, headR * 0.3, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,0.8)';
+      ctx.beginPath();
+      ctx.arc(fx - headR * 0.36, headY, headR * 0.08, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(fx + headR * 0.48, headY, headR * 0.08, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.fillStyle = pal[3];
+      ctx.beginPath();
+      ctx.arc(fx - headR * 0.42, headY + headR * 0.1, headR * 0.18, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(fx + headR * 0.42, headY + headR * 0.1, headR * 0.18, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  });
+}
+
+// ═══════════════════════════════════════════
+//  SCENE PLAYER
+// ═══════════════════════════════════════════
+let playerEl = null;
+
+function openScenePlayer(index) {
+  S.currentScene = index;
+  stopPlayback();
+
+  // If player already exists, just update
+  if (!playerEl) {
+    createPlayer();
+  }
+
+  renderCurrentScene();
+  highlightSceneCards();
+  scrollToPlayer();
+}
+
+function createPlayer() {
+  const existing = document.getElementById('scene-player-wrap');
+  if (existing) existing.remove();
+
+  const wrap = document.createElement('div');
+  wrap.id = 'scene-player-wrap';
+  wrap.style.cssText = `
+    position: fixed;
+    bottom: 24px; right: 24px;
+    width: 460px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(124,92,252,0.15);
+    z-index: 200;
+  `;
+
+  wrap.innerHTML = `
+    <div style="display:flex; align-items:center; padding:10px 14px; border-bottom:1px solid var(--border); gap:10px;">
+      <span style="font-family:'Orbitron',sans-serif; font-size:9px; letter-spacing:3px; color:var(--muted);">SCENE PLAYER</span>
+      <span id="player-scene-num" style="font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--accent);"></span>
+      <div style="margin-left:auto; display:flex; gap:6px;">
+        <button onclick="minimizePlayer()" style="background:transparent; border:none; color:var(--muted); cursor:pointer; font-size:14px; line-height:1; padding:2px 6px;" title="縮小">－</button>
+        <button onclick="closePlayer()" style="background:transparent; border:none; color:var(--muted); cursor:pointer; font-size:14px; line-height:1; padding:2px 6px;" title="關閉">✕</button>
+      </div>
+    </div>
+    <div id="player-body">
+      <div style="position:relative; background:#000;">
+        <canvas id="player-canvas" style="width:100%; display:block;"></canvas>
+        <div id="player-caption" style="position:absolute; top:0; left:0; right:0; padding:10px 12px; font-size:11px; color:rgba(255,255,255,0.85); font-family:'Noto Serif TC',serif; background:linear-gradient(180deg,rgba(0,0,0,0.7),transparent); pointer-events:none;"></div>
+        <div id="player-subtitle-wrap" style="position:absolute; bottom:36px; left:0; right:0; display:flex; flex-direction:column; align-items:center; gap:3px; pointer-events:none;">
+          <div id="player-sub-char" style="font-family:'Share Tech Mono',monospace; font-size:9px; color:rgba(255,220,60,0.9); letter-spacing:2px;"></div>
+          <div id="player-sub-text" style="background:rgba(0,0,0,0.7); color:#fff; padding:5px 16px; font-family:'Noto Serif TC',serif; font-size:13px; border-radius:3px; text-align:center; max-width:90%;"></div>
+        </div>
+      </div>
+      <div style="background:rgba(0,0,0,0.8); padding:8px 12px; display:flex; align-items:center; gap:8px;">
+        <button id="player-prev" onclick="prevScene()" class="ctrl-btn" title="上一場景">⏮</button>
+        <button id="player-play" onclick="togglePlayback()" class="ctrl-btn" title="播放/暫停">▶</button>
+        <button id="player-next" onclick="nextScene()" class="ctrl-btn" title="下一場景">⏭</button>
+        <div class="time-track" id="player-track" onclick="seekTrack(event)" style="flex:1;">
+          <div class="time-fill" id="player-fill" style="width:0%"></div>
+        </div>
+        <span id="player-time" class="time-text">0:00</span>
+        <button onclick="openSceneZoom()" class="ctrl-btn" style="font-size:12px;" title="放大">⛶</button>
+      </div>
+      <div style="padding:8px 12px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
+        <span id="player-location" style="font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--muted);"></span>
+        <span id="player-mood" style="font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--muted);"></span>
+        <button id="btn-export" onclick="exportVideo()" style="padding:5px 12px; background:rgba(124,92,252,0.15); border:1px solid rgba(124,92,252,0.4); border-radius:6px; color:var(--accent); font-family:'Orbitron',sans-serif; font-size:8px; letter-spacing:1px; cursor:pointer;">匯出影片</button>
+      </div>
+      <div id="export-status" style="padding:4px 12px; font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--muted); text-align:center; display:none;"></div>
+    </div>
+  `;
+
+  document.body.appendChild(wrap);
+  playerEl = wrap;
+
+  // Size canvas
+  const [W, H] = getCanvasSize();
+  const c = document.getElementById('player-canvas');
+  c.width = W;
+  c.height = H;
+}
+
+function renderCurrentScene() {
+  if (!S.scenes[S.currentScene]) return;
+  const scene = S.scenes[S.currentScene];
+  const [W, H] = getCanvasSize();
+  const c = document.getElementById('player-canvas');
+  if (!c) return;
+  c.width = W;
+  c.height = H;
+  const ctx = c.getContext('2d');
+
+  if (scene.canvas) {
+    ctx.drawImage(scene.canvas, 0, 0);
+  } else {
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#666';
+    ctx.font = '14px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('場景生成中…', W / 2, H / 2);
+    ctx.textAlign = 'left';
+  }
+
+  // Update info
+  const numEl = document.getElementById('player-scene-num');
+  if (numEl) numEl.textContent = `SCENE ${String(S.currentScene + 1).padStart(3, '0')} / ${String(S.scenes.length).padStart(3, '0')}`;
+
+  const capEl = document.getElementById('player-caption');
+  if (capEl) capEl.textContent = scene.caption || '';
+
+  const charEl = document.getElementById('player-sub-char');
+  const textEl = document.getElementById('player-sub-text');
+  if (scene.dialogues && scene.dialogues.length > 0) {
+    const dlg = scene.dialogues[0];
+    if (charEl) charEl.textContent = dlg.char || '';
+    if (textEl) { textEl.textContent = dlg.text || ''; textEl.style.display = ''; }
+  } else {
+    if (charEl) charEl.textContent = '';
+    if (textEl) textEl.style.display = 'none';
+  }
+
+  const locEl = document.getElementById('player-location');
+  const moodEl = document.getElementById('player-mood');
+  if (locEl) locEl.textContent = scene.location || '';
+  if (moodEl) moodEl.textContent = scene.mood || '';
+
+  const fill = document.getElementById('player-fill');
+  const timeEl = document.getElementById('player-time');
+  if (fill) fill.style.width = `${((S.currentScene + 1) / S.scenes.length) * 100}%`;
+  if (timeEl) {
+    const totalSecs = (S.currentScene + 1) * S.sceneDuration;
+    timeEl.textContent = `${Math.floor(totalSecs / 60)}:${String(totalSecs % 60).padStart(2,'0')}`;
+  }
+
+  const playBtn = document.getElementById('player-play');
+  if (playBtn) playBtn.textContent = S.playing ? '⏸' : '▶';
+}
+
+function highlightSceneCards() {
+  document.querySelectorAll('.scene-card').forEach((c, i) => {
+    c.classList.toggle('active-scene', i === S.currentScene);
+  });
+}
+
+function scrollToPlayer() {
+  const card = document.getElementById(`scard-${S.currentScene}`);
+  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function togglePlayback() {
+  if (S.playing) {
+    stopPlayback();
+  } else {
+    startPlayback();
+  }
+}
+
+function startPlayback() {
+  if (S.scenes.length === 0) return;
+  S.playing = true;
+  const playBtn = document.getElementById('player-play');
+  if (playBtn) playBtn.textContent = '⏸';
+
+  let elapsed = 0;
+  const fps = 30;
+  const frameDur = 1000 / fps;
+
+  function tick() {
+    if (!S.playing) return;
+    elapsed += frameDur;
+    if (elapsed >= S.sceneDuration * 1000) {
+      elapsed = 0;
+      if (S.currentScene < S.scenes.length - 1) {
+        S.currentScene++;
+        renderCurrentScene();
+        highlightSceneCards();
+        scrollToPlayer();
+      } else {
+        stopPlayback();
+        return;
+      }
+    }
+    const pct = (elapsed / (S.sceneDuration * 1000)) * (1 / S.scenes.length) * 100
+      + (S.currentScene / S.scenes.length) * 100;
+    const fill = document.getElementById('player-fill');
+    if (fill) fill.style.transition = 'none';
+    if (fill) fill.style.width = pct + '%';
+
+    S.playTimer = setTimeout(tick, frameDur);
+  }
+  tick();
+}
+
+function stopPlayback() {
+  S.playing = false;
+  if (S.playTimer) { clearTimeout(S.playTimer); S.playTimer = null; }
+  const playBtn = document.getElementById('player-play');
+  if (playBtn) playBtn.textContent = '▶';
+}
+
+function prevScene() {
+  stopPlayback();
+  if (S.currentScene > 0) { S.currentScene--; renderCurrentScene(); highlightSceneCards(); scrollToPlayer(); }
+}
+function nextScene() {
+  stopPlayback();
+  if (S.currentScene < S.scenes.length - 1) { S.currentScene++; renderCurrentScene(); highlightSceneCards(); scrollToPlayer(); }
+}
+
+function seekTrack(e) {
+  const track = document.getElementById('player-track');
+  if (!track) return;
+  const rect = track.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  const idx = Math.floor(pct * S.scenes.length);
+  S.currentScene = Math.max(0, Math.min(idx, S.scenes.length - 1));
+  stopPlayback();
+  renderCurrentScene();
+  highlightSceneCards();
+}
+
+function openSceneZoom() {
+  const scene = S.scenes[S.currentScene];
+  if (!scene || !scene.canvas) return;
+  const zc = document.getElementById('zoom-canvas');
+  const [W, H] = getCanvasSize();
+  zc.width = W;
+  zc.height = H;
+  zc.style.maxWidth = '85vw';
+  const ctx = zc.getContext('2d');
+  ctx.drawImage(scene.canvas, 0, 0);
+  document.getElementById('zoom-modal').classList.add('show');
+}
+
+function minimizePlayer() {
+  const body = document.getElementById('player-body');
+  if (body) body.style.display = body.style.display === 'none' ? '' : 'none';
+}
+function closePlayer() {
+  stopPlayback();
+  if (playerEl) { playerEl.remove(); playerEl = null; }
+}
+
+// ═══════════════════════════════════════════
+//  EXPORT
+// ═══════════════════════════════════════════
+async function exportVideo() {
+  const exportBtn = document.getElementById('btn-export');
+  const statusEl = document.getElementById('export-status');
+  if (!exportBtn || !statusEl) return;
+
+  if (!window.MediaRecorder) {
+    alert('您的瀏覽器不支援 MediaRecorder API，請使用 Chrome 或 Edge');
+    return;
+  }
+
+  exportBtn.disabled = true;
+  statusEl.style.display = 'block';
+  statusEl.textContent = '準備匯出…';
+
+  const [W, H] = getCanvasSize();
+  const offscreen = document.createElement('canvas');
+  offscreen.width = W;
+  offscreen.height = H;
+  const ctx = offscreen.getContext('2d');
+
+  const stream = offscreen.captureStream(30);
+  const recorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp8', videoBitsPerSecond: 4000000 });
+  const chunks = [];
+  recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: 'video/webm' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${S.title || 'novel-video'}.webm`;
+    a.click();
+    URL.revokeObjectURL(url);
+    exportBtn.disabled = false;
+    statusEl.textContent = '✓ 匯出完成！';
+    setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
+  };
+
+  recorder.start();
+  statusEl.textContent = `正在錄製 (0/${S.scenes.length})…`;
+
+  for (let i = 0; i < S.scenes.length; i++) {
+    const scene = S.scenes[i];
+    statusEl.textContent = `錄製場景 ${i + 1}/${S.scenes.length}…`;
+
+    // Draw scene
+    if (scene.canvas) {
+      ctx.drawImage(scene.canvas, 0, 0);
+    } else {
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    // Animate for duration
+    const frames = S.sceneDuration * 30;
+    for (let f = 0; f < frames; f++) {
+      // Animate subtitle timing
+      const showSub = f > frames * 0.15 && f < frames * 0.9;
+      ctx.clearRect(0, 0, W, H);
+      if (scene.canvas) ctx.drawImage(scene.canvas, 0, 0);
+
+      if (showSub && scene.dialogues && scene.dialogues.length > 0) {
+        const dlg = scene.dialogues[0];
+        // Redraw subtitle
+        const subGrad = ctx.createLinearGradient(0, H * 0.78, 0, H);
+        subGrad.addColorStop(0, 'rgba(0,0,0,0)');
+        subGrad.addColorStop(1, 'rgba(0,0,0,0.65)');
+        ctx.fillStyle = subGrad;
+        ctx.fillRect(0, H * 0.78, W, H * 0.22);
+        ctx.fillStyle = 'rgba(255,200,50,0.9)';
+        ctx.font = `${Math.round(W * 0.013)}px "Noto Serif TC", serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText(dlg.char || '', W / 2, H * 0.87);
+        ctx.fillStyle = 'rgba(255,255,255,0.95)';
+        ctx.font = `${Math.round(W * 0.018)}px "Noto Serif TC", serif`;
+        ctx.fillText(dlg.text || '', W / 2, H * 0.93);
+        ctx.textAlign = 'left';
+      }
+
+      await new Promise(r => requestAnimationFrame(r));
+    }
+
+    // Transition: fade out
+    if (i < S.scenes.length - 1) {
+      const transFrames = 9;
+      for (let f = 0; f < transFrames; f++) {
+        ctx.fillStyle = `rgba(0,0,0,${f / transFrames})`;
+        ctx.fillRect(0, 0, W, H);
+        await new Promise(r => requestAnimationFrame(r));
+      }
+    }
+  }
+
+  recorder.stop();
+}
+
+// ═══════════════════════════════════════════
+//  PROGRESS / UI HELPERS
+// ═══════════════════════════════════════════
+function updateProgress(done, total, label) {
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  $('pb-fill').style.width = pct + '%';
+  $('pb-done').textContent = done;
+  $('pb-total').textContent = total;
+  $('pb-pct').textContent = pct + '%';
+  $('pb-label').textContent = label;
+}
+
+function setBadge(state, label) {
+  const el = $('hdr-badge');
+  el.className = 'badge badge-' + state;
+  el.textContent = label;
+  el.style.display = '';
+}
+
+function showError(msg) {
+  const el = $('launch-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function restartSetup() {
+  stopPlayback();
+  closePlayer();
+  S.scenes = [];
+  S.done = 0;
+  S.total = 0;
+  S.running = false;
+  $('setup-screen').style.display = 'block';
+  $('video-screen').classList.remove('show');
+  $('progress-wrap').classList.remove('show');
+  $('episodes-container').innerHTML = '';
+  $('btn-launch').disabled = false;
+  $('btn-restart').style.display = 'none';
+  setBadge('idle', 'IDLE');
+  $('launch-error').style.display = 'none';
+  updateStats();
+}
+</script>
+</body>
+</html>

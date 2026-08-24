@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VRT 海外幹部合同管理系統 v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<style>
+:root {
+  --navy:#1a3e78; --navy2:#2a5098; --navy3:#e8eef8;
+  --gold:#b8940a; --gold-bg:#fdf8ee;
+  --prob:#c8621a; --prob-bg:#fff0e8;
+  --reg:#1a5c3a; --reg-bg:#e8f5ee;
+  --warn:#8a5c00; --warn-bg:#fff8e0;
+  --exp:#8a1a1a; --exp-bg:#fdeaea;
+  --gray:#6b6560; --gray-bg:#f5f3ef;
+  --border:#ddd8ce; --border2:#c8c2b8;
+  --bg:#f5f3ef; --doc-bg:#fdfcfa;
+  --text:#1c1a17; --text2:#4a4540; --text3:#9a9590;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-serif;font-size:13px;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+
+/* ── TOOLBAR ── */
+.tb{background:var(--navy);color:#fff;padding:0 16px;display:flex;align-items:center;gap:12px;height:46px;flex-shrink:0;box-shadow:0 2px 8px rgba(26,62,120,.3);}
+.tb-brand{font-family:'Lora',serif;font-size:14px;color:#c8d8f4;white-space:nowrap;}
+.tb-brand b{color:var(--gold);}
+.tb-sep{width:1px;height:24px;background:rgba(255,255,255,.2);}
+.seg{display:flex;background:rgba(255,255,255,.1);border-radius:5px;padding:2px;gap:2px;}
+.seg button{padding:3px 12px;border:none;border-radius:4px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;font-size:11.5px;font-weight:500;background:transparent;color:rgba(255,255,255,.7);transition:.15s;}
+.seg button.on{background:#fff;color:var(--navy);font-weight:600;}
+.tb-right{margin-left:auto;display:flex;gap:6px;align-items:center;}
+.tb-btn{padding:5px 12px;border-radius:5px;border:none;cursor:pointer;font-size:12px;font-family:'Noto Sans TC',sans-serif;font-weight:500;display:flex;align-items:center;gap:4px;transition:.15s;}
+.tb-btn.primary{background:var(--gold);color:#fff;}
+.tb-btn.ghost{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);}
+.tb-btn.danger{background:rgba(220,60,60,.15);color:#ffaaaa;border:1px solid rgba(220,60,60,.25);}
+
+/* ── LAYOUT ── */
+.app{display:flex;flex:1;overflow:hidden;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:220px;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;}
+.sb-head{padding:10px 12px 6px;border-bottom:1px solid var(--border);}
+.sb-head h3{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.sb-search{width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:5px;font-size:12px;font-family:inherit;background:var(--bg);color:var(--text);outline:none;}
+.sb-search:focus{border-color:var(--navy2);}
+.emp-list{flex:1;overflow-y:auto;padding:6px 8px;}
+.emp-card{padding:8px 10px;border-radius:7px;cursor:pointer;margin-bottom:3px;transition:.15s;position:relative;}
+.emp-card:hover{background:var(--bg);}
+.emp-card.active{background:var(--navy3);}
+.emp-name{font-size:13px;font-weight:500;color:var(--text);}
+.emp-pos{font-size:11px;color:var(--text3);margin-top:1px;}
+.emp-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:500;padding:2px 6px;border-radius:3px;margin-top:3px;}
+.badge-prob{background:var(--prob-bg);color:var(--prob);}
+.badge-reg{background:var(--reg-bg);color:var(--reg);}
+.badge-warn{background:var(--warn-bg);color:var(--warn);}
+.badge-exp{background:var(--exp-bg);color:var(--exp);}
+.badge-none{background:var(--gray-bg);color:var(--gray);}
+.emp-days{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--text3);}
+.sb-foot{padding:10px 12px;border-top:1px solid var(--border);}
+.add-emp-btn{width:100%;padding:7px;border:1.5px dashed var(--border2);border-radius:6px;background:transparent;cursor:pointer;font-size:12px;color:var(--text3);font-family:inherit;transition:.15s;}
+.add-emp-btn:hover{border-color:var(--navy2);color:var(--navy);}
+
+/* ── MAIN AREA ── */
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+
+/* Empty state */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;color:var(--text3);}
+.empty-state svg{opacity:.3;}
+.empty-state p{font-size:13px;}
+
+/* ── EMPLOYEE DETAIL ── */
+.emp-detail{display:flex;flex-direction:column;height:100%;overflow:hidden;}
+
+/* Header */
+.emp-hdr{background:#fff;border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:16px;flex-shrink:0;}
+.emp-avatar{width:40px;height:40px;border-radius:50%;background:var(--navy3);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.emp-hdr-info h2{font-size:16px;font-weight:600;}
+.emp-hdr-info p{font-size:11.5px;color:var(--text3);margin-top:1px;}
+.emp-hdr-actions{margin-left:auto;display:flex;gap:6px;}
+.act-btn{padding:5px 12px;border-radius:5px;border:1px solid var(--border);cursor:pointer;font-size:12px;font-family:inherit;background:#fff;color:var(--text2);transition:.15s;}
+.act-btn:hover{border-color:var(--navy2);color:var(--navy);}
+.act-btn.fill{background:var(--navy);color:#fff;border-color:var(--navy);}
+.act-btn.fill:hover{background:var(--navy2);}
+.act-btn.prob{background:var(--prob-bg);color:var(--prob);border-color:var(--prob);}
+.act-btn.reg{background:var(--reg-bg);color:var(--reg);border-color:var(--reg);}
+.act-btn.warn-btn{background:var(--warn-bg);color:var(--warn);border-color:var(--warn);}
+
+/* Tab strip */
+.tab-strip{background:#fff;border-bottom:1px solid var(--border);padding:0 20px;display:flex;gap:0;flex-shrink:0;}
+.tab{padding:8px 16px;border:none;background:transparent;cursor:pointer;font-size:12.5px;font-family:inherit;color:var(--text3);border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s;}
+.tab.on{color:var(--navy);border-bottom-color:var(--navy);font-weight:500;}
+
+/* Tab content */
+.tab-body{flex:1;overflow-y:auto;padding:16px 20px;}
+
+/* ── CONTRACT SUMMARY CARD ── */
+.contract-card{background:#fff;border-radius:8px;border:1px solid var(--border);padding:16px;margin-bottom:12px;}
+.cc-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.cc-head .cc-type{font-size:14px;font-weight:600;}
+.cc-fields{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px 16px;}
+.cc-field label{display:block;font-size:10px;color:var(--text3);letter-spacing:.5px;margin-bottom:2px;}
+.cc-field .val{font-size:13px;color:var(--text);font-weight:500;}
+.cc-field .val.money{font-family:'Lora',serif;color:var(--reg);font-size:14px;}
+.cc-actions{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap;}
+
+/* Days counter */
+.days-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;margin-left:auto;}
+
+/* ── HISTORY TIMELINE ── */
+.timeline{position:relative;padding-left:28px;}
+.timeline::before{content:'';position:absolute;left:10px;top:4px;bottom:0;width:1.5px;background:var(--border);}
+.tl-item{position:relative;margin-bottom:16px;}
+.tl-dot{position:absolute;left:-22px;top:4px;width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1.5px var(--border);}
+.tl-dot.prob{background:var(--prob);}
+.tl-dot.reg{background:var(--reg);}
+.tl-dot.exp{background:var(--border2);}
+.tl-card{background:#fff;border-radius:7px;border:1px solid var(--border);padding:10px 12px;}
+.tl-card-head{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.tl-card-head .type{font-size:12px;font-weight:600;}
+.tl-card-head .dates{font-size:11px;color:var(--text3);}
+.tl-card-head .salary{margin-left:auto;font-family:'Lora',serif;font-size:12px;color:var(--reg);}
+.tl-card-actions{margin-top:8px;display:flex;gap:6px;}
+.sm-btn{padding:3px 9px;border-radius:4px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:11px;font-family:inherit;color:var(--text2);transition:.15s;}
+.sm-btn:hover{border-color:var(--navy2);color:var(--navy);}
+.sm-btn.primary{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+/* ── OVERVIEW GRID ── */
+.overview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+.ov-card{background:#fff;border-radius:8px;border:1px solid var(--border);padding:12px;cursor:pointer;transition:.15s;}
+.ov-card:hover{border-color:var(--navy2);box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.ov-name{font-size:13px;font-weight:600;margin-bottom:2px;}
+.ov-pos{font-size:11px;color:var(--text3);}
+.ov-status{margin-top:8px;display:flex;align-items:center;justify-content:space-between;}
+.ov-expiry{font-size:10.5px;color:var(--text3);}
+
+/* ── MODALS ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:.2s;}
+.overlay.show{opacity:1;pointer-events:all;}
+.modal{background:#fff;border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,.15);width:520px;max-width:95vw;max-height:90vh;overflow-y:auto;}
+.modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-head h2{font-size:15px;font-weight:600;}
+.modal-body{padding:20px;}
+.modal-foot{padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-grid.full{grid-template-columns:1fr;}
+.form-field{display:flex;flex-direction:column;gap:4px;}
+.form-field label{font-size:11px;color:var(--text3);font-weight:500;letter-spacing:.3px;}
+.form-input{padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit;color:var(--text);outline:none;transition:.15s;}
+.form-input:focus{border-color:var(--navy2);}
+.form-input.salary{font-family:'Lora',serif;font-size:15px;font-weight:500;color:var(--reg);}
+.form-section{margin-top:16px;margin-bottom:8px;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.date-row-input{display:flex;gap:6px;align-items:center;}
+.date-row-input input{flex:1;text-align:center;}
+.date-sep{color:var(--text3);font-size:13px;}
+.modal-close{background:none;border:none;cursor:pointer;font-size:18px;color:var(--text3);line-height:1;padding:2px 6px;}
+
+.btn{padding:7px 16px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-family:inherit;font-weight:500;transition:.15s;}
+.btn.primary{background:var(--navy);color:#fff;}
+.btn.primary:hover{background:var(--navy2);}
+.btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text2);}
+.btn.ghost:hover{border-color:var(--navy2);}
+.btn.danger{background:var(--exp-bg);color:var(--exp);border:1px solid #f0b0b0;}
+
+/* ── NO-CONTRACT STATE ── */
+.no-contract{background:#fff;border:2px dashed var(--border);border-radius:8px;padding:32px;text-align:center;color:var(--text3);}
+.no-contract p{margin-bottom:16px;font-size:13px;}
+
+/* ── FULL CONTRACT DOC VIEW ── */
+.contract-doc-view{background:var(--doc-bg);border:1px solid var(--border);border-top:4px solid var(--navy);border-radius:4px;padding:36px 44px;max-width:760px;margin:0 auto;font-family:'Noto Serif TC','Noto Sans TC',serif;}
+.contract-doc-view.prob-mode{border-top-color:var(--prob);}
+.contract-doc-view.reg-mode{border-top-color:var(--reg);}
+.cdv-title{font-size:18px;font-weight:600;text-align:center;color:var(--navy);letter-spacing:3px;margin-bottom:3px;}
+.cdv-sub{font-size:11px;text-align:center;color:var(--text3);font-style:italic;margin-bottom:16px;font-family:'Lora',serif;}
+.cdv-topbar{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:8px 0;margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:5px 16px;}
+.cdv-frow{display:flex;align-items:baseline;gap:4px;font-size:12px;color:var(--text2);}
+.cdv-frow label{font-weight:600;white-space:nowrap;color:var(--text);}
+.cdv-frow span{border-bottom:1px solid var(--border);flex:1;min-width:60px;padding:0 2px;color:var(--navy2);}
+.cdv-article{margin-bottom:9px;font-size:12.5px;line-height:1.7;}
+.cdv-art-title{display:flex;align-items:center;gap:7px;font-weight:600;color:var(--navy);margin-bottom:3px;font-family:'Noto Serif TC',serif;}
+.cdv-art-num{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--navy);color:#fff;font-size:9.5px;font-family:'Lora',serif;flex-shrink:0;}
+.prob-mode .cdv-art-num{background:var(--prob);}
+.reg-mode .cdv-art-num{background:var(--reg);}
+.cdv-art-body{padding-left:24px;color:var(--text2);}
+.cdv-sub-item{display:flex;gap:6px;margin-bottom:2px;line-height:1.65;}
+.cdv-sub-n{flex-shrink:0;color:var(--text3);font-size:11px;min-width:16px;}
+.cdv-extra{margin-top:12px;border:1px dashed var(--border2);border-radius:6px;padding:10px 12px;background:rgba(26,62,120,.02);}
+.cdv-extra label{font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px;}
+.cdv-extra textarea{width:100%;border:none;background:transparent;font-family:'Noto Serif TC',sans-serif;font-size:12px;color:var(--text);resize:vertical;outline:none;line-height:1.7;min-height:50px;}
+.cdv-sig{margin-top:14px;border-top:1px solid var(--border);padding-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px 40px;}
+.cdv-sig-col{display:flex;flex-direction:column;gap:8px;}
+.cdv-sig-label{font-weight:600;font-size:12px;color:var(--navy);}
+.cdv-sig-line{border-bottom:1px solid var(--border);height:26px;font-size:11px;color:var(--text3);display:flex;align-items:flex-end;padding-bottom:2px;}
+.cdv-note{font-size:10px;text-align:center;color:var(--text3);margin-top:10px;font-style:italic;}
+.cdv-toolbar{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.cdv-toolbar .label{font-size:12px;color:var(--text3);}
+.cdv-toolbar .hl{margin-left:auto;}
+/* salary/date highlight in doc */
+.doc-val{color:var(--navy2);font-weight:500;border-bottom:1px dashed var(--border2);padding:0 2px;}
+.doc-val.money{color:var(--reg);font-family:'Lora',serif;font-size:13.5px;}
+
+/* ── TERMINATION ── */
+.term-doc{background:var(--doc-bg);border:1px solid var(--border);border-top:4px solid var(--exp);border-radius:4px;padding:36px 44px;max-width:760px;margin:0 auto;font-family:'Noto Serif TC','Noto Sans TC',serif;}
+.term-title{font-size:17px;font-weight:600;text-align:center;color:var(--exp);letter-spacing:2px;margin-bottom:3px;}
+.term-sub{font-size:11px;text-align:center;color:var(--text3);font-style:italic;margin-bottom:4px;}
+.term-ref{font-size:10.5px;text-align:center;color:var(--text3);margin-bottom:16px;}
+.term-body{font-size:12.5px;line-height:1.9;color:var(--text2);margin-bottom:14px;padding:10px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.term-section{margin-bottom:10px;}
+.term-section-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;}
+.term-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;font-size:12px;}
+.term-field{display:flex;flex-direction:column;gap:2px;}
+.term-field label{font-size:10.5px;color:var(--text3);}
+.term-field .tv{font-weight:500;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:2px;}
+.term-check-list{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.term-check-list li{display:flex;align-items:center;gap:8px;font-size:12.5px;}
+.term-check-list input[type=checkbox]{width:14px;height:14px;cursor:pointer;}
+.term-notes textarea{width:100%;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-family:'Noto Serif TC',sans-serif;font-size:12px;resize:vertical;color:var(--text);background:var(--bg);outline:none;min-height:48px;}
+.term-notes textarea:focus{border-color:var(--navy2);}
+.term-sig{margin-top:14px;border-top:1px solid var(--border);padding-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px 40px;}
+.term-stamp{text-align:center;margin:10px auto;width:90px;height:90px;border:2.5px solid var(--exp);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--exp);font-size:9px;letter-spacing:.5px;opacity:.25;pointer-events:none;}
+.term-no-contract{background:#fff;border:2px dashed var(--border);border-radius:8px;padding:32px;text-align:center;color:var(--text3);font-size:13px;}
+
+/* ── IMPORT PREVIEW MODAL ── */
+.import-preview{background:var(--bg);border-radius:6px;padding:10px 12px;font-size:12px;max-height:120px;overflow-y:auto;white-space:pre-wrap;color:var(--text2);line-height:1.6;font-family:monospace;border:1px solid var(--border);}
+.import-field-group{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
+.import-field{display:flex;flex-direction:column;gap:3px;}
+.import-field label{font-size:10.5px;color:var(--text3);font-weight:500;}
+.extracted-badge{font-size:10px;padding:1px 6px;background:var(--reg-bg);color:var(--reg);border-radius:3px;margin-left:6px;}
+
+/* ── ARTICLE EDIT MODE ── */
+.art-body[contenteditable="true"]{
+  outline:2px solid var(--gold);border-radius:4px;
+  padding:4px 6px;background:rgba(184,148,10,.04);
+  cursor:text;min-height:24px;
+}
+.art-body[contenteditable="true"]:focus{
+  outline-color:var(--navy2);background:rgba(26,62,120,.04);
+}
+.art-mod-badge{
+  display:inline-flex;align-items:center;gap:3px;
+  font-size:9.5px;font-weight:600;padding:1px 6px;border-radius:3px;
+  background:rgba(184,148,10,.15);color:var(--gold);
+  cursor:pointer;margin-left:6px;border:1px solid rgba(184,148,10,.3);transition:.15s;
+}
+.art-mod-badge:hover{background:rgba(184,148,10,.3);}
+.edit-mode-hint{
+  font-size:11.5px;color:var(--gold);background:rgba(184,148,10,.08);
+  border:1px solid rgba(184,148,10,.2);border-radius:5px;
+  padding:6px 10px;margin-bottom:10px;display:flex;align-items:center;gap:6px;
+}
+#editModeBtn.active{background:var(--reg-bg)!important;color:var(--reg)!important;border:1px solid var(--reg)!important;}
+
+/* ── PRINT ADDITIONS ── */
+@media print {
+  .cdv-extra textarea{border:none;background:transparent;resize:none;}
+  .cdv-toolbar,.edit-mode-hint,.art-mod-badge{display:none!important;}
+  .term-notes textarea{border:none;background:transparent;resize:none;}
+  .term-check-list input{pointer-events:none;}
+  .art-body[contenteditable]{outline:none!important;padding:0!important;background:transparent!important;}
+}
+
+@media print{
+  body{height:auto;overflow:visible;background:#fff;}
+  .tb,.sidebar,.tab-strip,.emp-hdr,.overlay{display:none!important;}
+  .app{display:block;overflow:visible;}
+  .main,.emp-detail,.tab-body{overflow:visible;height:auto;}
+  .tab-body > *:not(.print-show){display:none!important;}
+  .print-show{display:block!important;}
+  @page{size:A4 portrait;margin:10mm 12mm;}
+  .contract-doc-view,.term-doc{box-shadow:none;border-radius:0;padding:0;max-width:100%;}
+  .contract-doc-view{border-top:2pt solid #1a3e78;font-size:9pt;line-height:1.55;}
+  .prob-mode.contract-doc-view{border-top-color:#c8621a;}
+  .reg-mode.contract-doc-view{border-top-color:#1a5c3a;}
+  .cdv-title{font-size:13pt;margin-bottom:2pt;}
+  .cdv-sub{font-size:8pt;margin-bottom:10pt;}
+  .cdv-topbar{padding:5pt 0;margin-bottom:8pt;gap:3pt 12pt;}
+  .cdv-frow{font-size:8.5pt;}
+  .cdv-article{margin-bottom:5pt;font-size:8.5pt;line-height:1.55;}
+  .cdv-art-title{font-size:8.5pt;margin-bottom:1pt;}
+  .cdv-art-num{width:13pt;height:13pt;font-size:7pt;}
+  .cdv-art-body{padding-left:16pt;}
+  .cdv-sub-item{margin-bottom:1pt;line-height:1.5;}
+  .cdv-extra{padding:5pt 8pt;margin-top:6pt;}
+  .cdv-extra label{font-size:8pt;}
+  .cdv-extra textarea{font-size:8pt;min-height:20pt;border:none;background:transparent;resize:none;}
+  .cdv-sig{margin-top:10pt;padding-top:8pt;gap:8pt 30pt;}
+  .cdv-sig-line{height:20pt;font-size:8pt;}
+  .cdv-note{font-size:7.5pt;margin-top:6pt;}
+  .cdv-toolbar,.cdv-edit-hint{display:none!important;}
+  .term-doc{border-top:2pt solid #8a1a1a;font-size:9pt;}
+  .term-title{font-size:13pt;}
+  .term-sub,.term-ref{font-size:8pt;}
+  .term-body{font-size:8.5pt;line-height:1.7;}
+  .term-section-title{font-size:8pt;}
+  .term-grid{font-size:8pt;gap:4pt 14pt;}
+  .term-check-list li{font-size:8.5pt;gap:6pt;}
+  .term-notes textarea{border:none;background:transparent;resize:none;font-size:8pt;}
+  .term-check-list input{pointer-events:none;}
+  .term-stamp{opacity:.12;}
+  .term-sig{margin-top:10pt;padding-top:8pt;}
+}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:9px 16px;border-radius:7px;font-size:12.5px;opacity:0;transform:translateY(8px);transition:.25s;pointer-events:none;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.2);}
+.toast.show{opacity:1;transform:translateY(0);}
+
+/* ── LANG HIDE ── */
+.lang-zh .en-only{display:none!important;}
+.lang-en .zh-only{display:none!important;}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+/* status notice */
+.status-row{background:var(--warn-bg);border:1px solid #e8d060;border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:var(--warn);display:flex;align-items:center;gap:8px;}
+</style>
+  <link rel="stylesheet" href="../acc-module-shell.css">
+  <script defer src="../acc-module-shell.js"></script>
+</head>
+<body class="lang-zh">
+
+<!-- TOOLBAR -->
+<div class="tb">
+  <span class="tb-brand">VRT <b>海外幹部合同</b>管理系統</span>
+  <div class="tb-sep"></div>
+  <div class="seg" id="langSeg">
+    <button class="on" onclick="setLang('zh')">中文</button>
+    <button onclick="setLang('en')">English</button>
+  </div>
+  <div class="tb-right">
+    <button class="tb-btn ghost" onclick="showOverview()">
+      <span class="zh-only">📊 全覽</span><span class="en-only">📊 Overview</span>
+    </button>
+    <label class="tb-btn ghost" style="cursor:pointer;" title="匯入Word合同自動建立人員">
+      <span class="zh-only">📥 匯入Word</span><span class="en-only">📥 Import Word</span>
+      <input type="file" accept=".doc,.docx" multiple onchange="importWordFiles(this)" style="display:none">
+    </label>
+    <button class="tb-btn ghost" onclick="exportCSV()">
+      <span class="zh-only">📋 匯出CSV</span><span class="en-only">📋 Export CSV</span>
+    </button>
+    <button class="tb-btn ghost" onclick="backupJSON()">
+      <span class="zh-only">💾 備份</span><span class="en-only">💾 Backup</span>
+    </button>
+    <label class="tb-btn ghost" style="cursor:pointer;">
+      <span class="zh-only">📂 還原</span><span class="en-only">📂 Restore</span>
+      <input type="file" accept=".json" onchange="restoreJSON(this)" style="display:none">
+    </label>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-head">
+      <h3 class="zh-only">海外幹部名單</h3>
+      <h3 class="en-only">Expatriate Staff</h3>
+      <input class="sb-search" id="searchInput" placeholder="搜尋…" oninput="renderSidebar()">
+    </div>
+    <div class="emp-list" id="empList"></div>
+    <div class="sb-foot">
+      <button class="add-emp-btn" onclick="openAddEmp()">
+        <span class="zh-only">＋ 新增人員</span>
+        <span class="en-only">＋ Add Staff</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main" id="mainArea">
+    <!-- Empty state -->
+    <div class="empty-state" id="emptyState">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><rect x="8" y="4" width="32" height="40" rx="4" stroke="currentColor" stroke-width="2"/><line x1="15" y1="14" x2="33" y2="14" stroke="currentColor" stroke-width="2"/><line x1="15" y1="20" x2="33" y2="20" stroke="currentColor" stroke-width="2"/><line x1="15" y1="26" x2="25" y2="26" stroke="currentColor" stroke-width="2"/></svg>
+      <p class="zh-only">← 從左側選取人員，或新增幹部開始</p>
+      <p class="en-only">← Select a staff member or add new expatriate</p>
+    </div>
+
+    <!-- Employee Detail (hidden until selected) -->
+    <div class="emp-detail" id="empDetail" style="display:none;">
+      <div class="emp-hdr">
+        <div class="emp-avatar">👤</div>
+        <div class="emp-hdr-info">
+          <h2 id="hdrName">—</h2>
+          <p id="hdrSub">—</p>
+        </div>
+        <div class="emp-hdr-actions">
+          <button class="act-btn" onclick="openEditEmp()">
+            <span class="zh-only">✏️ 編輯資料</span><span class="en-only">✏️ Edit</span>
+          </button>
+          <button class="act-btn fill" onclick="openNewContract()" id="newContractBtn">
+            <span class="zh-only">📄 建立合同</span><span class="en-only">📄 New Contract</span>
+          </button>
+          <button class="act-btn" onclick="openTermModal()" id="termBtn" style="display:none">
+            <span class="zh-only">🔴 解除合同</span><span class="en-only">🔴 Terminate</span>
+          </button>
+          <button class="act-btn" onclick="smartPrint()" id="printBtn" style="display:none">
+            <span class="zh-only">🖨️ 列印</span><span class="en-only">🖨️ Print</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="tab-strip">
+        <button class="tab on" data-tab="contract" onclick="switchTab('contract')">
+          <span class="zh-only">📄 摘要</span><span class="en-only">📄 Summary</span>
+        </button>
+        <button class="tab" data-tab="fulltext" onclick="switchTab('fulltext')">
+          <span class="zh-only">📜 全文合同</span><span class="en-only">📜 Full Contract</span>
+        </button>
+        <button class="tab" data-tab="history" onclick="switchTab('history')">
+          <span class="zh-only">📋 合同歷史</span><span class="en-only">📋 History</span>
+        </button>
+        <button class="tab" data-tab="termination" onclick="switchTab('termination')">
+          <span class="zh-only">🔴 解除聲明</span><span class="en-only">🔴 Termination</span>
+        </button>
+      </div>
+
+      <div class="tab-body" id="tabBody">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Overview (separate screen) -->
+    <div id="overviewScreen" style="display:none;flex:1;overflow-y:auto;padding:20px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <h2 style="font-size:16px;font-weight:600;" class="zh-only">全體幹部狀態概覽</h2>
+        <h2 style="font-size:16px;font-weight:600;" class="en-only">All Expatriate Staff Overview</h2>
+        <button class="act-btn" onclick="hideOverview()">✕ <span class="zh-only">關閉</span><span class="en-only">Close</span></button>
+      </div>
+      <div class="overview-grid" id="overviewGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: Add/Edit Employee ── -->
+<div class="overlay" id="empModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="empModalTitle">新增幹部</h2>
+      <button class="modal-close" onclick="closeModal('empModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="zh-only">姓名 *</label><label class="en-only">Full Name *</label>
+          <input class="form-input" id="fName" placeholder="e.g. 張大明 / Zhang Daming">
+        </div>
+        <div class="form-field">
+          <label class="zh-only">護照號碼 *</label><label class="en-only">Passport No. *</label>
+          <input class="form-input" id="fPassport" placeholder="e.g. T12345678" style="text-transform:uppercase">
+        </div>
+        <div class="form-field">
+          <label class="zh-only">職位 *</label><label class="en-only">Position *</label>
+          <input class="form-input" id="fPosition" placeholder="e.g. 生產經理 / Production Manager">
+        </div>
+        <div class="form-field">
+          <label class="zh-only">國籍</label><label class="en-only">Nationality</label>
+          <input class="form-input" id="fNationality" placeholder="e.g. 台灣 / Taiwan">
+        </div>
+        <div class="form-field" style="grid-column:span 2">
+          <label class="zh-only">備註</label><label class="en-only">Notes</label>
+          <input class="form-input" id="fNotes" placeholder="...">
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot" style="justify-content:space-between;">
+      <div>
+        <button class="btn danger" id="deleteEmpBtn" style="display:none" onclick="deleteEmployee()">
+          <span class="zh-only">🗑 刪除此人員</span><span class="en-only">🗑 Delete Staff</span>
+        </button>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn ghost" onclick="closeModal('empModal')">
+          <span class="zh-only">取消</span><span class="en-only">Cancel</span>
+        </button>
+        <button class="btn primary" onclick="saveEmployee()">
+          <span class="zh-only">儲存</span><span class="en-only">Save</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: New/Edit Contract ── -->
+<div class="overlay" id="contractModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="contractModalTitle">建立合同</h2>
+      <button class="modal-close" onclick="closeModal('contractModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-section zh-only">合同類型</div>
+      <div class="form-section en-only">Contract Type</div>
+      <div class="seg" id="ctypeSeg" style="width:fit-content;background:var(--bg);">
+        <button class="on" id="ctypeProb" onclick="selectCtype('probation')">
+          🔶 <span class="zh-only">試用期（6個月）</span><span class="en-only">Probation (6 mo)</span>
+        </button>
+        <button id="ctypeReg" onclick="selectCtype('regular')">
+          ✅ <span class="zh-only">正式合約（1年）</span><span class="en-only">Regular (1 yr)</span>
+        </button>
+      </div>
+
+      <div class="form-section zh-only" style="margin-top:16px;">合同期間</div>
+      <div class="form-section en-only" style="margin-top:16px;">Contract Period</div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="zh-only">起始日期</label><label class="en-only">Start Date</label>
+          <div class="date-row-input">
+            <input class="form-input" id="cStartY" placeholder="2025" maxlength="4" style="width:60px;flex:none;">
+            <span class="date-sep zh-only">年</span><span class="date-sep en-only">/</span>
+            <input class="form-input" id="cStartM" placeholder="01" maxlength="2" style="width:44px;flex:none;">
+            <span class="date-sep zh-only">月</span><span class="date-sep en-only">/</span>
+            <input class="form-input" id="cStartD" placeholder="01" maxlength="2" style="width:44px;flex:none;">
+            <span class="date-sep zh-only">日</span>
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="zh-only">終止日期</label><label class="en-only">End Date</label>
+          <div class="date-row-input">
+            <input class="form-input" id="cEndY" placeholder="2025" maxlength="4" style="width:60px;flex:none;">
+            <span class="date-sep zh-only">年</span><span class="date-sep en-only">/</span>
+            <input class="form-input" id="cEndM" placeholder="07" maxlength="2" style="width:44px;flex:none;">
+            <span class="date-sep zh-only">月</span><span class="date-sep en-only">/</span>
+            <input class="form-input" id="cEndD" placeholder="01" maxlength="2" style="width:44px;flex:none;">
+            <span class="date-sep zh-only">日</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section zh-only" style="margin-top:16px;">薪資</div>
+      <div class="form-section en-only" style="margin-top:16px;">Salary</div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>USD / <span class="zh-only">月</span><span class="en-only">month</span></label>
+          <input class="form-input salary" id="cSalary" placeholder="1850" type="number" min="0">
+        </div>
+        <div class="form-field">
+          <label class="zh-only">簽署地點</label><label class="en-only">Signing Location</label>
+          <input class="form-input" id="cLocation" placeholder="柬埔寨西哈努克市" value="柬埔寨西哈努克市">
+        </div>
+      </div>
+
+      <div class="form-section zh-only" style="margin-top:16px;">甲方簽署（公司代表）</div>
+      <div class="form-section en-only" style="margin-top:16px;">Party A Signature (Company)</div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="zh-only">代表人姓名</label><label class="en-only">Representative</label>
+          <input class="form-input" id="cRepName" placeholder="公司授權代表">
+        </div>
+        <div class="form-field">
+          <label class="zh-only">簽署日期</label><label class="en-only">Date Signed</label>
+          <div class="date-row-input">
+            <input class="form-input" id="cSigY" placeholder="2025" maxlength="4" style="width:60px;flex:none;">
+            <span class="date-sep en-only">/</span><span class="date-sep zh-only">年</span>
+            <input class="form-input" id="cSigM" placeholder="01" maxlength="2" style="width:44px;flex:none;">
+            <span class="date-sep en-only">/</span><span class="date-sep zh-only">月</span>
+            <input class="form-input" id="cSigD" placeholder="01" maxlength="2" style="width:44px;flex:none;">
+            <span class="date-sep zh-only">日</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot" style="justify-content:space-between">
+      <div>
+        <button class="btn danger" id="deleteContractBtn" onclick="deleteContract()" style="display:none">
+          <span class="zh-only">🗑 刪除此合同</span><span class="en-only">🗑 Delete</span>
+        </button>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn ghost" onclick="closeModal('contractModal')">
+          <span class="zh-only">取消</span><span class="en-only">Cancel</span>
+        </button>
+        <button class="btn primary" onclick="saveContract()">
+          <span class="zh-only">儲存</span><span class="en-only">Save</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: Word Import Preview ── -->
+<div class="overlay" id="importModal">
+  <div class="modal" style="width:580px;">
+    <div class="modal-head">
+      <h2 id="importModalTitle" class="zh-only">匯入Word合同 — 解析結果</h2>
+      <h2 id="importModalTitleEn" class="en-only">Import Word Contract — Parsed Data</h2>
+      <button class="modal-close" onclick="closeModal('importModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:8px;" class="zh-only">以下為從Word文件中解析出的資訊，請確認後儲存。</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:8px;" class="en-only">Below is data parsed from the Word document. Please review and save.</div>
+      <div id="importPreviewText" class="import-preview" style="margin-bottom:12px;"></div>
+      <div class="import-field-group">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div class="import-field">
+            <label class="zh-only">姓名 <span id="nameBadge" class="extracted-badge" style="display:none">自動解析</span></label>
+            <label class="en-only">Name</label>
+            <input class="form-input" id="impName" placeholder="手動輸入">
+          </div>
+          <div class="import-field">
+            <label class="zh-only">護照號碼</label><label class="en-only">Passport No.</label>
+            <input class="form-input" id="impPass" placeholder="手動輸入" style="text-transform:uppercase">
+          </div>
+          <div class="import-field">
+            <label class="zh-only">職位</label><label class="en-only">Position</label>
+            <input class="form-input" id="impPos" placeholder="手動輸入">
+          </div>
+          <div class="import-field">
+            <label class="zh-only">國籍</label><label class="en-only">Nationality</label>
+            <input class="form-input" id="impNat" placeholder="e.g. 台灣">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:auto 1fr 1fr;gap:10px;align-items:end;margin-top:4px;">
+          <div class="import-field">
+            <label class="zh-only">合同類型</label><label class="en-only">Type</label>
+            <select class="form-input" id="impType">
+              <option value="probation">試用期</option>
+              <option value="regular">正式合約</option>
+            </select>
+          </div>
+          <div class="import-field">
+            <label class="zh-only">月薪 (USD)</label><label class="en-only">Salary USD</label>
+            <input class="form-input salary" id="impSalary" type="number" placeholder="1850">
+          </div>
+          <div class="import-field">
+            <label class="zh-only">起始日期 (YYYY-MM-DD)</label><label class="en-only">Start Date</label>
+            <input class="form-input" id="impStart" placeholder="2025-01-01">
+          </div>
+        </div>
+        <div id="importMultiHint" style="display:none;background:var(--navy3);border-radius:5px;padding:7px 10px;font-size:11.5px;color:var(--navy2);"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeModal('importModal')">
+        <span class="zh-only">略過</span><span class="en-only">Skip</span>
+      </button>
+      <button class="btn primary" onclick="confirmImport()">
+        <span class="zh-only">✅ 建立人員 + 合同</span><span class="en-only">✅ Create Staff + Contract</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: Termination Form ── -->
+<div class="overlay" id="termModal">
+  <div class="modal" style="width:560px;">
+    <div class="modal-head">
+      <h2 class="zh-only">填寫解除合同聲明</h2>
+      <h2 class="en-only">Fill Termination Notice</h2>
+      <button class="modal-close" onclick="closeModal('termModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-section zh-only">解除原因</div>
+      <div class="form-section en-only">Reason for Termination</div>
+      <select class="form-input" id="tReason" style="width:100%">
+        <option value="exp_norenewal">合同期滿，雙方同意不予續簽 / Contract expired, mutual non-renewal</option>
+        <option value="prob_nopromote">試用期屆滿，甲方決定不予轉正 / Probation ended, not converted</option>
+        <option value="mutual_early">雙方協議提前解除合同 / Early termination by mutual agreement</option>
+        <option value="company_art4">公司依合同第四條終止合同 / Company termination per Article 4</option>
+        <option value="resign">乙方主動申請離職 / Employee resignation</option>
+        <option value="misconduct">違規行為，公司決定遣返 / Misconduct, repatriation ordered</option>
+      </select>
+
+      <div class="form-section zh-only" style="margin-top:14px;">關鍵日期</div>
+      <div class="form-section en-only" style="margin-top:14px;">Key Dates</div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="zh-only">實際解除/最後工作日</label><label class="en-only">Actual Last Working Day</label>
+          <input class="form-input" id="tLastDay" placeholder="2025-07-14">
+        </div>
+        <div class="form-field">
+          <label class="zh-only">聲明書簽署日期</label><label class="en-only">Notice Signed Date</label>
+          <input class="form-input" id="tSignDate" placeholder="2025-07-01">
+        </div>
+      </div>
+
+      <div class="form-section zh-only" style="margin-top:14px;">財務結算</div>
+      <div class="form-section en-only" style="margin-top:14px;">Financial Settlement</div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="zh-only">薪資結算至（日期）</label><label class="en-only">Salary settled to</label>
+          <input class="form-input" id="tSalaryTo" placeholder="2025-07-14">
+        </div>
+        <div class="form-field">
+          <label class="zh-only">應付薪資 (USD)</label><label class="en-only">Final salary owed (USD)</label>
+          <input class="form-input salary" id="tSalaryAmt" type="number" placeholder="0">
+        </div>
+      </div>
+
+      <div class="form-section zh-only" style="margin-top:14px;">交接事宜</div>
+      <div class="form-section en-only" style="margin-top:14px;">Handover Items</div>
+      <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:10px;">
+        <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;cursor:pointer;">
+          <input type="checkbox" id="tTicket" checked> <span class="zh-only">甲方提供回程機票</span><span class="en-only">Party A to provide return ticket</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;cursor:pointer;">
+          <input type="checkbox" id="tVisa" checked> <span class="zh-only">商務簽證/工作簽 取消日期：</span><span class="en-only">Work visa/permit cancellation date:</span>
+          <input class="form-input" id="tVisaDate" placeholder="離職後3天" style="width:120px;flex:none;">
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;cursor:pointer;">
+          <input type="checkbox" id="tDorm"> <span class="zh-only">宿舍退房日期：</span><span class="en-only">Accommodation vacate date:</span>
+          <input class="form-input" id="tDormDate" placeholder="最後工作日當天" style="width:130px;flex:none;">
+        </label>
+      </div>
+
+      <div class="form-field">
+        <label class="zh-only" style="font-size:11px;color:var(--text3);font-weight:500;">補充說明 / Additional Notes</label>
+        <label class="en-only" style="font-size:11px;color:var(--text3);font-weight:500;">Additional Notes</label>
+        <textarea class="form-input" id="tNotes" rows="2" style="resize:vertical;font-size:12px;" placeholder="..."></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeModal('termModal')">
+        <span class="zh-only">取消</span><span class="en-only">Cancel</span>
+      </button>
+      <button class="btn primary" onclick="saveTermination()">
+        <span class="zh-only">產生聲明書預覽</span><span class="en-only">Generate Notice</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════
+//  DATA LAYER
+// ═══════════════════════════════════════════
+const EKEY='vrt_employees', CKEY='vrt_contracts', TKEY='vrt_terminations';
+let employees={}, contracts={}, terminations={};
+let selectedEmpId=null, currentTab='contract', currentLang='zh';
+let editingEmpId=null, editingContractId=null, modalContractType='probation';
+let importQueue=[], importQueueIdx=0;
+let currentTermination=null; // live termination form data for the termination tab
+
+function load(){
+  try{employees=JSON.parse(localStorage.getItem(EKEY)||'{}');}catch(e){}
+  try{contracts=JSON.parse(localStorage.getItem(CKEY)||'{}');}catch(e){}
+  try{terminations=JSON.parse(localStorage.getItem(TKEY)||'{}');}catch(e){}
+}
+function save(){
+  localStorage.setItem(EKEY,JSON.stringify(employees));
+  localStorage.setItem(CKEY,JSON.stringify(contracts));
+  localStorage.setItem(TKEY,JSON.stringify(terminations));
+}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+
+// ═══════════════════════════════════════════
+//  STATUS HELPERS
+// ═══════════════════════════════════════════
+function getLatestContract(empId){
+  return Object.values(contracts).filter(c=>c.empId===empId)
+    .sort((a,b)=>b.createdAt.localeCompare(a.createdAt))[0]||null;
+}
+function getEmpContracts(empId){
+  return Object.values(contracts).filter(c=>c.empId===empId)
+    .sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+}
+function getEmpTermination(empId){
+  return Object.values(terminations).filter(t=>t.empId===empId)
+    .sort((a,b)=>b.createdAt.localeCompare(a.createdAt))[0]||null;
+}
+function calcStatus(contract){
+  if(!contract)return{key:'none',label:{zh:'無合同',en:'No Contract'},daysLeft:null};
+  const today=new Date(); today.setHours(0,0,0,0);
+  const end=new Date(contract.endDate);
+  const diff=Math.round((end-today)/86400000);
+  if(diff<0)return{key:'exp',label:{zh:'已到期',en:'Expired'},daysLeft:diff};
+  if(diff<=30)return{key:'warn',label:{zh:`還剩${diff}天到期`,en:`${diff}d left`},daysLeft:diff};
+  if(contract.type==='probation')return{key:'prob',label:{zh:'試用中',en:'Probation'},daysLeft:diff};
+  return{key:'reg',label:{zh:'正式合同',en:'Active'},daysLeft:diff};
+}
+function statusBadgeHTML(status){
+  const cls={prob:'badge-prob',reg:'badge-reg',warn:'badge-warn',exp:'badge-exp',none:'badge-none'};
+  const label=currentLang==='zh'?status.label.zh:status.label.en;
+  return`<span class="emp-badge ${cls[status.key]||'badge-none'}">${label}</span>`;
+}
+function formatDate(dateStr){
+  if(!dateStr)return'—';
+  const d=new Date(dateStr); if(isNaN(d))return dateStr;
+  return`${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;
+}
+function pad2(n){return String(n).padStart(2,'0');}
+
+// ═══════════════════════════════════════════
+//  RENDER: SIDEBAR
+// ═══════════════════════════════════════════
+function renderSidebar(){
+  const q=(document.getElementById('searchInput').value||'').toLowerCase();
+  const list=document.getElementById('empList');
+  const emps=Object.values(employees)
+    .filter(e=>!q||e.name.toLowerCase().includes(q)||e.position.toLowerCase().includes(q))
+    .sort((a,b)=>a.name.localeCompare(b.name));
+  if(!emps.length){
+    list.innerHTML=`<div style="text-align:center;color:var(--text3);padding:20px;font-size:12px;">${currentLang==='zh'?'尚無人員':'No staff added'}</div>`;
+    return;
+  }
+  const clsMap={prob:'badge-prob',reg:'badge-reg',warn:'badge-warn',exp:'badge-exp',none:'badge-none'};
+  list.innerHTML=emps.map(e=>{
+    const lc=getLatestContract(e.id), st=calcStatus(lc), isActive=e.id===selectedEmpId;
+    const label=currentLang==='zh'?st.label.zh:st.label.en;
+    return`<div class="emp-card${isActive?' active':''}" onclick="selectEmp('${e.id}')">
+      <div class="emp-name">${e.name}</div>
+      <div class="emp-pos">${e.position}</div>
+      <span class="emp-badge ${clsMap[st.key]}">${label}</span>
+      ${st.daysLeft!==null&&st.daysLeft>=0?`<span class="emp-days">${st.daysLeft}d</span>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════
+//  SELECT EMPLOYEE
+// ═══════════════════════════════════════════
+function selectEmp(id){
+  selectedEmpId=id; currentTab='contract';
+  document.getElementById('overviewScreen').style.display='none';
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('empDetail').style.display='flex';
+  renderSidebar(); renderDetail();
+}
+
+function renderDetail(){
+  const e=employees[selectedEmpId]; if(!e)return;
+  document.getElementById('hdrName').textContent=e.name;
+  document.getElementById('hdrSub').textContent=`${e.position}${e.nationality?' · '+e.nationality:''}${e.passport?' · 護照：'+e.passport:''}`;
+  const lc=getLatestContract(selectedEmpId), st=calcStatus(lc);
+  const nb=document.getElementById('newContractBtn');
+  const pb=document.getElementById('printBtn');
+  const tb=document.getElementById('termBtn');
+  if(!lc){
+    nb.innerHTML=`<span class="zh-only">📄 建立試用期合同</span><span class="en-only">📄 Create Probation</span>`;
+    nb.className='act-btn fill'; pb.style.display='none'; tb.style.display='none';
+  } else if(lc.type==='probation'&&st.key!=='exp'){
+    nb.innerHTML=`<span class="zh-only">✅ 辦理轉正</span><span class="en-only">✅ Convert to Regular</span>`;
+    nb.className='act-btn reg'; pb.style.display=''; tb.style.display='';
+  } else {
+    nb.innerHTML=`<span class="zh-only">🔄 辦理續簽</span><span class="en-only">🔄 Renew</span>`;
+    nb.className='act-btn warn-btn'; pb.style.display=''; tb.style.display='';
+  }
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===currentTab));
+  renderTabContent();
+}
+
+// ═══════════════════════════════════════════
+//  SMART PRINT (tab-aware)
+// ═══════════════════════════════════════════
+function smartPrint(){
+  if(currentTab==='termination'){printTermination();}
+  else{
+    // Find which contract is currently shown
+    const wrap=document.getElementById('fullContractWrap');
+    if(wrap&&currentTab==='fulltext'){
+      // already rendered, just add class and print
+      wrap.classList.add('print-show');
+      setTimeout(()=>{window.print();wrap.classList.remove('print-show');},150);
+    } else {
+      printCurrentContract();
+    }
+  }
+}
+
+// ═══════════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════════
+function switchTab(tab){
+  currentTab=tab;
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+  const pb=document.getElementById('printBtn');
+  const lc=getLatestContract(selectedEmpId);
+  if(pb){
+    // Always show print on fulltext/termination; on others only if contract exists
+    pb.style.display=(tab==='fulltext'||tab==='termination'||lc)?'':'none';
+  }
+  renderTabContent();
+}
+
+function renderTabContent(){
+  const body=document.getElementById('tabBody');
+  if(currentTab==='contract') body.innerHTML=renderContractTab();
+  else if(currentTab==='fulltext') body.innerHTML=renderFullTextTab();
+  else if(currentTab==='history') body.innerHTML=renderHistoryTab();
+  else if(currentTab==='termination') body.innerHTML=renderTerminationTab();
+}
+
+// ── SUMMARY TAB ──
+function renderContractTab(){
+  const lc=getLatestContract(selectedEmpId);
+  if(!lc)return`<div class="no-contract"><p>${currentLang==='zh'?'此幹部尚無合同記錄。':'No contract on record.'}</p><button class="btn primary" onclick="openNewContract()">${currentLang==='zh'?'建立第一份試用期合同':'Create First Probation Contract'}</button></div>`;
+  const st=calcStatus(lc);
+  const typeLabel=lc.type==='probation'?(currentLang==='zh'?'試用期合同':'Probation'):(currentLang==='zh'?'正式合同':'Regular');
+  const allC=getEmpContracts(selectedEmpId), cn=allC.length;
+  const clsMap={prob:'badge-prob',reg:'badge-reg',warn:'badge-warn',exp:'badge-exp',none:'badge-none'};
+  let notice='';
+  if(st.key==='warn') notice=`<div class="status-row">⚠️ ${currentLang==='zh'?`合同將於 ${formatDate(lc.endDate)} 到期，剩餘 ${st.daysLeft} 天。`:`Contract expires ${formatDate(lc.endDate)}, ${st.daysLeft} days left.`}</div>`;
+  else if(st.key==='exp') notice=`<div class="status-row" style="background:var(--exp-bg);border-color:#f0b0b0;color:var(--exp);">🔴 ${currentLang==='zh'?`合同已於 ${formatDate(lc.endDate)} 到期。`:`Contract expired ${formatDate(lc.endDate)}.`}</div>`;
+  return`${notice}<div class="contract-card">
+    <div class="cc-head">
+      <span class="emp-badge ${clsMap[st.key]}" style="font-size:12px;padding:3px 10px;">${typeLabel}</span>
+      <span class="days-pill ${clsMap[st.key]}">${currentLang==='zh'?(st.daysLeft>=0?`剩 ${st.daysLeft} 天`:'已到期'):(st.daysLeft>=0?`${st.daysLeft}d left`:'Expired')}</span>
+    </div>
+    <div class="cc-fields">
+      <div class="cc-field"><label>${currentLang==='zh'?'起始日':'Start'}</label><div class="val">${formatDate(lc.startDate)}</div></div>
+      <div class="cc-field"><label>${currentLang==='zh'?'終止日':'End'}</label><div class="val">${formatDate(lc.endDate)}</div></div>
+      <div class="cc-field"><label>${currentLang==='zh'?'月薪':'Salary'}</label><div class="val money">USD ${Number(lc.salary||0).toLocaleString()}</div></div>
+      <div class="cc-field"><label>${currentLang==='zh'?'簽署代表':'Signed by'}</label><div class="val">${lc.repName||'—'}</div></div>
+      <div class="cc-field"><label>${currentLang==='zh'?'簽署日期':'Date Signed'}</label><div class="val">${formatDate(lc.sigDate)}</div></div>
+      <div class="cc-field"><label>${currentLang==='zh'?'合同份數':'Contracts'}</label><div class="val">${cn} ${currentLang==='zh'?'份':''}</div></div>
+    </div>
+    <div class="cc-actions">
+      <button class="act-btn" onclick="openEditContract('${lc.id}')">✏️ ${currentLang==='zh'?'編輯':'Edit'}</button>
+      <button class="act-btn" onclick="switchTab('fulltext')">📜 ${currentLang==='zh'?'查看全文':'Full Text'}</button>
+      <button class="act-btn fill" onclick="printCurrentContract()">🖨️ ${currentLang==='zh'?'列印合同':'Print'}</button>
+    </div>
+  </div>`;
+}
+
+// ── FULL TEXT TAB ──
+function renderFullTextTab(){
+  const lc=getLatestContract(selectedEmpId);
+  if(!lc)return`<div class="no-contract"><p>${currentLang==='zh'?'尚無合同，無法顯示全文。':'No contract to display.'}</p><button class="btn primary" onclick="openNewContract()">${currentLang==='zh'?'建立合同':'Create Contract'}</button></div>`;
+  return buildFullContractHTML(lc.id, false);
+}
+
+function buildFullContractHTML(contractId, forPrint){
+  const c=contracts[contractId], e=employees[c.empId];
+  if(!c||!e)return'';
+  const zh=currentLang==='zh', isProbation=c.type==='probation';
+  const modeClass=isProbation?'prob-mode':'reg-mode';
+  const extraKey=`vrt_extra_${contractId}`;
+  const savedExtra=localStorage.getItem(extraKey)||'';
+
+  const termType=zh?(isProbation?'雇用合同（試用期）':'雇用合同（正式）'):(isProbation?'Employment Contract (Probation)':'Employment Contract (Regular)');
+  const subTitle='Vantage River Textiles Co., Ltd. — Sihanoukville, Cambodia';
+
+  // Article texts
+  const probT1=zh?`試用期為 <strong>6個月</strong>，自 <span class="doc-val">${formatDate(c.startDate)}</span> 至 <span class="doc-val">${formatDate(c.endDate)}</span>。試用期滿，甲方依乙方表現決定是否轉為正式合同（每年一簽）。`
+    :`Probation is <strong>6 months</strong>, from <span class="doc-val">${formatDate(c.startDate)}</span> to <span class="doc-val">${formatDate(c.endDate)}</span>. Upon expiry, Party A will determine whether to convert to a regular annual contract based on performance.`;
+  const regT1=zh?`合同雇用期限為 <strong>一年</strong>，自 <span class="doc-val">${formatDate(c.startDate)}</span> 至 <span class="doc-val">${formatDate(c.endDate)}</span>。合同期滿依甲乙雙方協議決定是否續約，每年一簽。`
+    :`Contract term is <strong>1 year</strong>, from <span class="doc-val">${formatDate(c.startDate)}</span> to <span class="doc-val">${formatDate(c.endDate)}</span>. Renewal is subject to mutual agreement, annual basis.`;
+  const probS52=zh?`試用期屆滿前 <strong>10天</strong>，雙方須就是否轉正提出協商。不轉正者，甲方提供回程機票，並於乙方離職後3天內取消其工作簽及工作證。`
+    :`At least <strong>10 days</strong> before probation ends, both parties shall negotiate regarding conversion. If not converting, Party A provides a return ticket and cancels visa/permit within 3 days of departure.`;
+  const regS52=zh?`合同到期前 <strong>1個月</strong>，雙方須就是否續約提出協商。不續約者，甲方提供回程機票，並於乙方離職後3天內取消其工作簽及工作證。`
+    :`At least <strong>1 month</strong> before expiry, both parties shall negotiate renewal. If not renewing, Party A provides a return ticket and cancels visa/permit within 3 days of departure.`;
+  const probS54=zh?'任何一方違約，違約方須支付因此產生之相關費用。'
+    :'Any breaching party shall bear all related costs.';
+  const regS54=zh?'任何一方違約，違約方須支付因此產生之相關費用。工齡未滿2年依FDC（定期合約工）標準；2年以上依UDC（無固定期限合約）標準處理。'
+    :'Any breaching party shall bear all costs. Tenure under 2 years: FDC terms. 2+ years: UDC terms.';
+
+  const arts=zh?[
+    {t:'合同期限',body:isProbation?probT1:regT1},
+    {t:'工作職責',body:'乙方受聘期間為甲方正式員工，服從甲方工作安排及管理；甲方依乙方能力選派適當職務，並尊重乙方之人格與生活習慣。'},
+    {t:'薪酬與福利',subs:[
+      '乙方依公司規定時間上下班，實行責任工作制。',
+      `${isProbation?'試用期':'合同生效後'}月薪：<span class="doc-val money">USD ${Number(c.salary||0).toLocaleString()} 元/月</span>。${isProbation?'':'依工作表現及職責調整薪酬。'}`,
+      '甲方免費提供住宿、水電及伙食。乙方須遵守工廠規定；拒絕合理安排造成損失，視同違約，費用由乙方自負。',
+      '乙方享有當地政府核訂之有薪節假日；甲方負擔稅費及工作簽證相關費用。',
+      '乙方如需提前返國或解約，須書面告知甲方並取得核可；返國費用由乙方自負。'
+    ]},
+    {t:'違約與終止',body:'乙方有下列情形之一者，甲方得予以遣返或終止合同，相關費用及損失均由乙方負擔：',subs:[
+      '違反當地法律法規或不尊重當地風俗文化。',
+      '違反公司規章制度。',
+      '未經甲方書面同意，私自兼職或更換工作。',
+      '拒絕履行或故意破壞本合同條款。',
+      '因表現不佳或不服從上級合理指示，累計受 3 次書面警告。'
+    ]},
+    {t:'合同效力、續約與假期',subs:[
+      '本合同由甲乙雙方代表簽字後即日生效，中英文版具同等法律效力。',
+      isProbation?probS52:regS52,
+      '乙方享有有薪年假（依外藉休假規定）。逾假不歸，甲方得按情節扣薪。如乙方選擇當地放假或因公無法休假，甲方按財務核定金額支付往返機票費。',
+      isProbation?probS54:regS54
+    ]},
+    {t:'仲裁',body:'因執行或解釋本合同所生之爭議，雙方應先協商解決；協商不成，提交<strong>柬埔寨西港地方法院</strong>仲裁，裁定具終局性並對雙方具有約束力，仲裁費用由敗訴方負擔。'},
+    {t:'補充與修改',body:'本合同如需補充或修改，須雙方代表書面同意並簽字後生效，具有與本合同同等之法律效力。本合同一式兩份，甲乙雙方各執一份。'}
+  ]:[
+    {t:'Contract Term',body:isProbation?probT1:regT1},
+    {t:'Duties & Management',body:"Party B is a full employee of Party A during the contract period, subject to management and work arrangements. Party A shall assign roles suited to Party B's competencies and respect Party B's personal dignity."},
+    {t:'Compensation & Benefits',subs:[
+      'Party B shall observe company working hours and operate under an accountability-based work system.',
+      `Monthly salary: <span class="doc-val money">USD ${Number(c.salary||0).toLocaleString()}/month</span>.${isProbation?'':' Salary may be adjusted based on performance.'}`,
+      "Party A provides accommodation, water, electricity, and meals free of charge. Refusal of reasonable arrangements causing losses constitutes a breach; related costs borne by Party B.",
+      "Party B is entitled to paid public holidays as stipulated by local government. Party A bears taxes and work visa costs.",
+      "If Party B needs to return home early or terminate early, written approval from Party A is required; all repatriation costs borne by Party B."
+    ]},
+    {t:'Breach & Termination',body:'Party A may repatriate or terminate the contract if Party B commits any of the following; costs shall be borne by Party B:',subs:[
+      'Disobeys local laws or disrespects local customs and culture.',
+      'Fails to comply with company rules and regulations.',
+      "Engages in outside employment or changes jobs without Party A's written consent.",
+      'Refuses to perform or deliberately violates the contract terms.',
+      'Receives 3 written warnings for poor performance or failure to follow reasonable instructions.'
+    ]},
+    {t:'Validity, Renewal & Leave',subs:[
+      'This contract takes effect upon signature by both parties. Both Chinese and English versions carry equal legal force.',
+      isProbation?probS52:regS52,
+      "Party B is entitled to paid annual leave (per Expat Leave Policy). Overstaying may result in salary deduction. If Party B opts for local leave or cannot take leave due to work, Party A reimburses round-trip airfare at Finance-approved rate.",
+      isProbation?probS54:regS54
+    ]},
+    {t:'Arbitration',body:'All disputes shall first be resolved by negotiation. If unsuccessful, disputes shall be submitted to the <strong>Sihanoukville Provincial Court of Cambodia</strong> for final and binding arbitration; costs borne by the losing party.'},
+    {t:'Amendments',body:'Any supplement or amendment requires written agreement and signatures from both parties. This contract is made in duplicate; each party retains one copy.'}
+  ];
+
+  const artHTML=arts.map((a,i)=>{
+    const overrideKey=`vrt_art_${contractId}_${zh?'zh':'en'}_${i}`;
+    const customContent=localStorage.getItem(overrideKey);
+    const isModified=!!customContent;
+
+    let defaultBody='';
+    if(a.body) defaultBody+=`${a.body}`;
+    if(a.subs){
+      const nums=['①','②','③','④','⑤'];
+      defaultBody+=a.subs.map((s,j)=>`<div class="cdv-sub-item"><span class="cdv-sub-n">${nums[j]||`${j+1}.`}</span><span>${s}</span></div>`).join('');
+    }
+    const displayContent=customContent||defaultBody;
+    const modBadge=isModified?`<span class="art-mod-badge" onclick="resetArticle('${contractId}','${zh?'zh':'en'}',${i})" title="${zh?'點擊恢復此條預設文字':'Click to reset this article'}">↩ ${zh?'已修改':'Modified'}</span>`:'';
+
+    return`<div class="cdv-article">
+      <div class="cdv-art-title"><span class="cdv-art-num">${i+1}</span><span>${a.t}</span>${modBadge}</div>
+      <div class="cdv-art-body art-body"
+           id="art_${contractId}_${zh?'zh':'en'}_${i}"
+           data-cid="${contractId}" data-lang="${zh?'zh':'en'}" data-idx="${i}"
+           data-default="${encodeURIComponent(defaultBody)}"
+           contenteditable="false"
+           oninput="saveArticleOverride(this)"
+      >${displayContent}</div>
+    </div>`;
+  }).join('');
+
+  const sigDate=c.sigDate?formatDate(c.sigDate):'____/__/__';
+  const hasAnyOverride=(()=>{
+    const lang=zh?'zh':'en';
+    for(let i=0;i<7;i++){if(localStorage.getItem(`vrt_art_${contractId}_${lang}_${i}`))return true;}
+    return false;
+  })();
+  const toolbar=forPrint?'':`<div class="cdv-toolbar">
+    <span class="label">${zh?'合同全文':'Full Contract'}</span>
+    <div class="hl" style="display:flex;gap:6px;flex-wrap:wrap;">
+      <button class="sm-btn" id="editModeBtn" onclick="toggleEditMode('${contractId}')">✏️ ${zh?'編輯條款':'Edit Articles'}</button>
+      ${hasAnyOverride?`<button class="sm-btn" style="color:var(--prob);border-color:var(--prob);" onclick="resetAllArticles('${contractId}','${zh?'zh':'en'}')">↩ ${zh?'全部恢復預設':'Reset All'}</button>`:''}
+      <button class="sm-btn" onclick="openEditContract('${contractId}')">📝 ${zh?'改薪資/日期':'Edit Fields'}</button>
+      <button class="sm-btn primary" onclick="printFullText('${contractId}')">🖨️ ${zh?'列印':'Print'}</button>
+    </div>
+  </div>`;
+
+  return`<div id="fullContractWrap">
+  ${toolbar}
+  <div class="contract-doc-view ${modeClass}" id="contractDocView">
+    <div class="cdv-title">${termType}</div>
+    <div class="cdv-sub">${subTitle}</div>
+    <div class="cdv-topbar">
+      <div class="cdv-frow"><label>${zh?'甲方（公司）：':'Party A:'}&nbsp;</label><span>Vantage River Textiles Co., Ltd. (VRT)</span></div>
+      <div class="cdv-frow"><label>${zh?'乙方姓名：':'Party B:'}&nbsp;</label><span>${e.name}</span></div>
+      <div class="cdv-frow"><label>${zh?'職位：':'Position:'}&nbsp;</label><span>${e.position}</span></div>
+      <div class="cdv-frow"><label>${zh?'護照號碼：':'Passport:'}&nbsp;</label><span>${e.passport||''}</span></div>
+    </div>
+    ${artHTML}
+    <div class="cdv-extra">
+      <label>${zh?'📝 補充條款 / 特別備注（可自由編輯，自動儲存）':'📝 Additional Clauses / Notes (editable, auto-saved)'}</label>
+      <textarea id="extraClauses" oninput="saveExtraClauses('${contractId}',this.value)" placeholder="${zh?'如有特別約定，請在此填寫…':'Enter any special provisions here…'}">${savedExtra}</textarea>
+    </div>
+    <div class="cdv-sig">
+      <div class="cdv-sig-col">
+        <div class="cdv-sig-label">${zh?'甲方 Party A':'Party A (Employer)'}</div>
+        <div style="font-size:12px;color:var(--text2);">Vantage River Textiles Co., Ltd.</div>
+        <div class="cdv-sig-line">${zh?'授權代表簽名：':'Authorized Signature:'}</div>
+        <div class="cdv-sig-line">${zh?'代表姓名：':'Name:'} ${c.repName||''}</div>
+        <div class="cdv-sig-line" style="font-size:11px;color:var(--text3);">${zh?'日期：':'Date:'} ${sigDate}</div>
+      </div>
+      <div class="cdv-sig-col">
+        <div class="cdv-sig-label">${zh?'乙方 Party B':'Party B (Employee)'}</div>
+        <div style="font-size:12px;color:var(--text2);">${e.name}</div>
+        <div class="cdv-sig-line">${zh?'本人簽名：':'Employee Signature:'}</div>
+        <div class="cdv-sig-line">${zh?'護照號：':'Passport:'} ${e.passport||''}</div>
+        <div class="cdv-sig-line" style="font-size:11px;color:var(--text3);">${zh?'日期：':'Date:'} ${sigDate}</div>
+      </div>
+    </div>
+    <div class="cdv-note">${zh?'本合同以中文及英文書寫，兩種語言版本具有同等法律效力。如有歧義，以中文版本為準。本合同一式兩份。':'This contract is in Chinese and English. Both versions carry equal legal force. In case of discrepancy, the Chinese version prevails. Made in duplicate.'}</div>
+  </div></div>`;
+}
+
+function saveExtraClauses(contractId, value){
+  localStorage.setItem(`vrt_extra_${contractId}`, value);
+}
+
+// ── Article edit mode ──
+function toggleEditMode(contractId){
+  const wrap=document.getElementById('fullContractWrap');
+  const btn=document.getElementById('editModeBtn');
+  const zh=currentLang==='zh';
+  const isEditing=wrap.dataset.editing==='true';
+  const newMode=!isEditing;
+  wrap.dataset.editing=newMode;
+
+  document.querySelectorAll('.art-body').forEach(el=>{
+    el.contentEditable=newMode?'true':'false';
+  });
+
+  btn.textContent=newMode?(zh?'✅ 完成編輯':'✅ Done Editing'):(zh?'✏️ 編輯條款':'✏️ Edit Articles');
+  btn.classList.toggle('active',newMode);
+
+  // Show/hide hint
+  let hint=document.getElementById('editModeHint');
+  if(newMode){
+    if(!hint){
+      hint=document.createElement('div');
+      hint.id='editModeHint';
+      hint.className='edit-mode-hint';
+      hint.innerHTML=zh
+        ?'📝 <strong>條款編輯模式</strong>：直接點擊各條款文字即可修改。修改自動儲存，點「↩ 已修改」可恢復該條預設文字。'
+        :'📝 <strong>Edit Mode</strong>: Click any article text to edit directly. Changes auto-save. Click "↩ Modified" badge to reset that article.';
+      wrap.insertBefore(hint,wrap.querySelector('.contract-doc-view'));
+    }
+    hint.style.display='flex';
+  } else {
+    if(hint) hint.style.display='none';
+  }
+}
+
+function saveArticleOverride(el){
+  const key=`vrt_art_${el.dataset.cid}_${el.dataset.lang}_${el.dataset.idx}`;
+  localStorage.setItem(key, el.innerHTML);
+  // Show badge on this article title
+  const artDiv=el.closest('.cdv-article');
+  if(artDiv){
+    const title=artDiv.querySelector('.cdv-art-title');
+    if(title&&!title.querySelector('.art-mod-badge')){
+      const zh=currentLang==='zh';
+      const badge=document.createElement('span');
+      badge.className='art-mod-badge';
+      badge.title=zh?'點擊恢復此條預設文字':'Click to reset this article';
+      badge.innerHTML=`↩ ${zh?'已修改':'Modified'}`;
+      badge.onclick=()=>resetArticle(el.dataset.cid,el.dataset.lang,parseInt(el.dataset.idx));
+      title.appendChild(badge);
+    }
+  }
+}
+
+function resetArticle(contractId, lang, idx){
+  const zh=lang==='zh';
+  if(!confirm(zh?'恢復此條款為預設文字？您的修改將遺失。':'Reset this article to default? Your edits will be lost.'))return;
+  localStorage.removeItem(`vrt_art_${contractId}_${lang}_${idx}`);
+  // Restore default content from data-default
+  const el=document.getElementById(`art_${contractId}_${lang}_${idx}`);
+  if(el){
+    el.innerHTML=decodeURIComponent(el.dataset.default||'');
+    // Remove badge
+    const artDiv=el.closest('.cdv-article');
+    if(artDiv){const badge=artDiv.querySelector('.art-mod-badge');if(badge)badge.remove();}
+  }
+  toast(currentLang==='zh'?'↩ 已恢復預設':'↩ Reset to default');
+}
+
+function resetAllArticles(contractId, lang){
+  const zh=currentLang==='zh';
+  if(!confirm(zh?'恢復所有條款為預設文字？所有修改將遺失。':'Reset ALL articles to default? All edits will be lost.'))return;
+  for(let i=0;i<7;i++) localStorage.removeItem(`vrt_art_${contractId}_${lang}_${i}`);
+  // Re-render the full text tab
+  currentTab='fulltext';
+  renderTabContent();
+  toast(zh?'↩ 全部條款已恢復預設':'↩ All articles reset to default');
+}
+
+function printFullText(contractId){
+  // Switch to fulltext tab, mark for print, print
+  currentTab='fulltext';
+  renderTabContent();
+  // Wrap in print-show class
+  document.getElementById('fullContractWrap').classList.add('print-show');
+  setTimeout(()=>{ window.print(); document.getElementById('fullContractWrap').classList.remove('print-show'); }, 150);
+}
+
+// ── HISTORY TAB ──
+function renderHistoryTab(){
+  const cs=getEmpContracts(selectedEmpId);
+  if(!cs.length)return`<div style="text-align:center;color:var(--text3);padding:40px;font-size:13px;">${currentLang==='zh'?'無歷史合同記錄':'No contract history'}</div>`;
+  const regularContracts=cs.filter(c=>c.type==='regular');
+  return`<div class="timeline">${cs.map((c)=>{
+    const st=calcStatus(c), isReg=c.type==='regular';
+    const yearNum=isReg?regularContracts.indexOf(c)+1:null;
+    const clsMap={prob:'prob',reg:'reg',warn:'reg',exp:'exp',none:'exp'};
+    const typeLabel=c.type==='probation'?(currentLang==='zh'?'試用期合同':'Probation')
+      :(currentLang==='zh'?`正式合同${yearNum?` Y${yearNum}`:''}`:` Regular Y${yearNum||''}`);
+    return`<div class="tl-item">
+      <div class="tl-dot ${clsMap[st.key]||'exp'}"></div>
+      <div class="tl-card">
+        <div class="tl-card-head">
+          <span class="type">${typeLabel}</span>
+          <span class="dates">${formatDate(c.startDate)} → ${formatDate(c.endDate)}</span>
+          <span class="salary">USD ${Number(c.salary||0).toLocaleString()}</span>
+        </div>
+        <div style="font-size:11px;color:var(--text3);">
+          ${currentLang==='zh'?'簽署':'Signed'}: ${c.repName||'—'} · ${formatDate(c.sigDate)}
+          &nbsp;|&nbsp; ${statusBadgeHTML(st)}
+        </div>
+        <div class="tl-card-actions">
+          <button class="sm-btn" onclick="openEditContract('${c.id}')">✏️ ${currentLang==='zh'?'編輯':'Edit'}</button>
+          <button class="sm-btn" onclick="viewFullContract('${c.id}')">📜 ${currentLang==='zh'?'查看全文':'Full Text'}</button>
+          <button class="sm-btn primary" onclick="printFullText('${c.id}')">🖨️ ${currentLang==='zh'?'列印':'Print'}</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function viewFullContract(contractId){
+  // Show full text of a specific contract (not necessarily the latest)
+  currentTab='fulltext';
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab==='fulltext'));
+  document.getElementById('tabBody').innerHTML=buildFullContractHTML(contractId, false);
+}
+
+// ── TERMINATION TAB ──
+function renderTerminationTab(){
+  const lc=getLatestContract(selectedEmpId);
+  const existing=getEmpTermination(selectedEmpId);
+  const zh=currentLang==='zh';
+  if(!lc)return`<div class="term-no-contract">${zh?'尚無合同記錄，無法建立解除聲明。':'No contract on record to terminate.'}</div>`;
+  if(existing){return buildTerminationDocHTML(existing,false);}
+  return`<div style="text-align:center;padding:32px;background:#fff;border-radius:8px;border:1px solid var(--border);">
+    <div style="font-size:28px;margin-bottom:10px;">📋</div>
+    <div style="font-size:14px;font-weight:600;margin-bottom:6px;">${zh?'尚未建立解除合同聲明':'No Termination Notice Created'}</div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:20px;">${zh?`目前合同有效至 ${formatDate(lc.endDate)}`:`Current contract valid to ${formatDate(lc.endDate)}`}</div>
+    <button class="btn primary" onclick="openTermModal()">${zh?'🔴 建立解除合同聲明書':'🔴 Create Termination Notice'}</button>
+  </div>`;
+}
+
+function buildTerminationDocHTML(t, forPrint){
+  const e=employees[t.empId], lc=contracts[t.contractId]||getLatestContract(t.empId);
+  const zh=currentLang==='zh';
+  const reasonMap={
+    exp_norenewal:zh?'合同期滿，雙方同意不予續簽':'Contract expired; mutual agreement not to renew',
+    prob_nopromote:zh?'試用期屆滿，甲方決定不予轉正':'Probation ended; Party A decided not to convert',
+    mutual_early:zh?'雙方協議提前解除合同':'Early termination by mutual agreement',
+    company_art4:zh?'公司依合同第四條規定終止合同':'Company termination pursuant to Article 4',
+    resign:zh?'乙方主動申請離職':'Employee resignation',
+    misconduct:zh?'乙方違規行為，公司決定遣返':'Misconduct; repatriation ordered by company'
+  };
+  const reason=reasonMap[t.reason]||t.reason;
+  const today=new Date();
+  const refNo=`VRT-TN-${t.empId.slice(-4).toUpperCase()}-${new Date(t.createdAt).getFullYear()}`;
+  
+  const toolbar=forPrint?'':`<div class="cdv-toolbar">
+    <span class="label">${zh?'解除合同聲明書（可直接列印）':'Termination Notice (printable)'}</span>
+    <div class="hl" style="display:flex;gap:8px;">
+      <button class="sm-btn" style="color:var(--exp);border-color:var(--exp);" onclick="deleteTermination('${t.id}')">🗑 ${zh?'刪除':'Delete'}</button>
+      <button class="sm-btn" onclick="openTermModal()">✏️ ${zh?'修改':'Edit'}</button>
+      <button class="sm-btn primary" onclick="printTermination()">🖨️ ${zh?'列印':'Print'}</button>
+    </div>
+  </div>`;
+
+  return`<div id="termWrap">
+  ${toolbar}
+  <div class="term-doc">
+    <div class="term-title">${zh?'解除合同聲明書':'Contract Termination Notice'}</div>
+    <div class="term-sub">${zh?'Vantage River Textiles Co., Ltd.':''}</div>
+    <div class="term-ref">${zh?'文件編號':'Ref. No.'}: ${refNo} &nbsp;|&nbsp; ${zh?'簽署日期':'Date'}: ${formatDate(t.signDate)}</div>
+    
+    <div class="term-body">
+      ${zh
+        ?`茲聲明，甲方 <strong>Vantage River Textiles Co., Ltd. (VRT)</strong> 與乙方 <strong>${e.name}</strong>（職位：${e.position}，護照號：${e.passport||'—'}）所訂立之雇用合同，合同期間自 <strong>${formatDate(lc?.startDate)}</strong> 至 <strong>${formatDate(lc?.endDate)}</strong>，現依下列原因正式解除：`
+        :`This notice confirms that the employment contract between <strong>Vantage River Textiles Co., Ltd. (VRT)</strong> (Party A) and <strong>${e.name}</strong> (Position: ${e.position}, Passport: ${e.passport||'—'}) (Party B), covering the period from <strong>${formatDate(lc?.startDate)}</strong> to <strong>${formatDate(lc?.endDate)}</strong>, is hereby formally terminated for the following reason:`}
+      <div style="margin:10px 0 4px;padding:8px 12px;background:var(--exp-bg);border-left:3px solid var(--exp);border-radius:0 4px 4px 0;font-weight:600;font-size:12.5px;color:var(--exp);">${reason}</div>
+    </div>
+
+    <div class="term-section">
+      <div class="term-section-title">${zh?'一、終止日期及人員資訊':'I. Termination Details'}</div>
+      <div class="term-grid">
+        <div class="term-field"><label>${zh?'乙方姓名':'Employee Name'}</label><div class="tv">${e.name}</div></div>
+        <div class="term-field"><label>${zh?'護照號碼':'Passport No.'}</label><div class="tv">${e.passport||'—'}</div></div>
+        <div class="term-field"><label>${zh?'職位':'Position'}</label><div class="tv">${e.position}</div></div>
+        <div class="term-field"><label>${zh?'最後工作日':'Last Working Day'}</label><div class="tv" style="color:var(--exp);font-weight:600;">${formatDate(t.lastDay)}</div></div>
+        <div class="term-field"><label>${zh?'薪資結算至':'Salary settled to'}</label><div class="tv">${formatDate(t.salaryTo)}</div></div>
+        <div class="term-field"><label>${zh?'應付薪資':'Final Salary (USD)'}</label><div class="tv" style="font-family:'Lora',serif;color:var(--reg);">USD ${Number(t.salaryAmt||0).toLocaleString()}</div></div>
+      </div>
+    </div>
+
+    <div class="term-section">
+      <div class="term-section-title">${zh?'二、交接及後續安排':'II. Handover & Post-Employment'}</div>
+      <ul class="term-check-list">
+        <li><input type="checkbox" ${t.ticket?'checked':''} disabled> ${zh?'甲方提供乙方回程機票':'Party A provides return airfare to Party B'}</li>
+        <li><input type="checkbox" ${t.visa?'checked':''} disabled> ${zh?'商務簽證/工作證取消日期：':'Work visa/permit cancellation date:'} <strong>${t.visaDate||'—'}</strong></li>
+        ${t.dorm?`<li><input type="checkbox" checked disabled> ${zh?'宿舍退房日期：':'Accommodation vacate date:'} <strong>${t.dormDate||'—'}</strong></li>`:''}
+      </ul>
+    </div>
+
+    ${t.notes?`<div class="term-section">
+      <div class="term-section-title">${zh?'三、補充說明':'III. Additional Notes'}</div>
+      <div class="term-notes"><textarea readonly rows="2" style="width:100%;border:none;background:transparent;font-size:12px;font-family:'Noto Serif TC',sans-serif;resize:none;">${t.notes}</textarea></div>
+    </div>`:''}
+
+    <div style="display:flex;justify-content:center;margin:10px 0;">
+      <div class="term-stamp"><div style="font-size:11px;font-weight:600;letter-spacing:1px;">VRT</div><div>OFFICIAL</div><div>SEAL</div></div>
+    </div>
+
+    <div class="term-sig">
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:8px;">${zh?'甲方 Party A':'Party A (Employer)'}</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">Vantage River Textiles Co., Ltd.</div>
+        <div class="cdv-sig-line">${zh?'授權代表簽名：':'Authorized Signature:'}</div>
+        <div class="cdv-sig-line">${zh?'日期：':'Date:'} ${formatDate(t.signDate)}</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:8px;">${zh?'乙方 Party B':'Party B (Employee)'}</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">${e.name}</div>
+        <div class="cdv-sig-line">${zh?'本人簽名（確認收悉）：':'Received and acknowledged:'}</div>
+        <div class="cdv-sig-line">${zh?'日期：':'Date:'}</div>
+      </div>
+    </div>
+    <div class="cdv-note" style="margin-top:10px;">${zh
+      ?'本聲明書一式兩份，甲乙雙方各執一份。乙方簽署表示已收悉並確認本聲明書之內容。'
+      :'This notice is made in duplicate. Party B\'s signature confirms receipt and acknowledgment of its contents.'}</div>
+  </div></div>`;
+}
+
+function openTermModal(){
+  const lc=getLatestContract(selectedEmpId);
+  if(!lc){toast(currentLang==='zh'?'請先建立合同':'Create a contract first');return;}
+  
+  // Pre-fill from existing termination if any
+  const ex=getEmpTermination(selectedEmpId);
+  document.getElementById('tReason').value=ex?.reason||'exp_norenewal';
+  document.getElementById('tLastDay').value=ex?.lastDay||lc.endDate||'';
+  document.getElementById('tSignDate').value=ex?.signDate||new Date().toISOString().slice(0,10);
+  document.getElementById('tSalaryTo').value=ex?.salaryTo||lc.endDate||'';
+  document.getElementById('tSalaryAmt').value=ex?.salaryAmt||'';
+  document.getElementById('tTicket').checked=ex?.ticket!==false;
+  document.getElementById('tVisa').checked=ex?.visa!==false;
+  document.getElementById('tVisaDate').value=ex?.visaDate||(currentLang==='zh'?'離職後3天':'3 days after departure');
+  document.getElementById('tDorm').checked=ex?.dorm||false;
+  document.getElementById('tDormDate').value=ex?.dormDate||'';
+  document.getElementById('tNotes').value=ex?.notes||'';
+  openModal('termModal');
+}
+
+function saveTermination(){
+  const empId=selectedEmpId, lc=getLatestContract(empId);
+  if(!lc){closeModal('termModal');return;}
+  const id=getEmpTermination(empId)?.id||uid();
+  terminations[id]={
+    id, empId, contractId:lc.id,
+    reason:document.getElementById('tReason').value,
+    lastDay:document.getElementById('tLastDay').value,
+    signDate:document.getElementById('tSignDate').value,
+    salaryTo:document.getElementById('tSalaryTo').value,
+    salaryAmt:document.getElementById('tSalaryAmt').value,
+    ticket:document.getElementById('tTicket').checked,
+    visa:document.getElementById('tVisa').checked,
+    visaDate:document.getElementById('tVisaDate').value,
+    dorm:document.getElementById('tDorm').checked,
+    dormDate:document.getElementById('tDormDate').value,
+    notes:document.getElementById('tNotes').value,
+    createdAt:new Date().toISOString()
+  };
+  save();
+  closeModal('termModal');
+  currentTab='termination';
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab==='termination'));
+  renderTabContent();
+  toast(currentLang==='zh'?'✅ 解除聲明已建立':'✅ Termination notice created');
+}
+
+function deleteTermination(termId){
+  const zh=currentLang==='zh';
+  if(!confirm(zh?'確定要刪除此解除聲明記錄？':'Delete this termination notice?'))return;
+  delete terminations[termId]; save();
+  currentTab='termination';
+  renderTabContent();
+  toast(zh?'🗑 解除聲明已刪除':'🗑 Termination notice deleted');
+}
+
+function printTermination(){
+  currentTab='termination';
+  renderTabContent();
+  document.getElementById('termWrap').classList.add('print-show');
+  setTimeout(()=>{ window.print(); document.getElementById('termWrap').classList.remove('print-show'); }, 150);
+}
+
+// ═══════════════════════════════════════════
+//  PRINT HELPERS
+// ═══════════════════════════════════════════
+function printCurrentContract(){
+  const lc=getLatestContract(selectedEmpId); if(!lc)return;
+  // Switch to fulltext tab first so the HTML is rendered, then print
+  currentTab='fulltext';
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab==='fulltext'));
+  renderTabContent();
+  setTimeout(()=>{
+    const wrap=document.getElementById('fullContractWrap');
+    if(wrap){wrap.classList.add('print-show'); window.print(); wrap.classList.remove('print-show');}
+  },150);
+}
+
+// ═══════════════════════════════════════════
+//  OVERVIEW
+// ═══════════════════════════════════════════
+function showOverview(){
+  document.getElementById('emptyState').style.display='none';
+  document.getElementById('empDetail').style.display='none';
+  document.getElementById('overviewScreen').style.display='flex';
+  document.getElementById('overviewScreen').style.flexDirection='column';
+  renderOverview(); selectedEmpId=null; renderSidebar();
+}
+function hideOverview(){
+  document.getElementById('overviewScreen').style.display='none';
+  document.getElementById('emptyState').style.display='flex';
+}
+function renderOverview(){
+  const grid=document.getElementById('overviewGrid');
+  const emps=Object.values(employees).sort((a,b)=>a.name.localeCompare(b.name));
+  const clsMap={prob:'badge-prob',reg:'badge-reg',warn:'badge-warn',exp:'badge-exp',none:'badge-none'};
+  if(!emps.length){grid.innerHTML=`<div style="color:var(--text3);grid-column:1/-1;text-align:center;padding:40px;">${currentLang==='zh'?'尚未新增任何人員':'No staff added'}</div>`;return;}
+  grid.innerHTML=emps.map(e=>{
+    const lc=getLatestContract(e.id), st=calcStatus(lc), cn=getEmpContracts(e.id).length;
+    const term=getEmpTermination(e.id);
+    return`<div class="ov-card" onclick="selectEmp('${e.id}')">
+      <div class="ov-name">${e.name}</div>
+      <div class="ov-pos">${e.position}${e.nationality?' · '+e.nationality:''}</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px;">🪪 ${e.passport||'—'}</div>
+      <div class="ov-status">
+        <span class="emp-badge ${clsMap[st.key]}">${currentLang==='zh'?st.label.zh:st.label.en}</span>
+        <span class="ov-expiry">${lc?formatDate(lc.endDate):'—'}</span>
+      </div>
+      ${lc?`<div style="margin-top:5px;font-size:11px;color:var(--text3);">${cn}份合同 · USD ${Number(lc.salary||0).toLocaleString()}/mo</div>`:''}
+      ${term?`<div style="margin-top:3px;font-size:10.5px;color:var(--exp);">🔴 解除：${formatDate(term.lastDay)}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════
+//  WORD IMPORT
+// ═══════════════════════════════════════════
+async function importWordFiles(input){
+  const files=Array.from(input.files);
+  if(!files.length)return;
+  if(typeof mammoth==='undefined'){toast('❌ mammoth.js 未載入，請稍後再試');input.value='';return;}
+  
+  importQueue=files; importQueueIdx=0;
+  toast(`${currentLang==='zh'?'正在解析':'Parsing'} ${files.length} ${currentLang==='zh'?'個檔案…':'file(s)…'}`);
+  processNextImport();
+  input.value='';
+}
+
+async function processNextImport(){
+  if(importQueueIdx>=importQueue.length){toast(currentLang==='zh'?'✅ 所有檔案已處理完畢':'✅ All files processed');return;}
+  const file=importQueue[importQueueIdx];
+  try{
+    const ab=await file.arrayBuffer();
+    const result=await mammoth.extractRawText({arrayBuffer:ab});
+    const text=result.value;
+    
+    // Parse employee info
+    const nameM=text.match(/姓名[：:\s]*([^\s，,\n護]{2,10})/);
+    const passM=text.match(/護照號[碼]?[：:\s]*([A-Z]{1,2}\d{5,9})/i);
+    const posM=text.match(/管理幹部|職位[：:\s]*([^\n，,]{2,20})/);
+    const salM=text.match(/USD\s*(\d[\d,]*)/i)||text.match(/月薪[^\d]*(\d+)/);
+    const dateM=text.match(/202(\d)[年\/](\d{1,2})[月\/](\d{1,2})/);
+    const isProbText=text.includes('試用期')&&!text.match(/合約雇用期限為一年|合同期限.*一年/);
+    
+    // Show preview modal
+    document.getElementById('impName').value=nameM?.[1]?.trim()||'';
+    document.getElementById('impPass').value=(passM?.[1]||'').toUpperCase();
+    document.getElementById('impPos').value='管理幹部';
+    document.getElementById('impNat').value='台灣';
+    document.getElementById('impType').value=isProbText?'probation':'regular';
+    document.getElementById('impSalary').value=salM?.[1]?.replace(/,/g,'')||'';
+    document.getElementById('impStart').value=dateM?`202${dateM[1]}-${pad2(dateM[2])}-${pad2(dateM[3])}`:'';
+    
+    // Show extracted text preview (first 300 chars)
+    document.getElementById('importPreviewText').textContent=text.slice(0,400)+(text.length>400?'…':'');
+    
+    const nameBadge=document.getElementById('nameBadge');
+    nameBadge.style.display=nameM?'':'none';
+    
+    const hint=document.getElementById('importMultiHint');
+    if(importQueue.length>1){
+      hint.style.display='';
+      hint.textContent=`${currentLang==='zh'?'正在處理第':'File'} ${importQueueIdx+1} / ${importQueue.length}${currentLang==='zh'?' 個檔案':''}: ${file.name}`;
+    } else{hint.style.display='none';}
+    
+    openModal('importModal');
+  } catch(err){
+    console.error(err);
+    toast(`❌ 無法解析: ${file.name}`);
+    importQueueIdx++; processNextImport();
+  }
+}
+
+function confirmImport(){
+  const name=document.getElementById('impName').value.trim();
+  const pos=document.getElementById('impPos').value.trim();
+  if(!name){toast(currentLang==='zh'?'請填寫姓名':'Enter name');return;}
+  
+  // Create employee
+  const empId=uid();
+  employees[empId]={
+    id:empId, name, 
+    passport:document.getElementById('impPass').value.toUpperCase(),
+    position:pos||'管理幹部',
+    nationality:document.getElementById('impNat').value.trim(),
+    notes:`從Word匯入: ${importQueue[importQueueIdx]?.name||''}`,
+    addedAt:new Date().toISOString()
+  };
+  
+  // Create contract if we have enough data
+  const salary=document.getElementById('impSalary').value;
+  const startStr=document.getElementById('impStart').value;
+  const type=document.getElementById('impType').value;
+  if(startStr){
+    const start=new Date(startStr);
+    const end=new Date(start);
+    end.setMonth(end.getMonth()+(type==='probation'?6:12));
+    end.setDate(end.getDate()-1);
+    const cId=uid();
+    contracts[cId]={
+      id:cId, empId, type,
+      startDate:start.toISOString().slice(0,10),
+      endDate:end.toISOString().slice(0,10),
+      salary, repName:'', sigDate:startStr,
+      location:'柬埔寨西哈努克市',
+      createdAt:new Date().toISOString()
+    };
+  }
+  
+  save();
+  closeModal('importModal');
+  renderSidebar();
+  selectEmp(empId);
+  
+  importQueueIdx++;
+  setTimeout(()=>processNextImport(), 400);
+  toast(`✅ ${name} ${currentLang==='zh'?'已建立':'created'}`);
+}
+
+// ═══════════════════════════════════════════
+//  MODAL: EMPLOYEE
+// ═══════════════════════════════════════════
+function openAddEmp(){
+  editingEmpId=null;
+  document.getElementById('empModalTitle').textContent=currentLang==='zh'?'新增幹部':'Add Expatriate';
+  ['fName','fPassport','fPosition','fNationality','fNotes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('deleteEmpBtn').style.display='none';
+  openModal('empModal');
+}
+function openEditEmp(){
+  if(!selectedEmpId)return; const e=employees[selectedEmpId]; editingEmpId=selectedEmpId;
+  document.getElementById('empModalTitle').textContent=currentLang==='zh'?'編輯幹部資料':'Edit Staff';
+  document.getElementById('fName').value=e.name||'';
+  document.getElementById('fPassport').value=e.passport||'';
+  document.getElementById('fPosition').value=e.position||'';
+  document.getElementById('fNationality').value=e.nationality||'';
+  document.getElementById('fNotes').value=e.notes||'';
+  document.getElementById('deleteEmpBtn').style.display='';
+  openModal('empModal');
+}
+
+function deleteEmployee(){
+  if(!editingEmpId)return;
+  const e=employees[editingEmpId];
+  const zh=currentLang==='zh';
+  const empContracts=getEmpContracts(editingEmpId);
+  const empTerm=getEmpTermination(editingEmpId);
+  const msg=zh
+    ?`確定要刪除「${e.name}」的所有資料？\n\n這將同時刪除：\n• ${empContracts.length} 份合同記錄\n• ${empTerm?1:0} 份解除聲明\n\n⚠️ 此操作不可恢復！`
+    :`Delete all data for "${e.name}"?\n\nThis will also delete:\n• ${empContracts.length} contract(s)\n• ${empTerm?1:0} termination notice(s)\n\n⚠️ This cannot be undone!`;
+  if(!confirm(msg))return;
+
+  // Delete all contracts
+  empContracts.forEach(c=>{
+    // Also clear localStorage extras and article overrides for each contract
+    for(let i=0;i<7;i++){
+      localStorage.removeItem(`vrt_art_${c.id}_zh_${i}`);
+      localStorage.removeItem(`vrt_art_${c.id}_en_${i}`);
+    }
+    localStorage.removeItem(`vrt_extra_${c.id}`);
+    delete contracts[c.id];
+  });
+  // Delete terminations
+  Object.values(terminations).filter(t=>t.empId===editingEmpId).forEach(t=>delete terminations[t.id]);
+  // Delete employee
+  delete employees[editingEmpId];
+  save();
+
+  closeModal('empModal');
+  selectedEmpId=null;
+  editingEmpId=null;
+  document.getElementById('empDetail').style.display='none';
+  document.getElementById('emptyState').style.display='flex';
+  renderSidebar();
+  toast(zh?`🗑 ${e.name} 已刪除`:`🗑 ${e.name} deleted`);
+}
+function saveEmployee(){
+  const name=document.getElementById('fName').value.trim(), position=document.getElementById('fPosition').value.trim();
+  if(!name||!position){toast(currentLang==='zh'?'請填寫姓名和職位':'Name and position required');return;}
+  const id=editingEmpId||uid();
+  employees[id]={id,name,passport:document.getElementById('fPassport').value.trim().toUpperCase(),position,
+    nationality:document.getElementById('fNationality').value.trim(),notes:document.getElementById('fNotes').value.trim(),
+    addedAt:employees[id]?.addedAt||new Date().toISOString()};
+  save(); closeModal('empModal'); renderSidebar();
+  if(editingEmpId)renderDetail(); else selectEmp(id);
+  toast(currentLang==='zh'?'✅ 人員資料已儲存':'✅ Staff saved');
+}
+
+// ═══════════════════════════════════════════
+//  MODAL: CONTRACT
+// ═══════════════════════════════════════════
+function openNewContract(){
+  editingContractId=null;
+  document.getElementById('contractModalTitle').textContent=currentLang==='zh'?'建立新合同':'New Contract';
+  document.getElementById('deleteContractBtn').style.display='none';
+  const lc=getLatestContract(selectedEmpId);
+  let defaultType='probation';
+  if(lc&&lc.type==='probation')defaultType='regular';
+  else if(lc&&lc.type==='regular')defaultType='regular';
+  selectCtype(defaultType);
+  const today=new Date(); let startDate=today;
+  if(lc){const lastEnd=new Date(lc.endDate);if(lastEnd>today)startDate=new Date(lastEnd.getTime()+86400000);}
+  document.getElementById('cStartY').value=startDate.getFullYear();
+  document.getElementById('cStartM').value=pad2(startDate.getMonth()+1);
+  document.getElementById('cStartD').value=pad2(startDate.getDate());
+  const endDate=new Date(startDate); endDate.setMonth(endDate.getMonth()+(defaultType==='probation'?6:12)); endDate.setDate(endDate.getDate()-1);
+  document.getElementById('cEndY').value=endDate.getFullYear();
+  document.getElementById('cEndM').value=pad2(endDate.getMonth()+1);
+  document.getElementById('cEndD').value=pad2(endDate.getDate());
+  document.getElementById('cSalary').value=lc?lc.salary:'';
+  document.getElementById('cRepName').value=lc?lc.repName:'';
+  document.getElementById('cSigY').value=today.getFullYear();
+  document.getElementById('cSigM').value=pad2(today.getMonth()+1);
+  document.getElementById('cSigD').value=pad2(today.getDate());
+  openModal('contractModal');
+}
+function openEditContract(contractId){
+  editingContractId=contractId; const c=contracts[contractId]; if(!c)return;
+  document.getElementById('contractModalTitle').textContent=currentLang==='zh'?'編輯合同':'Edit Contract';
+  document.getElementById('deleteContractBtn').style.display='';
+  selectCtype(c.type);
+  const[sy,sm,sd]=(c.startDate||'').split('-');
+  const[ey,em,ed]=(c.endDate||'').split('-');
+  const[sigy,sigm,sigd]=(c.sigDate||'').split('-');
+  document.getElementById('cStartY').value=sy||''; document.getElementById('cStartM').value=sm||''; document.getElementById('cStartD').value=sd||'';
+  document.getElementById('cEndY').value=ey||''; document.getElementById('cEndM').value=em||''; document.getElementById('cEndD').value=ed||'';
+  document.getElementById('cSalary').value=c.salary||''; document.getElementById('cRepName').value=c.repName||'';
+  document.getElementById('cSigY').value=sigy||''; document.getElementById('cSigM').value=sigm||''; document.getElementById('cSigD').value=sigd||'';
+  document.getElementById('cLocation').value=c.location||'柬埔寨西哈努克市';
+  openModal('contractModal');
+}
+function selectCtype(type){
+  modalContractType=type;
+  document.getElementById('ctypeProb').classList.toggle('on',type==='probation');
+  document.getElementById('ctypeReg').classList.toggle('on',type==='regular');
+  const sy=document.getElementById('cStartY').value, sm=document.getElementById('cStartM').value, sd=document.getElementById('cStartD').value;
+  if(sy&&sm&&sd){
+    const start=new Date(`${sy}-${sm}-${sd}`);
+    if(!isNaN(start)){
+      const end=new Date(start); end.setMonth(end.getMonth()+(type==='probation'?6:12)); end.setDate(end.getDate()-1);
+      document.getElementById('cEndY').value=end.getFullYear();
+      document.getElementById('cEndM').value=pad2(end.getMonth()+1);
+      document.getElementById('cEndD').value=pad2(end.getDate());
+    }
+  }
+}
+function saveContract(){
+  const sy=document.getElementById('cStartY').value.trim(), sm=document.getElementById('cStartM').value.trim(), sd=document.getElementById('cStartD').value.trim();
+  const ey=document.getElementById('cEndY').value.trim(), em=document.getElementById('cEndM').value.trim(), ed=document.getElementById('cEndD').value.trim();
+  if(!sy||!sm||!sd||!ey||!em||!ed){toast(currentLang==='zh'?'請填寫合同起止日期':'Enter contract dates');return;}
+  const startDate=`${sy}-${pad2(sm)}-${pad2(sd)}`, endDate=`${ey}-${pad2(em)}-${pad2(ed)}`;
+  const sigy=document.getElementById('cSigY').value.trim(), sigm=document.getElementById('cSigM').value.trim(), sigd=document.getElementById('cSigD').value.trim();
+  const sigDate=sigy?`${sigy}-${pad2(sigm)}-${pad2(sigd)}`:'';
+  const id=editingContractId||uid();
+  contracts[id]={id,empId:selectedEmpId,type:modalContractType,startDate,endDate,
+    salary:document.getElementById('cSalary').value.trim(),repName:document.getElementById('cRepName').value.trim(),
+    sigDate,location:document.getElementById('cLocation').value.trim()||'柬埔寨西哈努克市',
+    createdAt:contracts[id]?.createdAt||new Date().toISOString()};
+  save(); closeModal('contractModal'); renderDetail(); renderSidebar();
+  toast(currentLang==='zh'?'✅ 合同已儲存':'✅ Contract saved');
+}
+function deleteContract(){
+  if(!editingContractId)return;
+  if(!confirm(currentLang==='zh'?'確定要刪除此合同記錄？':'Delete this contract?'))return;
+  delete contracts[editingContractId]; save(); closeModal('contractModal'); renderDetail(); renderSidebar();
+  toast(currentLang==='zh'?'🗑 合同已刪除':'🗑 Contract deleted');
+}
+
+// ═══════════════════════════════════════════
+//  EXPORT / BACKUP
+// ═══════════════════════════════════════════
+function exportCSV(){
+  const rows=[['姓名','護照','職位','國籍','合同類型','起始日','終止日','月薪(USD)','狀態','剩餘天數']];
+  Object.values(employees).forEach(e=>{
+    const lc=getLatestContract(e.id), st=calcStatus(lc);
+    rows.push([e.name,e.passport||'',e.position,e.nationality||'',
+      lc?(lc.type==='probation'?'試用期':'正式合同'):'',
+      lc?formatDate(lc.startDate):'',lc?formatDate(lc.endDate):'',
+      lc?lc.salary:'',st.label.zh,st.daysLeft!==null?st.daysLeft:'']);
+  });
+  const csv='\uFEFF'+rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  download('VRT_幹部合同狀態_'+new Date().toLocaleDateString('zh-TW').replace(/\//g,'-')+'.csv',csv,'text/csv');
+  toast('📋 CSV 已匯出');
+}
+function backupJSON(){
+  const data=JSON.stringify({employees,contracts,terminations,exportedAt:new Date().toISOString()},null,2);
+  download('VRT_合同備份_'+new Date().toLocaleDateString('zh-TW').replace(/\//g,'-')+'.json',data,'application/json');
+  toast('💾 備份完成');
+}
+function restoreJSON(input){
+  const file=input.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!data.employees||!data.contracts)throw new Error('格式錯誤');
+      if(!confirm(currentLang==='zh'?`確定還原？（${Object.keys(data.employees).length} 人，${Object.keys(data.contracts).length} 份合同）`:`Restore ${Object.keys(data.employees).length} staff, ${Object.keys(data.contracts).length} contracts?`))return;
+      employees=data.employees; contracts=data.contracts; terminations=data.terminations||{};
+      save(); selectedEmpId=null; renderSidebar();
+      document.getElementById('empDetail').style.display='none';
+      document.getElementById('emptyState').style.display='flex';
+      toast('✅ 備份已還原');
+    }catch(err){toast('❌ 還原失敗：格式錯誤');}
+  };
+  reader.readAsText(file); input.value='';
+}
+function download(filename,content,type){
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([content],{type})); a.download=filename; a.click();
+}
+
+// ═══════════════════════════════════════════
+//  MODAL HELPERS
+// ═══════════════════════════════════════════
+function openModal(id){document.getElementById(id).classList.add('show');}
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+document.querySelectorAll('.overlay').forEach(ov=>{ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('show');});});
+
+// ═══════════════════════════════════════════
+//  LANGUAGE
+// ═══════════════════════════════════════════
+function setLang(lang){
+  currentLang=lang; document.body.className='lang-'+lang;
+  document.getElementById('searchInput').placeholder=lang==='zh'?'搜尋…':'Search…';
+  const btns=document.querySelectorAll('#langSeg button');
+  btns[0].classList.toggle('on',lang==='zh'); btns[1].classList.toggle('on',lang==='en');
+  if(selectedEmpId)renderDetail(); renderSidebar();
+}
+
+// ═══════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════
+function toast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// ═══════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════
+load(); renderSidebar();
+</script>
+</body>
+</html>

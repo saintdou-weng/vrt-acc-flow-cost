@@ -89,7 +89,7 @@ let uploadMode = 'auto';
 let toastTimer;
 
 const $ = selector => document.querySelector(selector);
-const $ = selector => [...document.querySelectorAll(selector)];
+const $$ = selector => [...document.querySelectorAll(selector)];
 const tr = key => I18N[lang]?.[key] || I18N.zh[key] || key;
 const clone = value => JSON.parse(JSON.stringify(value));
 const uid = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`);
@@ -151,9 +151,9 @@ function assetIcon(asset){if(asset.mimeType.startsWith('image/'))return '🖼️
 
 function setLang(next){lang=next;localStorage.setItem(LANG_KEY,lang);renderLanguage();renderAll()}
 function renderLanguage(){
-  $('[data-i]').forEach(node=>{const value=tr(node.dataset.i);if(value)node.textContent=value});
-  $('[data-i-placeholder]').forEach(node=>node.placeholder=tr(node.dataset.iPlaceholder));
-  $('[data-lang]').forEach(button=>button.classList.toggle('on',button.dataset.lang===lang));
+  $$('[data-i]').forEach(node=>{const value=tr(node.dataset.i);if(value)node.textContent=value});
+  $$('[data-i-placeholder]').forEach(node=>node.placeholder=tr(node.dataset.iPlaceholder));
+  $$('[data-lang]').forEach(button=>button.classList.toggle('on',button.dataset.lang===lang));
   $('#adminBtn').querySelector('span').textContent=document.body.classList.contains('admin')?tr('logout'):tr('admin');
 }
 
@@ -180,7 +180,7 @@ function renderList(){
   const areas=filteredAreas();$('#areaCount').textContent=areas.length;
   const groups={};areas.forEach(area=>{const key=`${area.building} / ${area.category}`;(groups[key] ||= []).push(area)});
   $('#areaList').innerHTML=Object.keys(groups).sort().map(group=>`<div><div class="group-title">${esc(group)}</div>${groups[group].map(area=>`<button class="area-btn ${area.id===selectedId?'on':''}" data-select-area="${encodeURIComponent(area.id)}"><b>${esc(currentName(area))}</b><small>${esc(area.status)} · ${esc(area.id)}</small></button>`).join('')}</div>`).join('')||`<div class="empty">${esc(tr('noArea'))}</div>`;
-  $('[data-select-area]').forEach(button=>button.onclick=()=>selectArea(decodeURIComponent(button.dataset.selectArea)));
+  $$('[data-select-area]').forEach(button=>button.onclick=()=>selectArea(decodeURIComponent(button.dataset.selectArea)));
   $('#jumpSelect').innerHTML=`<option value="">${esc(tr('quickSelect'))}</option>`+areas.map(area=>`<option value="${esc(area.id)}" ${area.id===selectedId?'selected':''}>${esc(currentName(area))}</option>`).join('');
   renderContent();
 }
@@ -204,7 +204,7 @@ function renderContent(){
     <section class="card section"><h2 class="section-title"><span>${esc(tr('basic'))}</span></h2><div class="info-grid"><div class="info"><b>${esc(tr('status'))}</b><div>${esc(area.status||'—')}</div></div><div class="info"><b>${esc(tr('building'))}</b><div>${esc(area.building||'—')}</div></div><div class="info"><b>${esc(tr('category'))}</b><div>${esc(area.category||'—')}</div></div></div></section>`;
   $('[data-area-edit]')?.addEventListener('click',()=>editArea(area.id));
   $('[data-area-delete]')?.addEventListener('click',()=>deleteArea(area.id));
-  $('[data-add-kind]').forEach(button=>button.onclick=()=>chooseFiles(button.dataset.addKind));
+  $$('[data-add-kind]').forEach(button=>button.onclick=()=>chooseFiles(button.dataset.addKind));
   attachAssetActions(area);
 }
 
@@ -220,7 +220,7 @@ function fileRow(area,asset,index){
 }
 
 function attachAssetActions(area){
-  $('[data-asset-action]').forEach(button=>button.onclick=()=>{
+  $$('[data-asset-action]').forEach(button=>button.onclick=()=>{
     const kind=button.dataset.kind,index=Number(button.dataset.index),asset=area[kind][index];if(!asset)return;
     if(button.dataset.assetAction==='preview')previewAsset(asset);
     if(button.dataset.assetAction==='download')downloadAsset(asset);
@@ -230,7 +230,7 @@ function attachAssetActions(area){
 }
 
 function isPreviewable(asset){return asset.mimeType.startsWith('image/')||asset.mimeType.includes('pdf')}
-function openModal(title,body,footer='',wide=false){$('#modalRoot').innerHTML=`<div class="modal-backdrop"><div class="modal ${wide?'wide':''}"><div class="modal-head"><h2>${esc(title)}</h2><button class="btn small" data-modal-close>×</button></div><div class="modal-body">${body}</div>${footer?`<div class="modal-foot">${footer}</div>`:''}</div></div>`;$('[data-modal-close]').forEach(button=>button.onclick=closeModal);$('.modal-backdrop').onclick=event=>{if(event.target.classList.contains('modal-backdrop'))closeModal()}}
+function openModal(title,body,footer='',wide=false){$('#modalRoot').innerHTML=`<div class="modal-backdrop"><div class="modal ${wide?'wide':''}"><div class="modal-head"><h2>${esc(title)}</h2><button class="btn small" data-modal-close>×</button></div><div class="modal-body">${body}</div>${footer?`<div class="modal-foot">${footer}</div>`:''}</div></div>`;$$('[data-modal-close]').forEach(button=>button.onclick=closeModal);$('.modal-backdrop').onclick=event=>{if(event.target.classList.contains('modal-backdrop'))closeModal()}}
 function closeModal(){const frame=$('#modalRoot iframe');if(frame?.dataset.objectUrl)URL.revokeObjectURL(frame.dataset.objectUrl);$('#modalRoot').innerHTML=''}
 
 function editArea(id){
@@ -342,7 +342,7 @@ function hideBusy(){$('#busy').classList.add('hidden')}
 function toast(message,type=''){clearTimeout(toastTimer);const node=$('#toast');node.textContent=message;node.className=`toast show ${type}`;toastTimer=setTimeout(()=>node.className='toast',3200)}
 
 function bind(){
-  $('[data-lang]').forEach(button=>button.onclick=()=>setLang(button.dataset.lang));
+  $$('[data-lang]').forEach(button=>button.onclick=()=>setLang(button.dataset.lang));
   $('#searchInput').oninput=renderList;$('#buildingSelect').onchange=renderList;$('#jumpSelect').onchange=event=>event.target.value&&selectArea(event.target.value);
   $('#addAreaBtn').onclick=()=>editArea(null);$('#adminBtn').onclick=toggleAdmin;$('#uploadBtn').onclick=()=>chooseFiles('auto');$('#assetInput').onchange=event=>uploadFiles([...event.target.files]);
   $('#cloudUpBtn').onclick=()=>cloudSave(false);$('#cloudDownBtn').onclick=cloudLoad;$('#exportBtn').onclick=exportJson;$('#importBtn').onclick=()=>$('#jsonInput').click();$('#jsonInput').onchange=event=>event.target.files[0]&&importJson(event.target.files[0]);

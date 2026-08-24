@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>VRT 薪資管理系統</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@700;900&family=Battambang:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#f0f4f8;--card:#ffffff;
+  --navy:#0a1e3d;--blue:#0f2d5e;--blue2:#1a4a8a;--blue3:#2563be;--blue4:#dbeafe;--blue5:#eff6ff;
+  --teal:#0f766e;--teal2:#14b8a6;--teal3:#ccfbf1;
+  --amber:#b45309;--amber2:#f59e0b;--amber3:#fef3c7;
+  --red:#b91c1c;--red2:#ef4444;--red3:#fee2e2;
+  --green:#166534;--green2:#22c55e;--green3:#dcfce7;
+  --purple:#6d28d9;--purple2:#a78bfa;--purple3:#ede9fe;
+  --gray:#374151;--gray2:#6b7280;--gray3:#e5e7eb;--gray4:#f9fafb;
+  --text:#1e293b;--text2:#475569;--text3:#94a3b8;
+  --sh:0 1px 3px rgba(0,0,0,.08);--sh2:0 4px 16px rgba(15,45,94,.13);
+  --r:8px;
+  --f:"Noto Sans TC",sans-serif;
+  --f2:"Noto Serif TC",serif;
+  --fk:"Battambang",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,var(--navy),var(--blue),var(--blue2));color:#fff;
+  padding:0 16px;position:sticky;top:0;z-index:400;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.hdr-in{max-width:1800px;margin:0 auto;display:flex;align-items:center;gap:10px;height:48px}
+.hdr-logo{font-size:1.35rem;flex-shrink:0}
+.hdr-brand{font-family:var(--f2);font-weight:900;font-size:.9rem;line-height:1.25}
+.hdr-sub{font-size:.56rem;opacity:.6;letter-spacing:.08em}
+.hdr-r{margin-left:auto;display:flex;gap:5px;align-items:center;flex-shrink:0}
+.lbtn{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.26);color:#fff;
+  padding:2px 8px;border-radius:4px;cursor:pointer;font-size:.68rem;font-weight:700;font-family:var(--f)}
+.lbtn.on{background:#fff;color:var(--blue2)}
+.hsel{background:rgba(255,255,255,.9);border:none;color:var(--blue2);padding:3px 6px;
+  border-radius:4px;font-size:.74rem;font-weight:700;cursor:pointer;outline:none;font-family:var(--f)}
+.hbtn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.26);color:#fff;
+  padding:3px 9px;border-radius:4px;cursor:pointer;font-size:.68rem;font-weight:600;
+  font-family:var(--f);display:flex;align-items:center;gap:3px}
+.hbtn:hover{background:rgba(255,255,255,.28)}
+
+/* TABS */
+.tabs{background:#fff;border-bottom:2px solid var(--gray3);position:sticky;top:48px;
+  z-index:300;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.tabs-in{max-width:1800px;margin:0 auto;display:flex;overflow-x:auto}
+.tbtn{background:none;border:none;padding:8px 13px;font-size:.74rem;font-weight:600;
+  cursor:pointer;white-space:nowrap;color:var(--text3);border-bottom:3px solid transparent;
+  transition:all .15s;font-family:var(--f);display:flex;align-items:center;gap:4px}
+.tbtn:hover{color:var(--blue2);background:var(--blue5)}
+.tbtn.on{color:var(--blue2);border-bottom-color:var(--blue2);background:var(--blue5)}
+
+/* CONTENT */
+.pg{max-width:1800px;margin:0 auto;padding:13px 16px}
+.panel{display:none}.panel.on{display:block;animation:fi .2s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* CARDS */
+.card{background:var(--card);border-radius:var(--r);border:1px solid var(--gray3);
+  box-shadow:var(--sh);padding:13px;margin-bottom:11px}
+.ctitle{font-family:var(--f2);font-size:.83rem;font-weight:700;color:var(--blue2);
+  margin-bottom:9px;display:flex;align-items:center;gap:5px}
+
+/* STAT STRIP */
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:11px}
+.scard{background:var(--card);border-radius:var(--r);padding:12px 13px;
+  border:1px solid var(--gray3);box-shadow:var(--sh);border-left:4px solid var(--sc)}
+.scard .sv{font-size:1.45rem;font-weight:900;font-family:var(--f2);color:var(--sc);line-height:1}
+.scard .sl{font-size:.62rem;color:var(--text2);margin-top:3px;font-weight:600}
+.scard .ss{font-size:.58rem;color:var(--text3);margin-top:1px}
+
+/* TABLE WRAPPER */
+.tw{overflow-x:auto;border-radius:var(--r);border:1px solid var(--gray3);
+  box-shadow:var(--sh);background:#fff;margin-bottom:11px}
+
+/* SALARY TABLE — pixel-accurate to screenshots */
+.stbl{border-collapse:collapse;white-space:nowrap;font-size:.71rem;width:100%}
+.stbl th,.stbl td{padding:4px 7px;border:1px solid #d1d5db}
+/* header row 1 */
+.stbl thead tr:first-child th{text-align:center;font-weight:700;font-size:.68rem}
+/* colour bands — Local */
+.th-li{background:#1f4e79!important;color:#fff!important}
+.th-linfo{background:#92d050!important;color:#1a3300!important}
+.th-latt{background:#ffc000!important;color:#3d2000!important}
+.th-lbas{background:#00b0f0!important;color:#fff!important}
+.th-linc{background:#7030a0!important;color:#fff!important}
+.th-ltot{background:#ff0066!important;color:#fff!important}
+.th-ladj{background:#4472c4!important;color:#fff!important}
+.th-lded{background:#e36c09!important;color:#fff!important}
+.th-lnet{background:#00b050!important;color:#fff!important}
+/* colour bands — Expat */
+.th-einfo{background:#1f4e79!important;color:#fff!important}
+.th-eatt{background:#ffc000!important;color:#3d2000!important}
+.th-ebas{background:#00b0f0!important;color:#fff!important}
+.th-etot{background:#ff0066!important;color:#fff!important}
+.th-eadd{background:#92d050!important;color:#1a3300!important}
+.th-eded{background:#e36c09!important;color:#fff!important}
+.th-eact{background:#7030a0!important;color:#fff!important}
+.th-epay{background:#00b050!important;color:#fff!important}
+
+.stbl tbody tr:nth-child(even){background:#f8fafc}
+.stbl tbody tr:hover td{background:#eff6ff}
+.stbl .tot td{background:#dbeafe;font-weight:700;color:var(--blue);border-top:2px solid var(--blue2)}
+.stbl .num{text-align:right;font-variant-numeric:tabular-nums}
+.stbl .ctr{text-align:center}
+.stbl .anm td{background:#fff7ed!important}
+.stbl .rn{color:var(--text3);font-size:.62rem;text-align:center}
+
+/* FILTER */
+.fb{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px;align-items:center}
+.fi{padding:5px 8px;border:1.5px solid var(--gray3);border-radius:5px;font-size:.74rem;
+  font-family:var(--f);outline:none;background:#fff}
+.fi:focus{border-color:var(--blue3)}
+.fsel{padding:5px 8px;border:1.5px solid var(--gray3);border-radius:5px;
+  font-size:.74rem;font-family:var(--f);outline:none;background:#fff;cursor:pointer}
+
+/* BUTTONS */
+.btn{padding:5px 11px;border:none;border-radius:5px;cursor:pointer;font-size:.73rem;
+  font-weight:600;font-family:var(--f);transition:all .14s;
+  display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
+.b-pri{background:var(--blue2);color:#fff}.b-pri:hover{background:var(--blue3)}
+.b-teal{background:var(--teal);color:#fff}.b-teal:hover{background:var(--teal2)}
+.b-red{background:var(--red);color:#fff}.b-red:hover{background:var(--red2)}
+.b-amb{background:#92400e;color:#fff}.b-amb:hover{background:var(--amber)}
+.b-gh{background:var(--gray4);border:1.5px solid var(--gray3);color:var(--text)}
+.b-gh:hover{background:var(--gray3)}
+.b-grn{background:var(--green);color:#fff}.b-grn:hover{background:#15803d}
+.sm{padding:3px 7px;font-size:.66rem}
+.xs{padding:2px 5px;font-size:.61rem;border-radius:3px}
+
+/* BADGES */
+.bdg{display:inline-flex;align-items:center;padding:1px 5px;border-radius:8px;
+  font-size:.59rem;font-weight:700;white-space:nowrap}
+.bbl{background:var(--blue4);color:var(--blue2)}
+.btl{background:var(--teal3);color:var(--teal)}
+.bgn{background:var(--green3);color:var(--green)}
+.bam{background:var(--amber3);color:var(--amber)}
+.brd{background:var(--red3);color:var(--red)}
+.bpp{background:var(--purple3);color:var(--purple)}
+.bgr{background:var(--gray3);color:var(--gray)}
+
+/* ALERTS */
+.al{border-radius:6px;padding:8px 11px;margin-bottom:6px;display:flex;
+  align-items:flex-start;gap:7px;font-size:.74rem;line-height:1.6}
+.al-w{background:#fffbeb;border:1px solid #fcd34d;color:#78350f}
+.al-d{background:#fef2f2;border:1px solid #fca5a5;color:#7f1d1d}
+.al-i{background:#eff6ff;border:1px solid #93c5fd;color:#1e3a5f}
+.al-s{background:#f0fdf4;border:1px solid #86efac;color:#14532d}
+
+/* CALENDAR */
+.cgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;
+  background:var(--gray3);border:1px solid var(--gray3);border-radius:7px;overflow:hidden}
+.ch{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;
+  text-align:center;padding:6px 2px;font-size:.68rem;font-weight:700}
+.ch.we{color:#fca5a5}
+.cc{background:#fff;min-height:78px;padding:4px;cursor:pointer;transition:background .12s}
+.cc:hover{background:var(--blue5)}
+.cc.emp{background:#f8fafc;cursor:default}
+.cc.tdy .dn{background:var(--blue2);color:#fff;border-radius:50%;
+  width:19px;height:19px;display:flex;align-items:center;justify-content:center;margin:0 auto 2px}
+.cc.wkd{background:#fefce8}
+.cc.wkd .dn{color:var(--red)}
+.cc.pay{background:linear-gradient(135deg,#f0fdf4,#dcfce7)!important}
+.cc.anm{background:linear-gradient(135deg,#fff7ed,#fef3c7)!important}
+.dn{font-size:.72rem;font-weight:700;text-align:center;color:var(--text);margin-bottom:2px}
+.dtags{display:flex;flex-direction:column;gap:2px}
+.dtag{font-size:.53rem;font-weight:600;padding:1px 3px;border-radius:2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.5}
+
+/* MODAL */
+.ovl{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);
+  z-index:900;align-items:center;justify-content:center;padding:10px}
+.ovl.on{display:flex}
+.mdl{background:#fff;border-radius:10px;width:100%;max-width:680px;
+  max-height:94vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.28)}
+.mh{background:linear-gradient(135deg,var(--navy),var(--blue2));color:#fff;
+  padding:11px 15px;border-radius:10px 10px 0 0;display:flex;
+  justify-content:space-between;align-items:center}
+.mh h3{font-family:var(--f2);font-size:.88rem;font-weight:700}
+.mx{background:rgba(255,255,255,.2);border:none;color:#fff;width:23px;height:23px;
+  border-radius:50%;cursor:pointer;font-size:.95rem;display:flex;align-items:center;justify-content:center}
+.mb{padding:14px}
+.mf{padding:9px 15px;background:#f8fafc;border-top:1px solid var(--gray3);
+  display:flex;gap:6px;justify-content:flex-end;border-radius:0 0 10px 10px}
+
+/* FORM */
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.fg{display:flex;flex-direction:column;gap:3px}
+.fg.fw{grid-column:1/-1}
+.flb{font-size:.62rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.04em}
+.fin,.fse,.fta{padding:6px 8px;border:1.5px solid var(--gray3);border-radius:5px;
+  font-size:.79rem;font-family:var(--f);outline:none;background:#fafafa;transition:border-color .14s}
+.fin:focus,.fse:focus,.fta:focus{border-color:var(--blue3);background:#fff}
+.fta{resize:vertical;min-height:58px}
+.sh{font-size:.65rem;font-weight:700;color:var(--text2);text-transform:uppercase;
+  letter-spacing:.05em;padding:6px 0 3px;border-bottom:1px solid var(--gray3);
+  margin-bottom:7px;grid-column:1/-1}
+
+/* IMPORT */
+.dz{border:2px dashed var(--blue3);border-radius:8px;padding:26px;text-align:center;
+  cursor:pointer;background:var(--blue5)}
+.dz:hover,.dz.ov{background:var(--blue4);border-color:var(--blue2)}
+
+/* CHARTS */
+.br{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.bl{font-size:.68rem;color:var(--text);width:90px;text-align:right;font-weight:600;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bt{flex:1;background:var(--gray3);border-radius:99px;height:12px;overflow:hidden}
+.bf{height:100%;border-radius:99px;transition:width .55s ease}
+.bv{font-size:.67rem;font-weight:700;width:70px;text-align:right}
+
+/* VIEW BAR */
+.vbar{display:flex;gap:4px;margin-bottom:9px;flex-wrap:wrap;align-items:center}
+.vbtn{background:#fff;border:1.5px solid var(--gray3);color:var(--text2);
+  padding:4px 9px;border-radius:5px;cursor:pointer;font-size:.7rem;font-weight:600;
+  font-family:var(--f);transition:all .14s}
+.vbtn.on{background:var(--blue2);color:#fff;border-color:var(--blue2)}
+.vbtn:hover:not(.on){background:var(--blue5);border-color:var(--blue3)}
+
+/* ANOMALY */
+.anmi{background:#fff;border-radius:6px;border-left:4px solid var(--red2);
+  padding:9px 11px;margin-bottom:6px;box-shadow:var(--sh);display:flex;gap:7px}
+.anmi.w{border-left-color:var(--amber2)}
+.anmi.i{border-left-color:var(--blue3)}
+.ant{font-weight:700;font-size:.76rem;color:var(--red)}
+.anmi.w .ant{color:var(--amber)}
+.anmi.i .ant{color:var(--blue2)}
+.and{font-size:.68rem;color:var(--text2);margin-top:1px}
+
+/* IMPORT HISTORY */
+.ihc{background:#fff;border-radius:6px;border:1px solid var(--gray3);
+  padding:9px 11px;margin-bottom:6px;display:flex;align-items:center;gap:9px;box-shadow:var(--sh)}
+
+/* MISC */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+@media(max-width:900px){.two{grid-template-columns:1fr}.fg2,.fg3{grid-template-columns:1fr}}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+@media print{.hdr,.tabs,.fb,.vbar,.btn,.mf{display:none!important}.pg{padding:0}}
+</style>
+  <link rel="stylesheet" href="../acc-module-shell.css">
+  <script defer src="../acc-module-shell.js"></script>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="hdr">
+  <div class="hdr-in">
+    <span class="hdr-logo">💼</span>
+    <div>
+      <div class="hdr-brand" id="hbrand">VRT 薪資管理系統</div>
+      <div class="hdr-sub">VANTAGE RIVER TEXTILES CO., LTD.</div>
+    </div>
+    <div class="hdr-r">
+      <button class="lbtn on" onclick="setLang('zh')">中</button>
+      <button class="lbtn" onclick="setLang('en')">EN</button>
+      <button class="lbtn" onclick="setLang('km')" style="font-family:var(--fk)">ខ្មែរ</button>
+      <select class="hsel" id="hyr" onchange="onYM()"></select>
+      <select class="hsel" id="hmo" onchange="onYM()"></select>
+      <button class="hbtn" onclick="doExport()">⬇ CSV</button>
+      <button class="hbtn" onclick="window.print()">🖨️</button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ TABS ═══ -->
+<nav class="tabs">
+  <div class="tabs-in" id="tabs-in">
+    <button class="tbtn on" data-panel="p-dash">📊 <span id="t0">儀表板</span></button>
+    <button class="tbtn" data-panel="p-cal">📅 <span id="t1">行事曆</span></button>
+    <button class="tbtn" data-panel="p-loc">🏭 <span id="t2">本地員工</span></button>
+    <button class="tbtn" data-panel="p-exp">👔 <span id="t3">外籍員工</span></button>
+    <button class="tbtn" data-panel="p-ana">📈 <span id="t4">統計分析</span></button>
+    <button class="tbtn" data-panel="p-anm">⚠️ <span id="t5">異常警示</span></button>
+    <button class="tbtn" data-panel="p-imp">📥 <span id="t6">匯入資料</span></button>
+  </div>
+</nav>
+
+<div class="pg">
+
+<!-- ═══ DASHBOARD ═══ -->
+<div class="panel on" id="p-dash">
+  <div class="stats" id="d-stats"></div>
+  <div class="two">
+    <div>
+      <div class="card"><div class="ctitle">⚠️ <span id="d-at">異常摘要</span></div><div id="d-anom"></div></div>
+      <div class="card"><div class="ctitle">📋 <span id="d-rt">近期記錄</span></div><div id="d-rec"></div></div>
+    </div>
+    <div>
+      <div class="card"><div class="ctitle">📊 <span id="d-ct">月度成本 (USD)</span></div><div id="d-chart"></div></div>
+      <div class="card"><div class="ctitle">🏢 <span id="d-dt">部門分佈</span></div><div id="d-dept"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CALENDAR ═══ -->
+<div class="panel" id="p-cal">
+  <div class="vbar">
+    <button class="vbtn on" onclick="setCalV('month')" id="cv0">月視圖</button>
+    <button class="vbtn" onclick="setCalV('year')" id="cv1">年視圖</button>
+    <span style="margin-left:auto;display:flex;gap:5px">
+      <span class="bdg bgn">■ 發薪日</span>
+      <span class="bdg bam">■ 異常</span>
+    </span>
+  </div>
+  <div id="cal-out"></div>
+</div>
+
+<!-- ═══ LOCAL ═══ -->
+<div class="panel" id="p-loc">
+  <div class="fb">
+    <input class="fi" id="ls" placeholder="🔍" style="width:140px" oninput="renderLoc()">
+    <select class="fsel" id="ld" onchange="renderLoc()"><option value="">全部部門</option></select>
+    <select class="fsel" id="lv" onchange="renderLoc()">
+      <option value="mo" id="lv0">本月</option>
+      <option value="all" id="lv1">全部</option>
+    </select>
+    <button class="btn b-pri sm" onclick="openLocM()">＋ <span id="add-l">新增</span></button>
+    <button class="btn b-gh sm" onclick="exportLoc()">⬇ CSV</button>
+    <span style="margin-left:auto;font-size:.71rem;color:var(--text2)" id="lc"></span>
+  </div>
+  <div class="tw" id="loc-tw"></div>
+</div>
+
+<!-- ═══ EXPAT ═══ -->
+<div class="panel" id="p-exp">
+  <div class="fb">
+    <input class="fi" id="es" placeholder="🔍" style="width:140px" oninput="renderExp()">
+    <select class="fsel" id="ev" onchange="renderExp()">
+      <option value="mo" id="ev0">本月</option>
+      <option value="all" id="ev1">全部</option>
+    </select>
+    <button class="btn b-pri sm" onclick="openExpM()">＋ <span id="add-e">新增</span></button>
+    <button class="btn b-gh sm" onclick="exportExp()">⬇ CSV</button>
+    <span style="margin-left:auto;font-size:.71rem;color:var(--text2)" id="ec"></span>
+  </div>
+  <div class="tw" id="exp-tw"></div>
+</div>
+
+<!-- ═══ ANALYTICS ═══ -->
+<div class="panel" id="p-ana">
+  <div class="vbar">
+    <button class="vbtn on" onclick="setAnaV('mo')" id="av0">月度</button>
+    <button class="vbtn" onclick="setAnaV('dept')" id="av1">按部門</button>
+    <button class="vbtn" onclick="setAnaV('cmp')" id="av2">外籍vs本地</button>
+    <button class="vbtn" onclick="setAnaV('yr')" id="av3">年度趨勢</button>
+  </div>
+  <div id="ana-out"></div>
+</div>
+
+<!-- ═══ ANOMALIES ═══ -->
+<div class="panel" id="p-anm">
+  <div class="fb">
+    <select class="fsel" id="anf" onchange="renderAnm()">
+      <option value="">全部類型</option>
+      <option value="spike">薪資波動</option>
+      <option value="ot">超時加班</option>
+      <option value="dup">重複記錄</option>
+      <option value="calc">計算差異</option>
+    </select>
+    <button class="btn b-gh sm" onclick="detect();renderAnm()">🔄 重新掃描</button>
+    <span style="margin-left:auto;font-size:.71rem;color:var(--text2)" id="anmc"></span>
+  </div>
+  <div id="anm-out"></div>
+</div>
+
+<!-- ═══ IMPORT ═══ -->
+<div class="panel" id="p-imp">
+  <div class="two">
+    <div>
+      <div class="card">
+        <div class="ctitle">📥 <span id="imp-t">匯入 Excel</span></div>
+        <div style="display:flex;gap:12px;margin-bottom:9px;font-size:.78rem">
+          <label style="cursor:pointer;display:flex;align-items:center;gap:4px">
+            <input type="radio" name="itype" value="local" checked> 🏭 <span id="imp-loc">本地員工</span>
+          </label>
+          <label style="cursor:pointer;display:flex;align-items:center;gap:4px">
+            <input type="radio" name="itype" value="expat"> 👔 <span id="imp-exp">外籍員工</span>
+          </label>
+        </div>
+        <div style="display:flex;gap:7px;margin-bottom:9px">
+          <div style="flex:1"><label class="flb" id="imp-yr">年份</label>
+            <select class="fse" id="iyr" style="width:100%;margin-top:3px"></select></div>
+          <div style="flex:1"><label class="flb" id="imp-mo">月份</label>
+            <select class="fse" id="imo" style="width:100%;margin-top:3px"></select></div>
+        </div>
+        <div class="dz" id="dz" onclick="document.getElementById('fi2').click()"
+          ondragover="dzOver(event)" ondragleave="dzLeave()" ondrop="dzDrop(event)">
+          <div style="font-size:2rem;margin-bottom:6px">📂</div>
+          <div style="font-size:.8rem;color:var(--text2);font-weight:500" id="dz-t">點擊或拖曳 Excel 到這裡</div>
+          <div style="font-size:.68rem;color:var(--text3);margin-top:3px" id="dz-s">支援 .xlsx .xls .csv</div>
+        </div>
+        <input type="file" id="fi2" style="display:none" accept=".xlsx,.xls,.csv"
+          onchange="handleFile(this.files[0])">
+        <div id="imp-prev" style="margin-top:9px"></div>
+        <div id="imp-act" style="display:none;margin-top:7px;gap:6px;display:none;align-items:center">
+          <button class="btn b-pri" id="imp-ok" onclick="confirmImp()">✓ 確認匯入</button>
+          <button class="btn b-gh" onclick="cancelImp()">取消</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card"><div class="ctitle">🗂️ <span id="ih-t">匯入歷史</span></div>
+        <div id="imp-hist"></div></div>
+      <div class="card">
+        <div class="ctitle">📋 <span id="cm-t">欄位說明</span></div>
+        <div style="font-size:.7rem;line-height:2;color:var(--text2)">
+          <div style="font-weight:700;color:var(--teal)">🏭 本地員工</div>
+          name/姓名 · id/ID# · dept/部門 · sect/單位 · pos/職稱<br>
+          basic/基本薪資 · incentive/加成 · adj/調薪 · ded/扣薪
+          <div style="font-weight:700;color:var(--blue2);margin-top:6px">👔 外籍員工</div>
+          name/姓名 · pos/職稱 · basic/基本 · overseas/海外加給<br>
+          compensate/補貼 · attendded/考勤扣 · twd/台幣 · cambodia/柬埔寨
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /pg -->
+
+<!-- ═══ LOCAL MODAL ═══ -->
+<div class="ovl" id="mloc">
+  <div class="mdl">
+    <div class="mh"><h3 id="mloc-t">新增本地員工薪資</h3>
+      <button class="mx" onclick="closeM('mloc')">✕</button></div>
+    <div class="mb">
+      <div class="fg2">
+        <div class="sh">基本資料 Basic Information</div>
+        <div class="fg"><label class="flb">姓名 Name</label><input class="fin" id="ln"></div>
+        <div class="fg"><label class="flb">ID#</label><input class="fin" id="lid"></div>
+        <div class="fg"><label class="flb">部門 Dept</label>
+          <select class="fse" id="ldept">
+            <option>Production</option><option>Shipping</option><option>Administration</option>
+            <option>QC</option><option>Accounting</option><option>IT</option>
+            <option>Engineering</option><option>Warehouse</option><option>HR</option>
+          </select></div>
+        <div class="fg"><label class="flb">單位 Sect</label><input class="fin" id="lsect" placeholder="PC / Purchase / HR …"></div>
+        <div class="fg"><label class="flb">職稱 Position</label>
+          <select class="fse" id="lpos">
+            <option>Supervisor</option><option>Officer</option><option>Manager</option>
+            <option>Leader</option><option>Assistant</option><option>Worker</option><option>Senior Worker</option>
+          </select></div>
+        <div class="fg"><label class="flb">薪資月份</label><input class="fin" type="month" id="lper"></div>
+        <div class="sh">考勤記錄 Attendance</div>
+        <div class="fg"><label class="flb">本月應上班</label><input class="fin" type="number" id="lsched" value="26" oninput="calcLoc()"></div>
+        <div class="fg"><label class="flb">休假 Take Leave</label><input class="fin" type="number" id="lleave" value="0" oninput="calcLoc()"></div>
+        <div class="fg fw"><label class="flb">實際出勤 Actual</label><input class="fin" type="number" id="lact" value="26"></div>
+        <div class="sh">薪資 Salary (USD)</div>
+        <div class="fg"><label class="flb">基本薪資 Basic</label><input class="fin" type="number" id="lbas" value="0" oninput="calcLoc()"></div>
+        <div class="fg"><label class="flb">主管/職位加成 Incentive</label><input class="fin" type="number" id="linc" value="0" oninput="calcLoc()"></div>
+        <div class="fg"><label class="flb">月薪合計 Total Salary</label><input class="fin" id="ltot" readonly style="background:#f0f9ff;font-weight:700"></div>
+        <div class="fg"><label class="flb">調薪 Adjustment</label><input class="fin" type="number" id="ladj" value="0" oninput="calcLoc()"></div>
+        <div class="fg"><label class="flb">扣薪 Deduction</label><input class="fin" type="number" id="lded" value="0" oninput="calcLoc()"></div>
+        <div class="fg"><label class="flb">實領薪資 Total Pay</label><input class="fin" id="lnet" readonly style="background:#f0fdf4;font-weight:700;color:#166534"></div>
+        <div class="fg"><label class="flb">發薪日</label><input class="fin" type="date" id="lpay"></div>
+        <div class="fg"><label class="flb">狀態</label>
+          <select class="fse" id="lstat">
+            <option value="pending">待發</option><option value="paid">已發</option><option value="hold">暫緩</option>
+          </select></div>
+        <div class="fg fw"><label class="flb">備注</label><textarea class="fta" id="lrem"></textarea></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn b-gh" onclick="closeM('mloc')">取消</button>
+      <button class="btn b-pri" onclick="saveLoc()">💾 儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ EXPAT MODAL ═══ -->
+<div class="ovl" id="mexp">
+  <div class="mdl" style="max-width:720px">
+    <div class="mh"><h3 id="mexp-t">新增外籍員工薪資</h3>
+      <button class="mx" onclick="closeM('mexp')">✕</button></div>
+    <div class="mb">
+      <div class="fg2">
+        <div class="sh">基本資料</div>
+        <div class="fg"><label class="flb">姓名 Name</label><input class="fin" id="en"></div>
+        <div class="fg"><label class="flb">職稱 Position</label><input class="fin" id="epos" placeholder="Manager/經理"></div>
+        <div class="fg"><label class="flb">薪資月份</label><input class="fin" type="month" id="eper"></div>
+        <div class="fg"><label class="flb">發薪日</label><input class="fin" type="date" id="epay"></div>
+        <div class="sh">考勤記錄 Attendance</div>
+        <div class="fg"><label class="flb">本月應上班 Working days</label><input class="fin" type="number" id="esched" value="26"></div>
+        <div class="fg"><label class="flb">AL 年假</label><input class="fin" type="number" id="eal" value="0"></div>
+        <div class="fg"><label class="flb">有薪假 Parent/PL</label><input class="fin" type="number" id="epl" value="0"></div>
+        <div class="fg"><label class="flb">無薪假</label><input class="fin" type="number" id="eup" value="0"></div>
+        <div class="fg"><label class="flb">實際出勤 Actual</label><input class="fin" type="number" id="eact" value="26"></div>
+        <div class="sh">基本薪資 Base Salary (USD)</div>
+        <div class="fg"><label class="flb">Basic 基本</label><input class="fin" type="number" id="ebas" value="0" oninput="calcExp()"></div>
+        <div class="fg"><label class="flb">海外加給 Overseas</label><input class="fin" type="number" id="eovs" value="0" oninput="calcExp()"></div>
+        <div class="fg"><label class="flb">其他加給 Other Inc</label><input class="fin" type="number" id="eothi" value="0" oninput="calcExp()"></div>
+        <div class="fg"><label class="flb">月薪合計 Total Salary</label><input class="fin" id="etot" readonly style="background:#f0f9ff;font-weight:700"></div>
+        <div class="sh">加扣項 Add / Deduct</div>
+        <div class="fg"><label class="flb">薪資補貼 Compensate</label><input class="fin" type="number" id="ecomp" value="0" oninput="calcExp()"></div>
+        <div class="fg"><label class="flb">考勤扣薪 Attend Ded</label><input class="fin" type="number" id="eatd" value="0" oninput="calcExp()"></div>
+        <div class="fg"><label class="flb">其他扣薪 Other Ded</label><input class="fin" type="number" id="eothd" value="0" oninput="calcExp()"></div>
+        <div class="fg"><label class="flb">實際薪資 Actual Salary</label><input class="fin" id="eact2" readonly style="background:#f0fdf4;font-weight:700;color:#166534"></div>
+        <div class="sh">薪資類別 Pay Split</div>
+        <div class="fg"><label class="flb">台幣 TWD</label><input class="fin" type="number" id="etwd" value="0" oninput="calcExp()"></div>
+        <div class="fg"><label class="flb">其他 Other Pay</label><input class="fin" type="number" id="eothp" value="0" oninput="calcExp()"></div>
+        <div class="fg"><label class="flb">柬埔寨 Cambodia</label><input class="fin" type="number" id="ecam" value="0"></div>
+        <div class="fg"><label class="flb">狀態</label>
+          <select class="fse" id="estat">
+            <option value="pending">待發</option><option value="paid">已發</option><option value="hold">暫緩</option>
+          </select></div>
+        <div class="fg fw"><label class="flb">備注</label><textarea class="fta" id="erem"></textarea></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn b-gh" onclick="closeM('mexp')">取消</button>
+      <button class="btn b-pri" onclick="saveExp()">💾 儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DELETE MODAL ═══ -->
+<div class="ovl" id="mdel">
+  <div class="mdl" style="max-width:320px">
+    <div class="mh" style="background:linear-gradient(135deg,#7f1d1d,#b91c1c)">
+      <h3 id="del-t">確認刪除</h3>
+      <button class="mx" onclick="closeM('mdel')">✕</button></div>
+    <div class="mb"><p style="font-size:.82rem;line-height:1.7" id="del-w">此操作無法復原，確定要刪除？</p></div>
+    <div class="mf">
+      <button class="btn b-gh" onclick="closeM('mdel')">取消</button>
+      <button class="btn b-red" onclick="doDel()">🗑 刪除</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SCRIPT ═══════════════════════ -->
+<script>
+/* ── ONE PLACE: all top-level mutable state ── */
+var lang      = 'zh';
+var curYear   = new Date().getFullYear();
+var curMonth  = new Date().getMonth() + 1;
+var calView   = 'month';
+var anaView   = 'mo';
+var editId    = null;
+var delId     = null;
+var delType   = null;
+var anoms     = [];
+var impBuf    = [];   /* holds parsed rows waiting for confirmation */
+
+var DB = { locals: [], expats: [], imports: [] };
+
+/* ───────────────── PERSIST ───────────────── */
+function saveDB() {
+  try { localStorage.setItem('vrt3', JSON.stringify(DB)); } catch(e) {}
+}
+function loadDB() {
+  try {
+    var s = localStorage.getItem('vrt3');
+    if (s) { DB = JSON.parse(s); return; }
+  } catch(e) {}
+  DB = { locals: seedLoc(), expats: seedExp(), imports: [] };
+  saveDB();
+}
+
+/* ───────────────── SEED DATA ───────────────── */
+function pp(m) { return curYear + '-' + pad(m); }
+function pad(n) { return String(n).padStart(2,'0'); }
+
+function seedLoc() {
+  var rows = [
+    {n:'OCH MALEN',    id:'002',  dept:'Production',   sect:'PC',       pos:'Supervisor', bas:770,  inc:760},
+    {n:'POTH THEARY',  id:'004',  dept:'Shipping',     sect:'Purchase', pos:'Officer',    bas:400,  inc:385},
+    {n:'PHARY YIN',    id:'2168', dept:'Administration',sect:'HR',      pos:'Supervisor', bas:470,  inc:463},
+    {n:'SOKUNTHEA TIM',id:'1012', dept:'Production',   sect:'Marker',   pos:'Leader',     bas:470,  inc:480},
+    {n:'EM SREYLEAK',  id:'0039', dept:'Production',   sect:'QC',       pos:'Supervisor', bas:530,  inc:515},
+    {n:'HENG SOKHA',   id:'3585', dept:'Accounting',   sect:'',         pos:'Officer',    bas:380,  inc:378},
+    {n:'KHEAV SOKUNTHEA',id:'5262',dept:'Administration',sect:'',       pos:'Assistant',  bas:330,  inc:330},
+    {n:'SON SORANNDA', id:'5085', dept:'IT',           sect:'',         pos:'Assistant',  bas:380,  inc:365},
+  ];
+  var out = [];
+  [10,9,8].forEach(function(m) {
+    rows.forEach(function(r) {
+      var tot = r.bas + r.inc;
+      out.push({
+        _id: 'L_' + r.id + '_' + pp(m),
+        name:r.n, empId:r.id, dept:r.dept, sect:r.sect, pos:r.pos,
+        period:pp(m), sched:26, leave:0, act:26,
+        bas:r.bas, inc:r.inc, tot:tot, adj:0, ded:0, net:tot,
+        payDate:pp(m)+'-28', status: m<10?'paid':'pending', rem:''
+      });
+    });
+  });
+  return out;
+}
+
+function seedExp() {
+  var rows = [
+    {n:'Dalisay Jetajobe',pos:'Manager/經理',   bas:1925, ovs:1925, twd:0},
+    {n:'Sam Lin',         pos:'Fly Manager/廠長',bas:2000, ovs:2000, twd:0},
+    {n:'Paul Weng',       pos:'Manager/經理',   bas:1750, ovs:1750, twd:3300},
+    {n:'Thi Thu',         pos:'Supervisor/指導員',bas:825, ovs:825,  twd:0},
+  ];
+  var out = [];
+  [10,9,8].forEach(function(m) {
+    rows.forEach(function(r) {
+      var tot = r.bas + r.ovs;
+      var act2 = tot;
+      var cam = act2 - r.twd;
+      out.push({
+        _id: 'E_' + r.n.replace(/\s/g,'_') + '_' + pp(m),
+        name:r.n, pos:r.pos, period:pp(m),
+        sched:26, al:0, pl:0, up:0, act:26,
+        bas:r.bas, ovs:r.ovs, othi:0, tot:tot,
+        comp:0, atd:0, othd:0, act2:act2,
+        twd:r.twd, othp:0, cam:cam,
+        payDate:pp(m)+'-28', status: m<10?'paid':'pending', rem:''
+      });
+    });
+  });
+  return out;
+}
+
+/* ───────────────── TRANSLATIONS ───────────────── */
+var TR = {
+  zh: {
+    brand:'VRT 薪資管理系統',
+    t0:'儀表板', t1:'行事曆', t2:'本地員工', t3:'外籍員工',
+    t4:'統計分析', t5:'異常警示', t6:'匯入資料',
+    dat:'異常摘要', drt:'近期記錄', dct:'月度成本 (USD)', ddt:'部門分佈',
+    cv0:'月視圖', cv1:'年視圖',
+    lv0:'本月', lv1:'全部記錄', ev0:'本月', ev1:'全部記錄',
+    av0:'月度', av1:'按部門', av2:'外籍vs本地', av3:'年度趨勢',
+    addl:'新增', adde:'新增',
+    impt:'匯入 Excel', imploc:'本地員工', impexp:'外籍員工',
+    impyr:'年份', impmo:'月份',
+    dzt:'點擊或拖曳 Excel 到這裡', dzs:'支援 .xlsx .xls .csv',
+    iht:'匯入歷史', cmt:'欄位說明',
+    mloc:'新增本地員工薪資', mexp:'新增外籍員工薪資',
+    delt:'確認刪除', delw:'此操作無法復原，確定要刪除？',
+    paid:'已發', pending:'待發', hold:'暫緩', imported:'已匯入',
+    total:'合計', noRec:'暫無記錄',
+  },
+  en: {
+    brand:'VRT Salary Management',
+    t0:'Dashboard', t1:'Calendar', t2:'Local Staff', t3:'Expat Staff',
+    t4:'Analytics', t5:'Anomalies', t6:'Import Data',
+    dat:'Anomaly Summary', drt:'Recent Records', dct:'Monthly Cost (USD)', ddt:'Dept Breakdown',
+    cv0:'Month', cv1:'Year',
+    lv0:'This Month', lv1:'All Records', ev0:'This Month', ev1:'All Records',
+    av0:'Monthly', av1:'By Dept', av2:'Expat vs Local', av3:'Year Trend',
+    addl:'Add', adde:'Add',
+    impt:'Import Excel', imploc:'Local Staff', impexp:'Expat Staff',
+    impyr:'Year', impmo:'Month',
+    dzt:'Click or drag Excel here', dzs:'Supports .xlsx .xls .csv',
+    iht:'Import History', cmt:'Column Mapping',
+    mloc:'Add Local Staff Salary', mexp:'Add Expat Salary',
+    delt:'Confirm Delete', delw:'This cannot be undone. Are you sure?',
+    paid:'Paid', pending:'Pending', hold:'On Hold', imported:'Imported',
+    total:'Total', noRec:'No records',
+  },
+  km: {
+    brand:'ប្រព័ន្ធគ្រប់គ្រងប្រាក់ខែ VRT',
+    t0:'ផ្ទាំងព័ត៌មាន', t1:'ប្រតិទិន', t2:'បុគ្គលិកក្នុងស្រុក', t3:'បុគ្គលិកបរទេស',
+    t4:'វិភាគ', t5:'ភាពខុសប្រក្រតី', t6:'នាំចូលទិន្នន័យ',
+    dat:'សង្ខេបភាពខុសប្រក្រតី', drt:'កំណត់ត្រាថ្មីៗ', dct:'ចំណាយប្រចាំខែ (USD)', ddt:'បំបែកតាមផ្នែក',
+    cv0:'ខែ', cv1:'ឆ្នាំ',
+    lv0:'ខែនេះ', lv1:'ទាំងអស់', ev0:'ខែនេះ', ev1:'ទាំងអស់',
+    av0:'ប្រចាំខែ', av1:'តាមផ្នែក', av2:'បរទេស vs ក្នុងស្រុក', av3:'និន្នាការ',
+    addl:'បន្ថែម', adde:'បន្ថែម',
+    impt:'នាំចូល Excel', imploc:'បុគ្គលិកក្នុងស្រុក', impexp:'បុគ្គលិកបរទេស',
+    impyr:'ឆ្នាំ', impmo:'ខែ',
+    dzt:'ចុចឬអូស Excel មកទីនេះ', dzs:'គាំទ្រ .xlsx .xls .csv',
+    iht:'ប្រវត្តិការនាំចូល', cmt:'មគ្គុទ្ទេសក៍ជួរឈរ',
+    mloc:'បន្ថែមប្រាក់ខែបុគ្គលិកក្នុងស្រុក', mexp:'បន្ថែមប្រាក់ខែបុគ្គលិកបរទេស',
+    delt:'បញ្ជាក់ការលុប', delw:'សកម្មភាពនេះមិនអាចត្រឡប់វិញ។ ប្រាកដទេ?',
+    paid:'បានបង់', pending:'រង់ចាំ', hold:'ព្យួរ', imported:'នាំចូលហើយ',
+    total:'សរុប', noRec:'គ្មានទិន្នន័យ',
+  }
+};
+
+function tr(k) { return (TR[lang] || TR.zh)[k] || k; }
+
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lbtn').forEach(function(b,i){
+    b.classList.toggle('on', ['zh','en','km'][i] === l);
+  });
+  applyLang();
+  renderActive();
+}
+
+function applyLang() {
+  var keys = ['brand','t0','t1','t2','t3','t4','t5','t6',
+    'dat','drt','dct','ddt','cv0','cv1','lv0','lv1','ev0','ev1',
+    'av0','av1','av2','av3','addl','adde','impt','imploc','impexp',
+    'impyr','impmo','dzt','dzs','iht','cmt','mloc','mexp','delt','delw',
+    'add-l','add-e'];
+  keys.forEach(function(k) {
+    var el = document.getElementById(k);
+    if (el) el.textContent = tr(k);
+  });
+  document.getElementById('hbrand').textContent = tr('brand');
+}
+
+/* ───────────────── YEAR/MONTH SELECTORS ───────────────── */
+function initSels() {
+  var hy = document.getElementById('hyr');
+  var hm = document.getElementById('hmo');
+  var iy = document.getElementById('iyr');
+  var im = document.getElementById('imo');
+  var mNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var mNamesZh = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+  for (var y = 2023; y <= 2027; y++) {
+    hy.add(new Option(y, y, y===curYear, y===curYear));
+    iy.add(new Option(y, y, y===curYear, y===curYear));
+  }
+  for (var m = 1; m <= 12; m++) {
+    var lbl = lang==='en' ? mNames[m-1] : mNamesZh[m-1];
+    hm.add(new Option(lbl, m, m===curMonth, m===curMonth));
+    im.add(new Option(lbl, m, m===curMonth, m===curMonth));
+  }
+}
+function onYM() {
+  curYear  = +document.getElementById('hyr').value;
+  curMonth = +document.getElementById('hmo').value;
+  renderActive();
+}
+
+/* ───────────────── TABS ───────────────── */
+function goTab(panelId) {
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.tbtn').forEach(function(b){ b.classList.remove('on'); });
+  document.getElementById(panelId).classList.add('on');
+  document.querySelectorAll('.tbtn').forEach(function(b){
+    if (b.dataset.panel === panelId) b.classList.add('on');
+  });
+  renderTab(panelId);
+}
+function renderTab(id) {
+  if (id==='p-dash') renderDash();
+  else if (id==='p-cal')  renderCal();
+  else if (id==='p-loc')  renderLoc();
+  else if (id==='p-exp')  renderExp();
+  else if (id==='p-ana')  renderAna();
+  else if (id==='p-anm')  renderAnm();
+  else if (id==='p-imp')  renderImpHist();
+}
+function renderActive() {
+  var a = document.querySelector('.panel.on');
+  if (a) renderTab(a.id);
+}
+
+/* ───────────────── HELPERS ───────────────── */
+function curP() { return curYear + '-' + pad(curMonth); }
+function fmt(n) { return (+n||0).toLocaleString('en-US',{maximumFractionDigits:0}); }
+function fmtK(n) { return n>=1000?(n/1000).toFixed(1)+'k':fmt(n); }
+function sbadge(s) {
+  var map = {paid:'bgn',pending:'bam',hold:'brd',imported:'bbl'};
+  return '<span class="bdg '+(map[s]||'bgr')+'">'+(tr(s)||s)+'</span>';
+}
+function closeM(id) { document.getElementById(id).classList.remove('on'); }
+
+/* ───────────────── DASHBOARD ───────────────── */
+function renderDash() {
+  var p  = curP();
+  var ls = DB.locals.filter(function(l){ return l.period===p; });
+  var es = DB.expats.filter(function(e){ return e.period===p; });
+  var lnet = ls.reduce(function(s,l){ return s+l.net; }, 0);
+  var enet = es.reduce(function(s,e){ return s+e.act2; }, 0);
+  detect();
+
+  /* stat cards */
+  var cards = [
+    {v:ls.length,      l:tr('t2'), s:'$'+fmt(lnet),          c:'var(--teal)'},
+    {v:es.length,      l:tr('t3'), s:'$'+fmt(enet),          c:'var(--blue2)'},
+    {v:'$'+fmt(lnet+enet), l:'月薪合計', s:p,                c:'var(--purple)'},
+    {v:'$'+fmt(ls.length?Math.round(lnet/ls.length):0), l:'本地平均', s:tr('t2'), c:'var(--teal)'},
+    {v:'$'+fmt(es.length?Math.round(enet/es.length):0), l:'外籍平均', s:tr('t3'), c:'var(--blue2)'},
+    {v:anoms.length, l:'異常', s:p, c:anoms.length?'var(--red)':'var(--green)'},
+  ];
+  document.getElementById('d-stats').innerHTML = cards.map(function(c){
+    return '<div class="scard" style="--sc:'+c.c+'"><div class="sv">'+c.v+
+      '</div><div class="sl">'+c.l+'</div><div class="ss">'+c.s+'</div></div>';
+  }).join('');
+
+  /* anomalies */
+  document.getElementById('d-anom').innerHTML = anoms.slice(0,3).map(function(a){
+    return '<div class="al al-'+(a.lv==='d'?'d':'w')+'"><span>'+a.ic+'</span>'+
+      '<div><strong>'+a.ti+'</strong><div style="font-size:.68rem;margin-top:1px">'+a.ds+'</div></div></div>';
+  }).join('') || '<div class="al al-s"><span>✅</span><div>本月無異常</div></div>';
+
+  /* recent */
+  var all = ls.slice(0,4).map(function(r){ return {name:r.name,net:r.net,st:r.status}; })
+    .concat(es.slice(0,4).map(function(r){ return {name:r.name,net:r.act2,st:r.status}; }));
+  document.getElementById('d-rec').innerHTML = all.length ?
+    '<table style="width:100%;font-size:.71rem;border-collapse:collapse">'+
+    all.slice(0,6).map(function(r){
+      return '<tr style="border-bottom:1px solid var(--gray3)"><td style="padding:4px 6px">'+r.name+
+        '</td><td style="padding:4px 6px;text-align:right;font-weight:600">$'+fmt(r.net)+
+        '</td><td style="padding:4px 6px;text-align:center">'+sbadge(r.st)+'</td></tr>';
+    }).join('')+'</table>' : '<div style="color:var(--text3);padding:8px;font-size:.76rem">'+tr('noRec')+'</div>';
+
+  /* monthly chart */
+  var mos = [];
+  for (var i = 5; i >= 0; i--) {
+    var m2 = curMonth-i, y2 = curYear;
+    if (m2<=0){ m2+=12; y2--; }
+    var mp = y2+'-'+pad(m2);
+    var lc2 = DB.locals.filter(function(l){ return l.period===mp; }).reduce(function(s,l){ return s+l.net; },0);
+    var ec2 = DB.expats.filter(function(e){ return e.period===mp; }).reduce(function(s,e){ return s+e.act2; },0);
+    mos.push({lb:y2+'/'+(m2<10?'0':'')+m2, lc:lc2, ec:ec2, tot:lc2+ec2});
+  }
+  var maxM = Math.max.apply(null, mos.map(function(m){ return m.tot; }).concat([1]));
+  document.getElementById('d-chart').innerHTML = mos.map(function(m){
+    return '<div class="br"><div class="bl">'+m.lb+'</div>'+
+      '<div class="bt"><div style="height:100%;display:flex">'+
+      '<div class="bf" style="width:'+((m.lc/maxM)*100).toFixed(1)+'%;background:var(--teal2)"></div>'+
+      '<div class="bf" style="width:'+((m.ec/maxM)*100).toFixed(1)+'%;background:var(--blue3)"></div>'+
+      '</div></div><div class="bv">$'+fmtK(m.tot)+'</div></div>';
+  }).join('');
+
+  /* dept */
+  var depts = {};
+  ls.concat(es.map(function(e){ return {dept:'Expat',net:e.act2}; })).forEach(function(r){
+    depts[r.dept] = (depts[r.dept]||0) + r.net;
+  });
+  var ds = Object.entries(depts).sort(function(a,b){ return b[1]-a[1]; });
+  var maxD = Math.max.apply(null, ds.map(function(d){ return d[1]; }).concat([1]));
+  document.getElementById('d-dept').innerHTML = ds.map(function(d){
+    return '<div class="br"><div class="bl">'+d[0]+'</div>'+
+      '<div class="bt"><div class="bf" style="width:'+((d[1]/maxD)*100).toFixed(1)+
+      '%;background:linear-gradient(90deg,var(--purple2),var(--blue3))"></div></div>'+
+      '<div class="bv">$'+fmtK(d[1])+'</div></div>';
+  }).join('');
+}
+
+/* ───────────────── CALENDAR ───────────────── */
+function setCalV(v) {
+  calView = v;
+  document.getElementById('cv0').classList.toggle('on', v==='month');
+  document.getElementById('cv1').classList.toggle('on', v==='year');
+  renderCal();
+}
+function renderCal() {
+  if (calView==='month') renderMonthCal();
+  else renderYearCal();
+}
+function renderMonthCal() {
+  var daysInMonth = new Date(curYear, curMonth, 0).getDate();
+  var firstDay    = new Date(curYear, curMonth-1, 1).getDay();
+  var today       = new Date().toISOString().slice(0,10);
+  var wdays       = ['日','一','二','三','四','五','六'];
+  var p           = curP();
+  var h = '<div style="display:flex;align-items:center;gap:9px;margin-bottom:9px">'+
+    '<button class="btn b-gh sm" onclick="prevMo()">◀</button>'+
+    '<span style="font-family:var(--f2);font-size:1.05rem;font-weight:700;color:var(--blue2);min-width:115px;text-align:center">'+
+    curYear+' / '+pad(curMonth)+'</span>'+
+    '<button class="btn b-gh sm" onclick="nextMo()">▶</button>'+
+    '<button class="btn b-pri sm" onclick="goToday()">今天</button></div>';
+  h += '<div class="cgrid">';
+  wdays.forEach(function(w,i){ h += '<div class="ch'+(i===0||i===6?' we':'')+'">'+(lang==='km'?['អា','ច','អ','ព','ព្រ','សុ','ស'][i]:lang==='en'?['Su','Mo','Tu','We','Th','Fr','Sa'][i]:w)+'</div>'; });
+  var day = 1;
+  for (var i = 0; i < 42; i++) {
+    if (i < firstDay || day > daysInMonth) { h += '<div class="cc emp"></div>'; continue; }
+    var ds  = curYear+'-'+pad(curMonth)+'-'+pad(day);
+    var wd  = i % 7, isWe = wd===0||wd===6;
+    var isT = ds===today;
+    var lrecs = DB.locals.filter(function(l){ return l.period===p && l.payDate===ds; });
+    var erecs = DB.expats.filter(function(e){ return e.period===p && e.payDate===ds; });
+    var tot   = lrecs.length + erecs.length;
+    var cls   = 'cc'+(isWe?' wkd':'')+(isT?' tdy':'')+(tot?' pay':'');
+    h += '<div class="'+cls+'" onclick="dayClick(\''+ds+'\')">'+
+      '<div class="dn">'+day+'</div>'+
+      '<div class="dtags">'+
+      (tot?'<div class="dtag" style="background:#bbf7d0;color:#166534">💰 '+tot+'人 $'+fmtK(lrecs.reduce(function(s,l){return s+l.net;},0)+erecs.reduce(function(s,e){return s+e.act2;},0))+'</div>':'')+
+      '</div></div>';
+    day++;
+  }
+  document.getElementById('cal-out').innerHTML = h+'</div>';
+}
+function renderYearCal() {
+  var mZ = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+  var h = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:10px">';
+  for (var m = 1; m <= 12; m++) {
+    var mp  = curYear+'-'+pad(m);
+    var ls2 = DB.locals.filter(function(l){ return l.period===mp; });
+    var es2 = DB.expats.filter(function(e){ return e.period===mp; });
+    var tot = ls2.reduce(function(s,l){ return s+l.net; },0) + es2.reduce(function(s,e){ return s+e.act2; },0);
+    h += '<div class="card" style="cursor:pointer" onclick="curMonth='+m+';renderCal()">'+
+      '<div style="font-weight:700;font-size:.87rem;color:var(--blue2)">'+curYear+' / '+mZ[m-1]+'</div>'+
+      '<div style="font-size:.69rem;color:var(--text2);margin-top:3px">本地:'+ls2.length+' | 外籍:'+es2.length+'</div>'+
+      '<div style="font-size:.83rem;font-weight:700;color:var(--teal);margin-top:2px">'+(tot?'$'+fmt(tot):'—')+'</div></div>';
+  }
+  document.getElementById('cal-out').innerHTML = h+'</div>';
+}
+function dayClick(ds) {
+  var pp2 = ds.slice(0,7);
+  var ls2 = DB.locals.filter(function(l){ return l.period===pp2 && l.payDate===ds; });
+  var es2 = DB.expats.filter(function(e){ return e.period===pp2 && e.payDate===ds; });
+  if (!ls2.length && !es2.length) { alert(ds+'\n'+(lang==='zh'?'該日無薪資記錄':'No salary records')); return; }
+  var msg = '📅 '+ds+'\n\n';
+  ls2.forEach(function(l){ msg += '🏭 '+l.name+' → $'+fmt(l.net)+' ('+l.status+')\n'; });
+  es2.forEach(function(e){ msg += '👔 '+e.name+' → $'+fmt(e.act2)+' ('+e.status+')\n'; });
+  msg += '\n合計: $'+fmt(ls2.reduce(function(s,l){return s+l.net;},0)+es2.reduce(function(s,e){return s+e.act2;},0));
+  alert(msg);
+}
+function prevMo() { curMonth--; if(curMonth<1){curMonth=12;curYear--;} document.getElementById('hyr').value=curYear; document.getElementById('hmo').value=curMonth; renderCal(); }
+function nextMo() { curMonth++; if(curMonth>12){curMonth=1;curYear++;} document.getElementById('hyr').value=curYear; document.getElementById('hmo').value=curMonth; renderCal(); }
+function goToday() { var n=new Date(); curYear=n.getFullYear(); curMonth=n.getMonth()+1; document.getElementById('hyr').value=curYear; document.getElementById('hmo').value=curMonth; renderCal(); }
+
+/* ───────────────── LOCAL TABLE ───────────────── */
+function renderLoc() {
+  var p   = curP();
+  var view= (document.getElementById('lv')||{}).value||'mo';
+  var srch= ((document.getElementById('ls')||{}).value||'').toLowerCase();
+  var deptF= (document.getElementById('ld')||{}).value||'';
+  var data = view==='mo' ? DB.locals.filter(function(l){ return l.period===p; }) : DB.locals.slice();
+  if (srch) data = data.filter(function(l){ return (l.name+l.empId+l.dept).toLowerCase().includes(srch); });
+  if (deptF) data = data.filter(function(l){ return l.dept===deptF; });
+
+  /* populate dept filter */
+  var ld = document.getElementById('ld');
+  if (ld && ld.options.length <= 1) {
+    var depts = [...new Set(DB.locals.map(function(l){ return l.dept; }))].sort();
+    depts.forEach(function(d){ ld.add(new Option(d,d)); });
+  }
+
+  var tB = data.reduce(function(s,l){ return s+l.bas; },0);
+  var tI = data.reduce(function(s,l){ return s+l.inc; },0);
+  var tT = data.reduce(function(s,l){ return s+l.tot; },0);
+  var tA = data.reduce(function(s,l){ return s+l.adj; },0);
+  var tD = data.reduce(function(s,l){ return s+l.ded; },0);
+  var tN = data.reduce(function(s,l){ return s+l.net; },0);
+
+  document.getElementById('lc').textContent = data.length+' 筆 | Net: $'+fmt(tN);
+
+  document.getElementById('loc-tw').innerHTML =
+    '<table class="stbl">'+
+    '<thead>'+
+    '<tr>'+
+      '<th rowspan="2" class="th-li">序</th>'+
+      '<th colspan="5" class="th-linfo">基本資料 Basic Information</th>'+
+      '<th colspan="3" class="th-latt">考勤記錄 Attendance</th>'+
+      '<th class="th-lbas">基本薪資<br>Basic</th>'+
+      '<th class="th-linc">主管/職位加成<br>Incentive</th>'+
+      '<th class="th-ltot">月薪合計<br>Total Salary</th>'+
+      '<th class="th-ladj">調薪<br>Adj</th>'+
+      '<th class="th-lded">扣薪<br>Ded</th>'+
+      '<th class="th-lnet">實領薪資<br>Total Pay</th>'+
+      '<th rowspan="2" class="th-li">狀態</th>'+
+      '<th rowspan="2" class="th-li"></th>'+
+    '</tr>'+
+    '<tr>'+
+      '<th class="th-linfo">姓名 Name</th>'+
+      '<th class="th-linfo">ID#</th>'+
+      '<th class="th-linfo">部門 Dept</th>'+
+      '<th class="th-linfo">單位 Sect</th>'+
+      '<th class="th-linfo">職稱 Position</th>'+
+      '<th class="th-latt">應上班<br>Scheduled</th>'+
+      '<th class="th-latt">休假<br>Leave</th>'+
+      '<th class="th-latt">實際<br>Actual</th>'+
+      '<th class="th-lbas"></th><th class="th-linc"></th>'+
+      '<th class="th-ltot"></th><th class="th-ladj"></th>'+
+      '<th class="th-lded"></th><th class="th-lnet"></th>'+
+    '</tr>'+
+    '</thead>'+
+    '<tbody>'+
+    data.map(function(l,i){
+      var a = anoms.find(function(x){ return x.eid===l.empId && x.per===l.period; });
+      return '<tr'+(a?' class="anm"':'')+'>'+
+        '<td class="rn">'+(i+1)+'</td>'+
+        '<td>'+l.name+(a?' <span class="bdg brd" style="font-size:.5rem">⚠</span>':'')+'</td>'+
+        '<td class="ctr">'+l.empId+'</td>'+
+        '<td>'+l.dept+'</td>'+
+        '<td>'+l.sect+'</td>'+
+        '<td>'+l.pos+'</td>'+
+        '<td class="ctr">'+l.sched+'</td>'+
+        '<td class="ctr">'+l.leave+'</td>'+
+        '<td class="ctr">'+l.act+'</td>'+
+        '<td class="num">$'+fmt(l.bas)+'</td>'+
+        '<td class="num">$'+fmt(l.inc)+'</td>'+
+        '<td class="num" style="font-weight:700">$'+fmt(l.tot)+'</td>'+
+        '<td class="num">'+(l.adj?'$'+fmt(l.adj):'-')+'</td>'+
+        '<td class="num">'+(l.ded?'$'+fmt(l.ded):'-')+'</td>'+
+        '<td class="num" style="font-weight:700;color:var(--green)">$'+fmt(l.net)+'</td>'+
+        '<td class="ctr">'+sbadge(l.status)+'</td>'+
+        '<td style="white-space:nowrap">'+
+          '<button class="btn b-gh xs" onclick="openLocM(\''+l._id+'\')">✏️</button> '+
+          '<button class="btn b-red xs" onclick="askDel(\''+l._id+'\',\'loc\')">🗑</button>'+
+        '</td></tr>';
+    }).join('')+
+    '</tbody>'+
+    '<tfoot><tr class="tot">'+
+      '<td colspan="9" style="text-align:right;font-size:.68rem">'+tr('total')+' ('+data.length+')</td>'+
+      '<td class="num">$'+fmt(tB)+'</td>'+
+      '<td class="num">$'+fmt(tI)+'</td>'+
+      '<td class="num" style="font-weight:800">$'+fmt(tT)+'</td>'+
+      '<td class="num">'+(tA?'$'+fmt(tA):'-')+'</td>'+
+      '<td class="num">'+(tD?'$'+fmt(tD):'-')+'</td>'+
+      '<td class="num" style="font-weight:800;color:var(--green)">$'+fmt(tN)+'</td>'+
+      '<td colspan="2"></td>'+
+    '</tr></tfoot></table>';
+}
+
+/* ───────────────── EXPAT TABLE ───────────────── */
+function renderExp() {
+  var p    = curP();
+  var view = (document.getElementById('ev')||{}).value||'mo';
+  var srch = ((document.getElementById('es')||{}).value||'').toLowerCase();
+  var data = view==='mo' ? DB.expats.filter(function(e){ return e.period===p; }) : DB.expats.slice();
+  if (srch) data = data.filter(function(e){ return e.name.toLowerCase().includes(srch); });
+
+  var tB = data.reduce(function(s,e){ return s+e.bas; },0);
+  var tO = data.reduce(function(s,e){ return s+e.ovs; },0);
+  var tT = data.reduce(function(s,e){ return s+e.tot; },0);
+  var tA = data.reduce(function(s,e){ return s+e.act2; },0);
+  var tTwd = data.reduce(function(s,e){ return s+e.twd; },0);
+  var tCam = data.reduce(function(s,e){ return s+e.cam; },0);
+
+  document.getElementById('ec').textContent = data.length+' 筆 | Actual: $'+fmt(tA);
+
+  document.getElementById('exp-tw').innerHTML =
+    '<table class="stbl">'+
+    '<thead>'+
+    '<tr>'+
+      '<th rowspan="2" class="th-einfo">序</th>'+
+      '<th colspan="2" class="th-einfo">基本資料</th>'+
+      '<th colspan="5" class="th-eatt">考勤記錄 Attendance</th>'+
+      '<th colspan="3" class="th-ebas">基本薪資 Base</th>'+
+      '<th class="th-etot">月薪合計<br>Total</th>'+
+      '<th class="th-eadd">薪資補貼<br>Compensate</th>'+
+      '<th colspan="2" class="th-eded">扣薪 Deduct</th>'+
+      '<th class="th-eact">實際薪資<br>Actual</th>'+
+      '<th colspan="3" class="th-epay">薪資類別 Pay Split</th>'+
+      '<th rowspan="2" class="th-einfo">狀態</th>'+
+      '<th rowspan="2" class="th-einfo"></th>'+
+    '</tr>'+
+    '<tr>'+
+      '<th class="th-einfo">姓名 Name</th>'+
+      '<th class="th-einfo">職稱 Position</th>'+
+      '<th class="th-eatt">應上班</th>'+
+      '<th class="th-eatt">AL</th>'+
+      '<th class="th-eatt">有薪假<br>PL</th>'+
+      '<th class="th-eatt">無薪假</th>'+
+      '<th class="th-eatt">實際<br>Actual</th>'+
+      '<th class="th-ebas">Basic</th>'+
+      '<th class="th-ebas">海外加給<br>Overseas</th>'+
+      '<th class="th-ebas">其他<br>Other</th>'+
+      '<th class="th-etot"></th>'+
+      '<th class="th-eadd"></th>'+
+      '<th class="th-eded">考勤扣</th>'+
+      '<th class="th-eded">其他扣</th>'+
+      '<th class="th-eact"></th>'+
+      '<th class="th-epay">台幣 TWD</th>'+
+      '<th class="th-epay">其他</th>'+
+      '<th class="th-epay">柬埔寨</th>'+
+    '</tr>'+
+    '</thead>'+
+    '<tbody>'+
+    data.map(function(e,i){
+      var a = anoms.find(function(x){ return x.eid===e.name && x.per===e.period; });
+      return '<tr'+(a?' class="anm"':'')+'>'+
+        '<td class="rn">'+(i+1)+'</td>'+
+        '<td>'+e.name+(a?' <span class="bdg brd" style="font-size:.5rem">⚠</span>':'')+'</td>'+
+        '<td style="font-size:.67rem">'+e.pos+'</td>'+
+        '<td class="ctr">'+e.sched+'</td>'+
+        '<td class="ctr">'+(e.al||0)+'</td>'+
+        '<td class="ctr">'+(e.pl||0)+'</td>'+
+        '<td class="ctr">'+(e.up||0)+'</td>'+
+        '<td class="ctr">'+e.act+'</td>'+
+        '<td class="num">$'+fmt(e.bas)+'</td>'+
+        '<td class="num">$'+fmt(e.ovs)+'</td>'+
+        '<td class="num">'+(e.othi?'$'+fmt(e.othi):'-')+'</td>'+
+        '<td class="num" style="font-weight:700">$'+fmt(e.tot)+'</td>'+
+        '<td class="num">'+(e.comp?'$'+fmt(e.comp):'-')+'</td>'+
+        '<td class="num" style="color:var(--red2)">'+(e.atd?'$'+fmt(e.atd):'-')+'</td>'+
+        '<td class="num" style="color:var(--red2)">'+(e.othd?'$'+fmt(e.othd):'-')+'</td>'+
+        '<td class="num" style="font-weight:700;color:var(--green)">$'+fmt(e.act2)+'</td>'+
+        '<td class="num">'+(e.twd?'$'+fmt(e.twd):'-')+'</td>'+
+        '<td class="num">'+(e.othp?'$'+fmt(e.othp):'-')+'</td>'+
+        '<td class="num">'+(e.cam?'$'+fmt(e.cam):'-')+'</td>'+
+        '<td class="ctr">'+sbadge(e.status)+'</td>'+
+        '<td style="white-space:nowrap">'+
+          '<button class="btn b-gh xs" onclick="openExpM(\''+e._id+'\')">✏️</button> '+
+          '<button class="btn b-red xs" onclick="askDel(\''+e._id+'\',\'exp\')">🗑</button>'+
+        '</td></tr>';
+    }).join('')+
+    '</tbody>'+
+    '<tfoot><tr class="tot">'+
+      '<td colspan="8" style="text-align:right;font-size:.68rem">'+tr('total')+' ('+data.length+')</td>'+
+      '<td class="num">$'+fmt(tB)+'</td>'+
+      '<td class="num">$'+fmt(tO)+'</td>'+
+      '<td class="num">-</td>'+
+      '<td class="num" style="font-weight:800">$'+fmt(tT)+'</td>'+
+      '<td class="num">-</td><td class="num">-</td><td class="num">-</td>'+
+      '<td class="num" style="font-weight:800;color:var(--green)">$'+fmt(tA)+'</td>'+
+      '<td class="num">$'+fmt(tTwd)+'</td>'+
+      '<td class="num">-</td>'+
+      '<td class="num">$'+fmt(tCam)+'</td>'+
+      '<td colspan="2"></td>'+
+    '</tr></tfoot></table>';
+}
+
+/* ───────────────── LOCAL MODAL OPEN ───────────────── */
+function openLocM(id) {
+  editId = id || null;
+  var p  = curP();
+  var pd = p + '-28';
+  document.getElementById('mloc-t').textContent = id ? '編輯本地員工薪資' : tr('mloc');
+  if (id) {
+    var r = DB.locals.find(function(l){ return l._id===id; }); if (!r) return;
+    set('ln',r.name); set('lid',r.empId); set('ldept',r.dept); set('lsect',r.sect||'');
+    set('lpos',r.pos); set('lper',r.period); set('lsched',r.sched); set('lleave',r.leave);
+    set('lact',r.act); set('lbas',r.bas); set('linc',r.inc); set('ltot',r.tot);
+    set('ladj',r.adj); set('lded',r.ded); set('lnet',r.net);
+    set('lpay',r.payDate); set('lstat',r.status); set('lrem',r.rem||'');
+  } else {
+    ['ln','lid','lsect','lrem'].forEach(function(x){ set(x,''); });
+    set('lper',p); set('lpay',pd);
+    set('lsched',26); set('lleave',0); set('lact',26);
+    set('lbas',0); set('linc',0); set('ltot',0); set('ladj',0); set('lded',0); set('lnet',0);
+    set('ldept','Production'); set('lpos','Supervisor'); set('lstat','pending');
+  }
+  document.getElementById('mloc').classList.add('on');
+}
+function calcLoc() {
+  var bas = +g('lbas')||0, inc = +g('linc')||0, adj = +g('ladj')||0, ded = +g('lded')||0;
+  var tot = bas + inc;
+  set('ltot', tot);
+  set('lnet', tot + adj - ded);
+  var sch = +g('lsched')||26, lv = +g('lleave')||0;
+  if (!g('lact') || g('lact')==='26') set('lact', sch - lv);
+}
+function saveLoc() {
+  var name = (g('ln')||'').trim(), eid = (g('lid')||'').trim();
+  if (!name || !eid) { alert('請填寫姓名及ID'); return; }
+  var bas = +g('lbas')||0, inc = +g('linc')||0, adj = +g('ladj')||0, ded = +g('lded')||0;
+  var tot = bas + inc;
+  var r = {
+    _id: editId || 'L_'+eid+'_'+Date.now(),
+    name:name, empId:eid,
+    dept:g('ldept'), sect:g('lsect'), pos:g('lpos'),
+    period:g('lper'),
+    sched:+g('lsched')||26, leave:+g('lleave')||0, act:+g('lact')||26,
+    bas:bas, inc:inc, tot:tot, adj:adj, ded:ded, net:tot+adj-ded,
+    payDate:g('lpay'), status:g('lstat'), rem:g('lrem')
+  };
+  if (editId) {
+    var idx = DB.locals.findIndex(function(l){ return l._id===editId; });
+    if (idx>-1) DB.locals[idx] = r;
+  } else DB.locals.push(r);
+  saveDB(); detect(); closeM('mloc'); renderLoc();
+}
+
+/* ───────────────── EXPAT MODAL OPEN ───────────────── */
+function openExpM(id) {
+  editId = id || null;
+  var p  = curP(), pd = p+'-28';
+  document.getElementById('mexp-t').textContent = id ? '編輯外籍員工薪資' : tr('mexp');
+  if (id) {
+    var r = DB.expats.find(function(e){ return e._id===id; }); if (!r) return;
+    set('en',r.name); set('epos',r.pos); set('eper',r.period); set('epay',r.payDate);
+    set('esched',r.sched); set('eal',r.al||0); set('epl',r.pl||0);
+    set('eup',r.up||0); set('eact',r.act);
+    set('ebas',r.bas); set('eovs',r.ovs); set('eothi',r.othi||0); set('etot',r.tot);
+    set('ecomp',r.comp||0); set('eatd',r.atd||0); set('eothd',r.othd||0); set('eact2',r.act2);
+    set('etwd',r.twd||0); set('eothp',r.othp||0); set('ecam',r.cam||0);
+    set('estat',r.status); set('erem',r.rem||'');
+  } else {
+    ['en','epos','erem'].forEach(function(x){ set(x,''); });
+    set('eper',p); set('epay',pd);
+    ['esched','eal','epl','eup','eact','ebas','eovs','eothi','ecomp','eatd','eothd','etwd','eothp','ecam'].forEach(function(x){ set(x,0); });
+    set('esched',26); set('eact',26);
+    set('etot',''); set('eact2',''); set('estat','pending');
+  }
+  document.getElementById('mexp').classList.add('on');
+}
+function calcExp() {
+  var bas = +g('ebas')||0, ovs = +g('eovs')||0, othi = +g('eothi')||0;
+  var tot = bas + ovs + othi;
+  set('etot', tot);
+  var act2 = tot + (+g('ecomp')||0) - (+g('eatd')||0) - (+g('eothd')||0);
+  set('eact2', act2);
+  var twd = +g('etwd')||0, othp = +g('eothp')||0;
+  set('ecam', Math.max(0, act2 - twd - othp));
+}
+function saveExp() {
+  var name = (g('en')||'').trim();
+  if (!name) { alert('請填寫姓名'); return; }
+  var bas = +g('ebas')||0, ovs = +g('eovs')||0, othi = +g('eothi')||0;
+  var tot = bas + ovs + othi;
+  var comp = +g('ecomp')||0, atd = +g('eatd')||0, othd = +g('eothd')||0;
+  var act2 = tot + comp - atd - othd;
+  var r = {
+    _id: editId || 'E_'+name.replace(/\s/g,'_')+'_'+Date.now(),
+    name:name, pos:g('epos'), period:g('eper'), payDate:g('epay'),
+    sched:+g('esched')||26, al:+g('eal')||0, pl:+g('epl')||0,
+    up:+g('eup')||0, act:+g('eact')||26,
+    bas:bas, ovs:ovs, othi:othi, tot:tot,
+    comp:comp, atd:atd, othd:othd, act2:act2,
+    twd:+g('etwd')||0, othp:+g('eothp')||0, cam:+g('ecam')||0,
+    status:g('estat'), rem:g('erem')
+  };
+  if (editId) {
+    var idx = DB.expats.findIndex(function(e){ return e._id===editId; });
+    if (idx>-1) DB.expats[idx] = r;
+  } else DB.expats.push(r);
+  saveDB(); detect(); closeM('mexp'); renderExp();
+}
+
+/* ───────────────── DELETE ───────────────── */
+function askDel(id, type) { delId=id; delType=type; document.getElementById('mdel').classList.add('on'); }
+function doDel() {
+  if (delType==='loc') DB.locals = DB.locals.filter(function(l){ return l._id!==delId; });
+  else if (delType==='exp') DB.expats = DB.expats.filter(function(e){ return e._id!==delId; });
+  saveDB(); detect(); closeM('mdel'); renderActive();
+}
+
+/* ───────────────── ANOMALY DETECTION ───────────────── */
+function detect() {
+  anoms = [];
+  /* 1. salary spike >20% MoM — Local */
+  var ids = [...new Set(DB.locals.map(function(l){ return l.empId; }))];
+  ids.forEach(function(id) {
+    var recs = DB.locals.filter(function(l){ return l.empId===id; })
+      .sort(function(a,b){ return a.period.localeCompare(b.period); });
+    for (var i=1; i<recs.length; i++) {
+      var prev=recs[i-1].net, curr=recs[i].net;
+      if (prev>0 && Math.abs(curr-prev)/prev > 0.2)
+        anoms.push({type:'spike',lv:'d',ic:'🚨',ti:'薪資波動 >20%',
+          ds:recs[i].name+': '+recs[i-1].period+' $'+fmt(prev)+' → '+recs[i].period+' $'+fmt(curr),
+          eid:id, per:recs[i].period});
+    }
+  });
+  /* 2. calculation error — Local: net ≠ tot+adj-ded */
+  DB.locals.forEach(function(l) {
+    var expected = l.tot + l.adj - l.ded;
+    if (Math.abs(expected - l.net) > 1)
+      anoms.push({type:'calc',lv:'d',ic:'💸',ti:'計算差異',
+        ds:l.name+' ('+l.period+'): 預期$'+fmt(expected)+' vs 實際$'+fmt(l.net),
+        eid:l.empId, per:l.period});
+  });
+  /* 3. calculation error — Expat: act2 ≠ tot+comp-atd-othd */
+  DB.expats.forEach(function(e) {
+    var expected = e.tot + (e.comp||0) - (e.atd||0) - (e.othd||0);
+    if (Math.abs(expected - e.act2) > 1)
+      anoms.push({type:'calc',lv:'w',ic:'⚠️',ti:'外籍計算差異',
+        ds:e.name+' ('+e.period+'): 預期$'+fmt(expected)+' vs $'+fmt(e.act2),
+        eid:e.name, per:e.period});
+  });
+  /* 4. duplicate */
+  var lkeys = DB.locals.map(function(l){ return l.empId+'_'+l.period; });
+  lkeys.forEach(function(k,i) {
+    if (lkeys.indexOf(k) !== i) {
+      var r = DB.locals[i];
+      if (!anoms.find(function(a){ return a.type==='dup'&&a.eid===r.empId&&a.per===r.period; }))
+        anoms.push({type:'dup',lv:'d',ic:'📋',ti:'重複記錄',
+          ds:r.name+' ('+r.period+') 存在重複', eid:r.empId, per:r.period});
+    }
+  });
+
+  /* badge */
+  var b = document.getElementById('t5');
+  if (b) b.textContent = tr('t5') + (anoms.length?' ('+anoms.length+')':'');
+}
+
+function renderAnm() {
+  var f  = (document.getElementById('anf')||{}).value||'';
+  var ls2 = f ? anoms.filter(function(a){ return a.type===f; }) : anoms;
+  document.getElementById('anmc').textContent = ls2.length+' 項';
+  document.getElementById('anm-out').innerHTML = ls2.length
+    ? ls2.map(function(a){
+        return '<div class="anmi '+(a.lv==='d'?'':'w')+'">'+
+          '<span style="font-size:1.1rem">'+a.ic+'</span>'+
+          '<div><div class="ant">'+a.ti+'</div>'+
+          '<div class="and">'+a.ds+'</div>'+
+          '<div style="font-size:.61rem;color:var(--text3);margin-top:2px">'+a.eid+' | '+a.per+'</div></div></div>';
+      }).join('')
+    : '<div class="al al-s"><span>✅</span><div>未偵測到異常</div></div>';
+}
+
+/* ───────────────── ANALYTICS ───────────────── */
+function setAnaV(v) {
+  anaView = v;
+  ['mo','dept','cmp','yr'].forEach(function(x,i){
+    document.getElementById('av'+i).classList.toggle('on', x===v);
+  });
+  renderAna();
+}
+function renderAna() {
+  var body = document.getElementById('ana-out');
+  if      (anaView==='mo')   body.innerHTML = anaMo();
+  else if (anaView==='dept') body.innerHTML = anaDept();
+  else if (anaView==='cmp')  body.innerHTML = anaCmp();
+  else                       body.innerHTML = anaYr();
+}
+
+function anaMo() {
+  var p = curP();
+  var ls2 = DB.locals.filter(function(l){ return l.period===p; });
+  var es2 = DB.expats.filter(function(e){ return e.period===p; });
+  var lnet = ls2.reduce(function(s,l){ return s+l.net; },0);
+  var enet = es2.reduce(function(s,e){ return s+e.act2; },0);
+  var mxL  = Math.max.apply(null, ls2.map(function(l){ return l.net; }).concat([1]));
+  return '<div class="card"><div class="ctitle">🏭 本地員工 — '+p+
+    ' <span class="bdg btl">'+ls2.length+'人</span> <span class="bdg bgn">$'+fmt(lnet)+'</span></div>'+
+    ls2.map(function(l){
+      return '<div class="br"><div class="bl">'+l.name.split(' ')[0]+'</div>'+
+        '<div class="bt"><div class="bf" style="width:'+((l.net/mxL)*100).toFixed(0)+'%;background:var(--teal2)"></div></div>'+
+        '<div class="bv">$'+fmt(l.net)+'</div></div>';
+    }).join('')+'</div>'+
+    '<div class="card"><div class="ctitle">👔 外籍員工 — '+p+
+    ' <span class="bdg bbl">'+es2.length+'人</span> <span class="bdg bgn">$'+fmt(enet)+'</span></div>'+
+    es2.map(function(e){
+      var mxE = Math.max.apply(null, es2.map(function(x){ return x.act2; }).concat([1]));
+      return '<div class="br"><div class="bl">'+e.name.split(' ')[0]+'</div>'+
+        '<div class="bt"><div class="bf" style="width:'+((e.act2/mxE)*100).toFixed(0)+'%;background:var(--blue3)"></div></div>'+
+        '<div class="bv">$'+fmt(e.act2)+'</div></div>';
+    }).join('')+'</div>';
+}
+
+function anaDept() {
+  var p = curP();
+  var all2 = DB.locals.filter(function(l){ return l.period===p; })
+    .map(function(l){ return {dept:l.dept, net:l.net}; });
+  var depts = {};
+  all2.forEach(function(r){ depts[r.dept]=(depts[r.dept]||0)+r.net; });
+  var ds = Object.entries(depts).sort(function(a,b){ return b[1]-a[1]; });
+  var tot = ds.reduce(function(s,d){ return s+d[1]; },0);
+  var mxD = Math.max.apply(null, ds.map(function(d){ return d[1]; }).concat([1]));
+  return '<div class="card"><div class="ctitle">🏢 部門薪資分佈 — '+p+'</div>'+
+    ds.map(function(d){
+      return '<div class="br"><div class="bl">'+d[0]+'</div>'+
+        '<div class="bt"><div class="bf" style="width:'+((d[1]/mxD)*100).toFixed(0)+
+        '%;background:linear-gradient(90deg,var(--purple2),var(--blue3))"></div></div>'+
+        '<div class="bv" style="width:110px">$'+fmt(d[1])+' ('+((d[1]/tot)*100).toFixed(0)+'%)</div></div>';
+    }).join('')+'</div>';
+}
+
+function anaCmp() {
+  var p = curP();
+  var lnet = DB.locals.filter(function(l){ return l.period===p; }).reduce(function(s,l){ return s+l.net; },0);
+  var enet = DB.expats.filter(function(e){ return e.period===p; }).reduce(function(s,e){ return s+e.act2; },0);
+  var tot = lnet + enet || 1;
+  return '<div class="two">'+
+    '<div class="card" style="border-left:4px solid var(--teal)">'+
+      '<div class="ctitle">🏭 本地員工</div>'+
+      '<div style="font-size:2rem;font-weight:900;color:var(--teal);font-family:var(--f2)">$'+fmt(lnet)+'</div>'+
+      '<div style="font-size:.71rem;color:var(--text2);margin-top:3px">佔比 '+((lnet/tot)*100).toFixed(1)+'%</div>'+
+      '<div style="margin-top:9px;background:var(--gray3);border-radius:99px;height:9px;overflow:hidden">'+
+      '<div style="height:100%;background:var(--teal2);border-radius:99px;width:'+((lnet/tot)*100).toFixed(0)+'%"></div></div>'+
+    '</div>'+
+    '<div class="card" style="border-left:4px solid var(--blue2)">'+
+      '<div class="ctitle">👔 外籍員工</div>'+
+      '<div style="font-size:2rem;font-weight:900;color:var(--blue2);font-family:var(--f2)">$'+fmt(enet)+'</div>'+
+      '<div style="font-size:.71rem;color:var(--text2);margin-top:3px">佔比 '+((enet/tot)*100).toFixed(1)+'%</div>'+
+      '<div style="margin-top:9px;background:var(--gray3);border-radius:99px;height:9px;overflow:hidden">'+
+      '<div style="height:100%;background:var(--blue3);border-radius:99px;width:'+((enet/tot)*100).toFixed(0)+'%"></div></div>'+
+    '</div></div>';
+}
+
+function anaYr() {
+  var mos2 = [];
+  for (var m=1; m<=12; m++) {
+    var mp = curYear+'-'+pad(m);
+    var lc2 = DB.locals.filter(function(l){ return l.period===mp; }).reduce(function(s,l){ return s+l.net; },0);
+    var ec2 = DB.expats.filter(function(e){ return e.period===mp; }).reduce(function(s,e){ return s+e.act2; },0);
+    mos2.push({m:m, lc:lc2, ec:ec2, tot:lc2+ec2});
+  }
+  var mxV = Math.max.apply(null, mos2.map(function(m){ return m.tot; }).concat([1]));
+  var W=540,H=150,pad2=40;
+  var xs = mos2.map(function(_,i){ return pad2+i*(W-pad2*2)/11; });
+  var yT = mos2.map(function(m){ return H-pad2-(m.tot/mxV)*(H-pad2*2); });
+  var yL = mos2.map(function(m){ return H-pad2-(m.lc/mxV)*(H-pad2*2); });
+  var pT = xs.map(function(x,i){ return (i===0?'M':'L')+x+','+yT[i]; }).join(' ');
+  var pL = xs.map(function(x,i){ return (i===0?'M':'L')+x+','+yL[i]; }).join(' ');
+  return '<div class="card"><div class="ctitle">📈 '+curYear+' 年度趨勢</div>'+
+    '<div style="margin-bottom:5px;display:flex;gap:12px;font-size:.68rem">'+
+    '<span style="color:var(--teal2)">— 本地</span><span style="color:var(--blue3)">— 合計</span></div>'+
+    '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;max-height:170px">'+
+    [0,.25,.5,.75,1].map(function(v){
+      var y2 = H-pad2-(v*(H-pad2*2));
+      return '<line x1="'+pad2+'" y1="'+y2+'" x2="'+(W-pad2)+'" y2="'+y2+'" stroke="#e5e7eb" stroke-width="1"/>'+
+        '<text x="'+(pad2-4)+'" y="'+(y2+3)+'" font-size="8" text-anchor="end" fill="#94a3b8">$'+fmtK(mxV*v)+'</text>';
+    }).join('')+
+    xs.map(function(x,i){ return '<text x="'+x+'" y="'+(H-4)+'" font-size="8" text-anchor="middle" fill="#94a3b8">'+(i+1)+'M</text>'; }).join('')+
+    '<path d="'+pL+'" fill="none" stroke="var(--teal2)" stroke-width="1.8" stroke-linejoin="round"/>'+
+    '<path d="'+pT+'" fill="none" stroke="var(--blue3)" stroke-width="2.5" stroke-linejoin="round"/>'+
+    xs.map(function(x,i){ return mos2[i].tot?'<circle cx="'+x+'" cy="'+yT[i]+'" r="2.5" fill="var(--blue3)"/>':''; }).join('')+
+    '</svg></div>';
+}
+
+/* ───────────────── IMPORT ───────────────── */
+function dzOver(e)  { e.preventDefault(); document.getElementById('dz').classList.add('ov'); }
+function dzLeave()  { document.getElementById('dz').classList.remove('ov'); }
+function dzDrop(e)  { e.preventDefault(); dzLeave(); var f=e.dataTransfer.files[0]; if(f) handleFile(f); }
+
+function handleFile(file) {
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = new Uint8Array(e.target.result);
+      var wb   = XLSX.read(data, {type:'array'});
+      var ws   = wb.Sheets[wb.SheetNames[0]];
+      var rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+      if (rows.length < 2) { alert('檔案為空'); return; }
+      impBuf = rows;
+      showPrev(rows, file.name);
+    } catch(err) { alert('讀取錯誤: '+err.message); }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function showPrev(rows, fname) {
+  var hdrs = rows[0];
+  var prev = rows.slice(1,6);
+  document.getElementById('imp-prev').innerHTML =
+    '<div style="font-size:.74rem;color:var(--text2);margin-bottom:4px">預覽: <strong>'+fname+'</strong> ('+(rows.length-1)+'行)</div>'+
+    '<div style="overflow-x:auto;max-height:180px">'+
+    '<table class="stbl" style="min-width:200px"><thead><tr>'+
+    hdrs.map(function(h){ return '<th style="font-size:.6rem">'+(h||'-')+'</th>'; }).join('')+
+    '</tr></thead><tbody>'+
+    prev.map(function(r){
+      return '<tr>'+hdrs.map(function(_,i){ return '<td style="font-size:.6rem">'+(r[i]??'')+'</td>'; }).join('')+'</tr>';
+    }).join('')+
+    '</tbody></table></div>';
+  var ia = document.getElementById('imp-act');
+  ia.style.display = 'flex';
+}
+
+function confirmImp() {
+  if (!impBuf.length) return;
+  var itype = document.querySelector('input[name="itype"]:checked').value;
+  var yr    = document.getElementById('iyr').value;
+  var mo    = document.getElementById('imo').value;
+  var per   = yr+'-'+pad(+mo);
+  var hdrs  = impBuf[0].map(function(h){ return String(h).toLowerCase().trim(); });
+  var rows  = impBuf.slice(1).filter(function(r){ return r.some(function(c){ return c!==''; }); });
+
+  function fc() {
+    var keys = Array.prototype.slice.call(arguments);
+    for (var i=0; i<keys.length; i++) {
+      var idx = hdrs.findIndex(function(h){ return h.includes(keys[i].toLowerCase()); });
+      if (idx > -1) return idx;
+    }
+    return -1;
+  }
+  function gn(row, idx, def) { return idx>-1 ? (+row[idx]||def) : def; }
+  function gs(row, idx, def) { return idx>-1 ? (String(row[idx])||def) : def; }
+
+  var imported = 0;
+  if (itype === 'local') {
+    rows.forEach(function(row, ri) {
+      var name = gs(row, fc('name','姓名'), '');
+      var eid  = gs(row, fc('id','#','编号'), '') || 'IMP_L'+(ri+1);
+      if (!name) return;
+      var bas  = gn(row, fc('basic','基本'), 0);
+      var inc  = gn(row, fc('incentive','加成','职位'), 0);
+      var adj  = gn(row, fc('adj','调薪'), 0);
+      var ded  = gn(row, fc('ded','扣薪'), 0);
+      var tot  = bas + inc;
+      var _id  = 'L_'+eid+'_'+per+'_imp';
+      if (DB.locals.find(function(l){ return l._id===_id; })) return;
+      DB.locals.push({
+        _id:_id, name:name, empId:eid,
+        dept:gs(row,fc('dept','部门'),'Production'),
+        sect:gs(row,fc('sect','单位'),''), pos:gs(row,fc('pos','position','职'),'Staff'),
+        period:per, sched:26, leave:0, act:26,
+        bas:bas, inc:inc, tot:tot, adj:adj, ded:ded, net:tot+adj-ded,
+        payDate:per+'-28', status:'imported', rem:'Imported'
+      });
+      imported++;
+    });
+  } else {
+    rows.forEach(function(row, ri) {
+      var name = gs(row, fc('name','姓名'), '');
+      if (!name) return;
+      var bas  = gn(row, fc('basic','基本'), 0);
+      var ovs  = gn(row, fc('overseas','海外'), 0);
+      var tot  = bas + ovs;
+      var comp = gn(row, fc('compensate','补贴'), 0);
+      var atd  = gn(row, fc('attend','考勤扣'), 0);
+      var twd  = gn(row, fc('twd','台币'), 0);
+      var act2 = tot + comp - atd;
+      var _id  = 'E_'+name.replace(/\s/g,'_')+'_'+per+'_imp';
+      if (DB.expats.find(function(e){ return e._id===_id; })) return;
+      DB.expats.push({
+        _id:_id, name:name, pos:gs(row,fc('pos','position','职'),'Staff'),
+        period:per, sched:26, al:0, pl:0, up:0, act:26,
+        bas:bas, ovs:ovs, othi:0, tot:tot,
+        comp:comp, atd:atd, othd:0, act2:act2,
+        twd:twd, othp:0, cam:Math.max(0,act2-twd),
+        payDate:per+'-28', status:'imported', rem:'Imported'
+      });
+      imported++;
+    });
+  }
+  DB.imports.push({id:'IMP_'+Date.now(), itype:itype, per:per, count:imported, at:new Date().toISOString()});
+  saveDB(); detect(); impBuf = [];
+  document.getElementById('imp-prev').innerHTML = '<div class="al al-s"><span>✅</span><div><strong>'+imported+' 筆已匯入</strong> → '+per+'</div></div>';
+  document.getElementById('imp-act').style.display = 'none';
+  renderImpHist();
+}
+
+function cancelImp() {
+  impBuf = [];
+  document.getElementById('imp-prev').innerHTML = '';
+  document.getElementById('imp-act').style.display = 'none';
+}
+
+function renderImpHist() {
+  var hist = DB.imports.slice().sort(function(a,b){ return b.at.localeCompare(a.at); });
+  document.getElementById('imp-hist').innerHTML = hist.length
+    ? hist.map(function(h){
+        return '<div class="ihc">'+
+          '<span style="font-size:1.3rem">'+(h.itype==='local'?'🏭':'👔')+'</span>'+
+          '<div style="flex:1"><div style="font-weight:700;font-size:.78rem">'+h.per+' — '+(h.itype==='local'?'本地':'外籍')+'</div>'+
+          '<div style="font-size:.65rem;color:var(--text2)">'+h.count+' 筆 | '+h.at.slice(0,10)+'</div></div>'+
+          '<button class="btn b-red xs" onclick="if(confirm(\'刪除此記錄?\')){DB.imports=DB.imports.filter(function(i){return i.id!==\''+h.id+'\';});saveDB();renderImpHist()}">🗑</button></div>';
+      }).join('')
+    : '<div style="text-align:center;color:var(--text3);padding:18px;font-size:.76rem">尚無匯入記錄</div>';
+}
+
+/* ───────────────── EXPORT ───────────────── */
+function exportLoc() {
+  var p  = curP();
+  var ls2 = DB.locals.filter(function(l){ return l.period===p; });
+  var csv = '\uFEFF序,姓名,ID#,部門,單位,職稱,應上班,休假,實際,基本薪資,加成,月薪合計,調薪,扣薪,實領薪資,發薪日,狀態\n';
+  ls2.forEach(function(l,i){ csv += (i+1)+','+[l.name,l.empId,l.dept,l.sect||'',l.pos,l.sched,l.leave,l.act,l.bas,l.inc,l.tot,l.adj,l.ded,l.net,l.payDate,l.status].join(',')+'\\n'; });
+  dl(csv, 'VRT_Local_'+p+'.csv');
+}
+function exportExp() {
+  var p  = curP();
+  var es2 = DB.expats.filter(function(e){ return e.period===p; });
+  var csv = '\uFEFF序,姓名,職稱,應上班,AL,有薪假,無薪假,實際,Basic,海外加給,其他,月薪合計,補貼,考勤扣,其他扣,實際薪資,台幣,其他,柬埔寨,狀態\n';
+  es2.forEach(function(e,i){ csv += (i+1)+','+[e.name,e.pos,e.sched,e.al||0,e.pl||0,e.up||0,e.act,e.bas,e.ovs,e.othi||0,e.tot,e.comp||0,e.atd||0,e.othd||0,e.act2,e.twd||0,e.othp||0,e.cam||0,e.status].join(',')+'\\n'; });
+  dl(csv, 'VRT_Expat_'+p+'.csv');
+}
+function doExport() { exportLoc(); exportExp(); }
+function dl(csv, name) {
+  var b = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  var u = URL.createObjectURL(b);
+  var a = document.createElement('a'); a.href=u; a.download=name; a.click();
+  URL.revokeObjectURL(u);
+}
+
+/* ───────────────── DOM UTILS ───────────────── */
+function g(id)    { var el=document.getElementById(id); return el?el.value:''; }
+function set(id,v){ var el=document.getElementById(id); if(el) el.value=v; }
+
+/* ───────────────── INIT ───────────────── */
+/* wire tab buttons */
+document.querySelectorAll('.tbtn').forEach(function(b) {
+  b.addEventListener('click', function() { goTab(b.dataset.panel); });
+});
+/* wire overlay close on backdrop click */
+document.querySelectorAll('.ovl').forEach(function(o) {
+  o.addEventListener('click', function(e) { if(e.target===o) o.classList.remove('on'); });
+});
+
+loadDB();
+initSels();
+detect();
+applyLang();
+renderDash();
+</script>
+</body>
+</html>

@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文字提取・分類・翻譯工具</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F5F0;
+    --bg2: #EEEAE2;
+    --bg3: #E5E0D6;
+    --card: #FFFFFF;
+    --border: #DDD8CE;
+    --text: #2C2820;
+    --text2: #7A7060;
+    --text3: #A09880;
+    --accent: #C17B3A;
+    --accent2: #8B5E2A;
+    --green: #3A7A5A;
+    --blue: #3A5A8A;
+    --teal: #2A7A7A;
+    --red: #8A3A3A;
+    --purple: #6A3A8A;
+    --gold: #8A7A2A;
+    --shadow: 0 2px 12px rgba(0,0,0,0.07);
+    --shadow2: 0 4px 24px rgba(0,0,0,0.10);
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    min-height: 100vh;
+    font-size: 14px;
+  }
+  /* HEADER */
+  header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--shadow);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; }
+  .logo span { color: var(--text2); font-weight: 400; font-size: 13px; margin-left: 8px; font-family: 'Noto Sans TC', sans-serif; }
+  /* MAIN */
+  main { max-width: 1000px; margin: 0 auto; padding: 28px 24px; display: flex; flex-direction: column; gap: 20px; }
+  /* INPUT PANEL */
+  .panel { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+  .panel-title { font-family: 'Lora', serif; font-size: 13px; font-weight: 600; color: var(--text2); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 14px; }
+  /* TABS */
+  .input-tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .itab {
+    padding: 7px 16px; border-radius: 20px; border: 1.5px solid var(--border);
+    background: var(--bg); color: var(--text2); font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.18s; font-family: inherit;
+  }
+  .itab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .itab:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+  /* DROP ZONE */
+  .dropzone {
+    border: 2px dashed var(--border); border-radius: 10px; padding: 36px 20px;
+    text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg);
+    position: relative;
+  }
+  .dropzone:hover, .dropzone.dragover { border-color: var(--accent); background: #FDF6EE; }
+  .dropzone .dz-icon { font-size: 32px; margin-bottom: 10px; opacity: 0.4; }
+  .dropzone .dz-text { color: var(--text2); font-size: 13px; line-height: 1.8; }
+  .dropzone .dz-hint { color: var(--text3); font-size: 11px; margin-top: 6px; }
+  /* PREVIEW */
+  .preview-img { width: 100%; max-height: 260px; object-fit: contain; border-radius: 8px; background: var(--bg2); display: block; }
+  .preview-file {
+    display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+    background: var(--bg); border-radius: 8px; border: 1px solid var(--border);
+  }
+  .file-icon { font-size: 28px; }
+  .file-name { font-weight: 600; color: var(--text); font-size: 13px; }
+  .file-size { color: var(--text3); font-size: 11px; margin-top: 2px; }
+  /* TEXTAREA */
+  textarea {
+    width: 100%; min-height: 120px; border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 14px 16px; font-family: 'Noto Sans TC', sans-serif; font-size: 14px;
+    color: var(--text); background: var(--bg); resize: vertical; outline: none;
+    transition: border-color 0.2s; line-height: 1.7;
+  }
+  textarea:focus { border-color: var(--accent); background: #fff; }
+  /* OPTIONS ROW */
+  .options-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .option-group { display: flex; flex-direction: column; gap: 4px; }
+  .option-label { font-size: 11px; color: var(--text3); font-weight: 600; letter-spacing: 0.5px; }
+  select {
+    border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 12px;
+    font-family: inherit; font-size: 13px; color: var(--text); background: var(--bg);
+    outline: none; cursor: pointer; transition: border-color 0.2s; min-width: 130px;
+  }
+  select:focus { border-color: var(--accent); }
+  .checkbox-row { display: flex; align-items: center; gap: 7px; cursor: pointer; margin-top: 18px; }
+  .checkbox-row input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+  .checkbox-row label { font-size: 13px; color: var(--text2); cursor: pointer; }
+  /* BUTTON */
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff; border: none; border-radius: 10px; padding: 13px 32px;
+    font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit;
+    width: 100%; letter-spacing: 0.5px; box-shadow: 0 3px 12px rgba(193,123,58,0.25);
+    transition: all 0.2s;
+  }
+  .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 5px 18px rgba(193,123,58,0.35); }
+  .btn-primary:disabled { background: var(--bg3); color: var(--text3); box-shadow: none; cursor: not-allowed; }
+  .btn-sm {
+    background: var(--bg); border: 1.5px solid var(--border); border-radius: 7px;
+    padding: 5px 12px; font-size: 11px; color: var(--text2); cursor: pointer;
+    font-family: inherit; font-weight: 600; transition: all 0.15s;
+  }
+  .btn-sm:hover { border-color: var(--accent); color: var(--accent); background: #FDF6EE; }
+  .btn-sm.copied { background: var(--green); color: #fff; border-color: var(--green); }
+  /* LOADING */
+  .loading-bar {
+    height: 3px; border-radius: 2px; background: var(--bg3); overflow: hidden; margin-top: 12px;
+  }
+  .loading-fill {
+    height: 100%; width: 40%; background: linear-gradient(90deg, var(--accent), #E8A860, var(--accent));
+    background-size: 200%; animation: loading 1.4s infinite;
+    border-radius: 2px;
+  }
+  @keyframes loading { 0%{background-position:0%} 100%{background-position:200%} }
+  .loading-text { text-align: center; color: var(--text2); font-size: 13px; margin-top: 10px; }
+  /* RESULTS */
+  .results-panel { animation: slideUp 0.3s ease; }
+  @keyframes slideUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+  .result-tabs { display: flex; gap: 4px; border-bottom: 1.5px solid var(--border); margin-bottom: 18px; }
+  .rtab {
+    padding: 9px 20px; border: none; background: none; font-family: inherit; font-size: 13px;
+    font-weight: 600; color: var(--text3); cursor: pointer; border-bottom: 2.5px solid transparent;
+    margin-bottom: -1.5px; transition: all 0.18s;
+  }
+  .rtab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .rtab:hover:not(.active) { color: var(--text2); }
+  /* FILTER PILLS */
+  .filter-bar { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 14px; }
+  .fpill {
+    padding: 5px 13px; border-radius: 20px; border: 1.5px solid var(--border);
+    background: var(--bg); color: var(--text2); font-size: 11px; font-weight: 700;
+    cursor: pointer; transition: all 0.15s; font-family: inherit;
+  }
+  .fpill:hover { opacity: 0.8; }
+  /* ITEMS */
+  .item-list { display: flex; flex-direction: column; gap: 8px; }
+  .item-card {
+    display: flex; align-items: flex-start; gap: 12px; padding: 13px 16px;
+    background: var(--bg); border: 1px solid var(--border); border-left: 4px solid #ccc;
+    border-radius: 9px; transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .item-card:hover { transform: translateX(3px); box-shadow: var(--shadow); }
+  .item-icon { font-size: 15px; min-width: 22px; text-align: center; margin-top: 2px; }
+  .item-body { flex: 1; min-width: 0; }
+  .item-text { font-size: 13.5px; color: var(--text); line-height: 1.65; word-break: break-all; white-space: pre-wrap; }
+  .item-meta { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+  .cat-badge { font-size: 10px; font-weight: 700; padding: 2px 9px; border-radius: 10px; }
+  .conf { font-size: 10px; color: var(--text3); }
+  /* TRANSLATION SECTION */
+  .trans-section { margin-top: 20px; border-top: 1px solid var(--border); padding-top: 16px; }
+  .trans-label { font-size: 11px; font-weight: 700; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .trans-result {
+    background: #F0F7F4; border: 1px solid #C8E0D4; border-radius: 9px;
+    padding: 14px 16px; font-size: 14px; color: #1A3A2A; line-height: 1.75;
+    white-space: pre-wrap; word-break: break-word;
+  }
+  /* RAW TEXT */
+  .raw-box {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px; font-size: 13px; color: var(--text); line-height: 1.8;
+    white-space: pre-wrap; word-break: break-word; max-height: 420px;
+    overflow-y: auto; position: relative;
+  }
+  .raw-actions { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 10px; }
+  /* STATS ROW */
+  .stats-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .stat-box { background: var(--bg); border: 1px solid var(--border); border-radius: 9px; padding: 10px 16px; text-align: center; min-width: 80px; }
+  .stat-num { font-family: 'Lora', serif; font-size: 22px; font-weight: 700; color: var(--accent); }
+  .stat-lbl { font-size: 10px; color: var(--text3); margin-top: 1px; }
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
+  /* CHANGE LINK */
+  .change-btn { font-size: 11px; color: var(--accent); cursor: pointer; text-decoration: underline; display: inline-block; margin-top: 6px; }
+  .divider { height: 1px; background: var(--border); margin: 10px 0; }
+  .error-box { background: #FFF0F0; border: 1px solid #FFCCCC; border-radius: 9px; padding: 12px 16px; color: #8A2A2A; font-size: 13px; }
+  .hint-box { background: #FFF8EE; border: 1px solid #FFE0B2; border-radius: 9px; padding: 10px 16px; color: #7A5A20; font-size: 12px; }
+</style>
+  <link rel="stylesheet" href="../acc-module-shell.css">
+  <script defer src="../acc-module-shell.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="logo">文字萃取工具 <span>OCR · 分類 · 翻譯</span></div>
+</header>
+
+<main>
+  <!-- INPUT PANEL -->
+  <div class="panel" id="inputPanel">
+    <div class="panel-title">輸入來源</div>
+
+    <div class="input-tabs">
+      <button class="itab active" onclick="switchInput('image')">🖼️ 圖片 / 截圖</button>
+      <button class="itab" onclick="switchInput('text')">📝 貼入文字</button>
+      <button class="itab" onclick="switchInput('word')">📄 Word 文件</button>
+      <button class="itab" onclick="switchInput('excel')">📊 Excel 表格</button>
+    </div>
+
+    <!-- IMAGE INPUT -->
+    <div id="input-image">
+      <div id="imageDropzone" class="dropzone"
+        ondragover="event.preventDefault(); this.classList.add('dragover')"
+        ondragleave="this.classList.remove('dragover')"
+        ondrop="handleDrop(event)"
+        onclick="document.getElementById('fileInput').click()">
+        <div id="dzContent">
+          <div class="dz-icon">⌁</div>
+          <div class="dz-text">拖曳圖片至此 · 點擊上傳 · 或 <strong>Ctrl+V</strong> 貼上截圖</div>
+          <div class="dz-hint">支援 PNG · JPG · WEBP · GIF</div>
+        </div>
+      </div>
+      <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileSelect(event)">
+    </div>
+
+    <!-- TEXT INPUT -->
+    <div id="input-text" style="display:none">
+      <textarea id="textInput" placeholder="在此貼入或輸入文字內容…&#10;&#10;支援多段文字、表格文字、任何語言" oninput="checkTextInput()"></textarea>
+    </div>
+
+    <!-- WORD INPUT -->
+    <div id="input-word" style="display:none">
+      <div class="dropzone" onclick="document.getElementById('wordInput').click()"
+        ondragover="event.preventDefault(); this.classList.add('dragover')"
+        ondragleave="this.classList.remove('dragover')"
+        ondrop="handleWordDrop(event)">
+        <div class="dz-icon">📄</div>
+        <div class="dz-text">拖曳 <strong>.docx</strong> 文件至此或點擊上傳</div>
+        <div class="dz-hint" id="wordFileName">尚未選擇文件</div>
+      </div>
+      <input type="file" id="wordInput" accept=".docx,.doc" style="display:none" onchange="handleWordFile(event)">
+    </div>
+
+    <!-- EXCEL INPUT -->
+    <div id="input-excel" style="display:none">
+      <div class="dropzone" onclick="document.getElementById('excelInput').click()"
+        ondragover="event.preventDefault(); this.classList.add('dragover')"
+        ondragleave="this.classList.remove('dragover')"
+        ondrop="handleExcelDrop(event)">
+        <div class="dz-icon">📊</div>
+        <div class="dz-text">拖曳 <strong>.xlsx / .xls / .csv</strong> 至此或點擊上傳</div>
+        <div class="dz-hint" id="excelFileName">尚未選擇文件</div>
+      </div>
+      <input type="file" id="excelInput" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleExcelFile(event)">
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- OPTIONS -->
+    <div class="options-row">
+      <div class="option-group">
+        <div class="option-label">翻譯目標語言</div>
+        <select id="translateLang">
+          <option value="">不翻譯</option>
+          <option value="zh-TW">繁體中文</option>
+          <option value="zh-CN">簡體中文</option>
+          <option value="en">英文</option>
+          <option value="km">柬文（高棉文）</option>
+          <option value="ja">日文</option>
+          <option value="ko">韓文</option>
+          <option value="th">泰文</option>
+          <option value="vi">越南文</option>
+          <option value="fr">法文</option>
+          <option value="de">德文</option>
+          <option value="es">西班牙文</option>
+        </select>
+      </div>
+      <div class="option-group">
+        <div class="option-label">分類詳細程度</div>
+        <select id="detailLevel">
+          <option value="standard">標準分類</option>
+          <option value="detailed">詳細分類</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-top: 14px">
+      <button class="btn-primary" id="analyzeBtn" onclick="analyze()" disabled>▶ 開始提取與分析</button>
+    </div>
+
+    <div id="loadingBlock" style="display:none">
+      <div class="loading-bar"><div class="loading-fill"></div></div>
+      <div class="loading-text" id="loadingText">正在分析中…</div>
+    </div>
+    <div id="errorBlock" style="display:none" class="error-box"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="resultsPanel" class="panel results-panel" style="display:none">
+    <div class="panel-title">分析結果</div>
+
+    <div class="stats-row" id="statsRow"></div>
+
+    <div class="result-tabs">
+      <button class="rtab active" onclick="switchResultTab('classified')">分類結果</button>
+      <button class="rtab" onclick="switchResultTab('raw')">原始文字</button>
+      <button class="rtab" id="transTab" onclick="switchResultTab('translation')" style="display:none">翻譯結果</button>
+    </div>
+
+    <!-- CLASSIFIED -->
+    <div id="tab-classified">
+      <div class="filter-bar" id="filterBar"></div>
+      <div class="item-list" id="itemList"></div>
+    </div>
+
+    <!-- RAW -->
+    <div id="tab-raw" style="display:none">
+      <div class="raw-actions">
+        <button class="btn-sm" id="copyRawBtn" onclick="copyRaw()">複製全部</button>
+      </div>
+      <div class="raw-box" id="rawBox"></div>
+    </div>
+
+    <!-- TRANSLATION -->
+    <div id="tab-translation" style="display:none">
+      <div class="trans-section">
+        <div class="trans-label" id="transTitle">翻譯結果</div>
+        <div class="raw-actions">
+          <button class="btn-sm" id="copyTransBtn" onclick="copyTrans()">複製翻譯</button>
+        </div>
+        <div class="trans-result" id="transBox"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────
+let state = {
+  mode: 'image',
+  imageBase64: null,
+  imageMediaType: 'image/jpeg',
+  plainText: null,
+  result: null,
+  activeFilter: 'all',
+  activeResultTab: 'classified',
+};
+
+const CATEGORIES = [
+  { id: 'contact',  label: '聯絡資訊',    icon: '📞', color: '#3A7A5A', bg: '#E8F5EE' },
+  { id: 'date',     label: '日期時間',    icon: '📅', color: '#8A5A2A', bg: '#FFF3E0' },
+  { id: 'url',      label: '網址連結',    icon: '🔗', color: '#3A5A8A', bg: '#E8EEF8' },
+  { id: 'number',   label: '數字金額',    icon: '💰', color: '#6A3A8A', bg: '#F3EEF8' },
+  { id: 'address',  label: '地址位置',    icon: '📍', color: '#8A3A3A', bg: '#F8EEEE' },
+  { id: 'name',     label: '姓名品牌',    icon: '🏷️', color: '#2A7A7A', bg: '#E8F5F5' },
+  { id: 'table',    label: '表格資料',    icon: '📋', color: '#5A6A2A', bg: '#F0F5E0' },
+  { id: 'other',    label: '其他文字',    icon: '📝', color: '#5A5A5A', bg: '#F0F0F0' },
+];
+
+const LANG_NAMES = {
+  'zh-TW': '繁體中文', 'zh-CN': '簡體中文', 'en': '英文',
+  'km': '柬文（高棉文）', 'ja': '日文', 'ko': '韓文',
+  'th': '泰文', 'vi': '越南文', 'fr': '法文', 'de': '德文', 'es': '西班牙文'
+};
+
+// ─── INPUT SWITCHING ─────────────────────────────────────
+function switchInput(mode) {
+  state.mode = mode;
+  state.imageBase64 = null;
+  state.plainText = null;
+  document.querySelectorAll('.itab').forEach((t,i) => {
+    t.classList.toggle('active', ['image','text','word','excel'][i] === mode);
+  });
+  ['image','text','word','excel'].forEach(m => {
+    document.getElementById('input-'+m).style.display = m === mode ? 'block' : 'none';
+  });
+  updateAnalyzeBtn();
+}
+
+function updateAnalyzeBtn() {
+  const hasContent = state.imageBase64 || state.plainText ||
+    (state.mode === 'text' && document.getElementById('textInput').value.trim());
+  document.getElementById('analyzeBtn').disabled = !hasContent;
+}
+
+function checkTextInput() {
+  state.plainText = document.getElementById('textInput').value.trim() || null;
+  updateAnalyzeBtn();
+}
+
+// ─── IMAGE HANDLING ───────────────────────────────────────
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('imageDropzone').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) loadImage(file);
+}
+function handleFileSelect(e) { const f = e.target.files[0]; if (f) loadImage(f); }
+
+function loadImage(file) {
+  state.imageMediaType = file.type || 'image/jpeg';
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    state.imageBase64 = e.target.result.split(',')[1];
+    const dz = document.getElementById('imageDropzone');
+    dz.innerHTML = `<img src="${e.target.result}" class="preview-img" alt="preview">
+      <div class="change-btn" onclick="document.getElementById('fileInput').click()">更換圖片</div>`;
+    dz.style.padding = '8px';
+    updateAnalyzeBtn();
+  };
+  reader.readAsDataURL(file);
+}
+
+// Paste support
+document.addEventListener('paste', (e) => {
+  if (state.mode !== 'image') return;
+  for (const item of (e.clipboardData?.items || [])) {
+    if (item.type.startsWith('image/')) { loadImage(item.getAsFile()); break; }
+  }
+});
+
+// ─── WORD HANDLING ────────────────────────────────────────
+function handleWordDrop(e) {
+  e.preventDefault();
+  const f = e.dataTransfer.files[0];
+  if (f) processWordFile(f);
+}
+function handleWordFile(e) { if (e.target.files[0]) processWordFile(e.target.files[0]); }
+
+function processWordFile(file) {
+  document.getElementById('wordFileName').textContent = '正在讀取… ' + file.name;
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const result = await mammoth.extractRawText({ arrayBuffer: e.target.result });
+      state.plainText = result.value;
+      document.getElementById('wordFileName').textContent = '✓ ' + file.name + `（${state.plainText.length} 字）`;
+      updateAnalyzeBtn();
+    } catch(err) { document.getElementById('wordFileName').textContent = '讀取失敗：' + err.message; }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ─── EXCEL HANDLING ───────────────────────────────────────
+function handleExcelDrop(e) {
+  e.preventDefault();
+  const f = e.dataTransfer.files[0];
+  if (f) processExcelFile(f);
+}
+function handleExcelFile(e) { if (e.target.files[0]) processExcelFile(e.target.files[0]); }
+
+function processExcelFile(file) {
+  document.getElementById('excelFileName').textContent = '正在讀取… ' + file.name;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+      let text = '';
+      wb.SheetNames.forEach(name => {
+        const ws = wb.Sheets[name];
+        const csv = XLSX.utils.sheet_to_csv(ws);
+        if (csv.trim()) text += `【工作表：${name}】\n${csv}\n\n`;
+      });
+      state.plainText = text.trim();
+      document.getElementById('excelFileName').textContent = '✓ ' + file.name + `（${wb.SheetNames.length} 工作表）`;
+      updateAnalyzeBtn();
+    } catch(err) { document.getElementById('excelFileName').textContent = '讀取失敗：' + err.message; }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ─── ANALYZE ─────────────────────────────────────────────
+async function analyze() {
+  const translateLang = document.getElementById('translateLang').value;
+  const detail = document.getElementById('detailLevel').value;
+
+  // Get text for text mode
+  if (state.mode === 'text') {
+    state.plainText = document.getElementById('textInput').value.trim();
+  }
+
+  if (!state.imageBase64 && !state.plainText) return;
+
+  setLoading(true, '正在識別與分析文字…');
+  showError('');
+
+  const transInstruction = translateLang
+    ? `\n另外，請在 "translation" 欄位提供將全文翻譯成「${LANG_NAMES[translateLang]}」的完整翻譯。`
+    : '';
+
+  const detailNote = detail === 'detailed'
+    ? '（詳細模式：盡量將文字細分為最小有意義的片段分類）'
+    : '（標準模式：以自然語意段落為單位分類）';
+
+  const SYSTEM = `你是頂尖OCR與文字分析專家，精通多語言識別（繁中、簡中、英文、柬文/高棉文、日文、韓文等）。
+請對輸入的內容：
+1. 精確提取所有文字，保持原本格式
+2. 依以下類別分類${detailNote}：
+   - contact：電話、Email、社群帳號、Line/WeChat ID
+   - date：日期、時間、年份、時段
+   - url：網址、URL、應用連結
+   - number：數字、金額、統計、百分比、編號
+   - address：地址、城市、地點描述
+   - name：人名、公司名、品牌、產品名稱
+   - table：表格型態的資料（含CSV格式）
+   - other：不屬於以上類別的文字${transInstruction}
+
+嚴格以JSON回應，格式如下：
+{
+  "raw_text": "完整原文",
+  "language_detected": "偵測到的語言",
+  "items": [
+    {"text": "文字", "category": "分類id", "confidence": 0.95}
+  ]${translateLang ? ',\n  "translation": "完整翻譯文字"' : ''}
+}
+不要輸出任何JSON以外的內容。`;
+
+  const userContent = state.imageBase64
+    ? [
+        { type: 'image', source: { type: 'base64', media_type: state.imageMediaType, data: state.imageBase64 } },
+        { type: 'text', text: '請提取、分類並分析此圖片中的所有文字。' + (translateLang ? `並翻譯成${LANG_NAMES[translateLang]}。` : '') }
+      ]
+    : `以下是需要分析的文字內容，請提取、分類${translateLang ? `並翻譯成${LANG_NAMES[translateLang]}` : ''}：\n\n${state.plainText}`;
+
+  try {
+    if (typeof window.accClaudeRequest !== 'function') throw new Error('ACC AI 服務尚未載入，請重新開啟頁面');
+    const data = await window.accClaudeRequest({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: SYSTEM,
+      messages: [{ role: 'user', content: userContent }]
+    });
+    const text = (data.content || []).map(i => i.text || '').join('');
+    const clean = text.replace(/```json[\s\S]*?```|```[\s\S]*?```/g, m => m.replace(/```json\n?|```\n?/g,'')).trim();
+    let parsed;
+    try { parsed = JSON.parse(clean); }
+    catch { const m = clean.match(/\{[\s\S]*\}/); parsed = JSON.parse(m[0]); }
+    state.result = parsed;
+    renderResults(translateLang);
+  } catch(err) {
+    showError('分析失敗：' + err.message);
+  } finally {
+    setLoading(false);
+  }
+}
+
+// ─── RENDER ───────────────────────────────────────────────
+function renderResults(translateLang) {
+  const r = state.result;
+  if (!r) return;
+
+  // Stats
+  const counts = {};
+  (r.items || []).forEach(i => { counts[i.category] = (counts[i.category]||0)+1; });
+  const statsRow = document.getElementById('statsRow');
+  statsRow.innerHTML = `
+    <div class="stat-box"><div class="stat-num">${(r.items||[]).length}</div><div class="stat-lbl">文字片段</div></div>
+    <div class="stat-box"><div class="stat-num">${(r.raw_text||'').length}</div><div class="stat-lbl">總字元數</div></div>
+    <div class="stat-box"><div class="stat-num">${Object.keys(counts).length}</div><div class="stat-lbl">分類數量</div></div>
+    ${r.language_detected ? `<div class="stat-box"><div class="stat-num" style="font-size:14px;padding-top:4px">${r.language_detected}</div><div class="stat-lbl">偵測語言</div></div>` : ''}
+  `;
+
+  // Filter bar
+  const fb = document.getElementById('filterBar');
+  fb.innerHTML = `<button class="fpill" style="background:var(--accent);color:#fff;border-color:var(--accent)" onclick="setFilter('all')">全部 ${(r.items||[]).length}</button>`;
+  CATEGORIES.filter(c => counts[c.id]).forEach(c => {
+    fb.innerHTML += `<button class="fpill" id="fp-${c.id}" style="border-color:${c.color};color:${c.color}" onclick="setFilter('${c.id}')">${c.icon} ${c.label} ${counts[c.id]}</button>`;
+  });
+
+  // Raw text
+  document.getElementById('rawBox').textContent = r.raw_text || '';
+
+  // Translation
+  if (translateLang && r.translation) {
+    document.getElementById('transTab').style.display = 'block';
+    document.getElementById('transTitle').textContent = `翻譯為 ${LANG_NAMES[translateLang]}`;
+    document.getElementById('transBox').textContent = r.translation;
+  } else {
+    document.getElementById('transTab').style.display = 'none';
+  }
+
+  state.activeFilter = 'all';
+  renderItems();
+
+  document.getElementById('resultsPanel').style.display = 'block';
+  document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  switchResultTab('classified');
+}
+
+function renderItems() {
+  const r = state.result;
+  const items = (r?.items||[]).filter(i => state.activeFilter === 'all' || i.category === state.activeFilter);
+  const list = document.getElementById('itemList');
+  if (!items.length) { list.innerHTML = '<div style="color:var(--text3);text-align:center;padding:24px">此類別無資料</div>'; return; }
+  list.innerHTML = items.map((item, idx) => {
+    const cat = CATEGORIES.find(c => c.id === item.category) || CATEGORIES[CATEGORIES.length-1];
+    return `<div class="item-card" style="border-left-color:${cat.color};background:${cat.bg}">
+      <div class="item-icon">${cat.icon}</div>
+      <div class="item-body">
+        <div class="item-text">${escHtml(item.text)}</div>
+        <div class="item-meta">
+          <span class="cat-badge" style="background:${cat.color};color:#fff">${cat.label}</span>
+          ${item.confidence ? `<span class="conf">信心度 ${Math.round(item.confidence*100)}%</span>` : ''}
+        </div>
+      </div>
+      <button class="btn-sm" id="copy-${idx}" onclick="copyItem('${escAttr(item.text)}','${idx}')">複製</button>
+    </div>`;
+  }).join('');
+}
+
+function setFilter(id) {
+  state.activeFilter = id;
+  document.querySelectorAll('.fpill').forEach(p => {
+    p.style.background = ''; p.style.color = ''; p.style.borderColor = '';
+  });
+  const cat = CATEGORIES.find(c => c.id === id);
+  if (id === 'all') {
+    document.querySelector('.fpill').style.background = 'var(--accent)';
+    document.querySelector('.fpill').style.color = '#fff';
+    document.querySelector('.fpill').style.borderColor = 'var(--accent)';
+  } else if (cat) {
+    const el = document.getElementById('fp-'+id);
+    if (el) { el.style.background = cat.color; el.style.color = '#fff'; el.style.borderColor = cat.color; }
+  }
+  renderItems();
+}
+
+function switchResultTab(tab) {
+  state.activeResultTab = tab;
+  ['classified','raw','translation'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t === tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('.rtab').forEach((b,i) => {
+    b.classList.toggle('active', ['classified','raw','translation'][i] === tab);
+  });
+}
+
+// ─── COPY ─────────────────────────────────────────────────
+function copyItem(text, idx) {
+  navigator.clipboard.writeText(text);
+  const btn = document.getElementById('copy-'+idx);
+  if (btn) { btn.textContent = '已複製 ✓'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = '複製'; btn.classList.remove('copied'); }, 1500); }
+}
+function copyRaw() {
+  navigator.clipboard.writeText(document.getElementById('rawBox').textContent);
+  const b = document.getElementById('copyRawBtn');
+  b.textContent = '已複製 ✓'; b.classList.add('copied');
+  setTimeout(() => { b.textContent = '複製全部'; b.classList.remove('copied'); }, 1500);
+}
+function copyTrans() {
+  navigator.clipboard.writeText(document.getElementById('transBox').textContent);
+  const b = document.getElementById('copyTransBtn');
+  b.textContent = '已複製 ✓'; b.classList.add('copied');
+  setTimeout(() => { b.textContent = '複製翻譯'; b.classList.remove('copied'); }, 1500);
+}
+
+// ─── UTILS ────────────────────────────────────────────────
+function setLoading(on, msg) {
+  document.getElementById('loadingBlock').style.display = on ? 'block' : 'none';
+  document.getElementById('loadingText').textContent = msg || '分析中…';
+  document.getElementById('analyzeBtn').disabled = on;
+}
+function showError(msg) {
+  const el = document.getElementById('errorBlock');
+  el.style.display = msg ? 'block' : 'none';
+  el.textContent = msg;
+}
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escAttr(s) { return s.replace(/'/g,"\\'").replace(/\n/g,'\\n'); }
+</script>
+</body>
+</html>

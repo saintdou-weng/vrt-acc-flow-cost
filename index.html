@@ -79,7 +79,7 @@ break;case"<bookViews":;case"<bookViews>":;case"</bookViews>":break;case"<workbo
       <div class="logo">VRT</div>
       <div class="brand">
         <div class="brand-title" data-i="brandTitle">在製品・成品・工廠費用分析</div>
-        <div class="brand-sub">Vantage River Textiles · <span data-i="brandSub">智慧匯入與跨表稽核</span><span class="version">v1.5.0</span></div>
+        <div class="brand-sub">Vantage River Textiles · <span data-i="brandSub">智慧匯入與跨表稽核</span><span class="version">v1.6.0</span></div>
       </div>
       <div class="header-sep"></div>
       <div class="period-box">
@@ -131,6 +131,7 @@ break;case"<bookViews":;case"<bookViews>":;case"</bookViews>":break;case"<workbo
       <button class="nav-btn" data-page="anomaly"><span data-i="anomaly">⚠ 異常</span><span id="anomalyCount" class="nav-count">0</span></button>
       <button class="nav-btn" data-page="history"><span data-i="history">🗄 歷史</span></button>
       <a class="nav-btn map-link" href="factory-map.html">📍 工廠數位地圖 / Factory Map</a>
+      <a class="nav-btn" href="tools.html">🧰 獨立工具 / Tools</a>
     </div>
   </nav>
 
@@ -143,7 +144,7 @@ break;case"<bookViews":;case"<bookViews>":;case"</bookViews>":break;case"<workbo
 
   <script>'use strict';
 
-const APP_VERSION='1.5.0';
+const APP_VERSION='1.6.0';
 const DB_NAME='VRTFlowCostDB';
 const DB_STORE='app';
 const DB_KEY='state';
@@ -720,7 +721,7 @@ function openSettings(){
   const body=`<div class="form-grid"><div class="form-group full"><label class="form-label">${tr('gasUrl')}</label><input id="setGas" value="${esc(SETTINGS.gasUrl)}" placeholder="https://script.google.com/macros/s/.../exec"></div><div class="form-group full"><label class="form-label">${tr('gitUrl')}</label><input id="setGit" value="${esc(SETTINGS.gitUrl)}" placeholder="https://github.com/... or https://...github.io/..."></div><div class="form-group"><label class="form-label">${tr('cloudKey')}</label><input id="setCloudKey" value="${esc(SETTINGS.cloudKey)}"></div><div class="form-group"><label class="form-label">${tr('telegramAction')}</label><input id="setTgAction" value="${esc(SETTINGS.telegramAction)}"></div><div class="form-group full"><div class="secret-note">🔐 ${esc(tr('telegramServerManaged'))}</div></div></div>`;
   $('#modalRoot').innerHTML=modalHtml(tr('settings'),body,`<button class="btn" id="testBtn">${tr('testConnection')}</button><button class="btn" id="modalCancel">${tr('cancel')}</button><button class="btn primary" id="modalSave">${tr('save')}</button>`);attachModalClose();$('#modalCancel').onclick=closeModal;$('#modalSave').onclick=()=>{SETTINGS.gasUrl=canonicalGasUrl($('#setGas').value);SETTINGS.gitUrl=$('#setGit').value.trim()||DEFAULT_GIT_URL;SETTINGS.cloudKey=$('#setCloudKey').value.trim()||'vrt_acc';SETTINGS.telegramAction=$('#setTgAction').value.trim()||'telegramSend';SETTINGS.telegramChatId='';saveSettings();closeModal();checkCloud();toast(tr('saved'),'success')};$('#testBtn').onclick=async()=>{const url=canonicalGasUrl($('#setGas').value);if(!url)return toast(tr('cloudNotSet'),'warn');await checkCloud(url)};
 }
-function gasResponseJson(text,status=0){const clean=String(text||'').trim();if(/^<!doctype|^<html/i.test(clean))throw new Error(l3('GAS 回傳的是 Google 網頁，不是資料。請更新為 v1.5.0 部署版本，網址必須以 /exec 結尾。','GAS returned a Google page instead of data. Deploy v1.5.0 and use the URL ending in /exec.','GAS បានត្រឡប់ទំព័រ Google មិនមែនទិន្នន័យ។'));try{return JSON.parse(clean)}catch(e){throw new Error(clean.slice(0,160)||`HTTP ${status}`)}}
+function gasResponseJson(text,status=0){const clean=String(text||'').trim();if(/^<!doctype|^<html/i.test(clean))throw new Error(l3('GAS 回傳的是 Google 網頁，不是資料。請更新為 v1.6.0 部署版本，網址必須以 /exec 結尾。','GAS returned a Google page instead of data. Deploy v1.6.0 and use the URL ending in /exec.','GAS បានត្រឡប់ទំព័រ Google មិនមែនទិន្នន័យ។'));try{return JSON.parse(clean)}catch(e){throw new Error(clean.slice(0,160)||`HTTP ${status}`)}}
 async function gasGet(action,params={},url=SETTINGS.gasUrl){url=canonicalGasUrl(url);const q=new URLSearchParams({action,tool:SETTINGS.cloudKey,_:Date.now(),...params});const r=await fetch(`${url}?${q}`,{method:'GET',cache:'no-store',redirect:'follow',referrerPolicy:'no-referrer'}),text=await r.text(),data=gasResponseJson(text,r.status);if(!r.ok||data.ok===false)throw new Error(data.message||`HTTP ${r.status}`);return data}
 async function checkCloud(url=SETTINGS.gasUrl){const dot=$('#cloudDot'),text=$('#cloudText');if(!url){dot.className='status-dot';text.textContent=tr('notConfigured');return false}dot.className='status-dot';text.textContent='…';try{const d=await gasGet('status',{},url);if(d.ok||d.status||d.success){dot.className='status-dot ok';text.textContent=l3('已連線','Connected','បានភ្ជាប់');return true}throw new Error('bad response')}catch(e){dot.className='status-dot err';text.textContent=l3('離線／未對接','Offline / not wired','មិនភ្ជាប់');return false}}
 function stateRecordCount(state=STATE){return Object.values(state?.periods||{}).reduce((total,entry)=>total+['wip','fg','expense'].reduce((n,module)=>n+(entry?.modules?.[module]?.records?.length||0),0),0)}

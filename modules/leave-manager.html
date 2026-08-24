@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VRT 外籍幹部年假管理系統</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --navy:#1A3E78; --navy-light:#2A5298; --gold:#C8A864; --gold-light:#E8D8A8;
+  --teal:#2A8C82; --teal-light:#3AACA2; --bg:#F4F6FA;
+  --border:#D8DDE6; --text:#2C3E50; --text-light:#7F8C9B;
+  --danger:#E74C3C; --success:#27AE60; --warning:#F39C12;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ── Header ── */
+.app-header{background:linear-gradient(135deg,var(--navy),var(--navy-light));color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(26,62,120,.3);position:sticky;top:0;z-index:100;}
+.app-header h1{font-size:20px;font-weight:600;letter-spacing:1px;}
+.app-header h1 span{color:var(--gold);}
+.header-info{font-size:12px;opacity:.85;text-align:right;}
+.tab-bar{display:flex;background:#fff;border-bottom:2px solid var(--border);padding:0 16px;gap:4px;overflow-x:auto;}
+.tab-btn{padding:12px 20px;border:none;background:none;font-family:inherit;font-size:14px;font-weight:500;color:var(--text-light);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
+.tab-btn:hover{color:var(--navy);}
+.tab-btn.active{color:var(--navy);border-bottom-color:var(--gold);font-weight:600;}
+.tab-content{display:none;padding:20px;max-width:960px;margin:0 auto;}
+.tab-content.active{display:block;}
+
+/* ── Balance Card ── */
+.balance-card{background:linear-gradient(135deg,var(--navy),var(--navy-light) 60%,var(--teal));color:#fff;border-radius:12px;padding:18px 20px;margin-bottom:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(95px,1fr));gap:10px;box-shadow:0 4px 16px rgba(26,62,120,.2);}
+.bi{text-align:center;}
+.bi .lbl{font-size:10px;opacity:.8;margin-bottom:3px;}
+.bi .val{font-size:22px;font-weight:700;}
+.bi .val.rem{color:var(--gold-light);}
+.bi .unt{font-size:10px;opacity:.7;}
+
+/* ── Lang Toggle ── */
+.lang-toggle{display:flex;gap:4px;justify-content:flex-end;margin-bottom:8px;}
+.lang-btn{padding:3px 10px;border:1px solid var(--border);background:#fff;border-radius:4px;font-size:11px;font-family:inherit;cursor:pointer;color:var(--text-light);transition:all .15s;}
+.lang-btn:hover{border-color:var(--navy);color:var(--navy);}
+.lang-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+/* ── Form Card ── */
+.leave-form-card{background:#fff;border-radius:8px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin:0 auto 20px;max-width:640px;}
+.form-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:3px double var(--navy);}
+.form-title-row h2{font-size:15px;color:var(--navy);font-weight:700;line-height:1.3;}
+.form-title-row .date-field{font-size:11px;color:var(--text-light);white-space:nowrap;margin-left:8px;}
+.form-title-row .date-field input{border:none;border-bottom:1px solid var(--border);padding:2px 4px;font-family:inherit;font-size:11px;width:110px;}
+
+/* ── Form Table — fixed layout for balanced bilingual columns ── */
+.form-table{width:100%;border-collapse:collapse;margin-bottom:12px;table-layout:fixed;}
+.form-table colgroup col:nth-child(1){width:22%;}
+.form-table colgroup col:nth-child(2){width:28%;}
+.form-table colgroup col:nth-child(3){width:22%;}
+.form-table colgroup col:nth-child(4){width:28%;}
+.form-table th,.form-table td{border:1px solid var(--border);padding:5px 7px;font-size:11.5px;vertical-align:middle;}
+.form-table th{background:#F0F3F8;color:var(--navy);font-weight:600;text-align:center;word-break:keep-all;hyphens:none;}
+.form-table td{background:#fff;}
+.form-table input[type="text"],.form-table input[type="date"],.form-table input[type="number"],.form-table textarea,.form-table select{border:none;background:transparent;font-family:inherit;font-size:11.5px;width:100%;padding:1px 3px;outline:none;}
+.form-table textarea{resize:vertical;min-height:52px;}
+.form-table input:focus,.form-table textarea:focus,.form-table select:focus{background:#FFFDE7;border-radius:3px;}
+.form-table select{cursor:pointer;}
+
+/* Purpose with suggestions combo */
+.combo-wrap{position:relative;width:100%;}
+.combo-wrap input{width:100%;}
+.combo-suggestions{display:none;position:absolute;left:0;top:100%;z-index:50;background:#fff;border:1px solid var(--border);border-radius:4px;box-shadow:0 4px 12px rgba(0,0,0,.12);min-width:180px;max-width:280px;}
+.combo-suggestions.open{display:block;}
+.combo-sug-item{padding:6px 10px;font-size:11px;cursor:pointer;color:var(--text);}
+.combo-sug-item:hover{background:#F0F3F8;color:var(--navy);}
+
+/* ── Leave Type Grid ── */
+.leave-type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px 6px;}
+.leave-type-grid label{display:flex;align-items:center;gap:3px;font-size:11.5px;cursor:pointer;white-space:nowrap;}
+.leave-type-grid input[type="radio"]{accent-color:var(--navy);width:13px;height:13px;flex-shrink:0;}
+.lt-other-row{grid-column:1/-1;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.lt-other-row input[type="radio"]{accent-color:var(--navy);width:13px;height:13px;flex-shrink:0;}
+.lt-other-text{border:none!important;border-bottom:1px solid #aaa!important;width:130px!important;font-size:11.5px;padding:1px 4px;font-family:inherit;outline:none;background:transparent!important;}
+.lt-other-text:focus{background:#FFFDE7!important;}
+
+/* ── Ticket Area ── */
+.ticket-area{display:none;margin-top:5px;padding:4px 7px;background:#FFF8E1;border:1px dashed var(--gold);border-radius:4px;grid-column:1/-1;}
+.ticket-area label{display:flex;align-items:flex-start;gap:5px;cursor:pointer;font-size:11px;color:#8B6914;font-weight:500;line-height:1.4;}
+.ticket-area input[type="checkbox"]{accent-color:var(--gold);width:13px;height:13px;flex-shrink:0;margin-top:1px;}
+
+/* ── Sign Row ── */
+.sign-row{display:flex;justify-content:space-between;padding:8px 0 4px;font-size:11px;color:var(--text-light);border-top:1px solid var(--border);margin-top:6px;}
+.sign-row div{text-align:center;flex:1;}
+.sign-line{border-bottom:1px solid var(--border);height:26px;margin:3px 8px 0;}
+
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:16px 0;}
+.btn{padding:10px 24px;border:none;border-radius:6px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;}
+.btn-primary{background:var(--navy);color:#fff;}
+.btn-primary:hover{background:var(--navy-light);transform:translateY(-1px);}
+.btn-gold{background:var(--gold);color:#fff;}
+.btn-gold:hover{background:#B8984A;}
+.btn-teal{background:var(--teal);color:#fff;}
+.btn-teal:hover{background:var(--teal-light);}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-danger:hover{background:#C0392B;}
+.btn-outline{background:#fff;color:var(--navy);border:2px solid var(--navy);}
+.btn-outline:hover{background:var(--navy);color:#fff;}
+.btn-sm{padding:6px 14px;font-size:12px;}
+
+/* ── Settings ── */
+.settings-card{background:#fff;border-radius:8px;padding:20px 24px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px;}
+.settings-card h3{font-size:15px;color:var(--navy);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--gold-light);}
+.setting-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+.setting-row label{font-size:13px;font-weight:500;min-width:120px;}
+.setting-row input{border:1px solid var(--border);border-radius:4px;padding:6px 10px;font-family:inherit;font-size:13px;width:140px;}
+.setting-row input:focus{border-color:var(--navy);outline:none;box-shadow:0 0 0 2px rgba(26,62,120,.15);}
+.setting-hint{font-size:11px;color:var(--text-light);}
+.formula-card{background:#F8FAFF;border:1px solid #D0D9EA;border-radius:8px;padding:14px 18px;margin-top:12px;font-size:12px;line-height:1.9;}
+.formula-card .ft{font-weight:600;color:var(--navy);margin-bottom:4px;font-size:13px;}
+.formula-card code{background:#E8ECF2;padding:1px 6px;border-radius:3px;font-family:monospace;font-size:12px;color:var(--navy);}
+
+/* ── Summary Table ── */
+.summary-table{width:100%;border-collapse:collapse;font-size:11.5px;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.summary-table thead th{background:var(--navy);color:#fff;padding:9px 5px;font-weight:600;white-space:nowrap;font-size:11px;}
+.summary-table tbody td{padding:6px 5px;border-bottom:1px solid var(--border);text-align:center;}
+.summary-table tbody tr:hover{background:#F8F9FC;}
+.status-badge{display:inline-block;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:600;}
+.editable-cell{cursor:pointer;}
+.editable-cell:hover{background:#FFFDE7!important;}
+.ticket-badge{display:inline-block;padding:1px 5px;border-radius:8px;font-size:10px;font-weight:700;background:#FFF3CD;color:#856404;border:1px solid #FFD93D;}
+/* itinerary inline edit */
+.itin-cell{font-size:10px;color:var(--text-light);max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* ── Quarter Grid ── */
+.quarter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:20px;}
+.quarter-card{background:#fff;border-radius:8px;padding:13px;box-shadow:0 1px 4px rgba(0,0,0,.06);border-left:4px solid var(--navy);}
+.quarter-card.active{border-left-color:var(--gold);background:#FFFDF5;}
+.quarter-card.completed{border-left-color:var(--teal);}
+.quarter-card .q-title{font-size:12px;font-weight:600;color:var(--navy);margin-bottom:5px;}
+.quarter-card .q-bar{background:#E8ECF2;height:7px;border-radius:4px;overflow:hidden;margin:5px 0;}
+.quarter-card .q-bar-fill{height:100%;border-radius:4px;transition:width .5s ease;}
+.quarter-card .q-info{font-size:10.5px;color:var(--text-light);display:flex;justify-content:space-between;}
+
+/* ── Accrual Bar ── */
+.accrual-bar-wrap{background:#fff;border-radius:8px;padding:13px 16px;box-shadow:0 1px 4px rgba(0,0,0,.06);margin-bottom:16px;}
+.accrual-bar-wrap .ab-title{font-size:12px;font-weight:600;color:var(--navy);margin-bottom:7px;}
+.accrual-bar-outer{background:#E8ECF2;height:20px;border-radius:10px;overflow:hidden;}
+.accrual-bar-inner{height:100%;border-radius:10px;transition:width .6s ease;background:linear-gradient(90deg,var(--teal),var(--navy-light));display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:11px;font-weight:700;color:#fff;min-width:36px;}
+.accrual-bar-labels{display:flex;justify-content:space-between;font-size:10.5px;color:var(--text-light);margin-top:3px;}
+
+/* ── Toast / Modal ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--navy);color:#fff;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:500;box-shadow:0 6px 20px rgba(0,0,0,.25);transition:transform .3s ease;z-index:999;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;justify-content:center;align-items:center;}
+.modal-overlay.show{display:flex;}
+.modal-box{background:#fff;border-radius:12px;padding:24px;width:90%;max-width:420px;box-shadow:0 12px 40px rgba(0,0,0,.2);}
+.modal-box h3{color:var(--navy);margin-bottom:12px;font-size:16px;}
+.modal-box p{font-size:13px;color:var(--text-light);margin-bottom:16px;}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;}
+
+/* ================================================================
+   PRINT — A4 portrait, 2 forms with cut gap
+   ================================================================ */
+#printContainer{display:none;}
+
+@media print {
+  @page{size:A4 portrait;margin:0.7cm 0.9cm;}
+  body>*:not(#printContainer){display:none!important;}
+  #printContainer{display:block!important;width:100%;font-family:'Noto Sans TC',Arial,sans-serif;}
+
+  /* wrapper: two forms, equal height, separated by cut gap */
+  .print-form-wrap{
+    width:100%; height:46%;
+    page-break-inside:avoid;
+    overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  /* cut-line gap between forms */
+  .print-cut-gap{
+    height:4%; display:flex; align-items:center; justify-content:center;
+    page-break-inside:avoid;
+  }
+  .print-cut-line{
+    width:100%; border-top:1px dashed #bbb;
+    position:relative; text-align:center;
+  }
+  .print-cut-line::after{
+    content:'✂'; position:absolute; top:-9px; left:50%;
+    transform:translateX(-50%);
+    background:#fff; padding:0 4px; font-size:12px; color:#bbb;
+  }
+
+  /* ── Print form layout ── */
+  .pf-title-row{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2.5px double #000;margin-bottom:5px;padding-bottom:3px;}
+  .pf-title-row h2{font-size:12px;font-weight:700;color:#000;margin:0;line-height:1.3;}
+  .pf-title-row .pf-date{font-size:10px;color:#000;white-space:nowrap;margin-left:6px;}
+
+  /* Fixed 4-column layout for balanced bilingual */
+  .pf-table{width:100%;border-collapse:collapse;margin-bottom:5px;table-layout:fixed;}
+  .pf-table col:nth-child(1){width:19%;}
+  .pf-table col:nth-child(2){width:31%;}
+  .pf-table col:nth-child(3){width:19%;}
+  .pf-table col:nth-child(4){width:31%;}
+  .pf-table th,.pf-table td{border:1px solid #000;padding:3px 5px;vertical-align:middle;word-break:break-word;}
+  .pf-table th{background:#EEEEEE!important;color:#000!important;font-weight:600;text-align:center;font-size:9.5px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .pf-table td{background:#fff;color:#000;font-size:10px;}
+  .pf-lt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px 4px;}
+  .pf-lt-grid label{display:flex;align-items:center;gap:2px;font-size:9px;white-space:nowrap;}
+  .pf-lt-other{font-size:9px;margin-top:2px;}
+  .pf-ticket{background:#FFF8E1!important;border:1px dashed #C8A864;border-radius:2px;padding:1px 4px;margin-top:2px;font-size:8.5px;color:#8B6914;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .pf-sign{display:flex;justify-content:space-between;border-top:1px solid #000;padding-top:4px;margin-top:4px;font-size:9.5px;color:#000;}
+  .pf-sign div{flex:1;text-align:center;}
+  .pf-sign-line{border-bottom:1px solid #000;height:18px;margin:2px 8px 0;}
+  .pf-remark-td{min-height:28px;}
+}
+</style>
+  <link rel="stylesheet" href="../acc-module-shell.css">
+  <script defer src="../acc-module-shell.js"></script>
+</head>
+<body>
+
+<div class="app-header">
+  <h1><span>VRT</span> 外籍幹部年假管理系統</h1>
+  <div class="header-info">Vantage River Textiles Co., Ltd.<br>Expat Leave Management</div>
+</div>
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('apply',this)">📝 申請假單</button>
+  <button class="tab-btn" onclick="switchTab('summary',this)">📊 假期總表</button>
+  <button class="tab-btn" onclick="switchTab('settings',this)">⚙️ 設定</button>
+</div>
+
+<!-- ===== TAB 1: APPLY ===== -->
+<div id="tab-apply" class="tab-content active">
+  <div class="balance-card" id="balanceCard"></div>
+  <div class="accrual-bar-wrap no-print" id="accrualBarWrap"></div>
+  <div class="quarter-grid no-print" id="quarterGrid"></div>
+
+  <div class="leave-form-card" id="leaveFormCard">
+    <div class="lang-toggle no-print">
+      <button onclick="setLang('zh')" id="langZh" class="lang-btn active">中文</button>
+      <button onclick="setLang('en')" id="langEn" class="lang-btn">English</button>
+      <button onclick="setLang('bi')" id="langBi" class="lang-btn">雙語</button>
+    </div>
+    <div class="form-title-row">
+      <h2 id="formTitle">VRT 外籍幹部請假申請單</h2>
+      <div class="date-field"><span data-zh="填寫日期" data-en="Date">填寫日期</span>：<input type="date" id="formDate"></div>
+    </div>
+
+    <table class="form-table">
+      <colgroup><col><col><col><col></colgroup>
+      <tr>
+        <th data-zh="申請人" data-en="Applicant">申請人</th>
+        <td><input type="text" id="fApplicant" placeholder="姓名"></td>
+        <th data-zh="申請部門" data-en="Dept.">申請部門</th>
+        <td><input type="text" id="fDept" placeholder="部門"></td>
+      </tr>
+      <tr>
+        <th data-zh="代理人" data-en="Deputy">代理人</th>
+        <td><input type="text" id="fDeputy" placeholder="代理人姓名"></td>
+        <th data-zh="代理人部門" data-en="Dep.Dept.">代理人部門</th>
+        <td><input type="text" id="fDeputyDept" placeholder="代理部門"></td>
+      </tr>
+      <tr>
+        <th data-zh="事由" data-en="Purpose">事由</th>
+        <td colspan="3">
+          <!-- Purpose with quick-pick suggestions -->
+          <div class="combo-wrap" id="purposeWrap">
+            <input type="text" id="fPurpose" placeholder="請假事由（點選常用）" autocomplete="off"
+              onfocus="openSug('purpose')" onblur="closeSug('purpose',300)" oninput="filterSug('purpose',this.value)">
+            <div class="combo-suggestions" id="purposeSug">
+              <div class="combo-sug-item" onclick="pickSug('purpose','年假返台（第1次）')">年假返台（第1次）</div>
+              <div class="combo-sug-item" onclick="pickSug('purpose','年假返台（第2次）')">年假返台（第2次）</div>
+              <div class="combo-sug-item" onclick="pickSug('purpose','年假返台（第3次）')">年假返台（第3次）</div>
+              <div class="combo-sug-item" onclick="pickSug('purpose','年假返台（第4次）')">年假返台（第4次）</div>
+              <div class="combo-sug-item" onclick="pickSug('purpose','事假返台')">事假返台</div>
+              <div class="combo-sug-item" onclick="pickSug('purpose','病假就醫')">病假就醫</div>
+              <div class="combo-sug-item" onclick="pickSug('purpose','家屬事宜')">家屬事宜</div>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <th data-zh="請假類型" data-en="Leave Type">請假類型</th>
+        <td colspan="1">
+          <div class="leave-type-grid" id="leaveTypeGrid">
+            <label><input type="radio" name="leaveType" value="返台假" checked onchange="onLeaveTypeChange()"><span class="lt" data-zh="返台假" data-en="Home Leave">返台假</span></label>
+            <label><input type="radio" name="leaveType" value="事假" onchange="onLeaveTypeChange()"><span class="lt" data-zh="事假" data-en="Personal">事假</span></label>
+            <label><input type="radio" name="leaveType" value="病假" onchange="onLeaveTypeChange()"><span class="lt" data-zh="病假" data-en="Sick">病假</span></label>
+            <label><input type="radio" name="leaveType" value="喪假" onchange="onLeaveTypeChange()"><span class="lt" data-zh="喪假" data-en="Bereavement">喪假</span></label>
+            <label><input type="radio" name="leaveType" value="婚假" onchange="onLeaveTypeChange()"><span class="lt" data-zh="婚假" data-en="Wedding">婚假</span></label>
+            <label><input type="radio" name="leaveType" value="產假" onchange="onLeaveTypeChange()"><span class="lt" data-zh="產假" data-en="Maternity">產假</span></label>
+            <div class="lt-other-row">
+              <label style="display:flex;align-items:center;gap:3px;font-size:11.5px;cursor:pointer;white-space:nowrap;">
+                <input type="radio" name="leaveType" value="其他" onchange="onLeaveTypeChange()">
+                <span class="lt" data-zh="其他" data-en="Other">其他</span>：
+              </label>
+              <input type="text" id="fOtherReason" class="lt-other-text" placeholder="請說明…" style="display:none;">
+            </div>
+            <!-- 機票補助：只有選「其他」時才顯示 -->
+            <div class="ticket-area" id="ticketArea">
+              <label>
+                <input type="checkbox" id="fTicket" onchange="onTicketChange(this)">
+                <span data-zh="✈️ 申請機票款補助（不請假，天數填0，年假不扣除）" data-en="✈️ Ticket reimbursement only (days=0, no leave deducted)">✈️ 申請機票款補助（不請假，天數填0，年假不扣除）</span>
+              </label>
+            </div>
+          </div>
+        </td>
+        <th data-zh="天/時數" data-en="Days/Hrs">天/時數</th>
+        <td>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <input type="number" id="fDays" style="width:44px;text-align:center;" readonly>
+            <span class="lt" data-zh="天" data-en="d">天</span>
+            <input type="number" id="fHours" style="width:44px;text-align:center;" value="0" min="0" max="23">
+            <span class="lt" data-zh="時" data-en="h">時</span>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <th data-zh="開始日期" data-en="From">開始日期</th>
+        <td><input type="date" id="fStartDate" onchange="calcDays()"></td>
+        <th data-zh="結束日期" data-en="To">結束日期</th>
+        <td><input type="date" id="fEndDate" onchange="calcDays()"></td>
+      </tr>
+      <tr>
+        <th data-zh="備註" data-en="Remark">備註</th>
+        <td colspan="3">
+          <div class="combo-wrap" id="remarkWrap">
+            <textarea id="fRemark" placeholder="其他備註事項（點選常用）" style="min-height:56px;"
+              onfocus="openSug('remark')" onblur="closeSug('remark',300)"></textarea>
+            <div class="combo-suggestions" id="remarkSug" style="top:auto;bottom:100%;">
+              <div class="combo-sug-item" onclick="pickSug('remark','因公務繁忙無法使用年假返台')">因公務繁忙無法使用年假返台</div>
+              <div class="combo-sug-item" onclick="pickSug('remark','因故無法返台，申請機票款退款補助（天數計0，年假不扣）')">因故無法返台，申請機票款退款補助</div>
+              <div class="combo-sug-item" onclick="pickSug('remark','第1次年假，年假期間代理人負責相關事宜')">第1次年假，代理人負責相關事宜</div>
+              <div class="combo-sug-item" onclick="pickSug('remark','第2次年假，年假期間代理人負責相關事宜')">第2次年假，代理人負責相關事宜</div>
+              <div class="combo-sug-item" onclick="pickSug('remark','機票已訂，如有變動另行通知')">機票已訂，如有變動另行通知</div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <div class="sign-row">
+      <div><span data-zh="申請人" data-en="Applicant">申請人</span>：<div class="sign-line"></div></div>
+      <div><span data-zh="直屬主管" data-en="Supervisor">直屬主管</span>：<div class="sign-line"></div></div>
+      <div><span data-zh="台北總公司" data-en="Taipei HQ">台北總公司</span>：<div class="sign-line"></div></div>
+    </div>
+  </div>
+
+  <div class="btn-row no-print">
+    <button class="btn btn-primary" onclick="saveLeave()">💾 儲存申請</button>
+    <button class="btn btn-gold" onclick="printForm()">🖨️ 列印 (A4×2)</button>
+    <button class="btn btn-outline" onclick="clearForm()">🔄 清除</button>
+  </div>
+</div>
+
+<!-- ===== TAB 2: SUMMARY ===== -->
+<div id="tab-summary" class="tab-content">
+  <div class="balance-card" id="balanceCard2"></div>
+  <div class="btn-row no-print" style="justify-content:flex-end;margin-bottom:8px;">
+    <button class="btn btn-outline btn-sm" onclick="exportCSV()">📥 匯出CSV</button>
+    <button class="btn btn-outline btn-sm" onclick="printSummary()">🖨️ 列印總表</button>
+  </div>
+  <div style="overflow-x:auto;">
+    <table class="summary-table" id="summaryTable">
+      <thead><tr>
+        <th>#</th><th>申請日期</th><th>類型</th>
+        <th>開始日期</th><th>結束日期</th><th>天數</th>
+        <th>機票</th><th>事由</th>
+        <!-- 行程欄：不影響年假計算（除非備有 +/-N 調整） -->
+        <th title="實際出發日（不影響年假計算）">實際出發</th>
+        <th title="實際回程日（不影響年假計算）">實際回程</th>
+        <th title="天數調整 (+/-N)，留空=不調整">調整天</th>
+        <th>狀態</th><th class="no-print">操作</th>
+      </tr></thead>
+      <tbody id="summaryBody"></tbody>
+    </table>
+  </div>
+  <p id="noRecords" style="text-align:center;color:var(--text-light);padding:40px 0;font-size:14px;display:none;">尚無假期記錄</p>
+  <div id="summaryFootnote" style="font-size:11px;color:var(--text-light);margin-top:10px;padding:8px 12px;background:#fff;border-radius:6px;display:none;">
+    ℹ️ 「實際出發/回程」欄僅記錄行程參考，不影響年假計算。「調整天」填 <code>+N</code> 或 <code>-N</code> 可手動微調天數（例如：機票改期）。
+  </div>
+</div>
+
+<!-- ===== TAB 3: SETTINGS ===== -->
+<div id="tab-settings" class="tab-content">
+  <div class="settings-card">
+    <h3>👤 個人資料</h3>
+    <div class="setting-row"><label>姓名：</label><input type="text" id="sName"></div>
+    <div class="setting-row"><label>部門：</label><input type="text" id="sDept"></div>
+    <div class="setting-row"><label>入職日期：</label><input type="date" id="sEntryDate"></div>
+    <div class="setting-row"><label>代理人：</label><input type="text" id="sDeputy"></div>
+    <div class="setting-row"><label>代理人部門：</label><input type="text" id="sDeputyDept"></div>
+  </div>
+  <div class="settings-card">
+    <h3>📅 假期規則</h3>
+    <div class="setting-row">
+      <label>年假總天數：</label><input type="number" id="sTotalDays" value="32" min="1">
+      <span class="setting-hint">天/年（每日按比例累積）</span>
+    </div>
+    <div class="setting-row">
+      <label>每季參考天數：</label><input type="number" id="sQuarterDays" value="8" min="1">
+      <span class="setting-hint">天/3個月（季度卡顯示用）</span>
+    </div>
+    <div class="setting-row">
+      <label>前期結餘天數：</label><input type="number" id="sCarryOver" value="23" min="0" step="0.5">
+      <span class="setting-hint">天（含本期待請之假，例：12剩+11月假=23）</span>
+    </div>
+    <div class="formula-card">
+      <div class="ft">📐 年假計算公式（每日累積制）</div>
+      <div style="margin-top:6px;">
+        <strong>基準日</strong>：入職紀念日（4/5），每年滾動<br>
+        <strong>每日累積</strong>：<code>今年累積 = (距入職紀念日天數 ÷ 365) × 年假總天數</code><br>
+        <strong>前期結餘</strong>：上年度剩餘 + 本期尚未請假的天數（此數字已含11天待請）<br>
+        <strong>可用</strong>：<code>前期結餘 + 今年累積 − 已請假天數</code><br>
+        <strong>範例</strong>：23（前期）+ 0.7（累積8天）− 11（已請）= 12.7 天可用<br>
+        <strong>機票款</strong>：天數=0 不計入已請假
+      </div>
+    </div>
+  </div>
+  <div class="settings-card">
+    <h3>🔧 資料管理</h3>
+    <div class="btn-row" style="justify-content:flex-start;">
+      <button class="btn btn-primary btn-sm" onclick="saveSettings()">💾 儲存設定</button>
+      <button class="btn btn-teal btn-sm" onclick="exportAll()">📤 匯出JSON</button>
+      <label class="btn btn-outline btn-sm" style="margin:0;">📥 匯入<input type="file" accept=".json" onchange="importAll(event)" style="display:none;"></label>
+      <button class="btn btn-danger btn-sm" onclick="confirmReset()">🗑️ 重置</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PRINT CONTAINER ===== -->
+<div id="printContainer"></div>
+
+<div class="toast" id="toast"></div>
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-box">
+    <h3 id="modalTitle">確認</h3>
+    <p id="modalMsg"></p>
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeModal()">取消</button>
+      <button class="btn btn-danger btn-sm" id="modalConfirmBtn">確認</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =================== DATA STORE ===================
+const STORAGE_KEY = 'VRT_LEAVE_DATA_V4';
+
+function getStore() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) {
+    const d = JSON.parse(raw);
+    if (d.settings.carryOver === undefined) d.settings.carryOver = 23;
+    return d;
+  }
+  return {
+    settings:{name:'神之道',dept:'GA 總務部',entryDate:'2026-04-05',totalDays:32,quarterDays:8,carryOver:23,deputy:'',deputyDept:''},
+    records:[]
+  };
+}
+function setStore(d){localStorage.setItem(STORAGE_KEY,JSON.stringify(d));}
+
+// =========================================================
+// ★ 年假計算：每日按比例累積（Pro-rata daily accrual）★
+// ---------------------------------------------------------
+// 規則：
+//   1. 基準日 = 入職月/日（今年紀念日）
+//   2. 若今年紀念日還沒到，用上一年的紀念日作為起算點
+//   3. 今年累積 = (今日 - 紀念日) / 365 × 年假總天數
+//   4. 可用 = 前期結餘 + 今年累積 - 已請假天數
+//
+// 範例（入職日 2026-04-05，今日 2026-04-13）：
+//   距紀念日 = 8 天
+//   累積 = (8/365) × 32 = 0.70 天
+//   前期結餘 = 23天（包含11天尚未請的5月假）
+//   已請假 = 11天（5月份記錄）
+//   可用 = 23 + 0.70 - 11 = 12.70 天
+// =========================================================
+
+/** 今年紀念日起始日（如尚未到，取去年） */
+function getAnnivStart(entryStr) {
+  const e   = new Date(entryStr+'T00:00:00');
+  const now = new Date(); now.setHours(0,0,0,0);
+  const y   = now.getFullYear();
+  let a = new Date(y, e.getMonth(), e.getDate());
+  if (a > now) a = new Date(y-1, e.getMonth(), e.getDate());
+  return a;
+}
+
+/** 自紀念日起算的天數 */
+function getDaysElapsed(entryStr) {
+  const now = new Date(); now.setHours(0,0,0,0);
+  return Math.max(0, Math.floor((now - getAnnivStart(entryStr)) / 86400000));
+}
+
+/** 今年累積年假（每日比例，保留兩位小數） */
+function getAccrued(entryStr, totalDays) {
+  const elapsed = getDaysElapsed(entryStr);
+  return parseFloat(((elapsed / 365) * totalDays).toFixed(2));
+}
+
+/** 下一個3個月里程碑日期（用於提示） */
+function getNextMilestone(entryStr) {
+  const entry = new Date(entryStr+'T00:00:00');
+  const now   = new Date(); now.setHours(0,0,0,0);
+  if (isNaN(entry.getTime())) return null;
+  // 算下一個未到的3個月整倍日期
+  let yr=entry.getFullYear(), mo=entry.getMonth(), day=entry.getDate();
+  for (let i=1; i<=100; i++) {
+    let nm=mo+i*3, ny=yr+Math.floor(nm/12); nm=nm%12;
+    const maxD=new Date(ny,nm+1,0).getDate();
+    const nd=Math.min(day,maxD);
+    const dt=new Date(ny,nm,nd);
+    if (dt > now) return dt;
+  }
+  return null;
+}
+
+/** 已請假天數（排除 rejected & 純機票款） */
+function getUsed(records) {
+  return records.reduce((s,r)=>{
+    if(r.status==='rejected') return s;
+    if(r.ticketOnly && r.days===0) return s;
+    return s+(r.days||0);
+  },0);
+}
+
+/** 完整餘額物件 */
+function calcBal(settings,records){
+  const co    = settings.carryOver||0;
+  const acc   = settings.entryDate ? getAccrued(settings.entryDate,settings.totalDays) : 0;
+  const used  = getUsed(records);
+  const avail = parseFloat((co+acc-used).toFixed(2));
+  const elapsed = settings.entryDate ? getDaysElapsed(settings.entryDate) : 0;
+  return {co,acc,used,avail,elapsed};
+}
+
+// =================== LANGUAGE TOGGLE ===================
+let currentLang='zh';
+function setLang(lang){
+  currentLang=lang;
+  document.querySelectorAll('[data-zh]').forEach(el=>{
+    if(lang==='zh') el.textContent=el.dataset.zh;
+    else if(lang==='en') el.textContent=el.dataset.en;
+    else el.textContent=el.dataset.zh+' / '+el.dataset.en;
+  });
+  const t=document.getElementById('formTitle');
+  const zhT='VRT 外籍幹部請假申請單', enT='VRT Expat Staff Leave Application Form';
+  if(lang==='zh') t.textContent=zhT;
+  else if(lang==='en') t.textContent=enT;
+  else t.innerHTML=zhT+'<br><span style="font-size:10px;font-weight:400;">'+enT+'</span>';
+  ['langZh','langEn','langBi'].forEach(id=>document.getElementById(id)?.classList.remove('active'));
+  document.getElementById({zh:'langZh',en:'langEn',bi:'langBi'}[lang])?.classList.add('active');
+}
+
+// =================== COMBO SUGGESTIONS ===================
+function openSug(id){document.getElementById(id+'Sug')?.classList.add('open');}
+function closeSug(id,delay){setTimeout(()=>document.getElementById(id+'Sug')?.classList.remove('open'),delay);}
+function pickSug(id,val){
+  if(id==='purpose') document.getElementById('fPurpose').value=val;
+  else if(id==='remark'){
+    const ta=document.getElementById('fRemark');
+    ta.value=(ta.value?ta.value+'\n':'')+val;
+  }
+  document.getElementById(id+'Sug')?.classList.remove('open');
+}
+function filterSug(id,val){
+  const sug=document.getElementById(id+'Sug');
+  if(!sug) return;
+  sug.querySelectorAll('.combo-sug-item').forEach(item=>{
+    item.style.display=item.textContent.includes(val)?'':'none';
+  });
+}
+
+// =================== LEAVE TYPE CHANGE ===================
+function onLeaveTypeChange(){
+  const sel=document.querySelector('input[name="leaveType"]:checked')?.value;
+  const ticketArea=document.getElementById('ticketArea');
+  const otherInput=document.getElementById('fOtherReason');
+  if(sel==='其他'){
+    ticketArea.style.display='block';
+    otherInput.style.display='inline-block';
+  } else {
+    ticketArea.style.display='none';
+    otherInput.style.display='none';
+    document.getElementById('fTicket').checked=false;
+  }
+}
+function onTicketChange(cb){
+  const remark=document.getElementById('fRemark');
+  if(cb.checked){
+    document.getElementById('fDays').value='0';
+    if(!remark.value.trim()) remark.value='因故無法使用年假返台，申請機票款退款補助（天數計0，年假不扣除）';
+  }
+}
+
+// =================== INIT ===================
+function init(){
+  const data=getStore(),s=data.settings;
+  document.getElementById('sName').value=s.name||'';
+  document.getElementById('sDept').value=s.dept||'';
+  document.getElementById('sEntryDate').value=s.entryDate||'';
+  document.getElementById('sTotalDays').value=s.totalDays||32;
+  document.getElementById('sQuarterDays').value=s.quarterDays||8;
+  document.getElementById('sCarryOver').value=s.carryOver??23;
+  document.getElementById('sDeputy').value=s.deputy||'';
+  document.getElementById('sDeputyDept').value=s.deputyDept||'';
+  document.getElementById('formDate').value=todayStr();
+  document.getElementById('fApplicant').value=s.name||'';
+  document.getElementById('fDept').value=s.dept||'';
+  document.getElementById('fDeputy').value=s.deputy||'';
+  document.getElementById('fDeputyDept').value=s.deputyDept||'';
+  if(data.records.length===0){
+    data.records.push({
+      id:Date.now(),formDate:'2026-04-13',type:'返台假',
+      startDate:'2026-05-25',endDate:'2026-06-04',days:11,hours:0,
+      purpose:'年假返台（第2次）',
+      remark:'第1次因故無法返台，已申請機票款退款補助（天數計0，年假不扣除）',
+      ticket:false,ticketOnly:false,status:'pending',
+      actualDeparture:'',actualReturn:'',adjustDays:''
+    });
+    setStore(data);
+  }
+  refreshAll();
+}
+function todayStr(){return new Date().toISOString().slice(0,10);}
+
+// =================== TABS ===================
+function switchTab(name,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  if(name==='summary'){renderSummary();updateBal2();}
+}
+function switchTabDirect(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>{
+    if(b.textContent.includes(name==='apply'?'申請':name==='summary'?'總表':'設定')) b.classList.add('active');
+  });
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+// =================== BALANCE CARD ===================
+function updateBal(){
+  const data=getStore(),s=data.settings,b=calcBal(s,data.records);
+  const ed=s.entryDate?new Date(s.entryDate+'T00:00:00'):null;
+  const edStr=ed?`${ed.getFullYear()}/${String(ed.getMonth()+1).padStart(2,'0')}/${String(ed.getDate()).padStart(2,'0')}`:'—';
+  const pool=parseFloat((b.co+b.acc).toFixed(2));
+  let nextStr='—';
+  if(s.entryDate){const nm=getNextMilestone(s.entryDate);if(nm) nextStr=fmtD(nm)+' (+8天)';}
+  document.getElementById('balanceCard').innerHTML=`
+    <div class="bi"><div class="lbl">前期結餘</div><div class="val">${b.co}</div><div class="unt">天</div></div>
+    <div class="bi"><div class="lbl">今年累積</div><div class="val">${b.acc}</div><div class="unt">天(第${b.elapsed}天)</div></div>
+    <div class="bi"><div class="lbl">可用總額</div><div class="val">${pool}</div><div class="unt">天</div></div>
+    <div class="bi"><div class="lbl">已請假</div><div class="val">${b.used}</div><div class="unt">天</div></div>
+    <div class="bi"><div class="lbl">剩餘可用</div><div class="val rem">${b.avail}</div><div class="unt">天</div></div>
+    <div class="bi"><div class="lbl">下次里程碑</div><div class="val" style="font-size:11px;line-height:1.3;">${nextStr}</div><div class="unt">解鎖+8天</div></div>`;
+}
+function updateBal2(){document.getElementById('balanceCard2').innerHTML=document.getElementById('balanceCard').innerHTML;}
+
+// =================== ACCRUAL BAR ===================
+function renderAccrualBar(){
+  const data=getStore(),s=data.settings;
+  if(!s.entryDate){document.getElementById('accrualBarWrap').innerHTML='';return;}
+  const b=calcBal(s,data.records);
+  const totalPool=b.co+s.totalDays;
+  const curPool=parseFloat((b.co+b.acc).toFixed(2));
+  const pct=Math.min(100,Math.round((curPool/totalPool)*100));
+  const usedPct=totalPool>0?Math.min(100,Math.round((b.used/totalPool)*100)):0;
+  document.getElementById('accrualBarWrap').innerHTML=`
+    <div class="ab-title">📈 假期進度（前期 ${b.co} + 今年累積 ${b.acc} = ${curPool} 天 | 每日累積中，第 ${b.elapsed} 天）</div>
+    <div class="accrual-bar-outer"><div class="accrual-bar-inner" style="width:${pct}%;">${curPool}</div></div>
+    <div class="accrual-bar-labels"><span>已用 ${b.used} 天 (${usedPct}%)</span><span>年度滿額 ${totalPool} 天</span></div>`;
+}
+
+// =================== QUARTERS ===================
+function renderQuarters(){
+  const data=getStore(),s=data.settings;
+  if(!s.entryDate) return;
+  const entry=new Date(s.entryDate+'T00:00:00');
+  const now=new Date();now.setHours(0,0,0,0);
+  const grid=document.getElementById('quarterGrid');
+  const colors=['#3498DB','#2ECC71','#E67E22','#9B59B6'];
+  grid.innerHTML='';
+  function addM(base,m){
+    let yr=base.getFullYear(),mo=base.getMonth()+m,day=base.getDate();
+    yr=yr+Math.floor(mo/12);mo=mo%12;
+    const maxD=new Date(yr,mo+1,0).getDate();
+    return new Date(yr,mo,Math.min(day,maxD));
+  }
+  for(let q=0;q<4;q++){
+    const qs=addM(entry,q*3),qe=addM(entry,(q+1)*3);
+    const qeLast=new Date(qe);qeLast.setDate(qeLast.getDate()-1);
+    const isCompleted=qe<=now,isAct=qs<=now&&qe>now,isFut=qs>now;
+    let usedQ=0;
+    data.records.forEach(r=>{
+      if(r.status==='rejected'||(r.ticketOnly&&r.days===0)) return;
+      const rs=new Date(r.startDate),re=new Date(r.endDate);
+      const os=rs>qs?rs:qs,oe=re<qeLast?re:qeLast;
+      if(os<=oe) usedQ+=Math.round((oe-os)/86400000)+1;
+    });
+    const pct=Math.min(100,Math.round(usedQ/s.quarterDays*100));
+    const c=document.createElement('div');
+    c.className='quarter-card'+(isAct?' active':'')+(isCompleted?' completed':'');
+    c.innerHTML=`<div class="q-title">第${q+1}季 ${isAct?'📍當前':isCompleted?'✅':'🔜'}</div>
+      <div style="font-size:10px;color:var(--text-light);">${fmtD(qs)} ~ ${fmtD(qeLast)}</div>
+      <div class="q-bar"><div class="q-bar-fill" style="width:${pct}%;background:${colors[q]}"></div></div>
+      <div class="q-info"><span>已用 ${usedQ}/${s.quarterDays}天</span><span>${pct}%</span></div>`;
+    grid.appendChild(c);
+  }
+}
+function fmtD(d){return`${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;}
+
+// =================== CALC DAYS ===================
+function calcDays(){
+  const s=document.getElementById('fStartDate').value,e=document.getElementById('fEndDate').value;
+  if(!s||!e) return;
+  document.getElementById('fDays').value=Math.max(0,Math.round((new Date(e)-new Date(s))/86400000)+1);
+}
+
+// =================== SAVE LEAVE ===================
+function saveLeave(){
+  const startDate=document.getElementById('fStartDate').value;
+  const endDate=document.getElementById('fEndDate').value;
+  const days=parseInt(document.getElementById('fDays').value)||0;
+  const ticketChecked=document.getElementById('fTicket').checked;
+  const isTicketOnly=ticketChecked&&days===0;
+  const leaveType=document.querySelector('input[name="leaveType"]:checked')?.value||'返台假';
+  const otherReason=document.getElementById('fOtherReason').value.trim();
+  if(!isTicketOnly&&(!startDate||!endDate||days<=0)){showToast('⚠️ 請填寫完整的起迄日期');return;}
+  const data=getStore();
+  if(!isTicketOnly){
+    const b=calcBal(data.settings,data.records);
+    if(days>b.avail){showToast(`⚠️ 年假不足！可用 ${b.avail} 天，申請 ${days} 天`);return;}
+  }
+  const typeLabel=(leaveType==='其他'&&otherReason)?`其他(${otherReason})`:leaveType;
+  data.records.push({
+    id:Date.now(),
+    formDate:document.getElementById('formDate').value||todayStr(),
+    type:isTicketOnly?'機票款':typeLabel,
+    startDate:startDate||todayStr(),endDate:endDate||todayStr(),
+    days:isTicketOnly?0:days,hours:parseInt(document.getElementById('fHours').value)||0,
+    purpose:document.getElementById('fPurpose').value||(isTicketOnly?'申請機票款補助':''),
+    remark:document.getElementById('fRemark').value||'',
+    ticket:ticketChecked,ticketOnly:isTicketOnly,status:'pending',
+    actualDeparture:'',actualReturn:'',adjustDays:''
+  });
+  data.records.sort((a,b)=>a.startDate.localeCompare(b.startDate));
+  setStore(data);refreshAll();
+  showToast(isTicketOnly?'✅ 機票款申請已儲存（不扣年假）':'✅ 假單已儲存');
+  clearForm();
+}
+
+// =================== SUMMARY TABLE ===================
+function renderSummary(){
+  const data=getStore();
+  const tbody=document.getElementById('summaryBody');
+  const noRec=document.getElementById('noRecords');
+  const fn=document.getElementById('summaryFootnote');
+  if(data.records.length===0){tbody.innerHTML='';noRec.style.display='block';fn.style.display='none';return;}
+  noRec.style.display='none';fn.style.display='block';
+  let totalUsed=0,html='';
+  data.records.forEach((r,i)=>{
+    if(r.status!=='rejected'&&!(r.ticketOnly&&r.days===0)) totalUsed+=r.days;
+    const tk=r.ticket?(r.ticketOnly?'<span class="ticket-badge">✈️僅機票</span>':'<span class="ticket-badge">✈️含機票</span>'):'—';
+    // 調整天解析："+2" → +2, "-1" → -1, 其他 → 0，但不影響 calcBal
+    const adj=r.adjustDays?parseInt(r.adjustDays)||0:0;
+    const adjTxt=r.adjustDays?`<span style="color:${adj>=0?'var(--success)':'var(--danger)'};">${r.adjustDays}</span>`:'—';
+    html+=`<tr data-id="${r.id}">
+      <td>${i+1}</td>
+      <td class="editable-cell" ondblclick="editCell(this,'formDate',${r.id})">${r.formDate}</td>
+      <td><span class="status-badge" style="background:#E8ECF2;color:var(--navy);">${r.type}</span></td>
+      <td class="editable-cell" ondblclick="editCell(this,'startDate',${r.id})">${r.startDate}</td>
+      <td class="editable-cell" ondblclick="editCell(this,'endDate',${r.id})">${r.endDate}</td>
+      <td class="editable-cell" ondblclick="editCell(this,'days',${r.id})">${r.days}</td>
+      <td>${tk}</td>
+      <td class="editable-cell" ondblclick="editCell(this,'purpose',${r.id})" style="text-align:left;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${r.purpose}">${r.purpose}</td>
+      <td class="itin-cell editable-cell" ondblclick="editCell(this,'actualDeparture',${r.id})" title="雙擊編輯實際出發日">${r.actualDeparture||'—'}</td>
+      <td class="itin-cell editable-cell" ondblclick="editCell(this,'actualReturn',${r.id})" title="雙擊編輯實際回程日">${r.actualReturn||'—'}</td>
+      <td class="editable-cell" ondblclick="editCell(this,'adjustDays',${r.id})" title="雙擊填寫天數調整 (+/-N)">${adjTxt}</td>
+      <td><select class="no-print" onchange="changeStatus(${r.id},this.value)" style="border:none;font-size:11px;font-weight:600;background:none;cursor:pointer;">
+        <option value="pending" ${r.status==='pending'?'selected':''}>⏳待審</option>
+        <option value="approved" ${r.status==='approved'?'selected':''}>✅核准</option>
+        <option value="rejected" ${r.status==='rejected'?'selected':''}>❌駁回</option>
+      </select></td>
+      <td class="no-print">
+        <button class="btn btn-outline btn-sm" style="padding:3px 7px;font-size:11px;" onclick="loadToForm(${r.id})">📝</button>
+        <button class="btn btn-danger btn-sm" style="padding:3px 7px;font-size:11px;" onclick="deleteRecord(${r.id})">🗑️</button>
+      </td>
+    </tr>`;
+  });
+  const b=calcBal(data.settings,data.records);
+  html+=`<tr style="background:#F0F3F8;font-weight:600;">
+    <td colspan="5" style="text-align:right;font-size:11px;">合計</td>
+    <td>${totalUsed}</td><td></td>
+    <td colspan="3" style="text-align:left;font-size:11px;">可用: <span style="color:${b.avail>=0?'var(--success)':'var(--danger)'};">${b.avail}天</span></td>
+    <td colspan="3"></td>
+  </tr>`;
+  tbody.innerHTML=html;
+}
+
+// =================== EDITABLE CELLS ===================
+function editCell(td,field,id){
+  if(td.querySelector('input')) return;
+  const data=getStore();const rec=data.records.find(r=>r.id===id);if(!rec) return;
+  const isDate=field.includes('Date')||field==='formDate',isNum=field==='days';
+  const input=document.createElement('input');
+  input.type=isDate?'date':isNum?'number':'text';
+  input.value=rec[field]||'';
+  input.style.cssText='width:100%;font-size:11px;padding:2px 3px;border:1px solid var(--navy);border-radius:3px;text-align:center;';
+  if(field==='adjustDays') input.placeholder='+N 或 -N';
+  td.textContent='';td.appendChild(input);input.focus();
+  const save=()=>{
+    rec[field]=isNum?parseInt(input.value)||0:input.value;
+    if(field==='startDate'||field==='endDate'){
+      const s=new Date(rec.startDate),e=new Date(rec.endDate);
+      if(e>=s) rec.days=Math.round((e-s)/86400000)+1;
+    }
+    if(field==='days'&&rec.ticket) rec.ticketOnly=(rec.days===0);
+    setStore(data);refreshAll();showToast('✏️ 已更新');
+  };
+  input.addEventListener('blur',save);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter') input.blur();});
+}
+
+// =================== STATUS / DELETE / LOAD ===================
+function changeStatus(id,status){
+  const data=getStore(),rec=data.records.find(r=>r.id===id);
+  if(rec){rec.status=status;setStore(data);refreshAll();}
+}
+function deleteRecord(id){
+  showModal('刪除確認','確定刪除此筆記錄？無法復原。',()=>{
+    const data=getStore();data.records=data.records.filter(r=>r.id!==id);
+    setStore(data);refreshAll();showToast('🗑️ 已刪除');
+  });
+}
+function loadToForm(id){
+  const data=getStore(),rec=data.records.find(r=>r.id===id);if(!rec) return;
+  switchTabDirect('apply');
+  document.getElementById('formDate').value=rec.formDate;
+  document.getElementById('fStartDate').value=rec.startDate;
+  document.getElementById('fEndDate').value=rec.endDate;
+  document.getElementById('fDays').value=rec.days;
+  document.getElementById('fHours').value=rec.hours||0;
+  document.getElementById('fPurpose').value=rec.purpose||'';
+  document.getElementById('fRemark').value=rec.remark||'';
+  document.getElementById('fTicket').checked=rec.ticket||false;
+  const typeVal=rec.type.startsWith('其他')?'其他':rec.type;
+  const radio=document.querySelector(`input[name="leaveType"][value="${typeVal}"]`);
+  if(radio){radio.checked=true;onLeaveTypeChange();}
+  if(rec.type.startsWith('其他(')){
+    document.getElementById('fOtherReason').value=rec.type.replace('其他(','').replace(')','');
+  }
+  showToast('📝 已載入，可修改後重新儲存');
+}
+
+function refreshAll(){updateBal();renderAccrualBar();renderQuarters();renderSummary();}
+
+// =================== CLEAR FORM ===================
+function clearForm(){
+  ['fStartDate','fEndDate','fPurpose','fRemark','fOtherReason'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fDays').value='';
+  document.getElementById('fHours').value='0';
+  document.getElementById('fTicket').checked=false;
+  document.getElementById('formDate').value=todayStr();
+  document.querySelector('input[name="leaveType"][value="返台假"]').checked=true;
+  onLeaveTypeChange();
+}
+
+// =================== SAVE SETTINGS ===================
+function saveSettings(){
+  const data=getStore();
+  data.settings.name=document.getElementById('sName').value;
+  data.settings.dept=document.getElementById('sDept').value;
+  data.settings.entryDate=document.getElementById('sEntryDate').value;
+  data.settings.totalDays=parseInt(document.getElementById('sTotalDays').value)||32;
+  data.settings.quarterDays=parseInt(document.getElementById('sQuarterDays').value)||8;
+  data.settings.carryOver=parseFloat(document.getElementById('sCarryOver').value)||0;
+  data.settings.deputy=document.getElementById('sDeputy').value;
+  data.settings.deputyDept=document.getElementById('sDeputyDept').value;
+  setStore(data);
+  document.getElementById('fApplicant').value=data.settings.name;
+  document.getElementById('fDept').value=data.settings.dept;
+  document.getElementById('fDeputy').value=data.settings.deputy;
+  document.getElementById('fDeputyDept').value=data.settings.deputyDept;
+  refreshAll();showToast('✅ 設定已儲存');
+}
+
+// =================== PRINT — A4, 2 forms with cut gap ===================
+function buildOnePrintForm(){
+  const lang=currentLang;
+  const zh=(z,e)=>lang==='en'?e:lang==='bi'?z+' / '+e:z;
+  const applicant=document.getElementById('fApplicant').value;
+  const dept=document.getElementById('fDept').value;
+  const deputy=document.getElementById('fDeputy').value;
+  const depDept=document.getElementById('fDeputyDept').value;
+  const purpose=document.getElementById('fPurpose').value;
+  const startDate=document.getElementById('fStartDate').value;
+  const endDate=document.getElementById('fEndDate').value;
+  const days=document.getElementById('fDays').value;
+  const hours=document.getElementById('fHours').value;
+  const remark=document.getElementById('fRemark').value;
+  const formDate=document.getElementById('formDate').value;
+  const selType=document.querySelector('input[name="leaveType"]:checked')?.value||'返台假';
+  const otherRsn=document.getElementById('fOtherReason').value;
+  const hasTicket=document.getElementById('fTicket').checked;
+  const zhT='VRT 外籍幹部請假申請單',enT='VRT Expat Staff Leave Application Form';
+  const title=lang==='en'?enT:lang==='bi'?zhT+'<br>'+enT:zhT;
+  const types=[
+    {v:'返台假',zh:'返台假',en:'Home L.'},
+    {v:'事假',  zh:'事假',  en:'Personal'},
+    {v:'病假',  zh:'病假',  en:'Sick'},
+    {v:'喪假',  zh:'喪假',  en:'Bereavement'},
+    {v:'婚假',  zh:'婚假',  en:'Wedding'},
+    {v:'產假',  zh:'產假',  en:'Maternity'},
+  ];
+  const ltHtml=types.map(t=>`<label>${selType===t.v?'☑':'□'} ${zh(t.zh,t.en)}</label>`).join('');
+  const otherChk=selType==='其他'?'☑':'□';
+  const ticketRow=(selType==='其他'&&hasTicket)?`<div class="pf-ticket">✈️ ${zh('已申請機票款補助（年假不扣除）','Ticket reimbursement applied')}</div>`:'';
+  return `<div class="print-form-wrap">
+    <div class="pf-title-row">
+      <h2>${title}</h2>
+      <div class="pf-date">${zh('填寫日期','Date')}：${formDate}</div>
+    </div>
+    <table class="pf-table">
+      <colgroup><col><col><col><col></colgroup>
+      <tr>
+        <th>${zh('申請人','Applicant')}</th><td>${applicant}</td>
+        <th>${zh('申請部門','Dept.')}</th><td>${dept}</td>
+      </tr>
+      <tr>
+        <th>${zh('代理人','Deputy')}</th><td>${deputy}</td>
+        <th>${zh('代理部門','Dep.Dept.')}</th><td>${depDept}</td>
+      </tr>
+      <tr>
+        <th>${zh('事由','Purpose')}</th><td colspan="3">${purpose}</td>
+      </tr>
+      <tr>
+        <th>${zh('請假類型','Leave Type')}</th>
+        <td>
+          <div class="pf-lt-grid">${ltHtml}</div>
+          <div class="pf-lt-other">${otherChk} ${zh('其他','Other')}：${selType==='其他'?otherRsn:''}</div>
+          ${ticketRow}
+        </td>
+        <th>${zh('天/時數','Days/Hrs')}</th>
+        <td>${days} ${zh('天','d')} ${hours} ${zh('時','h')}</td>
+      </tr>
+      <tr>
+        <th>${zh('開始日期','From')}</th><td>${startDate}</td>
+        <th>${zh('結束日期','To')}</th><td>${endDate}</td>
+      </tr>
+      <tr>
+        <th>${zh('備註','Remark')}</th>
+        <td colspan="3" class="pf-remark-td">${remark.replace(/\n/g,'<br>')}</td>
+      </tr>
+    </table>
+    <div class="pf-sign">
+      <div>${zh('申請人','Applicant')}：<div class="pf-sign-line"></div></div>
+      <div>${zh('直屬主管','Supervisor')}：<div class="pf-sign-line"></div></div>
+      <div>${zh('台北總公司','Taipei HQ')}：<div class="pf-sign-line"></div></div>
+    </div>
+  </div>`;
+}
+
+function printForm(){
+  const container=document.getElementById('printContainer');
+  const form=buildOnePrintForm();
+  container.innerHTML=form+
+    `<div class="print-cut-gap"><div class="print-cut-line"></div></div>`+
+    form;
+  window.print();
+}
+function printSummary(){window.print();}
+
+// =================== EXPORT / IMPORT ===================
+function exportCSV(){
+  const data=getStore();
+  if(!data.records.length){showToast('⚠️ 沒有記錄');return;}
+  let csv='\uFEFF序號,申請日期,類型,開始日期,結束日期,天數,機票款,事由,實際出發,實際回程,調整天,狀態\n';
+  data.records.forEach((r,i)=>{
+    const st=r.status==='approved'?'已核准':r.status==='rejected'?'已駁回':'待審核';
+    const tk=r.ticketOnly?'僅機票款':r.ticket?'含機票款':'無';
+    csv+=`${i+1},${r.formDate},${r.type},${r.startDate},${r.endDate},${r.days},${tk},"${r.purpose}",${r.actualDeparture||''},${r.actualReturn||''},${r.adjustDays||''},${st}\n`;
+  });
+  dl('VRT_年假記錄.csv',csv,'text/csv;charset=utf-8');showToast('📥 CSV已匯出');
+}
+function exportAll(){dl('VRT_Leave_Backup.json',JSON.stringify(getStore(),null,2),'application/json');showToast('📤 已匯出');}
+function importAll(ev){
+  const f=ev.target.files[0];if(!f) return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{const d=JSON.parse(e.target.result);
+      if(d.settings&&d.records){
+        // 相容舊版：補上缺少的欄位
+        d.records=d.records.map(r=>({actualDeparture:'',actualReturn:'',adjustDays:'',...r}));
+        setStore(d);showToast('📥 已匯入');init();
+      }else showToast('⚠️ 格式錯誤');
+    }catch{showToast('⚠️ 無法解析');}
+  };
+  r.readAsText(f);ev.target.value='';
+}
+function confirmReset(){
+  showModal('重置確認','清除所有資料？無法復原！',()=>{localStorage.removeItem(STORAGE_KEY);showToast('🗑️ 已清除');init();});
+}
+function dl(n,c,t){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:t}));a.download=n;a.click();URL.revokeObjectURL(a.href);}
+
+// =================== TOAST / MODAL ===================
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function showModal(t,m,fn){document.getElementById('modalTitle').textContent=t;document.getElementById('modalMsg').textContent=m;document.getElementById('confirmModal').classList.add('show');document.getElementById('modalConfirmBtn').onclick=()=>{closeModal();fn();};}
+function closeModal(){document.getElementById('confirmModal').classList.remove('show');}
+
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>

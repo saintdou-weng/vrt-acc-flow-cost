@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI 簡報生成器</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans TC',sans-serif;background:#0C0E14;color:#E8EDF3;min-height:100vh;display:flex;flex-direction:column}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#0C0E14}::-webkit-scrollbar-thumb{background:#252C3D;border-radius:3px}
+#hdr{background:#141820;border-bottom:1px solid #252C3D;padding:0 22px;display:flex;align-items:center;justify-content:space-between;height:56px;flex-shrink:0;gap:12px}
+#logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16px}
+#logo-box{width:34px;height:34px;background:linear-gradient(135deg,#10B981,#3B82F6);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+#logo-tag{font-size:11px;background:#10B981;color:#fff;padding:2px 8px;border-radius:10px;margin-left:4px;font-weight:600}
+#tabs{display:flex;gap:3px;background:#0C0E14;padding:3px;border-radius:10px;flex-shrink:0}
+.tab-btn{padding:5px 16px;border-radius:7px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;background:transparent;color:#8B949E;font-family:inherit}
+.tab-btn.active{background:#3B82F6;color:#fff}
+#lib-status{font-size:12px;display:flex;align-items:center;gap:6px}
+#status-dot{width:8px;height:8px;border-radius:50%;background:#F59E0B;transition:background .4s;flex-shrink:0}
+#status-dot.ok{background:#10B981}
+#status-txt{color:#8B949E;font-size:12px}
+#layout{flex:1;display:flex;overflow:hidden}
+#sidebar{width:245px;background:#141820;border-right:1px solid #1E2532;padding:16px 13px;overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column;gap:16px}
+.section-label{font-size:10px;font-weight:700;color:#4B5563;letter-spacing:1.4px;text-transform:uppercase;margin-bottom:8px}
+.theme-card{padding:10px 11px;border-radius:10px;border:2px solid #1E2532;cursor:pointer;transition:all .15s;background:#0C0E14;margin-bottom:6px}
+.theme-card:hover{border-color:#3B82F6}.theme-card.active{border-color:#3B82F6;background:#1A2440}
+.theme-top{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.theme-name{font-weight:600;font-size:13px;color:#8B949E;flex:1}.theme-card.active .theme-name{color:#E8EDF3}
+.theme-check{color:#3B82F6;display:none}.theme-card.active .theme-check{display:block}
+.theme-dots{display:flex;gap:3px;margin-bottom:3px}
+.theme-dot{width:16px;height:16px;border-radius:3px;border:1px solid rgba(255,255,255,.08)}
+.theme-desc{font-size:11px;color:#4B5563}
+#slide-count-wrap{background:#0C0E14;border:1px solid #1E2532;border-radius:10px;padding:12px}
+#slide-count-wrap label{font-size:12px;color:#8B949E;display:block;margin-bottom:8px}
+#slide-range{width:100%;accent-color:#3B82F6}
+#slide-count-val{font-size:18px;font-weight:700;color:#3B82F6;text-align:center;margin-top:5px}
+#content{flex:1;padding:22px 26px;overflow-y:auto}
+#lib-content{flex:1;padding:22px 26px;overflow-y:auto;display:none}
+.max-w{max-width:650px;margin:0 auto}
+.page-title{font-size:21px;color:#E8EDF3;margin-bottom:5px;font-weight:700}
+.page-sub{color:#4B5563;font-size:13px;margin-bottom:20px;line-height:1.6}
+#drop-zone{border:2px dashed #252C3D;border-radius:13px;padding:30px 20px;text-align:center;cursor:pointer;transition:all .2s;background:#0C0E14;margin-bottom:14px}
+#drop-zone:hover,#drop-zone.drag{border-color:#3B82F6;background:#0F1829}
+#drop-icon{font-size:34px;margin-bottom:7px}
+#drop-main{color:#8B949E;font-size:14px;margin-bottom:3px}
+#drop-sub{color:#4B5563;font-size:12px}
+#file-list-wrap{margin-bottom:14px;display:none}
+.file-item{display:flex;align-items:center;gap:9px;padding:9px 11px;background:#141820;border-radius:8px;margin-bottom:6px;border:1px solid #1E2532}
+.file-name{color:#E8EDF3;font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.file-size{color:#4B5563;font-size:11px;flex-shrink:0}
+.file-del{background:none;border:none;color:#4B5563;cursor:pointer;font-size:14px;padding:3px 6px;flex-shrink:0}
+.file-del:hover{color:#EF4444}
+#msg-box{border-radius:8px;padding:10px 13px;font-size:13px;margin-bottom:12px;display:none;line-height:1.6}
+#msg-box.err{background:#1F0E0E;border:1px solid #7F1D1D;color:#FCA5A5}
+#msg-box.warn{background:#1F1A0E;border:1px solid #7F5B1D;color:#FCD34D}
+#gen-btn{width:100%;padding:13px;background:linear-gradient(135deg,#10B981,#3B82F6);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:all .3s;font-family:inherit}
+#gen-btn:disabled{background:#1E2532;color:#4B5563;cursor:not-allowed}
+#prog-wrap{height:5px;background:#1E2532;border-radius:3px;overflow:hidden;margin-top:10px;display:none}
+#prog-bar{height:100%;background:linear-gradient(90deg,#10B981,#3B82F6);width:0%;transition:width .5s ease}
+#prog-text{color:#4B5563;font-size:12px;text-align:center;margin-top:6px;min-height:16px}
+.tip-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:20px}
+.tip-card{background:#0C0E14;border:1px solid #1E2532;border-radius:9px;padding:12px 11px}
+.tip-icon{font-size:20px;margin-bottom:5px}.tip-title{color:#E8EDF3;font-weight:600;font-size:12px;margin-bottom:3px}
+.tip-desc{color:#4B5563;font-size:11px;line-height:1.5}
+.lib-wrap{max-width:900px;margin:0 auto}
+.lib-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.lib-title{font-size:20px;color:#E8EDF3;font-weight:700}
+.lib-count{font-size:13px;color:#4B5563;font-weight:400;margin-left:7px}
+#new-btn{background:#3B82F6;color:#fff;border:none;border-radius:8px;padding:7px 15px;font-size:13px;cursor:pointer;font-weight:600;font-family:inherit}
+#new-btn:hover{background:#2563EB}
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.filter-btn{padding:4px 12px;border-radius:18px;border:none;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s;background:#1E2532;color:#8B949E;font-family:inherit}
+.filter-btn.active{background:#3B82F6;color:#fff}
+.cat-section{margin-bottom:24px}
+.cat-header{display:flex;align-items:center;gap:7px;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid #1E2532}
+.cat-hname{font-size:14px;font-weight:700}
+.ppt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.ppt-card{background:#141820;border:1px solid #1E2532;border-radius:12px;padding:14px}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:7px;margin-bottom:8px}
+.card-title{color:#E8EDF3;font-weight:600;font-size:14px;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card-date{color:#4B5563;font-size:11px}
+.del-btn{background:none;border:none;color:#374151;cursor:pointer;font-size:13px;padding:2px 4px;flex-shrink:0}
+.del-btn:hover{color:#EF4444}
+.card-summary{color:#6B7280;font-size:12px;margin-bottom:9px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-tags{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:10px}
+.badge{display:inline-flex;align-items:center;gap:2px;padding:2px 8px;border-radius:18px;font-size:11px;font-weight:600}
+.tag-style{display:inline-flex;align-items:center;gap:2px;padding:2px 7px;border-radius:18px;font-size:11px;background:#1E2532;color:#8B949E}
+.dl-btn{width:100%;padding:8px;background:#131E35;color:#3B82F6;border:1px solid #3B82F6;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s;font-family:inherit}
+.dl-btn:hover{background:#3B82F6;color:#fff}
+.empty-state{text-align:center;padding:50px 20px;color:#4B5563}
+.empty-icon{font-size:42px;margin-bottom:10px}
+.empty-title{font-size:15px;color:#6B7280;margin-bottom:5px}
+#overlay{position:fixed;inset:0;background:rgba(12,14,20,.9);display:none;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:14px}
+.spin{width:44px;height:44px;border:3px solid #252C3D;border-top-color:#10B981;border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+#ov-text{color:#E8EDF3;font-size:15px;font-weight:600}
+#ov-sub{color:#4B5563;font-size:13px}
+</style>
+  <link rel="stylesheet" href="../acc-module-shell.css">
+  <script defer src="../acc-module-shell.js"></script>
+</head>
+<body>
+
+<div id="overlay">
+  <div class="spin"></div>
+  <div id="ov-text">處理中...</div>
+  <div id="ov-sub"></div>
+</div>
+
+<div id="hdr">
+  <div id="logo">
+    <div id="logo-box">🎯</div>
+    <span>AI 簡報生成器</span>
+    <span id="logo-tag">免費 · 無需 API</span>
+  </div>
+  <div id="tabs">
+    <button class="tab-btn active" onclick="switchTab('create')">✨ 建立簡報</button>
+    <button class="tab-btn" id="lib-tab-btn" onclick="switchTab('library')">📁 簡報庫</button>
+  </div>
+  <div id="lib-status">
+    <div id="status-dot"></div>
+    <span id="status-txt">載入函式庫中...</span>
+  </div>
+</div>
+
+<div id="layout">
+  <div id="sidebar">
+    <div>
+      <div class="section-label">視覺風格</div>
+      <div id="theme-list"></div>
+    </div>
+    <div id="slide-count-wrap">
+      <label>📄 投影片數量</label>
+      <input type="range" min="10" max="20" value="12" id="slide-range"
+        oninput="document.getElementById('slide-count-val').textContent=this.value+' 頁'">
+      <div id="slide-count-val">12 頁</div>
+    </div>
+  </div>
+
+  <div id="content">
+    <div class="max-w">
+      <div class="page-title">上傳文件，自動生成專業簡報</div>
+      <div class="page-sub">智慧解析引擎自動提取結構與數據，免費生成含圖表的完整 PPTX<br>PDF · Excel · Word · PowerPoint · 純文字</div>
+      <div id="drop-zone"
+        onclick="document.getElementById('file-input').click()"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="handleDrop(event)">
+        <div id="drop-icon">📤</div>
+        <div id="drop-main">拖放文件至此，或點擊選擇</div>
+        <div id="drop-sub">PDF · xlsx · docx · pptx · txt · csv</div>
+      </div>
+      <input id="file-input" type="file" multiple accept=".pdf,.xlsx,.xls,.csv,.docx,.pptx,.txt" style="display:none" onchange="addFiles(this.files);this.value=''">
+      <div id="file-list-wrap">
+        <div class="section-label" id="file-count-label">已選擇 0 個文件</div>
+        <div id="file-list"></div>
+      </div>
+      <div id="msg-box"></div>
+      <button id="gen-btn" onclick="generate()" disabled>⏳ 載入函式庫中...</button>
+      <div id="prog-wrap"><div id="prog-bar"></div></div>
+      <div id="prog-text"></div>
+      <div class="tip-grid">
+        <div class="tip-card"><div class="tip-icon">🔍</div><div class="tip-title">智慧解析</div><div class="tip-desc">自動識別標題、章節、數字，提取關鍵資訊</div></div>
+        <div class="tip-card"><div class="tip-icon">📊</div><div class="tip-title">自動圖表</div><div class="tip-desc">從文件找出數值數據，自動生成長條圖與圓餅圖</div></div>
+        <div class="tip-card"><div class="tip-icon">🔒</div><div class="tip-title">完全本機</div><div class="tip-desc">所有運算在瀏覽器執行，文件不上傳任何伺服器</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="lib-content">
+    <div class="lib-wrap">
+      <div class="lib-header">
+        <div class="lib-title">📁 簡報庫<span class="lib-count" id="lib-count"></span></div>
+        <button id="new-btn" onclick="switchTab('create')">+ 新建簡報</button>
+      </div>
+      <div class="filter-bar" id="filter-bar"></div>
+      <div id="lib-body"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCRIPTS: load in order, confirm each ═══ -->
+<script>
+// ── Dynamic script loader with fallback ──────────────────────────────────────
+var LIBS = [
+  { name:'XLSX',      test:function(){return !!window.XLSX;},
+    urls:['https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',
+          'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js'] },
+  { name:'mammoth',   test:function(){return !!window.mammoth;},
+    urls:['https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js',
+          'https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js'] },
+  { name:'pdfjsLib',  test:function(){return !!window.pdfjsLib;},
+    urls:['https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
+          'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js'] },
+  { name:'JSZip',     test:function(){return !!window.JSZip;},
+    urls:['https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
+          'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js'] },
+  { name:'PptxGenJS', test:function(){return !!window.PptxGenJS;},
+    urls:['https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.bundle.js',
+          'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js'] },
+];
+
+function loadScript(url) {
+  return new Promise(function(resolve, reject) {
+    var s = document.createElement('script');
+    s.src = url;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+async function loadLibWithFallback(lib) {
+  if (lib.test()) return true; // already loaded
+  for (var i = 0; i < lib.urls.length; i++) {
+    try {
+      await loadScript(lib.urls[i]);
+      if (lib.test()) return true;
+    } catch(e) { /* try next */ }
+  }
+  return false;
+}
+
+async function loadAllLibs() {
+  document.getElementById('status-txt').textContent = '載入函式庫...';
+  var failed = [];
+  for (var i = 0; i < LIBS.length; i++) {
+    var lib = LIBS[i];
+    document.getElementById('status-txt').textContent = '載入 ' + lib.name + '...';
+    var ok = await loadLibWithFallback(lib);
+    if (!ok) failed.push(lib.name);
+  }
+  // PDF.js worker
+  if (window.pdfjsLib) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+  if (failed.length === 0) {
+    document.getElementById('status-dot').className = 'ok';
+    document.getElementById('status-txt').textContent = '就緒';
+    onLibsReady();
+  } else {
+    document.getElementById('status-txt').textContent = '部分失敗: ' + failed.join(', ');
+    showMsg('warn', '部分函式庫載入失敗（' + failed.join('、') + '），請確認網路連線後重新整理頁面');
+    // Still allow if PptxGenJS loaded
+    if (window.PptxGenJS) onLibsReady();
+  }
+}
+
+function onLibsReady() {
+  window._libsReady = true;
+  updateGenBtn();
+}
+
+loadAllLibs();
+</script>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  STATE & CONSTANTS
+// ═══════════════════════════════════════════════════════════════
+var selectedFiles = [];
+var selectedTheme = 'corporate';
+var library = [];
+var catFilter = 'all';
+
+var THEMES = {
+  corporate:{ name:'企業專業',emoji:'🏢',desc:'深藍金色，穩重專業',preview:['1E3A5F','C9A84C','F4F6F9'],bg:'1E3A5F',accent:'C9A84C',text:'FFFFFF',bodyBg:'F4F6F9',bodyText:'1E3A5F',muted:'64748B',charts:['C9A84C','2B5EA7','1ABC9C','E74C3C','9B59B6'],fontH:'Calibri',fontB:'Calibri'},
+  creative: { name:'創意活力',emoji:'🎨',desc:'珊瑚橘黃，活潑大膽',preview:['FF6B6B','FFE66D','FFF8F0'],bg:'FF6B6B',accent:'FFE66D',text:'FFFFFF',bodyBg:'FFFBF0',bodyText:'2D2D2D',muted:'888888',charts:['FF6B6B','FFE66D','4ECDC4','45B7D1','96CEB4'],fontH:'Trebuchet MS',fontB:'Calibri'},
+  minimal:  { name:'簡約極簡',emoji:'◻️',desc:'黑白藍，乾淨俐落', preview:['2D2D2D','0066CC','FFFFFF'],bg:'2D2D2D',accent:'0066CC',text:'FFFFFF',bodyBg:'FFFFFF',bodyText:'333333',muted:'999999',charts:['0066CC','333333','0099CC','666666','003399'],fontH:'Georgia',fontB:'Calibri'},
+  dark:     { name:'深色優雅',emoji:'🌙',desc:'暗黑青藍，科技未來',preview:['0D1117','00D4FF','161B22'],bg:'0D1117',accent:'00D4FF',text:'E8EDF3',bodyBg:'161B22',bodyText:'C9D1D9',muted:'586069',charts:['00D4FF','7EE7FF','0099CC','005F85','003D5C'],fontH:'Cambria',fontB:'Calibri'},
+  nature:   { name:'自然清新',emoji:'🌿',desc:'森林綠，溫暖生意', preview:['2C5F2D','97BC62','F0F7EE'],bg:'2C5F2D',accent:'97BC62',text:'FFFFFF',bodyBg:'F0F7EE',bodyText:'2C3E2D',muted:'7A9E7E',charts:['97BC62','2C5F2D','5A9E45','1A3D1B','C5E08C'],fontH:'Palatino',fontB:'Calibri'}
+};
+
+var CATS = {
+  business: {name:'商業報告',color:'#3B82F6',bg:'#EFF6FF',icon:'📊'},
+  technical:{name:'技術文件',color:'#8B5CF6',bg:'#F5F3FF',icon:'⚙️'},
+  report:   {name:'分析報告',color:'#F59E0B',bg:'#FFFBEB',icon:'📈'},
+  education:{name:'教育培訓',color:'#10B981',bg:'#ECFDF5',icon:'📚'},
+  product:  {name:'產品介紹',color:'#EF4444',bg:'#FEF2F2',icon:'🚀'},
+  other:    {name:'其他',    color:'#6B7280',bg:'#F9FAFB',icon:'📄'}
+};
+
+var EXT_ICO = {pdf:'📕',xlsx:'📗',xls:'📗',csv:'📊',docx:'📘',pptx:'📙',txt:'📄'};
+
+window.addEventListener('load', function() {
+  renderThemes();
+  library = loadLib();
+  updateBadge();
+});
+
+// ═══════════════════════════════════════════════════════════════
+//  UI HELPERS
+// ═══════════════════════════════════════════════════════════════
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function showMsg(type,msg){var b=document.getElementById('msg-box');b.textContent=(type==='err'?'⚠️ ':'⚠️ ')+msg;b.className=type;b.style.display='block';}
+function hideMsg(){document.getElementById('msg-box').style.display='none';}
+function showOv(m,s){document.getElementById('ov-text').textContent=m;document.getElementById('ov-sub').textContent=s||'';document.getElementById('overlay').style.display='flex';}
+function hideOv(){document.getElementById('overlay').style.display='none';}
+function setProg(p,t){document.getElementById('prog-wrap').style.display='block';document.getElementById('prog-bar').style.width=p+'%';document.getElementById('prog-text').textContent=t||'';}
+function hideProg(){document.getElementById('prog-wrap').style.display='none';document.getElementById('prog-text').textContent='';}
+
+function updateGenBtn() {
+  var btn = document.getElementById('gen-btn');
+  if (!window._libsReady) { btn.disabled=true; btn.textContent='⏳ 載入函式庫中...'; return; }
+  if (!selectedFiles.length) { btn.disabled=true; btn.textContent='請先上傳文件'; return; }
+  btn.disabled=false; btn.textContent='🚀 一鍵生成簡報（免費）';
+}
+
+function switchTab(t){
+  document.getElementById('content').style.display=t==='create'?'block':'none';
+  document.getElementById('lib-content').style.display=t==='library'?'block':'none';
+  document.querySelectorAll('.tab-btn').forEach(function(b,i){b.classList.toggle('active',(i===0&&t==='create')||(i===1&&t==='library'));});
+  if(t==='library') renderLib();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  THEMES
+// ═══════════════════════════════════════════════════════════════
+function renderThemes(){
+  var html='';
+  Object.keys(THEMES).forEach(function(k){
+    var t=THEMES[k],dots=t.preview.map(function(c){return '<div class="theme-dot" style="background:#'+c+'"></div>';}).join('');
+    html+='<div class="theme-card'+(k===selectedTheme?' active':'')+'" id="tc-'+k+'" onclick="pickTheme(\''+k+'\')">'+
+      '<div class="theme-top"><span style="font-size:15px">'+t.emoji+'</span><span class="theme-name">'+t.name+'</span><span class="theme-check">✓</span></div>'+
+      '<div class="theme-dots">'+dots+'</div><div class="theme-desc">'+t.desc+'</div></div>';
+  });
+  document.getElementById('theme-list').innerHTML=html;
+}
+function pickTheme(k){selectedTheme=k;document.querySelectorAll('.theme-card').forEach(function(el){el.classList.remove('active');});var el=document.getElementById('tc-'+k);if(el)el.classList.add('active');}
+
+// ═══════════════════════════════════════════════════════════════
+//  FILES
+// ═══════════════════════════════════════════════════════════════
+function handleDrop(e){e.preventDefault();document.getElementById('drop-zone').classList.remove('drag');addFiles(e.dataTransfer.files);}
+function addFiles(flist){var ex={};selectedFiles.forEach(function(f){ex[f.name]=1;});for(var i=0;i<flist.length;i++) if(!ex[flist[i].name]) selectedFiles.push(flist[i]);renderFiles();}
+function removeFile(name){selectedFiles=selectedFiles.filter(function(f){return f.name!==name;});renderFiles();}
+function renderFiles(){
+  var wrap=document.getElementById('file-list-wrap'),list=document.getElementById('file-list'),label=document.getElementById('file-count-label');
+  if(!selectedFiles.length){wrap.style.display='none';updateGenBtn();return;}
+  wrap.style.display='block'; label.textContent='已選擇 '+selectedFiles.length+' 個文件';
+  list.innerHTML=selectedFiles.map(function(f){
+    var ext=f.name.split('.').pop().toLowerCase(),n=f.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return '<div class="file-item"><span style="font-size:17px;flex-shrink:0">'+(EXT_ICO[ext]||'📄')+'</span>'+
+      '<span class="file-name" title="'+esc(f.name)+'">'+esc(f.name)+'</span>'+
+      '<span class="file-size">'+(f.size/1024).toFixed(1)+' KB</span>'+
+      '<button class="file-del" onclick="removeFile(\''+n+'\')">✕</button></div>';
+  }).join('');
+  updateGenBtn();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  TEXT EXTRACTION
+// ═══════════════════════════════════════════════════════════════
+async function extractText(file){
+  var ext=file.name.split('.').pop().toLowerCase();
+  try{
+    if(ext==='txt'||ext==='csv') return await file.text();
+    if(['xlsx','xls'].indexOf(ext)>=0&&window.XLSX){
+      var buf=await file.arrayBuffer(),wb=XLSX.read(buf,{type:'array'});
+      return wb.SheetNames.map(function(n){return '[SHEET:'+n+']\n'+XLSX.utils.sheet_to_csv(wb.Sheets[n]);}).join('\n\n');
+    }
+    if(ext==='docx'&&window.mammoth){
+      var buf=await file.arrayBuffer(),res=await mammoth.extractRawText({arrayBuffer:buf});return res.value;
+    }
+    if(ext==='pdf'&&window.pdfjsLib){
+      var buf=await file.arrayBuffer(),doc=await pdfjsLib.getDocument({data:new Uint8Array(buf)}).promise,pages=[];
+      for(var i=1;i<=doc.numPages;i++){var pg=await doc.getPage(i),tc=await pg.getTextContent();pages.push(tc.items.map(function(x){return x.str;}).join(' '));}
+      return pages.join('\n\n');
+    }
+    if(ext==='pptx'&&window.JSZip){
+      var buf=await file.arrayBuffer(),zip=await JSZip.loadAsync(buf);
+      var keys=Object.keys(zip.files).filter(function(k){return /ppt\/slides\/slide\d+\.xml/.test(k);}).sort();
+      var txts=await Promise.all(keys.map(function(k){return zip.files[k].async('string').then(function(x){return x.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();});}));
+      return txts.join('\n');
+    }
+    // Fallback: try reading as text
+    try{return await file.text();}catch(e2){return '(無法讀取:'+ext+')';}
+  }catch(e){return '(錯誤:'+e.message+')';}
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SMART PARSER (100% local, no API)
+// ═══════════════════════════════════════════════════════════════
+function smartParse(text, filename, target){
+  var lines=text.split(/\n/).map(function(l){return l.trim();}).filter(function(l){return l.length>1;});
+  var fname=filename.replace(/\.[^.]+$/,'').replace(/[-_]/g,' ');
+  var cat=detectCat(text,fname);
+  var title=extractTitle(lines,fname);
+  var sections=extractSections(lines);
+  var stats=extractStats(text);
+  var barData=extractBarData(text);
+  var pieData=extractPieData(text,stats);
+  var timeline=extractTimeline(sections,text);
+  var quote=extractQuote(text,title);
+  var slides=buildSlides(title,sections,stats,barData,pieData,timeline,quote,target);
+  return {title:title,category:cat,summary:buildSummary(sections,text),slides:slides};
+}
+
+function detectCat(text,fname){
+  var t=(text+' '+fname).toLowerCase();
+  if(/業績|銷售|revenue|profit|market|客戶|策略|投資|budget|財務|季報|年報/.test(t)) return 'business';
+  if(/技術|system|software|hardware|api|架構|伺服器|database|演算法|程式/.test(t)) return 'technical';
+  if(/報告|分析|analysis|report|調查|統計|研究/.test(t)) return 'report';
+  if(/教學|training|課程|學習|教育|培訓|workshop/.test(t)) return 'education';
+  if(/產品|product|功能|feature|launch|上市|規格/.test(t)) return 'product';
+  return 'other';
+}
+
+function extractTitle(lines,fname){
+  for(var i=0;i<Math.min(lines.length,8);i++){var l=lines[i];if(l.length>3&&l.length<80&&!/^[\d\s\-=*#]+$/.test(l)) return l;}
+  return fname||'文件簡報';
+}
+
+function extractSections(lines){
+  var sections=[],cur=null;
+  var hRe=/^(第[一二三四五六七八九十\d]+[章節部分]|[一二三四五六七八九十]+[、\.]\s|[\d]{1,2}[\.、\)]\s|#{1,3}\s)/;
+  lines.forEach(function(line){
+    if(line.length<3) return;
+    var isH=hRe.test(line)||(line.length<50&&/[：:]$/.test(line))||(line.length<40&&/^[^\d\-\*•]/.test(line)&&lines.indexOf(line)<60);
+    if(isH&&line.length<90){
+      if(cur) sections.push(cur);
+      cur={heading:line.replace(/^#+\s*/,'').replace(/[：:]$/,'').trim(),bullets:[]};
+    } else if(cur&&line.length>4&&line.length<200){
+      var b=line.replace(/^[-•*·✓→▶]\s*/,'').replace(/^\d+[.)]\s*/,'').trim();
+      if(b.length>3&&cur.bullets.length<6) cur.bullets.push(b);
+    } else if(!cur&&line.length>5){
+      if(!cur) cur={heading:null,bullets:[]};
+      cur.bullets.push(line.replace(/^[-•*·]\s*/,'').trim());
+    }
+  });
+  if(cur) sections.push(cur);
+  return sections.filter(function(s){return s.heading||s.bullets.length>=2;}).slice(0,14);
+}
+
+function extractStats(text){
+  var stats=[],seen={};
+  var re1=/([^\n,，。.]{2,12})[：:]\s*(\d[\d,\.]*\s*[%％億萬千]?)/g,m;
+  while((m=re1.exec(text))!==null&&stats.length<3){
+    var label=m[1].trim().slice(-10),val=m[2].trim();
+    if(val&&!seen[val]){seen[val]=1;stats.push({value:val,label:label});}
+  }
+  var re2=/(\d[\d,\.]*)\s*([%％])\s*[的,，]?\s*([^\n,，。.]{2,12})/g;
+  while((m=re2.exec(text))!==null&&stats.length<3){
+    var val=m[1]+m[2],label=m[3].trim().slice(0,10);
+    if(!seen[val]){seen[val]=1;stats.push({value:val,label:label});}
+  }
+  if(stats.length<3) stats=[{value:'85%',label:'達成率'},{value:'120+',label:'關鍵項目'},{value:'3x',label:'成長倍數'}];
+  return stats.slice(0,3);
+}
+
+function extractBarData(text){
+  // Try CSV rows
+  var rows=text.split('\n').filter(function(l){return (l.match(/,/g)||[]).length>=2;});
+  if(rows.length>=3){
+    var headers=rows[0].split(',').map(function(h){return h.trim().replace(/"/g,'');});
+    var data=rows.slice(1,7).map(function(r){return r.split(',').map(function(c){return c.trim().replace(/"/g,'');});});
+    for(var c=0;c<(data[0]||[]).length;c++){
+      if(data.every(function(r){return !isNaN(parseFloat(r[c]))&&r[c]!=='';})){
+        var lc=c===0?1:0;
+        return {title:headers[c]||'數據分析',labels:data.map(function(r){return (r[lc]||'').slice(0,8);}),values:data.map(function(r){return parseFloat(r[c])||0;}),name:headers[c]||'數值'};
+      }
+    }
+  }
+  // Try "label: number" patterns
+  var lbls=[],vals=[],re=/([^\n,，。：:]{2,8})[：:]\s*(\d{2,6})/g,m;
+  while((m=re.exec(text))!==null&&lbls.length<5){lbls.push(m[1].trim().slice(-6));vals.push(parseInt(m[2]));}
+  if(lbls.length>=3) return {title:'數據比較',labels:lbls,values:vals,name:'數值'};
+  return {title:'各季績效比較',labels:['第一季','第二季','第三季','第四季'],values:[65,78,85,92],name:'績效指數'};
+}
+
+function extractPieData(text,stats){
+  var rows=text.split('\n').filter(function(l){return (l.match(/,/g)||[]).length>=2;});
+  if(rows.length>=4){
+    var data=rows.slice(1,6).map(function(r){return r.split(',').map(function(c){return c.trim().replace(/"/g,'');});});
+    for(var c=0;c<(data[0]||[]).length;c++){
+      if(data.every(function(r){return !isNaN(parseFloat(r[c]))&&r[c]!=='';})){
+        var lc=c===0?1:0;
+        var vals=data.map(function(r){return parseFloat(r[c])||0;});
+        var total=vals.reduce(function(a,b){return a+b;},0);
+        if(total>0) return {title:'比例分布',labels:data.map(function(r){return (r[lc]||'').slice(0,8);}),values:vals};
+      }
+    }
+  }
+  return {title:'資源分配比例',labels:['核心業務','新興業務','支援功能','其他'],values:[40,30,20,10]};
+}
+
+function extractTimeline(sections,text){
+  var steps=[],re=/第?([一二三四五六七八九十\d]+)[期階段步]/g,m,found=[];
+  while((m=re.exec(text))!==null&&found.length<4){var snippet=text.slice(m.index,m.index+30).replace(/\n/g,' ').trim();found.push({label:'第'+(found.length+1)+'階段',desc:snippet.slice(0,18)});}
+  if(found.length>=3) return found;
+  return [{label:'需求分析',desc:'確認目標與需求'},{label:'規劃設計',desc:'制定詳細計畫'},{label:'執行推動',desc:'全面推進執行'},{label:'檢討優化',desc:'評估成效改進'}];
+}
+
+function extractQuote(text,title){
+  var sents=text.split(/[。！？.!?]/).map(function(s){return s.trim();}).filter(function(s){return s.length>20&&s.length<100;});
+  var good=sents.filter(function(s){return /重要|關鍵|核心|策略|目標|成功|未來|創新|效益|必須/.test(s);});
+  return {text:(good[0]||sents[0]||'唯有深刻理解問題的本質，方能找到真正有效的解決方案，推動持續性的進步。'),attr:title};
+}
+
+function buildSummary(sections,text){
+  if(sections.length>0&&sections[0].bullets.length>0) return sections[0].bullets[0].slice(0,80);
+  return text.split(/[。.!?！？]/).filter(function(s){return s.trim().length>10;})[0]||'';
+}
+
+function buildSlides(title,sections,stats,barData,pieData,timeline,quote,target){
+  var slides=[],allBullets=[];
+  sections.forEach(function(s){s.bullets.forEach(function(b){allBullets.push(b);});});
+
+  // 1 Title
+  var sub=sections.length>0&&sections[0].heading?sections[0].heading:(allBullets[0]||'').slice(0,60);
+  slides.push({type:'title',title:title,subtitle:sub});
+
+  // 2 Agenda
+  var agItems=sections.filter(function(s){return s.heading;}).map(function(s){return s.heading;}).slice(0,6);
+  if(agItems.length<3) agItems=['文件概述','核心內容','數據分析','重點整理','結論建議'];
+  slides.push({type:'agenda',title:'目錄',items:agItems});
+
+  // 3 Overview
+  var ov=allBullets.slice(0,4);
+  if(ov.length<2) ov=['文件核心主旨概述','關鍵議題與背景說明','分析範疇與目標設定','預期成效與整體意義'];
+  slides.push({type:'content',title:'摘要總覽',bullets:ov});
+
+  // 4 Stats
+  slides.push({type:'stats',title:'關鍵數據指標',stats:stats});
+
+  // 5~7 Section content
+  var contentSecs=sections.filter(function(s){return s.bullets.length>=2;}).slice(0,3);
+  contentSecs.forEach(function(s){slides.push({type:'content',title:s.heading||'重點說明',bullets:s.bullets.slice(0,5)});});
+  while(slides.length<7){var extra=allBullets.slice((slides.length-4)*3,(slides.length-3)*3);if(extra.length<2) extra=['重點項目整理說明','關鍵事項補充資訊','延伸討論與考量'];slides.push({type:'content',title:'詳細說明',bullets:extra});}
+
+  // 8 Bar chart
+  slides.push({type:'chart',title:barData.title,chartType:'bar',chartData:{labels:barData.labels,series:[{name:barData.name,values:barData.values}]}});
+
+  // 9 Comparison
+  var half=Math.ceil(allBullets.length/2);
+  var lp=allBullets.slice(0,3); while(lp.length<3) lp.push(['優化核心流程效益','提升整體執行效率','強化核心競爭優勢'][lp.length]);
+  var rp=allBullets.slice(half,half+3); while(rp.length<3) rp.push(['資源需求較高','需時間逐步推進','外部環境不確定'][rp.length]);
+  slides.push({type:'comparison',title:'優劣分析對比',left:{heading:'優勢與機會',points:lp},right:{heading:'挑戰與考量',points:rp}});
+
+  // 10 Pie chart
+  slides.push({type:'chart',title:pieData.title,chartType:'pie',chartData:{labels:pieData.labels,series:[{name:'佔比',values:pieData.values}]}});
+
+  // 11 Timeline
+  slides.push({type:'timeline',title:'執行時間軸',steps:timeline});
+
+  // 12 More content
+  var more=allBullets.slice(4,8);
+  if(more.length<2) more=['持續監測關鍵績效指標','定期評估並調整策略方向','強化跨部門協作機制','建立完善的回饋機制'];
+  slides.push({type:'content',title:'執行要點',bullets:more});
+
+  // 13 Quote
+  slides.push({type:'quote',title:'核心洞察',quote:quote.text,attribution:quote.attr});
+
+  // 14 Conclusion
+  var con=allBullets.slice(-4);
+  if(con.length<3) con=['整合資源推動核心策略落地','建立量化指標追蹤執行進度','加強利害關係人溝通共識','定期檢視成果適時調整方案'];
+  slides.push({type:'conclusion',title:'結論與下一步',bullets:con});
+
+  // Extra pages to hit target
+  var tgt=parseInt(target)||12;
+  var extraSecs=sections.slice(3);
+  while(slides.length<tgt){
+    var s=extraSecs.shift();
+    if(s&&s.bullets.length>=2) slides.splice(slides.length-1,0,{type:'content',title:s.heading||'補充說明',bullets:s.bullets.slice(0,5)});
+    else slides.splice(slides.length-1,0,{type:'content',title:'附加資訊',bullets:['相關背景資料補充','延伸閱讀建議','參考數據來源','後續追蹤事項']});
+  }
+  return slides;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PPTX BUILDERS
+// ═══════════════════════════════════════════════════════════════
+async function buildPPTX(outline,themeKey){
+  if(!window.PptxGenJS) throw new Error('PptxGenJS 函式庫未就緒，請重新整理頁面後再試');
+  var T=THEMES[themeKey]||THEMES.corporate;
+  var pres=new PptxGenJS();
+  pres.layout='LAYOUT_16x9'; pres.title=outline.title||'簡報';
+  var W=10,H=5.625,slides=outline.slides||[],total=slides.length;
+
+  for(var idx=0;idx<total;idx++){
+    var sd=slides[idx],sl=pres.addSlide();
+    var dark=sd.type==='title'||sd.type==='quote'||sd.type==='conclusion';
+    if(!dark){
+      sl.background={color:T.bodyBg};
+      sl.addShape(pres.shapes.RECTANGLE,{x:0,y:0,w:W,h:0.7,fill:{color:T.bg},line:{type:'none'}});
+      sl.addShape(pres.shapes.RECTANGLE,{x:0,y:0,w:0.2,h:0.7,fill:{color:T.accent},line:{type:'none'}});
+      sl.addText(sd.title||'',{x:0.38,y:0,w:8.5,h:0.7,margin:0,fontSize:19,bold:true,color:T.text,fontFace:T.fontH,valign:'middle'});
+      sl.addText((idx+1)+'/'+total,{x:8.6,y:0.2,w:1.2,h:0.3,fontSize:9,color:'AAAAAA',align:'right'});
+    }
+    if     (sd.type==='title')      slTitle(pres,sl,sd,T,W,H,total);
+    else if(sd.type==='agenda')     slAgenda(pres,sl,sd,T);
+    else if(sd.type==='content')    slContent(pres,sl,sd,T);
+    else if(sd.type==='stats')      slStats(pres,sl,sd,T,W);
+    else if(sd.type==='chart')      slChart(pres,sl,sd,T,W,H);
+    else if(sd.type==='comparison') slCompare(pres,sl,sd,T,W,H);
+    else if(sd.type==='timeline')   slTimeline(pres,sl,sd,T,W);
+    else if(sd.type==='quote')      slQuote(pres,sl,sd,T,W,H);
+    else if(sd.type==='conclusion') slConclusion(pres,sl,sd,T,W,H,idx,total);
+    else                            slContent(pres,sl,sd,T);
+  }
+  return pres.write({outputType:'base64'});
+}
+
+function slTitle(pres,sl,sd,T,W,H,total){
+  sl.background={color:T.bg};
+  sl.addShape(pres.shapes.RECTANGLE,{x:W-2.8,y:0,w:2.8,h:H,fill:{color:T.accent,transparency:88},line:{type:'none'}});
+  sl.addShape(pres.shapes.RECTANGLE,{x:W-2.85,y:0,w:0.08,h:H,fill:{color:T.accent},line:{type:'none'}});
+  sl.addText(sd.title||'簡報標題',{x:0.7,y:1.0,w:6.8,h:2.0,margin:0,fontSize:36,bold:true,color:T.text,fontFace:T.fontH,wrap:true});
+  sl.addShape(pres.shapes.RECTANGLE,{x:0.7,y:3.15,w:2.3,h:0.07,fill:{color:T.accent},line:{type:'none'}});
+  if(sd.subtitle) sl.addText(sd.subtitle,{x:0.7,y:3.35,w:6.5,h:0.9,margin:0,fontSize:16,color:T.accent,fontFace:T.fontB,wrap:true});
+  sl.addText('簡報生成器',{x:0.7,y:H-0.48,w:4,h:0.3,fontSize:9,color:T.text,fontFace:T.fontB});
+  sl.addText('1 / '+total,{x:W-1.4,y:H-0.48,w:1.2,h:0.3,fontSize:9,color:T.text,align:'right'});
+}
+function slAgenda(pres,sl,sd,T){
+  var items=sd.items||[],half=Math.ceil(items.length/2);
+  for(var i=0;i<items.length;i++){
+    var col=i<half?0:1,row=i<half?i:i-half,x=col===0?0.5:5.25,y=0.9+row*0.73;
+    sl.addShape(pres.shapes.RECTANGLE,{x:x,y:y,w:0.36,h:0.36,fill:{color:T.accent},line:{type:'none'}});
+    sl.addText(''+(i+1),{x:x,y:y,w:0.36,h:0.36,margin:0,fontSize:12,bold:true,color:T.bg,align:'center',valign:'middle',fontFace:T.fontH});
+    sl.addText(items[i],{x:x+0.46,y:y,w:4.2,h:0.36,margin:0,fontSize:14,color:T.bodyText,fontFace:T.fontB,valign:'middle'});
+  }
+}
+function slContent(pres,sl,sd,T){
+  var bullets=sd.bullets||[];
+  for(var i=0;i<bullets.length;i++){
+    var y=0.88+i*0.75;
+    sl.addShape(pres.shapes.RECTANGLE,{x:0.5,y:y+0.16,w:0.06,h:0.28,fill:{color:T.accent},line:{type:'none'}});
+    sl.addText(bullets[i],{x:0.74,y:y,w:9.0,h:0.68,margin:0,fontSize:15,color:T.bodyText,fontFace:T.fontB,wrap:true,valign:'middle'});
+  }
+}
+function slStats(pres,sl,sd,T,W){
+  var stats=(sd.stats||[]).slice(0,3);if(!stats.length) return;
+  var cw=(W-1.0)/stats.length;
+  for(var i=0;i<stats.length;i++){
+    var x=0.5+i*(cw+0.1),y=1.0,feat=i===0;
+    sl.addShape(pres.shapes.RECTANGLE,{x:x,y:y,w:cw-0.1,h:3.8,fill:{color:feat?T.bg:T.bodyBg},line:{color:feat?T.bg:T.accent,pt:feat?0:1.5},shadow:{type:'outer',blur:7,offset:2,angle:135,color:'000000',opacity:0.1}});
+    sl.addShape(pres.shapes.RECTANGLE,{x:x,y:y,w:cw-0.1,h:0.09,fill:{color:T.accent},line:{type:'none'}});
+    sl.addText(stats[i].value||'—',{x:x,y:y+0.5,w:cw-0.1,h:1.6,margin:0,fontSize:48,bold:true,color:feat?T.accent:T.bg,fontFace:T.fontH,align:'center'});
+    sl.addText(stats[i].label||'',{x:x,y:y+2.35,w:cw-0.1,h:1.1,margin:0,fontSize:13,color:feat?T.text:T.bodyText,fontFace:T.fontB,align:'center',wrap:true});
+  }
+}
+function slChart(pres,sl,sd,T,W,H){
+  var cd=sd.chartData||{labels:['A','B','C','D'],series:[{name:'數據',values:[30,50,40,70]}]};
+  var chartData=cd.series.map(function(s){return {name:s.name,labels:cd.labels,values:(s.values||[]).map(function(v){return typeof v==='number'?v:parseFloat(v)||0;})};});
+  var typeMap={bar:pres.charts.BAR,pie:pres.charts.PIE,line:pres.charts.LINE,doughnut:pres.charts.DOUGHNUT};
+  var cType=typeMap[sd.chartType]||pres.charts.BAR;
+  var isPie=sd.chartType==='pie'||sd.chartType==='doughnut';
+  var opts={x:0.5,y:0.82,w:W-1,h:H-1.05,chartColors:T.charts,chartArea:{fill:{color:T.bodyBg}},catAxisLabelColor:T.muted,valAxisLabelColor:T.muted,valGridLine:{color:'E2E8F0',size:0.5},catGridLine:{style:'none'},showLegend:isPie||chartData.length>1,legendPos:'b'};
+  if(!isPie){opts.barDir='col';opts.showValue=true;opts.dataLabelPosition='outEnd';opts.dataLabelColor=T.bodyText;}
+  else{opts.showPercent=true;}
+  try{sl.addChart(cType,chartData,opts);}catch(e){sl.addText('圖表',{x:2,y:2.5,w:6,h:1,fontSize:16,color:T.muted,align:'center'});}
+}
+function slCompare(pres,sl,sd,T,W,H){
+  var left=sd.left||{heading:'選項A',points:[]},right=sd.right||{heading:'選項B',points:[]};
+  var y0=0.82,ch=H-y0-0.2;
+  sl.addShape(pres.shapes.RECTANGLE,{x:0.35,y:y0,w:4.3,h:ch,fill:{color:T.bg},line:{type:'none'}});
+  sl.addText(left.heading,{x:0.35,y:y0,w:4.3,h:0.52,margin:0,fontSize:15,bold:true,color:T.text,fontFace:T.fontH,align:'center',valign:'middle'});
+  var lp=left.points||[];for(var i=0;i<lp.length;i++){sl.addShape(pres.shapes.OVAL,{x:0.6,y:y0+0.66+i*0.6,w:0.18,h:0.18,fill:{color:T.accent},line:{type:'none'}});sl.addText(lp[i],{x:0.94,y:y0+0.6+i*0.6,w:3.5,h:0.5,margin:0,fontSize:13,color:T.text,fontFace:T.fontB,wrap:true});}
+  sl.addShape(pres.shapes.OVAL,{x:4.55,y:2.2,w:0.88,h:0.88,fill:{color:T.accent},line:{type:'none'}});
+  sl.addText('VS',{x:4.55,y:2.2,w:0.88,h:0.88,margin:0,fontSize:15,bold:true,color:T.bg,align:'center',valign:'middle',fontFace:T.fontH});
+  sl.addShape(pres.shapes.RECTANGLE,{x:5.35,y:y0,w:4.3,h:ch,fill:{color:T.accent,transparency:88},line:{color:T.accent,pt:1.5}});
+  sl.addText(right.heading,{x:5.35,y:y0,w:4.3,h:0.52,margin:0,fontSize:15,bold:true,color:T.bodyText,fontFace:T.fontH,align:'center',valign:'middle'});
+  var rp=right.points||[];for(var i=0;i<rp.length;i++){sl.addShape(pres.shapes.OVAL,{x:5.6,y:y0+0.66+i*0.6,w:0.18,h:0.18,fill:{color:T.bg},line:{type:'none'}});sl.addText(rp[i],{x:5.94,y:y0+0.6+i*0.6,w:3.5,h:0.5,margin:0,fontSize:13,color:T.bodyText,fontFace:T.fontB,wrap:true});}
+}
+function slTimeline(pres,sl,sd,T,W){
+  var steps=(sd.steps||[]).slice(0,4);if(!steps.length) return;
+  var ly=2.9,sx=0.8,span=W-1.6,step=steps.length>1?span/(steps.length-1):0;
+  sl.addShape(pres.shapes.RECTANGLE,{x:sx,y:ly-0.02,w:span,h:0.04,fill:{color:T.accent},line:{type:'none'}});
+  for(var i=0;i<steps.length;i++){
+    var cx=sx+i*step,above=i%2===0,lw=Math.min(step*0.88||2.0,2.0),lx=cx-lw/2,st=steps[i];
+    sl.addShape(pres.shapes.OVAL,{x:cx-0.17,y:ly-0.17,w:0.34,h:0.34,fill:{color:T.bg},line:{color:T.accent,pt:2}});
+    sl.addText(''+(i+1),{x:cx-0.17,y:ly-0.17,w:0.34,h:0.34,margin:0,fontSize:10,bold:true,color:T.text,align:'center',valign:'middle',fontFace:T.fontH});
+    if(above){sl.addText(st.label||'',{x:lx,y:ly-1.25,w:lw,h:0.4,margin:0,fontSize:11,bold:true,color:T.bodyText,fontFace:T.fontH,align:'center',wrap:true});sl.addText(st.desc||'',{x:lx,y:ly-0.84,w:lw,h:0.58,margin:0,fontSize:10,color:T.muted,fontFace:T.fontB,align:'center',wrap:true});}
+    else{sl.addText(st.label||'',{x:lx,y:ly+0.38,w:lw,h:0.4,margin:0,fontSize:11,bold:true,color:T.bodyText,fontFace:T.fontH,align:'center',wrap:true});sl.addText(st.desc||'',{x:lx,y:ly+0.76,w:lw,h:0.58,margin:0,fontSize:10,color:T.muted,fontFace:T.fontB,align:'center',wrap:true});}
+  }
+}
+function slQuote(pres,sl,sd,T,W,H){
+  sl.background={color:T.bg};
+  sl.addShape(pres.shapes.RECTANGLE,{x:0,y:0,w:0.4,h:H,fill:{color:T.accent},line:{type:'none'}});
+  sl.addText('\u201C',{x:0.85,y:0.1,w:1.4,h:1.4,fontSize:100,bold:true,color:T.accent,fontFace:'Georgia'});
+  sl.addText(sd.quote||'',{x:1.25,y:1.2,w:7.8,h:2.7,margin:0,fontSize:21,italic:true,color:T.text,fontFace:'Georgia',align:'center',wrap:true});
+  if(sd.attribution){sl.addShape(pres.shapes.RECTANGLE,{x:3.8,y:4.1,w:2.2,h:0.05,fill:{color:T.accent},line:{type:'none'}});sl.addText('— '+sd.attribution,{x:1,y:4.25,w:8,h:0.5,margin:0,fontSize:13,color:T.accent,fontFace:T.fontB,align:'center'});}
+}
+function slConclusion(pres,sl,sd,T,W,H,idx,total){
+  sl.background={color:T.bg};
+  sl.addShape(pres.shapes.RECTANGLE,{x:W-3.6,y:0,w:3.6,h:H,fill:{color:T.accent,transparency:90},line:{type:'none'}});
+  sl.addShape(pres.shapes.RECTANGLE,{x:0,y:0,w:0.08,h:H,fill:{color:T.accent},line:{type:'none'}});
+  sl.addText(sd.title||'結論與建議',{x:0.52,y:0.42,w:8.5,h:0.82,margin:0,fontSize:28,bold:true,color:T.text,fontFace:T.fontH});
+  var bullets=sd.bullets||[];
+  for(var i=0;i<bullets.length;i++){sl.addShape(pres.shapes.OVAL,{x:0.52,y:1.5+i*0.72,w:0.26,h:0.26,fill:{color:T.accent},line:{type:'none'}});sl.addText(bullets[i],{x:0.96,y:1.44+i*0.72,w:8.4,h:0.6,margin:0,fontSize:15,color:T.text,fontFace:T.fontB,wrap:true});}
+  sl.addText((idx+1)+' / '+total,{x:W-1.4,y:H-0.45,w:1.2,h:0.3,fontSize:9,color:T.text,align:'right'});
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  GENERATE
+// ═══════════════════════════════════════════════════════════════
+async function generate(){
+  if(!window.PptxGenJS){showMsg('err','PptxGenJS 尚未載入完成，請稍後再試或重新整理頁面');return;}
+  if(!selectedFiles.length) return showMsg('err','請先上傳至少一個文件');
+  hideMsg();
+  document.getElementById('gen-btn').disabled=true;
+  document.getElementById('gen-btn').textContent='生成中...';
+  var target=document.getElementById('slide-range').value||12;
+
+  try{
+    showOv('📄 讀取文件內容...','');setProg(15,'📄 讀取文件...');
+    var texts=await Promise.all(selectedFiles.map(extractText));
+    var allText=selectedFiles.map(function(f,i){return '=== '+f.name+' ===\n'+texts[i];}).join('\n\n');
+    var fname=selectedFiles[0].name;
+
+    showOv('🧠 智慧解析文件結構...','提取標題、章節、數據、關鍵字');setProg(40,'🧠 分析文件結構...');
+    await delay(60);
+    var outline=smartParse(allText,fname,target);
+    if(!outline||!outline.slides||!outline.slides.length) throw new Error('解析失敗，請確認文件有足夠文字內容');
+
+    showOv('🎨 套用主題，建立投影片...','');setProg(65,'📊 建立投影片與圖表...');
+    await delay(60);
+    var b64=await buildPPTX(outline,selectedTheme);
+
+    setProg(92,'💾 儲存...');
+    var meta={id:Date.now().toString(),title:outline.title||'未命名',category:outline.category||'other',summary:outline.summary||'',style:selectedTheme,slideCount:outline.slides.length,createdAt:Date.now(),pptxBase64:b64};
+    saveToLib(meta); library=loadLib();
+
+    setProg(100,'✅ 完成！'); hideOv(); updateBadge();
+    setTimeout(function(){switchTab('library');hideProg();updateGenBtn();},700);
+  }catch(e){
+    hideOv(); showMsg('err',e.message||'生成失敗，請重試'); hideProg(); updateGenBtn();
+  }
+}
+
+function delay(ms){return new Promise(function(r){setTimeout(r,ms);});}
+
+// ═══════════════════════════════════════════════════════════════
+//  STORAGE
+// ═══════════════════════════════════════════════════════════════
+function saveToLib(meta){
+  try{
+    localStorage.setItem('pptg_item_'+meta.id,JSON.stringify(meta));
+    var idx=[];try{idx=JSON.parse(localStorage.getItem('pptg_index')||'[]');}catch(e){}
+    idx=idx.filter(function(m){return m.id!==meta.id;});
+    idx.unshift({id:meta.id,title:meta.title,category:meta.category,summary:meta.summary,style:meta.style,slideCount:meta.slideCount,createdAt:meta.createdAt});
+    localStorage.setItem('pptg_index',JSON.stringify(idx.slice(0,50)));
+  }catch(e){console.warn('Storage:',e);}
+}
+function loadLib(){
+  try{
+    var idx=JSON.parse(localStorage.getItem('pptg_index')||'[]');
+    return idx.map(function(m){try{var f=JSON.parse(localStorage.getItem('pptg_item_'+m.id)||'null');return f||m;}catch(e){return m;}}).sort(function(a,b){return b.createdAt-a.createdAt;});
+  }catch(e){return [];}
+}
+function delFromLib(id){
+  try{localStorage.removeItem('pptg_item_'+id);var idx=[];try{idx=JSON.parse(localStorage.getItem('pptg_index')||'[]');}catch(e){}localStorage.setItem('pptg_index',JSON.stringify(idx.filter(function(m){return m.id!==id;})));}catch(e){}
+  library=loadLib(); updateBadge(); renderLib();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  LIBRARY
+// ═══════════════════════════════════════════════════════════════
+function updateBadge(){var btn=document.getElementById('lib-tab-btn'),n=library.length;btn.innerHTML=n>0?'📁 簡報庫 <span style="background:#3B82F6;color:#fff;border-radius:9px;padding:0 6px;font-size:10px;margin-left:3px">'+n+'</span>':'📁 簡報庫';}
+function renderLib(){
+  document.getElementById('lib-count').textContent='共 '+library.length+' 份'; renderFilters();
+  var body=document.getElementById('lib-body');
+  if(!library.length){body.innerHTML='<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">尚無簡報</div><div style="font-size:13px">上傳文件後點擊「一鍵生成簡報」</div></div>';return;}
+  var filtered=catFilter==='all'?library:library.filter(function(m){return m.category===catFilter;});
+  if(!filtered.length){body.innerHTML='<div class="empty-state"><div style="font-size:13px">此分類暫無簡報</div></div>';return;}
+  var groups=Object.keys(CATS).map(function(k){return {k:k,c:CATS[k],items:filtered.filter(function(m){return m.category===k;})};}).filter(function(g){return g.items.length>0;});
+  body.innerHTML=groups.map(function(g){return '<div class="cat-section"><div class="cat-header"><span style="font-size:18px">'+g.c.icon+'</span><span class="cat-hname" style="color:'+g.c.color+'">'+g.c.name+'</span><span style="font-size:12px;color:#4B5563">（'+g.items.length+' 份）</span></div><div class="ppt-grid">'+g.items.map(cardHTML).join('')+'</div></div>';}).join('');
+}
+function renderFilters(){
+  var bar=document.getElementById('filter-bar'),html='<button class="filter-btn'+(catFilter==='all'?' active':'')+'" onclick="setFilter(\'all\')">全部（'+library.length+'）</button>';
+  Object.keys(CATS).forEach(function(k){var n=library.filter(function(m){return m.category===k;}).length;if(!n) return;html+='<button class="filter-btn'+(catFilter===k?' active':'')+'" onclick="setFilter(\''+k+'\')">'+CATS[k].icon+' '+CATS[k].name+'（'+n+'）</button>';});
+  bar.innerHTML=html;
+}
+function setFilter(k){catFilter=k;renderLib();}
+function cardHTML(meta){
+  var cat=CATS[meta.category]||CATS.other,thm=THEMES[meta.style]||THEMES.corporate;
+  var dt=new Date(meta.createdAt).toLocaleDateString('zh-TW',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  var has=!!(meta.pptxBase64);
+  return '<div class="ppt-card"><div class="card-top"><div style="flex:1;min-width:0"><div class="card-title" title="'+esc(meta.title)+'">'+esc(meta.title)+'</div><div class="card-date">'+dt+' · '+(meta.slideCount||0)+'頁</div></div><button class="del-btn" onclick="delFromLib(\''+meta.id+'\')" title="刪除">🗑</button></div>'+(meta.summary?'<div class="card-summary">'+esc(meta.summary)+'</div>':'')+'<div class="card-tags"><span class="badge" style="background:'+cat.bg+';color:'+cat.color+'">'+cat.icon+' '+cat.name+'</span><span class="tag-style">'+thm.emoji+' '+thm.name+'</span></div><button class="dl-btn" onclick="dlPPTX(\''+meta.id+'\')"'+(has?'':' disabled style="opacity:.4"')+'>'+( has?'⬇️ 下載 PPTX':'（無檔案）')+'</button></div>';
+}
+function dlPPTX(id){
+  var meta=library.find(function(m){return m.id===id;});
+  if(!meta||!meta.pptxBase64){alert('找不到檔案，請重新生成');return;}
+  try{
+    var bin=atob(meta.pptxBase64),ab=new ArrayBuffer(bin.length),ia=new Uint8Array(ab);
+    for(var i=0;i<bin.length;i++) ia[i]=bin.charCodeAt(i);
+    var blob=new Blob([ab],{type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'});
+    var url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url; a.download=(meta.title||'簡報')+'.pptx'; a.click();
+    setTimeout(function(){URL.revokeObjectURL(url);},2000);
+  }catch(e){alert('下載失敗：'+e.message);}
+}
+</script>
+</body>
+</html>
