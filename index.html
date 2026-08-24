@@ -37,6 +37,8 @@ button{cursor:pointer}
 .operation-notice{margin-top:9px;border:1px solid #a8c8dd;border-left:5px solid var(--blue);border-radius:11px;background:#f4faff;padding:11px 12px;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;box-shadow:0 5px 16px rgba(16,42,67,.07)}.operation-notice.success{border-color:#9bd2bf;border-left-color:var(--green);background:#f2fbf7}.operation-notice.error{border-color:#efb7b7;border-left-color:var(--red);background:#fff5f5}.operation-notice.warn{border-color:#edc18f;border-left-color:var(--orange);background:#fff9f1}.operation-icon{font-size:20px;line-height:1.2}.operation-title{font-size:12px;font-weight:850}.operation-detail{font-size:10px;color:var(--muted);line-height:1.55;margin-top:3px;white-space:pre-wrap}.operation-time{font-size:9px;color:#8596a5;margin-top:4px}.operation-close{border:0;background:transparent;color:#708396;font-size:17px;padding:0 3px}
 .module-nav{position:sticky;top:64px;z-index:40;background:#fff;border-bottom:1px solid var(--line);overflow:auto}.nav-inner{max-width:1500px;margin:auto;display:flex;padding:0 18px;min-width:max-content}.nav-btn{position:relative;border:0;background:transparent;color:var(--muted);padding:12px 15px;font-weight:700;font-size:12px;white-space:nowrap;text-decoration:none}.nav-btn:hover{color:var(--blue)}.nav-btn.on{color:var(--blue)}.nav-btn.on:after{content:"";position:absolute;left:13px;right:13px;bottom:0;height:3px;background:var(--blue);border-radius:3px 3px 0 0}.nav-count{display:inline-grid;place-items:center;min-width:18px;height:18px;margin-left:4px;padding:0 5px;background:#eef3f7;border-radius:10px;font-size:9px}.nav-btn.on .nav-count{background:#dff1fd}.map-link{margin-left:auto;color:var(--blue);background:#f2f8fd}
 main{max-width:1500px;margin:auto;padding:18px 18px 50px}
+main.tool-main{max-width:none;padding:0;background:#eef3f7}
+.tool-frame{display:block;width:100%;height:calc(100vh - 108px);min-height:680px;border:0;background:#fff}
 .empty{background:#fff;border:1px solid var(--line);border-radius:var(--r);min-height:330px;display:grid;place-items:center;text-align:center;padding:30px;color:var(--muted)}.empty-icon{font-size:46px;margin-bottom:10px;filter:grayscale(.2)}.empty h2{font-size:18px;color:var(--ink);margin:0 0 7px}.empty p{max-width:620px;line-height:1.7;margin:0}
 .page-title-row{display:flex;align-items:flex-start;gap:10px;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap}.page-title{font-size:19px;font-weight:850;margin:0}.page-sub{font-size:11px;color:var(--muted);margin-top:4px}.freshness{font-size:10px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:20px;padding:5px 9px}
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:11px;margin-bottom:13px}.kpi{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 15px;box-shadow:0 2px 8px rgba(16,42,67,.025);min-width:0}.kpi-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.kpi-label{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.55px;text-transform:uppercase}.kpi-icon{width:27px;height:27px;border-radius:8px;display:grid;place-items:center;background:#edf5fb}.kpi-value{font-size:25px;line-height:1.15;font-weight:850;margin-top:7px;letter-spacing:-.5px;overflow-wrap:anywhere}.kpi-note{font-size:10px;color:var(--muted);margin-top:5px;min-height:14px}.delta{font-weight:800}.delta.up{color:var(--blue)}.delta.down{color:var(--orange)}.delta.flat{color:var(--muted)}
@@ -79,7 +81,7 @@ break;case"<bookViews":;case"<bookViews>":;case"</bookViews>":break;case"<workbo
       <div class="logo">VRT</div>
       <div class="brand">
         <div class="brand-title" data-i="brandTitle">在製品・成品・工廠費用分析</div>
-        <div class="brand-sub">Vantage River Textiles · <span data-i="brandSub">智慧匯入與跨表稽核</span><span class="version">v1.6.0</span></div>
+        <div class="brand-sub">Vantage River Textiles · <span data-i="brandSub">智慧匯入與跨表稽核</span><span class="version">v1.7.0</span></div>
       </div>
       <div class="header-sep"></div>
       <div class="period-box">
@@ -103,7 +105,7 @@ break;case"<bookViews":;case"<bookViews>":;case"</bookViews>":break;case"<workbo
     </div>
   </header>
 
-  <section class="import-wrap">
+  <section class="import-wrap" id="smartImportWrap">
     <div class="import-inner">
       <label id="dropZone" class="drop-zone">
         <span class="drop-icon">🪄</span>
@@ -131,7 +133,17 @@ break;case"<bookViews":;case"<bookViews>":;case"</bookViews>":break;case"<workbo
       <button class="nav-btn" data-page="anomaly"><span data-i="anomaly">⚠ 異常</span><span id="anomalyCount" class="nav-count">0</span></button>
       <button class="nav-btn" data-page="history"><span data-i="history">🗄 歷史</span></button>
       <a class="nav-btn map-link" href="factory-map.html">📍 工廠數位地圖 / Factory Map</a>
-      <a class="nav-btn" href="tools.html">🧰 獨立工具 / Tools</a>
+      <button class="nav-btn" data-tool="twse-stock-analyzer.html">📈 台股財報</button>
+      <button class="nav-btn" data-tool="foreign-manager-payroll.html">💵 外籍／當地薪資</button>
+      <button class="nav-btn" data-tool="leave-manager.html">🏖 年假</button>
+      <button class="nav-btn" data-tool="contract-manager.html">📑 合約</button>
+      <button class="nav-btn" data-tool="life-manager.html">🗂 個人管理</button>
+      <button class="nav-btn" data-tool="travel-planner.html">✈️ 旅遊規劃</button>
+      <button class="nav-btn" data-tool="video-analyzer.html">🎬 影片分析</button>
+      <button class="nav-btn" data-tool="ai-ppt-generator.html">📊 AI 簡報</button>
+      <button class="nav-btn" data-tool="manga-generator.html">🎨 漫畫</button>
+      <button class="nav-btn" data-tool="novel-to-video.html">🎞 小說影片</button>
+      <button class="nav-btn" data-tool="ocr-tool.html">🔎 OCR</button>
     </div>
   </nav>
 
@@ -144,7 +156,7 @@ break;case"<bookViews":;case"<bookViews>":;case"</bookViews>":break;case"<workbo
 
   <script>'use strict';
 
-const APP_VERSION='1.6.0';
+const APP_VERSION='1.7.0';
 const DB_NAME='VRTFlowCostDB';
 const DB_STORE='app';
 const DB_KEY='state';
@@ -236,6 +248,7 @@ Object.assign(I18N.km,{
 
 let LANG=localStorage.getItem('vrt_flow_lang')||'zh';
 let PAGE='overview';
+let ACTIVE_TOOL='';
 let ACTIVE_PERIOD='';
 let TIME_GRAIN=localStorage.getItem('vrt_flow_time_grain')||'month';
 let TIME_BUCKET='';
@@ -249,6 +262,20 @@ let STATE={schemaVersion:2,appVersion:APP_VERSION,periods:{},anomalyReview:{},bo
 let SETTINGS={gasUrl:DEFAULT_GAS_URL,gitUrl:DEFAULT_GIT_URL,telegramChatId:'',cloudKey:'vrt_acc',telegramAction:'telegramSend',dashboardUrl:DEFAULT_DASHBOARD_URL};
 let DB=null;
 let TABLE={module:'',page:1,pageSize:50,search:'',customer:'',type:''};
+
+const TOOL_MODULES=Object.freeze({
+  'twse-stock-analyzer.html':'台股上市財報分析',
+  'foreign-manager-payroll.html':'外籍／當地管理層薪資',
+  'leave-manager.html':'外籍幹部年假管理',
+  'contract-manager.html':'海外幹部合約管理',
+  'life-manager.html':'個人生活管理中心',
+  'travel-planner.html':'旅遊行程規劃',
+  'video-analyzer.html':'影片智能分析',
+  'ai-ppt-generator.html':'AI 簡報生成器',
+  'manga-generator.html':'漫畫自動生成',
+  'novel-to-video.html':'小說影片生成',
+  'ocr-tool.html':'OCR 文字提取與翻譯'
+});
 
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
@@ -664,7 +691,8 @@ function renderHistory(){const periods=allPeriods().slice().reverse();$('#appMai
 function updateNavCounts(){const e=getEntry(),anoms=ACTIVE_PERIOD?generateAnomalies(ACTIVE_PERIOD):[];$('#wipCount').textContent=e?.modules?.wip?.records?.length||0;$('#fgCount').textContent=e?.modules?.fg?.records?.length||0;$('#expenseCount').textContent=e?.modules?.expense?.records?.length||0;$('#anomalyCount').textContent=anoms.filter(a=>!a.reviewed).length}
 function buildPeriodSelect(){const sel=$('#periodSelect'),periods=allPeriods().slice().reverse();if(!ACTIVE_PERIOD||!STATE.periods[ACTIVE_PERIOD])ACTIVE_PERIOD=periods[0]||'';sel.innerHTML=periods.length?periods.map(p=>`<option value="${p}" ${p===ACTIVE_PERIOD?'selected':''}>${periodLabel(p)}</option>`).join(''):`<option value="">— ${tr('selectPeriod')} —</option>`}
 function applyLanguage(){document.documentElement.lang=LANG==='zh'?'zh-Hant':LANG;localStorage.setItem('vrt_flow_lang',LANG);$$('[data-i]').forEach(el=>{const k=el.dataset.i;if(I18N[LANG][k])el.textContent=I18N[LANG][k]});$$('[data-lang]').forEach(b=>b.classList.toggle('on',b.dataset.lang===LANG));buildPeriodSelect();render()}
-function render(){updateNavCounts();$$('.nav-btn').forEach(b=>b.classList.toggle('on',b.dataset.page===PAGE));if(PAGE==='overview')renderOverview();else if(PAGE==='wip')renderWip();else if(PAGE==='fg')renderFg();else if(PAGE==='expense')renderExpense();else if(PAGE==='time')renderTime();else if(PAGE==='cross')renderCross();else if(PAGE==='anomaly')renderAnomaly();else renderHistory()}
+function renderTool(){const title=TOOL_MODULES[ACTIVE_TOOL];if(!title){PAGE='overview';renderOverview();return}$('#appMain').innerHTML=`<iframe class="tool-frame" title="${esc(title)}" src="modules/${encodeURIComponent(ACTIVE_TOOL)}?embedded=1" loading="eager" allow="clipboard-read; clipboard-write; fullscreen"></iframe>`}
+function render(){updateNavCounts();const toolMode=PAGE==='tool'&&Boolean(TOOL_MODULES[ACTIVE_TOOL]);$('#smartImportWrap').classList.toggle('hidden',toolMode);$('#appMain').classList.toggle('tool-main',toolMode);$$('.nav-btn').forEach(b=>b.classList.toggle('on',toolMode?b.dataset.tool===ACTIVE_TOOL:b.dataset.page===PAGE));if(toolMode)renderTool();else if(PAGE==='overview')renderOverview();else if(PAGE==='wip')renderWip();else if(PAGE==='fg')renderFg();else if(PAGE==='expense')renderExpense();else if(PAGE==='time')renderTime();else if(PAGE==='cross')renderCross();else if(PAGE==='anomaly')renderAnomaly();else renderHistory()}
 
 function bindCommonPage(){$$('[data-go]').forEach(b=>b.onclick=()=>{PAGE=b.dataset.go;render()})}
 function bindTimePage(){bindCommonPage();$('#timeGrain').onchange=e=>{TIME_GRAIN=e.target.value;TIME_BUCKET='';localStorage.setItem('vrt_flow_time_grain',TIME_GRAIN);render()};$('#timeBucket').onchange=e=>{TIME_BUCKET=e.target.value;render()};$('#exportTimeCsv').onclick=exportTimeCsv}
@@ -721,7 +749,7 @@ function openSettings(){
   const body=`<div class="form-grid"><div class="form-group full"><label class="form-label">${tr('gasUrl')}</label><input id="setGas" value="${esc(SETTINGS.gasUrl)}" placeholder="https://script.google.com/macros/s/.../exec"></div><div class="form-group full"><label class="form-label">${tr('gitUrl')}</label><input id="setGit" value="${esc(SETTINGS.gitUrl)}" placeholder="https://github.com/... or https://...github.io/..."></div><div class="form-group"><label class="form-label">${tr('cloudKey')}</label><input id="setCloudKey" value="${esc(SETTINGS.cloudKey)}"></div><div class="form-group"><label class="form-label">${tr('telegramAction')}</label><input id="setTgAction" value="${esc(SETTINGS.telegramAction)}"></div><div class="form-group full"><div class="secret-note">🔐 ${esc(tr('telegramServerManaged'))}</div></div></div>`;
   $('#modalRoot').innerHTML=modalHtml(tr('settings'),body,`<button class="btn" id="testBtn">${tr('testConnection')}</button><button class="btn" id="modalCancel">${tr('cancel')}</button><button class="btn primary" id="modalSave">${tr('save')}</button>`);attachModalClose();$('#modalCancel').onclick=closeModal;$('#modalSave').onclick=()=>{SETTINGS.gasUrl=canonicalGasUrl($('#setGas').value);SETTINGS.gitUrl=$('#setGit').value.trim()||DEFAULT_GIT_URL;SETTINGS.cloudKey=$('#setCloudKey').value.trim()||'vrt_acc';SETTINGS.telegramAction=$('#setTgAction').value.trim()||'telegramSend';SETTINGS.telegramChatId='';saveSettings();closeModal();checkCloud();toast(tr('saved'),'success')};$('#testBtn').onclick=async()=>{const url=canonicalGasUrl($('#setGas').value);if(!url)return toast(tr('cloudNotSet'),'warn');await checkCloud(url)};
 }
-function gasResponseJson(text,status=0){const clean=String(text||'').trim();if(/^<!doctype|^<html/i.test(clean))throw new Error(l3('GAS 回傳的是 Google 網頁，不是資料。請更新為 v1.6.0 部署版本，網址必須以 /exec 結尾。','GAS returned a Google page instead of data. Deploy v1.6.0 and use the URL ending in /exec.','GAS បានត្រឡប់ទំព័រ Google មិនមែនទិន្នន័យ។'));try{return JSON.parse(clean)}catch(e){throw new Error(clean.slice(0,160)||`HTTP ${status}`)}}
+function gasResponseJson(text,status=0){const clean=String(text||'').trim();if(/^<!doctype|^<html/i.test(clean))throw new Error(l3('GAS 回傳的是 Google 網頁，不是資料。請更新為 v1.7.0 部署版本，網址必須以 /exec 結尾。','GAS returned a Google page instead of data. Deploy v1.7.0 and use the URL ending in /exec.','GAS បានត្រឡប់ទំព័រ Google មិនមែនទិន្នន័យ។'));try{return JSON.parse(clean)}catch(e){throw new Error(clean.slice(0,160)||`HTTP ${status}`)}}
 async function gasGet(action,params={},url=SETTINGS.gasUrl){url=canonicalGasUrl(url);const q=new URLSearchParams({action,tool:SETTINGS.cloudKey,_:Date.now(),...params});const r=await fetch(`${url}?${q}`,{method:'GET',cache:'no-store',redirect:'follow',referrerPolicy:'no-referrer'}),text=await r.text(),data=gasResponseJson(text,r.status);if(!r.ok||data.ok===false)throw new Error(data.message||`HTTP ${r.status}`);return data}
 async function checkCloud(url=SETTINGS.gasUrl){const dot=$('#cloudDot'),text=$('#cloudText');if(!url){dot.className='status-dot';text.textContent=tr('notConfigured');return false}dot.className='status-dot';text.textContent='…';try{const d=await gasGet('status',{},url);if(d.ok||d.status||d.success){dot.className='status-dot ok';text.textContent=l3('已連線','Connected','បានភ្ជាប់');return true}throw new Error('bad response')}catch(e){dot.className='status-dot err';text.textContent=l3('離線／未對接','Offline / not wired','មិនភ្ជាប់');return false}}
 function stateRecordCount(state=STATE){return Object.values(state?.periods||{}).reduce((total,entry)=>total+['wip','fg','expense'].reduce((n,module)=>n+(entry?.modules?.[module]?.records?.length||0),0),0)}
@@ -742,12 +770,12 @@ function openTelegram(){let module=PAGE==='wip'||PAGE==='fg'||PAGE==='expense'||
 async function sendTelegram(message,module,lang){if(!SETTINGS.gasUrl){await navigator.clipboard.writeText(message).catch(()=>{});toast(tr('cloudNotSet'),'warn');return}loading(true,tr('send'));try{let data;try{data=await gasPost({action:SETTINGS.telegramAction,tool:SETTINGS.cloudKey,module,period:ACTIVE_PERIOD,language:lang,message})}catch(postError){data=await gasGet('telegramCloudSend',{module,period:ACTIVE_PERIOD,language:lang})}if(!data.ok)throw new Error(data.message||tr('cloudServerError'));toast(l3('Telegram 已發送','Telegram sent','បានផ្ញើ Telegram'),'success');closeModal()}catch(e){toast(`${tr('sendFailed')}: ${e.message}`,'error')}finally{loading(false)}}
 
 function initEvents(){
-  $('#mainNav').onclick=e=>{const b=e.target.closest('[data-page]');if(!b)return;PAGE=b.dataset.page;if(PAGE==='wip'||PAGE==='fg'||PAGE==='expense'){TABLE={...TABLE,module:PAGE,page:1,search:'',customer:'',type:''}}render()};
+  $('#mainNav').onclick=e=>{const tool=e.target.closest('[data-tool]');if(tool){ACTIVE_TOOL=tool.dataset.tool;PAGE='tool';render();return}const b=e.target.closest('[data-page]');if(!b)return;ACTIVE_TOOL='';PAGE=b.dataset.page;if(PAGE==='wip'||PAGE==='fg'||PAGE==='expense'){TABLE={...TABLE,module:PAGE,page:1,search:'',customer:'',type:''}}render()};
   $('#periodSelect').onchange=e=>{ACTIVE_PERIOD=e.target.value;TABLE.page=1;render()};$$('[data-lang]').forEach(b=>b.onclick=()=>{LANG=b.dataset.lang;applyLanguage()});
   const dz=$('#dropZone'),input=$('#smartInput');input.onchange=e=>{smartImport(e.target.files);e.target.value=''};['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('drag')}));['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('drag')}));dz.addEventListener('drop',e=>smartImport([...e.dataTransfer.files].filter(f=>/\.xlsx$/.test(f.name.toLowerCase()))));
   $('#settingsBtn').onclick=openSettings;$('#cloudUpBtn').onclick=cloudUpload;$('#cloudDownBtn').onclick=cloudDownload;$('#telegramBtn').onclick=openTelegram;$('#exportBtn').onclick=openDataExport;$('#jsonImportBtn').onclick=openDataImport;$('#jsonInput').onchange=e=>{if(e.target.files[0])importJsonFile(e.target.files[0]);e.target.value=''};$('#gitBtn').onclick=()=>{if(!SETTINGS.gitUrl){toast(tr('gitNotSet'),'warn');openSettings()}else window.open(SETTINGS.gitUrl,'_blank','noopener')};
 }
-function applyLaunchParams(){const q=new URLSearchParams(location.search);const requested=(q.get('module')||q.get('page')||'').toLowerCase(),aliases={factory:'expense',cost:'expense',finished:'fg',finishedgoods:'fg'};const page=aliases[requested]||requested;if(['overview','wip','fg','expense','time','cross','anomaly','history'].includes(page))PAGE=page;LAUNCH_PERIOD=q.get('period')||'';const gas=q.get('gas')||'';if(/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec(?:\?|$)/.test(gas)){SETTINGS.gasUrl=canonicalGasUrl(gas);saveSettings()}}
+function applyLaunchParams(){const q=new URLSearchParams(location.search),requestedTool=q.get('tool')||'';if(TOOL_MODULES[requestedTool]){ACTIVE_TOOL=requestedTool;PAGE='tool'}else{const requested=(q.get('module')||q.get('page')||'').toLowerCase(),aliases={factory:'expense',cost:'expense',finished:'fg',finishedgoods:'fg'};const page=aliases[requested]||requested;if(['overview','wip','fg','expense','time','cross','anomaly','history'].includes(page))PAGE=page}LAUNCH_PERIOD=q.get('period')||'';const gas=q.get('gas')||'';if(/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec(?:\?|$)/.test(gas)){SETTINGS.gasUrl=canonicalGasUrl(gas);saveSettings()}}
 async function init(){loadSettings();applyLaunchParams();initEvents();loading(true,'Loading…');await loadState();const periods=allPeriods();ACTIVE_PERIOD=periods.includes(LAUNCH_PERIOD)?LAUNCH_PERIOD:(periods.slice(-1)[0]||'');loading(false);buildPeriodSelect();$$('[data-lang]').forEach(b=>b.classList.toggle('on',b.dataset.lang===LANG));$$('[data-i]').forEach(el=>{const k=el.dataset.i;if(I18N[LANG][k])el.textContent=I18N[LANG][k]});render();checkCloud()}
 window.addEventListener('DOMContentLoaded',init);
 </script>

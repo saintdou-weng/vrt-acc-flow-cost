@@ -471,6 +471,8 @@ body{padding-bottom:40px}
           <option value="pe">PE 低→高（參考）</option>
         </select>
         <button class="btn" onclick="refreshOfficial(true)">↻ 重新抓官方資料</button>
+        <button class="btn secondary" onclick="exportStockCsv()">⬇ 下載 CSV</button>
+        <button class="btn secondary" onclick="exportStockJson()">⬇ 下載 JSON</button>
         <span id="modeBadge" class="data-badge warn">載入中</span>
       </div>
       <div class="source-line">財務體質分數 = 成長30% + 獲利35% + 資產負債25% + EPS10%。屬透明規則型篩選，不是保證股價漲跌的 AI 預言；缺失欄位採中性分數並降低「資料完整度」。</div>
@@ -519,6 +521,7 @@ const INCOME_KEYS=['inc_ci','inc_basi','inc_bd','inc_fh','inc_ins','inc_mim'];
 const BS_KEYS=['bs_ci','bs_basi','bs_bd','bs_fh','bs_ins','bs_mim'];
 const G={raw:{},rows:[],byCode:{},diag:{},updated:null,selected:null,history:null,fromCache:false};
 const CACHE_KEY='twse_fin_v3_cache', GAS_KEY='twse_fin_v3_gas', OLD_GAS_KEY='twse_fin_v2_gas';
+const DEFAULT_GAS_URL='https://script.google.com/macros/s/AKfycbzojXP0ixSsJqO1Ri2lfkdazTF-9XxoDqRYI0B4OEThkvjc95zacRflYtuArOd8ewHp/exec';
 const safeStore=(()=>{try{localStorage.setItem('__twse_v2_test','1');localStorage.removeItem('__twse_v2_test');return localStorage}catch(e){const mem={};return {getItem:k=>(k in mem?mem[k]:null),setItem:(k,v)=>{mem[k]=String(v)},removeItem:k=>{delete mem[k]}}}})();
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -542,7 +545,7 @@ function setStatus(state,msg=''){
  const [txt,cls,dot]=map[state]||map.loading; $('connSt').textContent=txt; $('connSt').className='conn-st '+cls; $('liveDot').style.background=dot; if(msg)$('coverageTop').textContent=msg;
 }
 function warn(msg){$('warnBar').style.display=msg?'block':'none';$('warnBar').textContent=msg||''}
-function getGas(){return (safeStore.getItem(GAS_KEY)||safeStore.getItem(OLD_GAS_KEY)||'').trim()}
+function getGas(){let acc='';try{acc=JSON.parse(safeStore.getItem('vrt_flow_settings')||'{}').gasUrl||''}catch(e){}return (safeStore.getItem(GAS_KEY)||safeStore.getItem(OLD_GAS_KEY)||acc||DEFAULT_GAS_URL).trim()}
 function normalizeGas(v){v=String(v||'').trim();return /^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec(?:[?#].*)?$/i.test(v)?v:''}
 async function saveGas(){const raw=$('gasUrl').value.trim(),v=normalizeGas(raw);if(!v){alert('GAS 網址格式不正確。請貼部署後以 /exec 結尾的 Web App URL。');return}safeStore.setItem(GAS_KEY,v);$('gasUrl').value=v;await refreshOfficial(true)}
 function gasJsonp(params,ms=45000){return new Promise((resolve,reject)=>{
@@ -611,6 +614,10 @@ function buildRows(){
  G.rows=rows;G.byCode=Object.fromEntries(rows.map(r=>[r.code,r]));
 }
 function compactRows(){return G.rows.map(r=>({code:r.code,name:r.name,industry:r.industry,mRev:r.mRev,mYoY:r.mYoY,ytdRev:r.ytdRev,ytdYoY:r.ytdYoY,finRev:r.finRev,grossYi:r.grossYi,opYi:r.opYi,netYi:r.netYi,gm:r.gm,opm:r.opm,nm:r.nm,eps:r.eps,assetsYi:r.assetsYi,liabYi:r.liabYi,equityYi:r.equityYi,debt:r.debt,current:r.current,close:r.close,change:r.change,pe:r.pe,pb:r.pb,dy:r.dy,score:r.score,coverage:r.coverage,monthly:r.monthly,inc:r.inc,bal:r.bal}))}
+function downloadBlob(name,content,type){const blob=new Blob([content],{type:type||'application/octet-stream'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500)}
+function csvCell(value){const text=value==null?'':String(value);return /[",\r\n]/.test(text)?`"${text.replace(/"/g,'""')}"`:text}
+function exportStockCsv(){const rows=filteredRows();if(!rows.length){alert('目前沒有可下載的官方股市資料，請先重新抓取。');return}const cols=[['code','代號'],['name','公司'],['industry','產業'],['score','財務體質分數'],['coverage','資料完整度%'],['mRev','月營收億元'],['mYoY','月營收YoY%'],['ytdRev','累計營收億元'],['ytdYoY','累計營收YoY%'],['finRev','財報累計營收億元'],['grossYi','累計毛利億元'],['opYi','累計營業利益億元'],['netYi','累計淨利億元'],['gm','毛利率%'],['opm','營益率%'],['nm','淨利率%'],['eps','累計EPS'],['assetsYi','資產億元'],['liabYi','負債億元'],['equityYi','權益億元'],['debt','負債比%'],['current','流動比率%'],['close','收盤價'],['pe','本益比'],['pb','股價淨值比'],['dy','殖利率%']];const lines=[cols.map(x=>csvCell(x[1])).join(',')].concat(rows.map(row=>cols.map(x=>csvCell(row[x[0]])).join(',')));downloadBlob(`VRT_TWSE_${new Date().toISOString().slice(0,10)}.csv`,'\ufeff'+lines.join('\r\n'),'text/csv;charset=utf-8');}
+function exportStockJson(){const rows=filteredRows();if(!rows.length){alert('目前沒有可下載的官方股市資料，請先重新抓取。');return}downloadBlob(`VRT_TWSE_${new Date().toISOString().slice(0,10)}.json`,JSON.stringify({schema:'vrt-twse-financial',version:'3.1',officialSource:'TWSE OpenAPI',exportedAt:new Date().toISOString(),filters:{search:$('q').value,industry:$('industryF').value,sort:$('sortF').value},rows:rows.map(r=>compactRows().find(x=>x.code===r.code))},null,2),'application/json;charset=utf-8')}
 function saveCache(){try{safeStore.setItem(CACHE_KEY,JSON.stringify({at:Date.now(),rows:compactRows()}))}catch(e){}}
 function loadCache(){try{const j=JSON.parse(safeStore.getItem(CACHE_KEY)||'null');if(!j||!Array.isArray(j.rows)||!j.rows.length)return false;G.rows=j.rows;G.byCode=Object.fromEntries(j.rows.map(r=>[r.code,r]));G.updated=new Date(j.at);G.fromCache=true;return true}catch(e){return false}}
 function sourceSpecs(){return [

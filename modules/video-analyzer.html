@@ -450,6 +450,7 @@ function getYouTubeId(url) {
 const urlInput = document.getElementById('urlInput');
 urlInput.addEventListener('input', () => {
   const url = urlInput.value.trim();
+  if (url) localFile = null;
   const p = detectPlatform(url);
   document.querySelectorAll('.platform-badge').forEach(b => {
     b.classList.toggle('active', b.dataset.p === p);
@@ -476,6 +477,8 @@ fileInput.addEventListener('change', () => {
 
 function handleLocalFile(file) {
   localFile = file;
+  currentUrl = '';
+  currentPlatform = 'local';
   urlInput.value = '';
   document.querySelectorAll('.platform-badge').forEach(b => b.classList.toggle('active', b.dataset.p === 'local'));
   const icon = file.type.startsWith('audio') ? '🎵' : '🎬';
@@ -521,25 +524,71 @@ async function analyzeURL(url, platform) {
   const systemPrompt = buildSystemPrompt(isMusic);
   const userMsg = `請搜尋並深度分析這個影片/內容連結：\n${url}\n平台：${pName}\n\n請用網路搜尋找出詳細資訊並完整分析。`;
 
-  const raw = await callClaude(systemPrompt, userMsg, true);
-  return parseJSON(raw, { url, platform });
+  try {
+    const raw = await callClaude(systemPrompt, userMsg, true);
+    return parseJSON(raw, { url, platform });
+  } catch (error) {
+    return analyzeUrlWithoutAi(url, platform, error);
+  }
 }
 
-// --- Analyze local file
+// --- Analyze the actual local media bytes; no external AI key is required.
 async function analyzeLocalFile(file) {
-  updateLoadingMsg(`正在分析本地${file.type.startsWith('audio')?'音樂':'影片'}檔案...`);
-  const isAudio = file.type.startsWith('audio');
-  const isMusic = isAudio || /\.(mp3|wav|flac|m4a|ogg)$/i.test(file.name);
-
-  const systemPrompt = buildSystemPrompt(isMusic);
-  const userMsg = `這是一個本地${isMusic?'音樂':'影片'}檔案：\n檔案名稱：${file.name}\n檔案大小：${(file.size/1048576).toFixed(1)} MB\n檔案類型：${file.type}\n\n請根據檔案名稱推測並分析內容，提供詳細的分析報告。`;
-
-  const raw = await callClaude(systemPrompt, userMsg, false);
-  const parsed = parseJSON(raw, { url: '', platform: 'local' });
-  parsed._localFile = file;
-  parsed._isAudio = isAudio;
-  return parsed;
+  const isAudio = isAudioFile(file);
+  currentUrl = '';
+  currentPlatform = 'local';
+  updateLoadingMsg(`正在讀取本地${isAudio?'音訊':'影片'}內容與媒體資訊...`);
+  const meta = await readMediaMetadata(file, isAudio);
+  let audio = null, video = null;
+  if (isAudio) {
+    updateLoadingMsg('正在計算音量、峰值、靜音比例與聲道資料...');
+    audio = await analyzeAudioBytes(file).catch(error => ({error:error.message}));
+  } else {
+    updateLoadingMsg('正在抽樣影片畫面，計算亮度、對比與場景變化...');
+    video = await analyzeVideoFrames(file, meta).catch(error => ({error:error.message}));
+  }
+  return localTechnicalReport(file, isAudio, meta, audio, video);
 }
+
+function isAudioFile(file){return /^audio\//i.test(file.type||'')||/\.(mp3|wav|flac|m4a|aac|ogg|opus)$/i.test(file.name||'')}
+function formatDuration(seconds){if(!Number.isFinite(seconds)||seconds<0)return '未知';const total=Math.round(seconds),h=Math.floor(total/3600),m=Math.floor(total%3600/60),s=total%60;return h?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${m}:${String(s).padStart(2,'0')}`}
+function readMediaMetadata(file,isAudio){return new Promise(resolve=>{const el=document.createElement(isAudio?'audio':'video'),url=URL.createObjectURL(file),finish=()=>{const out={duration:Number.isFinite(el.duration)?el.duration:null,width:el.videoWidth||null,height:el.videoHeight||null};URL.revokeObjectURL(url);resolve(out)};el.preload='metadata';el.onloadedmetadata=finish;el.onerror=()=>{URL.revokeObjectURL(url);resolve({duration:null,width:null,height:null,error:'瀏覽器無法解碼此格式的媒體資訊'})};el.src=url})}
+async function analyzeAudioBytes(file){if(file.size>180*1024*1024)throw new Error('檔案超過 180 MB，已保留播放與基本資訊，但略過完整波形運算');const Ctx=globalThis.AudioContext||globalThis.webkitAudioContext;if(!Ctx)throw new Error('此瀏覽器不支援 AudioContext');const ctx=new Ctx();try{const buffer=await ctx.decodeAudioData(await file.arrayBuffer()),limit=650000;let sum=0,peak=0,silent=0,count=0,signChanges=0,prev=0;for(let c=0;c<buffer.numberOfChannels;c++){const values=buffer.getChannelData(c),step=Math.max(1,Math.floor(values.length/limit));for(let i=0;i<values.length;i+=step){const v=values[i],a=Math.abs(v);sum+=v*v;if(a>peak)peak=a;if(a<.01)silent++;if(count&&((v>=0)!==(prev>=0)))signChanges++;prev=v;count++}}const rms=Math.sqrt(sum/Math.max(1,count)),db=v=>v>0?20*Math.log10(v):-Infinity;return {duration:buffer.duration,sampleRate:buffer.sampleRate,channels:buffer.numberOfChannels,rmsDb:db(rms),peakDb:db(peak),silenceRatio:silent/Math.max(1,count),crestDb:peak>0&&rms>0?20*Math.log10(peak/rms):0,zeroCrossRatio:signChanges/Math.max(1,count),samplesChecked:count}}finally{await ctx.close().catch(()=>{})}}
+async function analyzeVideoFrames(file,meta){const url=URL.createObjectURL(file),video=document.createElement('video');video.muted=true;video.preload='metadata';video.playsInline=true;video.src=url;try{await new Promise((resolve,reject)=>{video.onloadedmetadata=resolve;video.onerror=()=>reject(new Error('瀏覽器無法解碼影片格式'));setTimeout(()=>reject(new Error('讀取影片逾時')),12000)});const duration=Number.isFinite(video.duration)?video.duration:meta.duration;if(!duration)throw new Error('影片沒有可用時長');const canvas=document.createElement('canvas');canvas.width=160;canvas.height=90;const ctx=canvas.getContext('2d',{willReadFrequently:true}),times=[.05,.2,.35,.5,.65,.8,.95].map(x=>Math.min(Math.max(.05,duration*x),Math.max(.05,duration-.05))),frames=[];for(let n=0;n<times.length;n++){updateLoadingMsg(`正在抽樣影片畫面 ${n+1}/${times.length}...`);video.currentTime=times[n];await new Promise((resolve,reject)=>{const done=()=>{video.removeEventListener('seeked',done);resolve()};video.addEventListener('seeked',done,{once:true});setTimeout(()=>{video.removeEventListener('seeked',done);reject(new Error('影片定位逾時'))},6000)});ctx.drawImage(video,0,0,canvas.width,canvas.height);const pix=ctx.getImageData(0,0,canvas.width,canvas.height).data,lum=[];let sum=0;for(let i=0;i<pix.length;i+=16){const y=.2126*pix[i]+.7152*pix[i+1]+.0722*pix[i+2];lum.push(y);sum+=y}const avg=sum/lum.length,variance=lum.reduce((a,y)=>a+(y-avg)*(y-avg),0)/lum.length;frames.push({avg,contrast:Math.sqrt(variance),lum})}let change=0;for(let i=1;i<frames.length;i++){const a=frames[i-1].lum,b=frames[i].lum;change+=a.reduce((s,x,j)=>s+Math.abs(x-b[j]),0)/a.length}return {duration,width:video.videoWidth,height:video.videoHeight,brightness:frames.reduce((s,x)=>s+x.avg,0)/frames.length,contrast:frames.reduce((s,x)=>s+x.contrast,0)/frames.length,sceneChange:change/Math.max(1,frames.length-1),frames:frames.length}}finally{URL.revokeObjectURL(url)}}
+function localTechnicalReport(file,isAudio,meta,audio,video){
+  const duration=audio?.duration||video?.duration||meta.duration;
+  const sizeMb=file.size/1048576;
+  const title=file.name.replace(/\.[^.]+$/,'');
+  const points=[`檔案：${file.name}（${sizeMb.toFixed(2)} MB，${file.type||'未提供 MIME'}）`,`時長：${formatDuration(duration)}`];
+  let summary,highlights,music=null;
+  const topics=['本機分析','媒體品質'];
+  if(isAudio){
+    if(audio&&!audio.error){
+      points.push(`取樣率 ${audio.sampleRate.toLocaleString()} Hz，${audio.channels} 聲道`);
+      points.push(`平均音量 ${audio.rmsDb.toFixed(1)} dBFS，峰值 ${audio.peakDb.toFixed(1)} dBFS`);
+      points.push(`靜音比例 ${(audio.silenceRatio*100).toFixed(1)}%，峰均差 ${audio.crestDb.toFixed(1)} dB`);
+      summary=`已直接解碼音訊內容並檢查 ${audio.samplesChecked.toLocaleString()} 個波形樣本。平均音量為 ${audio.rmsDb.toFixed(1)} dBFS、峰值 ${audio.peakDb.toFixed(1)} dBFS、靜音比例 ${(audio.silenceRatio*100).toFixed(1)}%。這是依實際音訊位元資料完成的技術分析；瀏覽器端未進行語音轉文字，因此不會猜測人物、歌名或談話內容。`;
+      highlights=audio.peakDb>-.5?'峰值非常接近 0 dBFS，需注意削波或爆音。':audio.silenceRatio>.45?'檔案有較高比例的低音量／靜音片段，可檢查是否需剪輯。':'音量峰值與靜音比例未見明顯極端值。';
+      music={artist:'未從檔案內容辨識',album:'',genre:'未分類',releaseYear:'',mood:'需語意／音樂模型判定',lyricsTheme:'未做語音轉文字',instruments:'未做樂器辨識',tempo:'未計算 BPM'};
+      topics.push('音量','靜音比例','聲道');
+    }
+  }else if(video&&!video.error){
+    points.push(`解析度 ${video.width} × ${video.height}，抽樣 ${video.frames} 個畫面`);
+    points.push(`平均亮度 ${video.brightness.toFixed(0)}/255，畫面對比 ${video.contrast.toFixed(0)}`);
+    points.push(`場景變化指標 ${video.sceneChange.toFixed(1)}/255`);
+    summary=`已直接讀取影片並抽樣 ${video.frames} 個時間點的畫面。解析度為 ${video.width} × ${video.height}，平均亮度 ${video.brightness.toFixed(0)}/255、對比 ${video.contrast.toFixed(0)}、場景變化指標 ${video.sceneChange.toFixed(1)}/255。這些結果來自實際畫面像素；瀏覽器端未做人物辨識或語音轉文字，因此不會臆測影片情節。`;
+    highlights=video.brightness<45?'整體畫面偏暗，建議檢查曝光或提升陰影。':video.brightness>215?'整體畫面偏亮，建議檢查高光是否過曝。':video.sceneChange>55?'抽樣畫面變化較大，剪輯節奏可能較快。':'抽樣畫面的亮度與變化落在一般可用範圍。';
+    topics.push('解析度','亮度','對比','場景變化');
+  }
+  if(!summary){
+    const error=(audio&&audio.error)||(video&&video.error)||meta.error||'瀏覽器無法完整解碼';
+    summary=`已讀取檔案與基本資訊，但進階內容分析未完成：${error}。檔案仍可在下方播放，建議改用 MP4(H.264/AAC)、WebM、MP3 或 WAV 後重試。`;
+    highlights='基本檔案檢查已完成；目前瀏覽器未能解碼進階內容。';
+    points.push(`進階分析：${error}`);
+  }
+  return {title,platform:'本地檔案',creator:'本機上傳',duration:formatDuration(duration),isLong:Number(duration)>=1800,contentType:isAudio?'音樂':'其他',sentiment:'中立',targetAudience:'媒體品質檢查',language:'未做語音辨識',publishDate:'',viewCount:'',summary,highlights,keyPoints:points,chapters:[],topics,music,recommendation:'技術檢查已完成；內容語意、人物與逐字稿需另接語音／視覺模型。',_localFile:file,_isAudio:isAudio};
+}
+async function analyzeUrlWithoutAi(url,platform,error){const p=PLATFORM_META[platform]||PLATFORM_META.unknown,ytId=platform==='youtube'?getYouTubeId(url):null;let title=ytId?`YouTube 影片 ${ytId}`:`${p.name} 連結`,creator='';if(platform==='youtube'){try{const r=await fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`),d=await r.json();if(r.ok){title=d.title||title;creator=d.author_name||''}}catch(ignore){}}return {title,platform:p.name,creator,duration:'未知',isLong:false,contentType:'其他',sentiment:'中立',targetAudience:'連結檢查',language:'未知',publishDate:'',viewCount:'',summary:`連結格式已辨識為 ${p.name}${ytId?'，影片 ID 為 '+ytId:''}。目前未設定伺服器 AI，因此不會假裝已讀取平台受保護的字幕或內容；可先用上方播放器查看，或直接上傳本機影片做實際像素與音訊技術分析。`,highlights:'平台與連結已辨識；未取得的內容不以猜測補值。',keyPoints:[`平台：${p.name}`,`連結：${url}`,creator?`創作者：${creator}`:'創作者：平台未公開回傳','本機檔案分析不需要 AI 金鑰'],chapters:[],topics:['連結檢查',p.name],music:null,recommendation:'如需完整語意摘要，需由平台提供字幕或設定伺服器 AI。',_aiFallback:error?.message||''}}
 
 function buildSystemPrompt(isMusic) {
   const base = `你是一個專業的影片與內容分析師，擅長分析各大平台的影片、音樂、直播等多媒體內容。
