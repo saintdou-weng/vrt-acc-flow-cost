@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>西班牙語零基礎互動課程｜中文使用者版</title>
+<style>
+:root {
+  --bg:#f4f7fb; --card:#ffffff; --ink:#172033; --muted:#667085;
+  --brand:#d62828; --brand2:#f77f00; --line:#e5e7eb; --ok:#137333;
+  --shadow:0 8px 24px rgba(15,23,42,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;line-height:1.65}
+button,input{font:inherit}
+.hero{background:linear-gradient(135deg,#8b0000,#d62828 55%,#f77f00);color:white;padding:34px 18px 28px}
+.hero-inner{max-width:980px;margin:auto}
+.hero h1{font-size:clamp(28px,6vw,48px);margin:0 0 8px;line-height:1.2}
+.hero p{margin:6px 0;font-size:17px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+.badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);padding:6px 10px;border-radius:999px}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:980px;margin:auto;padding:10px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.progress-wrap{flex:1;min-width:180px}
+.progress-label{font-size:13px;color:var(--muted);display:flex;justify-content:space-between}
+.progress{height:10px;background:#e8edf3;border-radius:999px;overflow:hidden}
+.progress > div{height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--brand2));transition:.3s}
+.control{border:1px solid var(--line);background:white;border-radius:10px;padding:7px 10px}
+.container{max-width:980px;margin:18px auto 60px;padding:0 14px}
+.panel,.lesson{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
+.panel h2,.lesson h2{margin:0 0 8px}
+.nav-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px}
+.nav-grid a{text-decoration:none;color:var(--ink);border:1px solid var(--line);background:#fafafa;border-radius:12px;padding:10px}
+.nav-grid a:hover{border-color:var(--brand);color:var(--brand)}
+.lesson-title{display:flex;gap:14px;align-items:flex-start;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:12px}
+.lesson-icon{font-size:38px}
+.study-method{background:#fff7ed;border-left:5px solid var(--brand2);padding:10px 12px;border-radius:10px;margin:12px 0}
+.phrase-card{display:flex;justify-content:space-between;gap:12px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:13px;margin:9px 0;background:#fff}
+.es{font-weight:800;font-size:20px;color:#9b111e}
+.zh{font-size:16px}
+.phon{font-size:13px;color:var(--muted)}
+.warn{font-size:12px}
+.phrase-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.speak,.mini{border:0;background:var(--brand);color:white;border-radius:10px;padding:8px 11px;cursor:pointer}
+.speak.secondary{background:#344054}
+.mini{padding:5px 9px}
+.speak:active,.mini:active{transform:scale(.97)}
+.dialogue-box{border:1px solid #f2c9c9;background:#fffafa;border-radius:14px;padding:12px;margin-top:16px}
+.dialogue-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.dialogue-line{display:grid;grid-template-columns:80px 1fr auto;gap:10px;align-items:start;padding:9px 0;border-top:1px dashed #e9bcbc}
+.role{font-weight:700;color:#7f1d1d}
+.quiz{background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:13px;margin-top:15px}
+.quiz-options{display:flex;gap:8px;flex-wrap:wrap}
+.quiz-option{border:1px solid #cfd5df;background:white;border-radius:10px;padding:9px 12px;cursor:pointer}
+.quiz-option.correct{background:#e9f7ec;border-color:#65a30d}
+.quiz-option.wrong{background:#fdecec;border-color:#dc2626}
+.quiz-result{min-height:26px;margin-top:8px;font-weight:700}
+.complete-row{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-weight:700}
+.plan-table{width:100%;border-collapse:collapse}
+.plan-table th,.plan-table td{border:1px solid var(--line);padding:9px;text-align:left;vertical-align:top}
+.plan-table th{background:#f1f5f9}
+.big-note{font-size:18px;background:#ecfdf3;border-left:5px solid var(--ok);padding:12px;border-radius:10px}
+.footer{text-align:center;color:var(--muted);padding:20px}
+@media (max-width:680px){
+  .phrase-card{display:block}
+  .phrase-actions{justify-content:flex-start;margin-top:9px}
+  .dialogue-line{grid-template-columns:64px 1fr auto}
+  .panel,.lesson{padding:15px;border-radius:14px}
+}
+@media print{
+  .topbar,.speak,.mini,.quiz-option{display:none!important}
+  body{background:white}
+  .panel,.lesson{box-shadow:none;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <h1>🇪🇸 西班牙語零基礎互動課程</h1>
+    <p>給「完全不會、怕記不住、開口困難」的成人學習者。</p>
+    <p>不先背文法；先學今天就能用的句子，再慢慢理解規則。</p>
+    <div class="badges">
+      <span class="badge">🔊 可點擊朗讀</span>
+      <span class="badge">📱 手機可用</span>
+      <span class="badge">🧠 少量重複</span>
+      <span class="badge">🗣️ 生活會話</span>
+      <span class="badge">💾 自動記錄進度</span>
+    </div>
+  </div>
+</header>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="progress-wrap">
+      <div class="progress-label"><span>學習進度</span><span id="progressText">0 / 12 課</span></div>
+      <div class="progress"><div id="progressBar"></div></div>
+    </div>
+    <label class="control">語速
+      <select id="rateSelect" onchange="setBaseRate(this.value)">
+        <option value="0.70">很慢</option>
+        <option value="0.82" selected>慢速</option>
+        <option value="1.00">正常</option>
+      </select>
+    </label>
+    <button class="control" onclick="stopSpeech()">⏹ 停止朗讀</button>
+  </div>
+</div>
+
+<main class="container">
+  <section class="panel">
+    <h2>先知道這3件事</h2>
+    <div class="big-note">
+      ① 50歲不代表學不會，只是需要「少量、重複、固定情境」。<br>
+      ② 每天15分鐘，比一週一次學2小時有效。<br>
+      ③ 先求敢說，不求完美。對方聽得懂，就是成功。
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>使用方法</h2>
+    <p><b>每天只做一小段：</b>先聽、再跟讀、最後不看中文說。每句不超過5次，不要一次硬背很多。</p>
+    <p><b>語音：</b>按「🔊 慢速」可聽西班牙語。若沒有聲音，請用 Chrome 或手機瀏覽器開啟，並確認媒體音量。</p>
+    <p><b>中文近似音：</b>只能幫助第一次開口，不能完全代表真正發音。熟悉後要以按鈕語音為準。</p>
+  </section>
+
+  <section class="panel">
+    <h2>最重要的發音規則</h2>
+    <table class="plan-table">
+      <tr><th>字母／組合</th><th>大致聲音</th><th>例子</th></tr>
+      <tr><td>a, e, i, o, u</td><td>大致固定，不像英文常變</td><td>casa、mesa、vino</td></tr>
+      <tr><td>h</td><td>通常不發音</td><td>hola ≈「哦拉」</td></tr>
+      <tr><td>j</td><td>像較重的「哈／赫」</td><td>José</td></tr>
+      <tr><td>ll</td><td>多數地方像「y」音</td><td>me llamo</td></tr>
+      <tr><td>ñ</td><td>像「ny」</td><td>niño</td></tr>
+      <tr><td>r / rr</td><td>r輕彈舌；rr較強顫音</td><td>pero / perro</td></tr>
+    </table>
+  </section>
+
+  <section class="panel">
+    <h2>課程目錄</h2>
+    <div class="nav-grid"><a href="#L1">👋 問候與道別</a><a href="#L2">🙋 自我介紹</a><a href="#L3">🙏 禮貌與求助</a><a href="#L4">🔢 數字、價錢與時間</a><a href="#L5">👨‍👩‍👧 家人與人物</a><a href="#L6">🍽️ 餐廳點餐</a><a href="#L7">🛍️ 買東西與尺寸</a><a href="#L8">🗺️ 問路與位置</a><a href="#L9">🚕 交通與搭車</a><a href="#L10">🏨 飯店與日常需求</a><a href="#L11">🩺 身體不舒服與緊急情況</a><a href="#L12">🧩 整合實戰</a></div>
+  </section>
+
+  
+    <section class="lesson" id="L1">
+      <div class="lesson-title">
+        <span class="lesson-icon">👋</span>
+        <div><h2>第1課｜問候與道別</h2><p><b>本課目標：</b>能聽懂並說出最常見的問候、道別。</p></div>
+      </div>
+      <div class="study-method">
+        <b>本課學法：</b>先按「慢速」聽3次 → 看中文跟讀5次 → 關掉中文，只看西班牙文說3次。
+      </div>
+      
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Hola</div>
+            <div class="zh">你好／嗨</div>
+            <div class="phon">中文近似音：哦拉 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Hola", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Hola", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Buenos días</div>
+            <div class="zh">早安</div>
+            <div class="phon">中文近似音：布耶諾斯・迪阿斯 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Buenos días", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Buenos días", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Buenas tardes</div>
+            <div class="zh">午安／下午好</div>
+            <div class="phon">中文近似音：布耶納斯・塔爾得斯 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Buenas tardes", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Buenas tardes", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Buenas noches</div>
+            <div class="zh">晚安／晚上好</div>
+            <div class="phon">中文近似音：布耶納斯・諾切斯 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Buenas noches", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Buenas noches", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">¿Cómo estás?</div>
+            <div class="zh">你好嗎？（熟人）</div>
+            <div class="phon">中文近似音：摳摸・欸斯搭斯 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("¿Cómo estás?", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("¿Cómo estás?", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Estoy bien</div>
+            <div class="zh">我很好</div>
+            <div class="phon">中文近似音：欸斯多伊・比恩 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Estoy bien", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Estoy bien", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Gracias</div>
+            <div class="zh">謝謝</div>
+            <div class="phon">中文近似音：葛拉西阿斯 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Gracias", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Gracias", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Adiós</div>
+            <div class="zh">再見</div>
+            <div class="phon">中文近似音：阿迪歐斯 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Adiós", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Adiós", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Hasta luego</div>
+            <div class="zh">待會見／下次見</div>
+            <div class="phon">中文近似音：阿斯塔・盧欸勾 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Hasta luego", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Hasta luego", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+      
+      <div class="dialogue-box">
+        <div class="dialogue-head">
+          <b>🎭 情境對話</b>
+          <button class="speak" onclick="speakText("Hola. ¿Cómo estás? Estoy bien, gracias. ¿Y tú? Muy bien. Hasta luego. Adiós.", 0.82)">🔊 全段播放</button>
+        </div>
+        
+        <div class="dialogue-line">
+          <span class="role">A</span>
+          <div><b>Hola. ¿Cómo estás?</b><br><span>嗨，你好嗎？</span></div>
+          <button class="mini" onclick="speakText("Hola. ¿Cómo estás?", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">B</span>
+          <div><b>Estoy bien, gracias. ¿Y tú?</b><br><span>我很好，謝謝。你呢？</span></div>
+          <button class="mini" onclick="speakText("Estoy bien, gracias. ¿Y tú?", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">A</span>
+          <div><b>Muy bien. Hasta luego.</b><br><span>很好。下次見。</span></div>
+          <button class="mini" onclick="speakText("Muy bien. Hasta luego.", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">B</span>
+          <div><b>Adiós.</b><br><span>再見。</span></div>
+          <button class="mini" onclick="speakText("Adiós.", 0.82)">🔊</button>
+        </div>
+      </div>
+      
+    <div class="quiz" data-lesson="L1">
+      <b>✅ 小測驗</b>
+      <p>「謝謝」是哪一句？</p>
+      <div class="quiz-options"><button class="quiz-option" onclick="answerQuiz(this,0,1,'L1')">Adiós</button><button class="quiz-option" onclick="answerQuiz(this,1,1,'L1')">Gracias</button><button class="quiz-option" onclick="answerQuiz(this,2,1,'L1')">Hola</button></div>
+      <div class="quiz-result" id="result-L1"></div>
+    </div>
+      <div class="complete-row">
+        <label><input type="checkbox" class="complete-check" data-id="L1" onchange="saveProgress()"> 我已完成本課</label>
+      </div>
+    </section>
+    
+    <section class="lesson" id="L2">
+      <div class="lesson-title">
+        <span class="lesson-icon">🙋</span>
+        <div><h2>第2課｜自我介紹</h2><p><b>本課目標：</b>能說姓名、國籍、住在哪裡。</p></div>
+      </div>
+      <div class="study-method">
+        <b>本課學法：</b>先按「慢速」聽3次 → 看中文跟讀5次 → 關掉中文，只看西班牙文說3次。
+      </div>
+      
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Me llamo Paul</div>
+            <div class="zh">我叫 Paul</div>
+            <div class="phon">中文近似音：咩・雅摸・Paul <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Me llamo Paul", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Me llamo Paul", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">¿Cómo te llamas?</div>
+            <div class="zh">你叫什麼名字？</div>
+            <div class="phon">中文近似音：摳摸・得・雅馬斯 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("¿Cómo te llamas?", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("¿Cómo te llamas?", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Soy de Taiwán</div>
+            <div class="zh">我來自台灣</div>
+            <div class="phon">中文近似音：索伊・得・台灣 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Soy de Taiwán", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Soy de Taiwán", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Vivo en Camboya</div>
+            <div class="zh">我住在柬埔寨</div>
+            <div class="phon">中文近似音：比波・恩・甘波雅 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Vivo en Camboya", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Vivo en Camboya", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Tengo cincuenta años</div>
+            <div class="zh">我50歲</div>
+            <div class="phon">中文近似音：登勾・辛關達・阿紐斯 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Tengo cincuenta años", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Tengo cincuenta años", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Mucho gusto</div>
+            <div class="zh">很高興認識你</div>
+            <div class="phon">中文近似音：木啾・古斯多 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Mucho gusto", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Mucho gusto", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Igualmente</div>
+            <div class="zh">我也一樣／彼此彼此</div>
+            <div class="phon">中文近似音：伊瓜門得 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Igualmente", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Igualmente", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+      
+      <div class="dialogue-box">
+        <div class="dialogue-head">
+          <b>🎭 情境對話</b>
+          <button class="speak" onclick="speakText("Hola. ¿Cómo te llamas? Me llamo Paul. Mucho gusto. Igualmente. ¿De dónde eres? Soy de Taiwán. Vivo en Camboya.", 0.82)">🔊 全段播放</button>
+        </div>
+        
+        <div class="dialogue-line">
+          <span class="role">A</span>
+          <div><b>Hola. ¿Cómo te llamas?</b><br><span>你好，你叫什麼名字？</span></div>
+          <button class="mini" onclick="speakText("Hola. ¿Cómo te llamas?", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">B</span>
+          <div><b>Me llamo Paul. Mucho gusto.</b><br><span>我叫 Paul，很高興認識你。</span></div>
+          <button class="mini" onclick="speakText("Me llamo Paul. Mucho gusto.", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">A</span>
+          <div><b>Igualmente. ¿De dónde eres?</b><br><span>我也很高興。你來自哪裡？</span></div>
+          <button class="mini" onclick="speakText("Igualmente. ¿De dónde eres?", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">B</span>
+          <div><b>Soy de Taiwán. Vivo en Camboya.</b><br><span>我來自台灣，住在柬埔寨。</span></div>
+          <button class="mini" onclick="speakText("Soy de Taiwán. Vivo en Camboya.", 0.82)">🔊</button>
+        </div>
+      </div>
+      
+    <div class="quiz" data-lesson="L2">
+      <b>✅ 小測驗</b>
+      <p>「我叫……」是哪一句？</p>
+      <div class="quiz-options"><button class="quiz-option" onclick="answerQuiz(this,0,0,'L2')">Me llamo…</button><button class="quiz-option" onclick="answerQuiz(this,1,0,'L2')">Vivo en…</button><button class="quiz-option" onclick="answerQuiz(this,2,0,'L2')">Soy de…</button></div>
+      <div class="quiz-result" id="result-L2"></div>
+    </div>
+      <div class="complete-row">
+        <label><input type="checkbox" class="complete-check" data-id="L2" onchange="saveProgress()"> 我已完成本課</label>
+      </div>
+    </section>
+    
+    <section class="lesson" id="L3">
+      <div class="lesson-title">
+        <span class="lesson-icon">🙏</span>
+        <div><h2>第3課｜禮貌與求助</h2><p><b>本課目標：</b>能用最基本的禮貌句，聽不懂時也能自救。</p></div>
+      </div>
+      <div class="study-method">
+        <b>本課學法：</b>先按「慢速」聽3次 → 看中文跟讀5次 → 關掉中文，只看西班牙文說3次。
+      </div>
+      
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Por favor</div>
+            <div class="zh">請</div>
+            <div class="phon">中文近似音：波爾・法波爾 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Por favor", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Por favor", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Perdón</div>
+            <div class="zh">對不起／借過</div>
+            <div class="phon">中文近似音：貝爾東 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Perdón", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Perdón", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Disculpe</div>
+            <div class="zh">不好意思（較禮貌）</div>
+            <div class="phon">中文近似音：迪斯古佩 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Disculpe", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Disculpe", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">No entiendo</div>
+            <div class="zh">我聽不懂</div>
+            <div class="phon">中文近似音：諾・恩迪恩多 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("No entiendo", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("No entiendo", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Más despacio, por favor</div>
+            <div class="zh">請說慢一點</div>
+            <div class="phon">中文近似音：馬斯・得斯帕西歐・波爾法波爾 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Más despacio, por favor", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Más despacio, por favor", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Repita, por favor</div>
+            <div class="zh">請再說一次</div>
+            <div class="phon">中文近似音：雷皮達・波爾法波爾 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Repita, por favor", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Repita, por favor", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">¿Habla inglés?</div>
+            <div class="zh">你會說英文嗎？</div>
+            <div class="phon">中文近似音：阿布拉・英格雷斯 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("¿Habla inglés?", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("¿Habla inglés?", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Necesito ayuda</div>
+            <div class="zh">我需要幫助</div>
+            <div class="phon">中文近似音：內塞西多・阿尤達 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Necesito ayuda", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Necesito ayuda", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+      
+      <div class="dialogue-box">
+        <div class="dialogue-head">
+          <b>🎭 情境對話</b>
+          <button class="speak" onclick="speakText("Disculpe. ¿Habla inglés? Un poco. No entiendo. Más despacio, por favor. Claro.", 0.82)">🔊 全段播放</button>
+        </div>
+        
+        <div class="dialogue-line">
+          <span class="role">A</span>
+          <div><b>Disculpe. ¿Habla inglés?</b><br><span>不好意思，你會說英文嗎？</span></div>
+          <button class="mini" onclick="speakText("Disculpe. ¿Habla inglés?", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">B</span>
+          <div><b>Un poco.</b><br><span>一點點。</span></div>
+          <button class="mini" onclick="speakText("Un poco.", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">A</span>
+          <div><b>No entiendo. Más despacio, por favor.</b><br><span>我聽不懂，請說慢一點。</span></div>
+          <button class="mini" onclick="speakText("No entiendo. Más despacio, por favor.", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">B</span>
+          <div><b>Claro.</b><br><span>當然。</span></div>
+          <button class="mini" onclick="speakText("Claro.", 0.82)">🔊</button>
+        </div>
+      </div>
+      
+    <div class="quiz" data-lesson="L3">
+      <b>✅ 小測驗</b>
+      <p>聽不懂時應說哪一句？</p>
+      <div class="quiz-options"><button class="quiz-option" onclick="answerQuiz(this,0,0,'L3')">No entiendo</button><button class="quiz-option" onclick="answerQuiz(this,1,0,'L3')">Mucho gusto</button><button class="quiz-option" onclick="answerQuiz(this,2,0,'L3')">Hasta luego</button></div>
+      <div class="quiz-result" id="result-L3"></div>
+    </div>
+      <div class="complete-row">
+        <label><input type="checkbox" class="complete-check" data-id="L3" onchange="saveProgress()"> 我已完成本課</label>
+      </div>
+    </section>
+    
+    <section class="lesson" id="L4">
+      <div class="lesson-title">
+        <span class="lesson-icon">🔢</span>
+        <div><h2>第4課｜數字、價錢與時間</h2><p><b>本課目標：</b>能聽懂0–20、問價錢及時間。</p></div>
+      </div>
+      <div class="study-method">
+        <b>本課學法：</b>先按「慢速」聽3次 → 看中文跟讀5次 → 關掉中文，只看西班牙文說3次。
+      </div>
+      
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">cero, uno, dos, tres, cuatro, cinco</div>
+            <div class="zh">0、1、2、3、4、5</div>
+            <div class="phon">中文近似音：塞羅、烏諾、多斯、得雷斯、瓜得羅、辛摳 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("cero, uno, dos, tres, cuatro, cinco", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("cero, uno, dos, tres, cuatro, cinco", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">seis, siete, ocho, nueve, diez</div>
+            <div class="zh">6、7、8、9、10</div>
+            <div class="phon">中文近似音：塞伊斯、西耶得、歐啾、努耶貝、迪耶斯 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("seis, siete, ocho, nueve, diez", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("seis, siete, ocho, nueve, diez", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">once, doce, trece, catorce, quince</div>
+            <div class="zh">11、12、13、14、15</div>
+            <div class="phon">中文近似音：翁塞、多塞、得雷塞、嘎多爾塞、金塞 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("once, doce, trece, catorce, quince", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("once, doce, trece, catorce, quince", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">dieciséis, diecisiete, dieciocho, diecinueve, veinte</div>
+            <div class="zh">16、17、18、19、20</div>
+            <div class="phon">中文近似音：迪耶西塞伊斯……貝因得 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("dieciséis, diecisiete, dieciocho, diecinueve, veinte", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("dieciséis, diecisiete, dieciocho, diecinueve, veinte", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">¿Cuánto cuesta?</div>
+            <div class="zh">多少錢？</div>
+            <div class="phon">中文近似音：關多・古耶斯達 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("¿Cuánto cuesta?", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("¿Cuánto cuesta?", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Cuesta diez dólares</div>
+            <div class="zh">10美元</div>
+            <div class="phon">中文近似音：古耶斯達・迪耶斯・多拉雷斯 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Cuesta diez dólares", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Cuesta diez dólares", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">¿Qué hora es?</div>
+            <div class="zh">現在幾點？</div>
+            <div class="phon">中文近似音：給・歐拉・欸斯 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("¿Qué hora es?", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("¿Qué hora es?", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Son las tres</div>
+            <div class="zh">現在3點</div>
+            <div class="phon">中文近似音：松・拉斯・得雷斯 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Son las tres", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Son las tres", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+      
+      <div class="dialogue-box">
+        <div class="dialogue-head">
+          <b>🎭 情境對話</b>
+          <button class="speak" onclick="speakText("¿Cuánto cuesta? Cuesta quince dólares. Está bien.", 0.82)">🔊 全段播放</button>
+        </div>
+        
+        <div class="dialogue-line">
+          <span class="role">A</span>
+          <div><b>¿Cuánto cuesta?</b><br><span>多少錢？</span></div>
+          <button class="mini" onclick="speakText("¿Cuánto cuesta?", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">B</span>
+          <div><b>Cuesta quince dólares.</b><br><span>15美元。</span></div>
+          <button class="mini" onclick="speakText("Cuesta quince dólares.", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">A</span>
+          <div><b>Está bien.</b><br><span>可以／好。</span></div>
+          <button class="mini" onclick="speakText("Está bien.", 0.82)">🔊</button>
+        </div>
+      </div>
+      
+    <div class="quiz" data-lesson="L4">
+      <b>✅ 小測驗</b>
+      <p>veinte 是多少？</p>
+      <div class="quiz-options"><button class="quiz-option" onclick="answerQuiz(this,0,2,'L4')">12</button><button class="quiz-option" onclick="answerQuiz(this,1,2,'L4')">15</button><button class="quiz-option" onclick="answerQuiz(this,2,2,'L4')">20</button></div>
+      <div class="quiz-result" id="result-L4"></div>
+    </div>
+      <div class="complete-row">
+        <label><input type="checkbox" class="complete-check" data-id="L4" onchange="saveProgress()"> 我已完成本課</label>
+      </div>
+    </section>
+    
+    <section class="lesson" id="L5">
+      <div class="lesson-title">
+        <span class="lesson-icon">👨‍👩‍👧</span>
+        <div><h2>第5課｜家人與人物</h2><p><b>本課目標：</b>能簡單介紹家人及描述人物。</p></div>
+      </div>
+      <div class="study-method">
+        <b>本課學法：</b>先按「慢速」聽3次 → 看中文跟讀5次 → 關掉中文，只看西班牙文說3次。
+      </div>
+      
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Mi esposa</div>
+            <div class="zh">我的太太</div>
+            <div class="phon">中文近似音：米・欸斯波薩 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Mi esposa", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Mi esposa", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Mi esposo</div>
+            <div class="zh">我的先生</div>
+            <div class="phon">中文近似音：米・欸斯波索 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Mi esposo", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Mi esposo", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Mi hijo</div>
+            <div class="zh">我的兒子</div>
+            <div class="phon">中文近似音：米・伊霍 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Mi hijo", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Mi hijo", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Mi hija</div>
+            <div class="zh">我的女兒</div>
+            <div class="phon">中文近似音：米・伊哈 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Mi hija", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Mi hija", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Mi familia</div>
+            <div class="zh">我的家人／家庭</div>
+            <div class="phon">中文近似音：米・法米利亞 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Mi familia", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Mi familia", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Él es mi amigo</div>
+            <div class="zh">他是我的朋友</div>
+            <div class="phon">中文近似音：欸爾・欸斯・米・阿米勾 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Él es mi amigo", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Él es mi amigo", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Ella es mi amiga</div>
+            <div class="zh">她是我的朋友</div>
+            <div class="phon">中文近似音：欸雅・欸斯・米・阿米嘎 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Ella es mi amiga", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Ella es mi amiga", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Tengo dos hijos</div>
+            <div class="zh">我有兩個孩子</div>
+            <div class="phon">中文近似音：登勾・多斯・伊霍斯 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Tengo dos hijos", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Tengo dos hijos", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+      
+      <div class="dialogue-box">
+        <div class="dialogue-head">
+          <b>🎭 情境對話</b>
+          <button class="speak" onclick="speakText("¿Tienes hijos? Sí. Tengo dos hijos. ¿Viven contigo? Sí, vivimos juntos.", 0.82)">🔊 全段播放</button>
+        </div>
+        
+        <div class="dialogue-line">
+          <span class="role">A</span>
+          <div><b>¿Tienes hijos?</b><br><span>你有孩子嗎？</span></div>
+          <button class="mini" onclick="speakText("¿Tienes hijos?", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">B</span>
+          <div><b>Sí. Tengo dos hijos.</b><br><span>有，我有兩個孩子。</span></div>
+          <button class="mini" onclick="speakText("Sí. Tengo dos hijos.", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">A</span>
+          <div><b>¿Viven contigo?</b><br><span>他們跟你住嗎？</span></div>
+          <button class="mini" onclick="speakText("¿Viven contigo?", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">B</span>
+          <div><b>Sí, vivimos juntos.</b><br><span>是，我們住在一起。</span></div>
+          <button class="mini" onclick="speakText("Sí, vivimos juntos.", 0.82)">🔊</button>
+        </div>
+      </div>
+      
+    <div class="quiz" data-lesson="L5">
+      <b>✅ 小測驗</b>
+      <p>「我的太太」是哪一句？</p>
+      <div class="quiz-options"><button class="quiz-option" onclick="answerQuiz(this,0,0,'L5')">Mi esposa</button><button class="quiz-option" onclick="answerQuiz(this,1,0,'L5')">Mi hija</button><button class="quiz-option" onclick="answerQuiz(this,2,0,'L5')">Mi amiga</button></div>
+      <div class="quiz-result" id="result-L5"></div>
+    </div>
+      <div class="complete-row">
+        <label><input type="checkbox" class="complete-check" data-id="L5" onchange="saveProgress()"> 我已完成本課</label>
+      </div>
+    </section>
+    
+    <section class="lesson" id="L6">
+      <div class="lesson-title">
+        <span class="lesson-icon">🍽️</span>
+        <div><h2>第6課｜餐廳點餐</h2><p><b>本課目標：</b>能點飲料、主餐、結帳並表達喜好。</p></div>
+      </div>
+      <div class="study-method">
+        <b>本課學法：</b>先按「慢速」聽3次 → 看中文跟讀5次 → 關掉中文，只看西班牙文說3次。
+      </div>
+      
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Quiero agua</div>
+            <div class="zh">我要水</div>
+            <div class="phon">中文近似音：基耶羅・阿瓜 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Quiero agua", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Quiero agua", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Quisiera un café</div>
+            <div class="zh">我想要一杯咖啡（較禮貌）</div>
+            <div class="phon">中文近似音：基西耶拉・溫・嘎費 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Quisiera un café", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Quisiera un café", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">La carta, por favor</div>
+            <div class="zh">請給我菜單</div>
+            <div class="phon">中文近似音：拉・嘎爾達・波爾法波爾 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("La carta, por favor", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("La carta, por favor", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Sin azúcar</div>
+            <div class="zh">不要糖</div>
+            <div class="phon">中文近似音：辛・阿蘇嘎爾 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Sin azúcar", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Sin azúcar", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Sin picante</div>
+            <div class="zh">不要辣</div>
+            <div class="phon">中文近似音：辛・皮甘得 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Sin picante", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Sin picante", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Está muy rico</div>
+            <div class="zh">很好吃</div>
+            <div class="phon">中文近似音：欸斯搭・木伊・里摳 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Está muy rico", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Está muy rico", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">La cuenta, por favor</div>
+            <div class="zh">請結帳</div>
+            <div class="phon">中文近似音：拉・關達・波爾法波爾 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("La cuenta, por favor", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("La cuenta, por favor", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">¿Aceptan tarjeta?</div>
+            <div class="zh">可以刷卡嗎？</div>
+            <div class="phon">中文近似音：阿塞普丹・達爾黑達 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("¿Aceptan tarjeta?", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("¿Aceptan tarjeta?", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+      
+      <div class="dialogue-box">
+        <div class="dialogue-head">
+          <b>🎭 情境對話</b>
+          <button class="speak" onclick="speakText("¿Qué desea? Quisiera pollo y agua, por favor. ¿Con picante? No. Sin picante, por favor.", 0.82)">🔊 全段播放</button>
+        </div>
+        
+        <div class="dialogue-line">
+          <span class="role">Camarero</span>
+          <div><b>¿Qué desea?</b><br><span>您要什麼？</span></div>
+          <button class="mini" onclick="speakText("¿Qué desea?", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">Cliente</span>
+          <div><b>Quisiera pollo y agua, por favor.</b><br><span>我想要雞肉和水，謝謝。</span></div>
+          <button class="mini" onclick="speakText("Quisiera pollo y agua, por favor.", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">Camarero</span>
+          <div><b>¿Con picante?</b><br><span>要辣嗎？</span></div>
+          <button class="mini" onclick="speakText("¿Con picante?", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">Cliente</span>
+          <div><b>No. Sin picante, por favor.</b><br><span>不要，請不要辣。</span></div>
+          <button class="mini" onclick="speakText("No. Sin picante, por favor.", 0.82)">🔊</button>
+        </div>
+      </div>
+      
+    <div class="quiz" data-lesson="L6">
+      <b>✅ 小測驗</b>
+      <p>結帳時應說哪一句？</p>
+      <div class="quiz-options"><button class="quiz-option" onclick="answerQuiz(this,0,1,'L6')">La carta, por favor</button><button class="quiz-option" onclick="answerQuiz(this,1,1,'L6')">La cuenta, por favor</button><button class="quiz-option" onclick="answerQuiz(this,2,1,'L6')">Está muy rico</button></div>
+      <div class="quiz-result" id="result-L6"></div>
+    </div>
+      <div class="complete-row">
+        <label><input type="checkbox" class="complete-check" data-id="L6" onchange="saveProgress()"> 我已完成本課</label>
+      </div>
+    </section>
+    
+    <section class="lesson" id="L7">
+      <div class="lesson-title">
+        <span class="lesson-icon">🛍️</span>
+        <div><h2>第7課｜買東西與尺寸</h2><p><b>本課目標：</b>能問價錢、尺寸、顏色及試穿。</p></div>
+      </div>
+      <div class="study-method">
+        <b>本課學法：</b>先按「慢速」聽3次 → 看中文跟讀5次 → 關掉中文，只看西班牙文說3次。
+      </div>
+      
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Quiero esto</div>
+            <div class="zh">我要這個</div>
+            <div class="phon">中文近似音：基耶羅・欸斯多 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Quiero esto", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Quiero esto", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">¿Tiene otra talla?</div>
+            <div class="zh">有別的尺寸嗎？</div>
+            <div class="phon">中文近似音：迪耶內・歐得拉・達雅 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("¿Tiene otra talla?", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("¿Tiene otra talla?", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">¿Tiene otro color?</div>
+            <div class="zh">有別的顏色嗎？</div>
+            <div class="phon">中文近似音：迪耶內・歐得羅・摳洛爾 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("¿Tiene otro color?", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("¿Tiene otro color?", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Grande / mediano / pequeño</div>
+            <div class="zh">大／中／小</div>
+            <div class="phon">中文近似音：格蘭得／梅迪阿諾／貝給紐 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Grande / mediano / pequeño", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Grande / mediano / pequeño", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">¿Puedo probarlo?</div>
+            <div class="zh">我可以試穿嗎？</div>
+            <div class="phon">中文近似音：普耶多・普羅巴爾洛 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("¿Puedo probarlo?", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("¿Puedo probarlo?", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Es muy caro</div>
+            <div class="zh">太貴了</div>
+            <div class="phon">中文近似音：欸斯・木伊・嘎羅 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Es muy caro", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Es muy caro", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">¿Hay descuento?</div>
+            <div class="zh">有折扣嗎？</div>
+            <div class="phon">中文近似音：艾・得斯關多 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("¿Hay descuento?", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("¿Hay descuento?", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Me lo llevo</div>
+            <div class="zh">我要買了／我帶走</div>
+            <div class="phon">中文近似音：咩・洛・耶波 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Me lo llevo", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Me lo llevo", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+      
+      <div class="dialogue-box">
+        <div class="dialogue-head">
+          <b>🎭 情境對話</b>
+          <button class="speak" onclick="speakText("¿Cuánto cuesta esta camisa? Veinte dólares. ¿Tiene otra talla? Sí, mediano y grande.", 0.82)">🔊 全段播放</button>
+        </div>
+        
+        <div class="dialogue-line">
+          <span class="role">Cliente</span>
+          <div><b>¿Cuánto cuesta esta camisa?</b><br><span>這件襯衫多少錢？</span></div>
+          <button class="mini" onclick="speakText("¿Cuánto cuesta esta camisa?", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">Vendedor</span>
+          <div><b>Veinte dólares.</b><br><span>20美元。</span></div>
+          <button class="mini" onclick="speakText("Veinte dólares.", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">Cliente</span>
+          <div><b>¿Tiene otra talla?</b><br><span>有別的尺寸嗎？</span></div>
+          <button class="mini" onclick="speakText("¿Tiene otra talla?", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">Vendedor</span>
+          <div><b>Sí, mediano y grande.</b><br><span>有，中號和大號。</span></div>
+          <button class="mini" onclick="speakText("Sí, mediano y grande.", 0.82)">🔊</button>
+        </div>
+      </div>
+      
+    <div class="quiz" data-lesson="L7">
+      <b>✅ 小測驗</b>
+      <p>「太貴了」是哪一句？</p>
+      <div class="quiz-options"><button class="quiz-option" onclick="answerQuiz(this,0,0,'L7')">Es muy caro</button><button class="quiz-option" onclick="answerQuiz(this,1,0,'L7')">Me lo llevo</button><button class="quiz-option" onclick="answerQuiz(this,2,0,'L7')">Quiero esto</button></div>
+      <div class="quiz-result" id="result-L7"></div>
+    </div>
+      <div class="complete-row">
+        <label><input type="checkbox" class="complete-check" data-id="L7" onchange="saveProgress()"> 我已完成本課</label>
+      </div>
+    </section>
+    
+    <section class="lesson" id="L8">
+      <div class="lesson-title">
+        <span class="lesson-icon">🗺️</span>
+        <div><h2>第8課｜問路與位置</h2><p><b>本課目標：</b>能問洗手間、飯店、銀行等位置。</p></div>
+      </div>
+      <div class="study-method">
+        <b>本課學法：</b>先按「慢速」聽3次 → 看中文跟讀5次 → 關掉中文，只看西班牙文說3次。
+      </div>
+      
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">¿Dónde está el baño?</div>
+            <div class="zh">洗手間在哪裡？</div>
+            <div class="phon">中文近似音：東得・欸斯搭・欸爾・巴紐 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("¿Dónde está el baño?", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("¿Dónde está el baño?", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">¿Dónde está el hotel?</div>
+            <div class="zh">飯店在哪裡？</div>
+            <div class="phon">中文近似音：東得・欸斯搭・欸爾・歐得爾 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("¿Dónde está el hotel?", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("¿Dónde está el hotel?", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">A la derecha</div>
+            <div class="zh">在右邊／向右</div>
+            <div class="phon">中文近似音：阿・拉・得雷恰 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("A la derecha", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("A la derecha", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">A la izquierda</div>
+            <div class="zh">在左邊／向左</div>
+            <div class="phon">中文近似音：阿・拉・伊斯基耶爾達 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("A la izquierda", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("A la izquierda", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Todo recto</div>
+            <div class="zh">一直走</div>
+            <div class="phon">中文近似音：多多・雷克多 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Todo recto", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Todo recto", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Cerca</div>
+            <div class="zh">近</div>
+            <div class="phon">中文近似音：塞爾嘎 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Cerca", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Cerca", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Lejos</div>
+            <div class="zh">遠</div>
+            <div class="phon">中文近似音：雷霍斯 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Lejos", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Lejos", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Aquí / allí</div>
+            <div class="zh">這裡／那裡</div>
+            <div class="phon">中文近似音：阿基／阿依 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Aquí / allí", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Aquí / allí", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+      
+      <div class="dialogue-box">
+        <div class="dialogue-head">
+          <b>🎭 情境對話</b>
+          <button class="speak" onclick="speakText("Disculpe. ¿Dónde está el baño? Todo recto y a la derecha. ¿Está lejos? No, está cerca.", 0.82)">🔊 全段播放</button>
+        </div>
+        
+        <div class="dialogue-line">
+          <span class="role">A</span>
+          <div><b>Disculpe. ¿Dónde está el baño?</b><br><span>不好意思，洗手間在哪裡？</span></div>
+          <button class="mini" onclick="speakText("Disculpe. ¿Dónde está el baño?", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">B</span>
+          <div><b>Todo recto y a la derecha.</b><br><span>一直走，然後在右邊。</span></div>
+          <button class="mini" onclick="speakText("Todo recto y a la derecha.", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">A</span>
+          <div><b>¿Está lejos?</b><br><span>很遠嗎？</span></div>
+          <button class="mini" onclick="speakText("¿Está lejos?", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">B</span>
+          <div><b>No, está cerca.</b><br><span>不，很近。</span></div>
+          <button class="mini" onclick="speakText("No, está cerca.", 0.82)">🔊</button>
+        </div>
+      </div>
+      
+    <div class="quiz" data-lesson="L8">
+      <b>✅ 小測驗</b>
+      <p>a la izquierda 是哪個方向？</p>
+      <div class="quiz-options"><button class="quiz-option" onclick="answerQuiz(this,0,1,'L8')">右邊</button><button class="quiz-option" onclick="answerQuiz(this,1,1,'L8')">左邊</button><button class="quiz-option" onclick="answerQuiz(this,2,1,'L8')">直走</button></div>
+      <div class="quiz-result" id="result-L8"></div>
+    </div>
+      <div class="complete-row">
+        <label><input type="checkbox" class="complete-check" data-id="L8" onchange="saveProgress()"> 我已完成本課</label>
+      </div>
+    </section>
+    
+    <section class="lesson" id="L9">
+      <div class="lesson-title">
+        <span class="lesson-icon">🚕</span>
+        <div><h2>第9課｜交通與搭車</h2><p><b>本課目標：</b>能搭計程車、說目的地及詢問車程。</p></div>
+      </div>
+      <div class="study-method">
+        <b>本課學法：</b>先按「慢速」聽3次 → 看中文跟讀5次 → 關掉中文，只看西班牙文說3次。
+      </div>
+      
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Necesito un taxi</div>
+            <div class="zh">我需要一輛計程車</div>
+            <div class="phon">中文近似音：內塞西多・溫・達克西 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Necesito un taxi", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Necesito un taxi", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Lléveme a este hotel</div>
+            <div class="zh">請載我到這間飯店</div>
+            <div class="phon">中文近似音：耶貝咩・阿・欸斯得・歐得爾 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Lléveme a este hotel", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Lléveme a este hotel", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">¿Cuánto tarda?</div>
+            <div class="zh">要多久？</div>
+            <div class="phon">中文近似音：關多・達爾達 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("¿Cuánto tarda?", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("¿Cuánto tarda?", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">¿Cuánto cuesta?</div>
+            <div class="zh">多少錢？</div>
+            <div class="phon">中文近似音：關多・古耶斯達 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("¿Cuánto cuesta?", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("¿Cuánto cuesta?", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Pare aquí, por favor</div>
+            <div class="zh">請停在這裡</div>
+            <div class="phon">中文近似音：帕雷・阿基・波爾法波爾 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Pare aquí, por favor", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Pare aquí, por favor", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Más rápido</div>
+            <div class="zh">快一點</div>
+            <div class="phon">中文近似音：馬斯・拉皮多 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Más rápido", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Más rápido", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Más despacio</div>
+            <div class="zh">慢一點</div>
+            <div class="phon">中文近似音：馬斯・得斯帕西歐 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Más despacio", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Más despacio", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Voy al aeropuerto</div>
+            <div class="zh">我要去機場</div>
+            <div class="phon">中文近似音：波伊・阿爾・阿埃羅普耶爾多 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Voy al aeropuerto", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Voy al aeropuerto", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+      
+      <div class="dialogue-box">
+        <div class="dialogue-head">
+          <b>🎭 情境對話</b>
+          <button class="speak" onclick="speakText("Voy al aeropuerto. Muy bien. ¿Cuánto tarda? Treinta minutos.", 0.82)">🔊 全段播放</button>
+        </div>
+        
+        <div class="dialogue-line">
+          <span class="role">Pasajero</span>
+          <div><b>Voy al aeropuerto.</b><br><span>我要去機場。</span></div>
+          <button class="mini" onclick="speakText("Voy al aeropuerto.", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">Conductor</span>
+          <div><b>Muy bien.</b><br><span>好的。</span></div>
+          <button class="mini" onclick="speakText("Muy bien.", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">Pasajero</span>
+          <div><b>¿Cuánto tarda?</b><br><span>要多久？</span></div>
+          <button class="mini" onclick="speakText("¿Cuánto tarda?", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">Conductor</span>
+          <div><b>Treinta minutos.</b><br><span>30分鐘。</span></div>
+          <button class="mini" onclick="speakText("Treinta minutos.", 0.82)">🔊</button>
+        </div>
+      </div>
+      
+    <div class="quiz" data-lesson="L9">
+      <b>✅ 小測驗</b>
+      <p>「請停在這裡」是哪一句？</p>
+      <div class="quiz-options"><button class="quiz-option" onclick="answerQuiz(this,0,0,'L9')">Pare aquí, por favor</button><button class="quiz-option" onclick="answerQuiz(this,1,0,'L9')">Más rápido</button><button class="quiz-option" onclick="answerQuiz(this,2,0,'L9')">Voy al aeropuerto</button></div>
+      <div class="quiz-result" id="result-L9"></div>
+    </div>
+      <div class="complete-row">
+        <label><input type="checkbox" class="complete-check" data-id="L9" onchange="saveProgress()"> 我已完成本課</label>
+      </div>
+    </section>
+    
+    <section class="lesson" id="L10">
+      <div class="lesson-title">
+        <span class="lesson-icon">🏨</span>
+        <div><h2>第10課｜飯店與日常需求</h2><p><b>本課目標：</b>能辦理入住、要房間用品、反映問題。</p></div>
+      </div>
+      <div class="study-method">
+        <b>本課學法：</b>先按「慢速」聽3次 → 看中文跟讀5次 → 關掉中文，只看西班牙文說3次。
+      </div>
+      
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Tengo una reserva</div>
+            <div class="zh">我有預訂</div>
+            <div class="phon">中文近似音：登勾・烏納・雷塞爾巴 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Tengo una reserva", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Tengo una reserva", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Quiero registrarme</div>
+            <div class="zh">我要辦理入住</div>
+            <div class="phon">中文近似音：基耶羅・雷希斯得拉爾咩 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Quiero registrarme", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Quiero registrarme", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">¿Cuál es mi habitación?</div>
+            <div class="zh">我的房間是哪一間？</div>
+            <div class="phon">中文近似音：瓜爾・欸斯・米・阿比達西翁 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("¿Cuál es mi habitación?", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("¿Cuál es mi habitación?", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Necesito una toalla</div>
+            <div class="zh">我需要一條毛巾</div>
+            <div class="phon">中文近似音：內塞西多・烏納・多阿雅 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Necesito una toalla", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Necesito una toalla", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">No hay agua caliente</div>
+            <div class="zh">沒有熱水</div>
+            <div class="phon">中文近似音：諾・艾・阿瓜・嘎連得 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("No hay agua caliente", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("No hay agua caliente", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">El aire acondicionado no funciona</div>
+            <div class="zh">冷氣壞了</div>
+            <div class="phon">中文近似音：欸爾・艾雷・阿孔迪西歐納多・諾・豐西歐納 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("El aire acondicionado no funciona", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("El aire acondicionado no funciona", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">¿A qué hora es el desayuno?</div>
+            <div class="zh">早餐幾點？</div>
+            <div class="phon">中文近似音：阿・給・歐拉・欸斯・欸爾・得薩尤諾 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("¿A qué hora es el desayuno?", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("¿A qué hora es el desayuno?", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Quiero salir mañana</div>
+            <div class="zh">我明天退房／離開</div>
+            <div class="phon">中文近似音：基耶羅・薩利爾・馬尼亞納 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Quiero salir mañana", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Quiero salir mañana", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+      
+      <div class="dialogue-box">
+        <div class="dialogue-head">
+          <b>🎭 情境對話</b>
+          <button class="speak" onclick="speakText("Hola. Tengo una reserva. ¿A nombre de quién? A nombre de Paul Weng. Aquí tiene la llave.", 0.82)">🔊 全段播放</button>
+        </div>
+        
+        <div class="dialogue-line">
+          <span class="role">Huésped</span>
+          <div><b>Hola. Tengo una reserva.</b><br><span>你好，我有預訂。</span></div>
+          <button class="mini" onclick="speakText("Hola. Tengo una reserva.", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">Recepción</span>
+          <div><b>¿A nombre de quién?</b><br><span>請問訂房姓名？</span></div>
+          <button class="mini" onclick="speakText("¿A nombre de quién?", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">Huésped</span>
+          <div><b>A nombre de Paul Weng.</b><br><span>姓名是 Paul Weng。</span></div>
+          <button class="mini" onclick="speakText("A nombre de Paul Weng.", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">Recepción</span>
+          <div><b>Aquí tiene la llave.</b><br><span>這是您的鑰匙。</span></div>
+          <button class="mini" onclick="speakText("Aquí tiene la llave.", 0.82)">🔊</button>
+        </div>
+      </div>
+      
+    <div class="quiz" data-lesson="L10">
+      <b>✅ 小測驗</b>
+      <p>「我有預訂」是哪一句？</p>
+      <div class="quiz-options"><button class="quiz-option" onclick="answerQuiz(this,0,0,'L10')">Tengo una reserva</button><button class="quiz-option" onclick="answerQuiz(this,1,0,'L10')">Necesito una toalla</button><button class="quiz-option" onclick="answerQuiz(this,2,0,'L10')">Quiero salir mañana</button></div>
+      <div class="quiz-result" id="result-L10"></div>
+    </div>
+      <div class="complete-row">
+        <label><input type="checkbox" class="complete-check" data-id="L10" onchange="saveProgress()"> 我已完成本課</label>
+      </div>
+    </section>
+    
+    <section class="lesson" id="L11">
+      <div class="lesson-title">
+        <span class="lesson-icon">🩺</span>
+        <div><h2>第11課｜身體不舒服與緊急情況</h2><p><b>本課目標：</b>能說哪裡不舒服、尋求醫療或警察協助。</p></div>
+      </div>
+      <div class="study-method">
+        <b>本課學法：</b>先按「慢速」聽3次 → 看中文跟讀5次 → 關掉中文，只看西班牙文說3次。
+      </div>
+      
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">No me siento bien</div>
+            <div class="zh">我不舒服</div>
+            <div class="phon">中文近似音：諾・咩・西恩多・比恩 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("No me siento bien", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("No me siento bien", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Me duele la cabeza</div>
+            <div class="zh">我頭痛</div>
+            <div class="phon">中文近似音：咩・杜耶雷・拉・嘎貝薩 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Me duele la cabeza", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Me duele la cabeza", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Me duele el estómago</div>
+            <div class="zh">我胃痛／肚子痛</div>
+            <div class="phon">中文近似音：咩・杜耶雷・欸爾・欸斯多馬勾 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Me duele el estómago", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Me duele el estómago", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Necesito un médico</div>
+            <div class="zh">我需要醫生</div>
+            <div class="phon">中文近似音：內塞西多・溫・梅迪摳 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Necesito un médico", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Necesito un médico", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Llame a una ambulancia</div>
+            <div class="zh">請叫救護車</div>
+            <div class="phon">中文近似音：雅咩・阿・烏納・安布蘭西阿 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Llame a una ambulancia", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Llame a una ambulancia", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Llame a la policía</div>
+            <div class="zh">請叫警察</div>
+            <div class="phon">中文近似音：雅咩・阿・拉・波利西阿 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Llame a la policía", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Llame a la policía", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Es una emergencia</div>
+            <div class="zh">這是緊急情況</div>
+            <div class="phon">中文近似音：欸斯・烏納・欸梅爾亨西阿 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Es una emergencia", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Es una emergencia", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Soy alérgico a…</div>
+            <div class="zh">我對……過敏（男性）</div>
+            <div class="phon">中文近似音：索伊・阿雷爾希摳・阿 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Soy alérgico a…", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Soy alérgico a…", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+      
+      <div class="dialogue-box">
+        <div class="dialogue-head">
+          <b>🎭 情境對話</b>
+          <button class="speak" onclick="speakText("No me siento bien. ¿Qué le pasa? Me duele el estómago. Voy a llamar a un médico.", 0.82)">🔊 全段播放</button>
+        </div>
+        
+        <div class="dialogue-line">
+          <span class="role">A</span>
+          <div><b>No me siento bien.</b><br><span>我不舒服。</span></div>
+          <button class="mini" onclick="speakText("No me siento bien.", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">B</span>
+          <div><b>¿Qué le pasa?</b><br><span>您怎麼了？</span></div>
+          <button class="mini" onclick="speakText("¿Qué le pasa?", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">A</span>
+          <div><b>Me duele el estómago.</b><br><span>我肚子痛。</span></div>
+          <button class="mini" onclick="speakText("Me duele el estómago.", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">B</span>
+          <div><b>Voy a llamar a un médico.</b><br><span>我去叫醫生。</span></div>
+          <button class="mini" onclick="speakText("Voy a llamar a un médico.", 0.82)">🔊</button>
+        </div>
+      </div>
+      
+    <div class="quiz" data-lesson="L11">
+      <b>✅ 小測驗</b>
+      <p>緊急情況應說哪一句？</p>
+      <div class="quiz-options"><button class="quiz-option" onclick="answerQuiz(this,0,0,'L11')">Es una emergencia</button><button class="quiz-option" onclick="answerQuiz(this,1,0,'L11')">Está muy rico</button><button class="quiz-option" onclick="answerQuiz(this,2,0,'L11')">Tengo una reserva</button></div>
+      <div class="quiz-result" id="result-L11"></div>
+    </div>
+      <div class="complete-row">
+        <label><input type="checkbox" class="complete-check" data-id="L11" onchange="saveProgress()"> 我已完成本課</label>
+      </div>
+    </section>
+    
+    <section class="lesson" id="L12">
+      <div class="lesson-title">
+        <span class="lesson-icon">🧩</span>
+        <div><h2>第12課｜整合實戰</h2><p><b>本課目標：</b>把前11課串起來，完成一段旅行中的基本對話。</p></div>
+      </div>
+      <div class="study-method">
+        <b>本課學法：</b>先按「慢速」聽3次 → 看中文跟讀5次 → 關掉中文，只看西班牙文說3次。
+      </div>
+      
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Hola, me llamo Paul</div>
+            <div class="zh">你好，我叫 Paul</div>
+            <div class="phon">中文近似音：哦拉・咩・雅摸・Paul <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Hola, me llamo Paul", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Hola, me llamo Paul", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">No entiendo. Más despacio, por favor</div>
+            <div class="zh">我聽不懂，請說慢一點</div>
+            <div class="phon">中文近似音：諾・恩迪恩多…… <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("No entiendo. Más despacio, por favor", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("No entiendo. Más despacio, por favor", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">¿Cuánto cuesta?</div>
+            <div class="zh">多少錢？</div>
+            <div class="phon">中文近似音：關多・古耶斯達 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("¿Cuánto cuesta?", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("¿Cuánto cuesta?", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Quisiera esto, por favor</div>
+            <div class="zh">我想要這個，謝謝</div>
+            <div class="phon">中文近似音：基西耶拉・欸斯多・波爾法波爾 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Quisiera esto, por favor", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Quisiera esto, por favor", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">¿Dónde está el baño?</div>
+            <div class="zh">洗手間在哪裡？</div>
+            <div class="phon">中文近似音：東得・欸斯搭・欸爾・巴紐 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("¿Dónde está el baño?", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("¿Dónde está el baño?", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Necesito un taxi</div>
+            <div class="zh">我需要計程車</div>
+            <div class="phon">中文近似音：內塞西多・溫・達克西 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Necesito un taxi", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Necesito un taxi", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Tengo una reserva</div>
+            <div class="zh">我有預訂</div>
+            <div class="phon">中文近似音：登勾・烏納・雷塞爾巴 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Tengo una reserva", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Tengo una reserva", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+
+        <div class="phrase-card">
+          <div class="phrase-main">
+            <div class="es">Muchas gracias</div>
+            <div class="zh">非常謝謝</div>
+            <div class="phon">中文近似音：木恰斯・葛拉西阿斯 <span class="warn">（只作入門提示）</span></div>
+          </div>
+          <div class="phrase-actions">
+            <button class="speak" onclick="speakText("Muchas gracias", 0.78)">🔊 慢速</button>
+            <button class="speak secondary" onclick="speakText("Muchas gracias", 1.0)">▶ 正常</button>
+          </div>
+        </div>
+      
+      <div class="dialogue-box">
+        <div class="dialogue-head">
+          <b>🎭 情境對話</b>
+          <button class="speak" onclick="speakText("Hola. Tengo una reserva. Sí. ¿Cómo se llama? Me llamo Paul. No entiendo bien español. Más despacio, por favor. Claro. Su habitación es la número doce. Muchas gracias.", 0.82)">🔊 全段播放</button>
+        </div>
+        
+        <div class="dialogue-line">
+          <span class="role">Viajero</span>
+          <div><b>Hola. Tengo una reserva.</b><br><span>你好，我有預訂。</span></div>
+          <button class="mini" onclick="speakText("Hola. Tengo una reserva.", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">Recepción</span>
+          <div><b>Sí. ¿Cómo se llama?</b><br><span>好的，您叫什麼名字？</span></div>
+          <button class="mini" onclick="speakText("Sí. ¿Cómo se llama?", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">Viajero</span>
+          <div><b>Me llamo Paul. No entiendo bien español. Más despacio, por favor.</b><br><span>我叫 Paul。我西班牙語聽得不太懂，請說慢一點。</span></div>
+          <button class="mini" onclick="speakText("Me llamo Paul. No entiendo bien español. Más despacio, por favor.", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">Recepción</span>
+          <div><b>Claro. Su habitación es la número doce.</b><br><span>當然。您的房間是12號。</span></div>
+          <button class="mini" onclick="speakText("Claro. Su habitación es la número doce.", 0.82)">🔊</button>
+        </div>
+        <div class="dialogue-line">
+          <span class="role">Viajero</span>
+          <div><b>Muchas gracias.</b><br><span>非常謝謝。</span></div>
+          <button class="mini" onclick="speakText("Muchas gracias.", 0.82)">🔊</button>
+        </div>
+      </div>
+      
+    <div class="quiz" data-lesson="L12">
+      <b>✅ 小測驗</b>
+      <p>最實用的「保命句」是哪一句？</p>
+      <div class="quiz-options"><button class="quiz-option" onclick="answerQuiz(this,0,0,'L12')">No entiendo. Más despacio, por favor</button><button class="quiz-option" onclick="answerQuiz(this,1,0,'L12')">Está muy rico</button><button class="quiz-option" onclick="answerQuiz(this,2,0,'L12')">Soy de Taiwán</button></div>
+      <div class="quiz-result" id="result-L12"></div>
+    </div>
+      <div class="complete-row">
+        <label><input type="checkbox" class="complete-check" data-id="L12" onchange="saveProgress()"> 我已完成本課</label>
+      </div>
+    </section>
+    
+
+  <section class="panel">
+    <h2>📅 30天簡單學習表</h2>
+    <table class="plan-table">
+      <tr><th>天數</th><th>內容</th><th>每天任務</th></tr>
+      <tr><td>第1–3天</td><td>第1課</td><td>每天5句；聽3次、說5次</td></tr>
+      <tr><td>第4–6天</td><td>第2課</td><td>完成30秒自我介紹</td></tr>
+      <tr><td>第7–8天</td><td>第3課</td><td>熟記「我聽不懂、請說慢一點」</td></tr>
+      <tr><td>第9–11天</td><td>第4課</td><td>練0–20及問價錢</td></tr>
+      <tr><td>第12–13天</td><td>第5課</td><td>介紹2位家人</td></tr>
+      <tr><td>第14–16天</td><td>第6課</td><td>模擬點餐3次</td></tr>
+      <tr><td>第17–18天</td><td>第7課</td><td>模擬買衣服</td></tr>
+      <tr><td>第19–20天</td><td>第8課</td><td>問洗手間、左右方向</td></tr>
+      <tr><td>第21–22天</td><td>第9課</td><td>模擬搭計程車</td></tr>
+      <tr><td>第23–24天</td><td>第10課</td><td>模擬飯店入住</td></tr>
+      <tr><td>第25–26天</td><td>第11課</td><td>熟記3句緊急用語</td></tr>
+      <tr><td>第27–30天</td><td>第12課＋總複習</td><td>每天完整演練一個情境</td></tr>
+    </table>
+  </section>
+
+  <section class="panel">
+    <h2>🎯 30天後應達到的程度</h2>
+    <p>能做基本問候、自我介紹、點餐、購物、問路、搭車、飯店入住；聽不懂時知道如何請對方說慢一點。這大約是 <b>CEFR A1入門前段</b>。CEFR 是歐洲常用的語言程度分級，A1代表可以應付最簡單的日常溝通。</p>
+  </section>
+</main>
+
+<div class="footer">西班牙語零基礎互動課程｜所有資料儲存在本機瀏覽器，不會上傳。</div>
+
+<script>
+let baseRate = 0.82;
+
+function setBaseRate(v) {
+  baseRate = parseFloat(v);
+}
+
+function getSpanishVoice() {
+  const voices = window.speechSynthesis.getVoices();
+  return voices.find(v => /^es(-|_)/i.test(v.lang)) ||
+         voices.find(v => /Spanish|Español/i.test(v.name)) || null;
+}
+
+function speakText(text, rate) {
+  if (!('speechSynthesis' in window)) {
+    alert('此瀏覽器不支援語音朗讀，請改用 Chrome。');
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'es-ES';
+  u.rate = rate ? Math.min(rate, baseRate + 0.18) : baseRate;
+  u.pitch = 1;
+  const voice = getSpanishVoice();
+  if (voice) u.voice = voice;
+  window.speechSynthesis.speak(u);
+}
+
+function stopSpeech() {
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+}
+
+function answerQuiz(btn, selected, correct, lid) {
+  const box = btn.closest('.quiz');
+  const buttons = box.querySelectorAll('.quiz-option');
+  buttons.forEach(b => b.classList.remove('correct','wrong'));
+  if (selected === correct) {
+    btn.classList.add('correct');
+    document.getElementById('result-'+lid).textContent = '答對了！請把正確答案大聲說3次。';
+  } else {
+    btn.classList.add('wrong');
+    buttons[correct].classList.add('correct');
+    document.getElementById('result-'+lid).textContent = '再試一次。先按語音聽，再跟讀。';
+  }
+}
+
+function saveProgress() {
+  const ids = [];
+  document.querySelectorAll('.complete-check').forEach(c => {
+    if (c.checked) ids.push(c.dataset.id);
+  });
+  localStorage.setItem('spanishCourseProgress', JSON.stringify(ids));
+  updateProgress();
+}
+
+function loadProgress() {
+  let ids = [];
+  try { ids = JSON.parse(localStorage.getItem('spanishCourseProgress') || '[]'); } catch(e) {}
+  document.querySelectorAll('.complete-check').forEach(c => c.checked = ids.includes(c.dataset.id));
+  updateProgress();
+}
+
+function updateProgress() {
+  const done = document.querySelectorAll('.complete-check:checked').length;
+  document.getElementById('progressText').textContent = done + ' / 12 課';
+  document.getElementById('progressBar').style.width = (done/12*100) + '%';
+}
+
+window.speechSynthesis && (window.speechSynthesis.onvoiceschanged = getSpanishVoice);
+window.addEventListener('load', loadProgress);
+</script>
+</body>
+</html>

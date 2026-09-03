@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>30天零基礎祖魯語｜手機互動課程</title>
+<style>
+:root{
+  --bg:#f4f1e8;--paper:#fffdf7;--ink:#17231d;--muted:#637069;
+  --green:#176b4d;--green2:#dcefe6;--gold:#b98319;--red:#a53b32;
+  --line:#d9ded8;--shadow:0 8px 28px rgba(26,55,41,.10);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.72}
+button,select,input{font:inherit}
+header{background:linear-gradient(135deg,#123f31,#1d7555);color:#fff;padding:34px 18px 28px}
+.hero{max-width:1100px;margin:auto}
+h1{margin:0 0 8px;font-size:clamp(30px,6vw,54px);line-height:1.15}
+.subtitle{font-size:clamp(16px,3vw,21px);opacity:.94;max-width:850px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.badge{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.25);padding:7px 11px;border-radius:999px}
+nav{position:sticky;top:0;z-index:10;background:rgba(255,253,247,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);overflow:auto;white-space:nowrap;padding:8px 12px}
+nav a{display:inline-block;color:var(--green);text-decoration:none;padding:7px 10px;font-weight:700}
+main{max-width:1100px;margin:auto;padding:18px}
+section{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:clamp(17px,4vw,30px);margin:18px 0;box-shadow:var(--shadow)}
+h2{font-size:clamp(24px,4vw,34px);margin:0 0 14px;color:#124c38}
+h3{font-size:21px;margin:22px 0 10px}
+.notice{border-left:5px solid var(--gold);background:#fff5d8;padding:14px 16px;border-radius:10px}
+.good{border-left-color:var(--green);background:var(--green2)}
+.danger{border-left-color:var(--red);background:#fbe6e3}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.method-card,.day,.grammar-card{border:1px solid var(--line);border-radius:14px;padding:15px;background:#fff}
+.big{font-size:28px;font-weight:900;color:var(--green)}
+.muted{color:var(--muted)}
+.controls{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:12px 0}
+.btn{border:0;border-radius:11px;padding:10px 14px;background:var(--green);color:white;font-weight:800;cursor:pointer;box-shadow:0 3px 9px rgba(23,107,77,.18)}
+.btn.secondary{background:#e7eee9;color:#174b38;border:1px solid #cbd9d0}
+.btn.gold{background:var(--gold)}
+.btn.red{background:var(--red)}
+.btn:active{transform:translateY(1px)}
+.voice-status{font-size:14px;color:var(--muted)}
+.progress-shell{background:#d9e3dc;border-radius:999px;height:18px;overflow:hidden}
+.progress-bar{height:100%;width:0;background:linear-gradient(90deg,#2f986f,#e0aa35);transition:.3s}
+.progress-text{font-weight:800;margin-top:7px}
+.phrase-table{width:100%;border-collapse:separate;border-spacing:0 9px}
+.phrase-table th{text-align:left;color:var(--muted);font-size:14px;padding:0 10px}
+.phrase-row td{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 10px;vertical-align:middle}
+.phrase-row td:first-child{border-left:1px solid var(--line);border-radius:12px 0 0 12px}
+.phrase-row td:last-child{border-right:1px solid var(--line);border-radius:0 12px 12px 0}
+.zulu{font-size:21px;font-weight:900;color:#113e2e}
+.pron{font-size:14px;color:#8a5c0d}
+.speak{min-width:48px;padding:8px 10px}
+.module-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.done-label{font-weight:800;color:var(--green);background:#edf6f1;padding:8px 11px;border-radius:10px}
+.dialogue{background:#edf6f1;border-radius:13px;padding:15px;margin-top:12px}
+.dialogue p{margin:7px 0}
+.speaker{font-weight:900;color:var(--green)}
+.click-box{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.click{padding:15px;border-radius:13px;border:1px solid var(--line);background:#fff}
+.flashcard{min-height:245px;border:2px solid var(--green);border-radius:20px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:25px;cursor:pointer;background:linear-gradient(145deg,#fff,#edf8f2)}
+.flash-zulu{font-size:clamp(32px,7vw,55px);font-weight:1000;color:#124c38}
+.flash-answer{display:none;margin-top:12px;font-size:21px}
+.flashcard.revealed .flash-answer{display:block}
+.quiz-card{border:1px solid var(--line);border-radius:14px;padding:15px;margin:12px 0;background:#fff}
+.quiz-options{display:grid;gap:7px;margin-top:10px}
+.quiz-options label{display:block;border:1px solid var(--line);border-radius:10px;padding:9px;cursor:pointer}
+.result{font-weight:900;font-size:19px;margin:12px 0}
+.day{position:relative;padding-left:50px}
+.day-num{position:absolute;left:12px;top:14px;width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:var(--green);color:white;font-weight:900}
+.day b{color:#174b38}
+.timer{font-size:46px;font-weight:1000;color:var(--green);font-variant-numeric:tabular-nums}
+details{border:1px solid var(--line);border-radius:12px;padding:11px 14px;background:#fff;margin:9px 0}
+summary{cursor:pointer;font-weight:900;color:#174b38}
+footer{max-width:1100px;margin:auto;padding:10px 18px 45px;color:var(--muted);font-size:14px}
+@media(max-width:720px){
+  .phrase-table thead{display:none}
+  .phrase-table,.phrase-table tbody,.phrase-row,.phrase-row td{display:block;width:100%}
+  .phrase-row{margin-bottom:12px;border:1px solid var(--line);border-radius:14px;background:#fff;padding:10px}
+  .phrase-row td,.phrase-row td:first-child,.phrase-row td:last-child{border:0;border-radius:0;padding:5px 4px}
+  .phrase-row td:last-child{padding-top:9px}
+  section{border-radius:14px}
+}
+@media print{
+  nav,.controls,.speak,#timerControls{display:none!important}
+  body{background:white}
+  section{box-shadow:none;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="hero">
+    <h1>🗣️ 30天零基礎祖魯語</h1>
+    <div class="subtitle">為怕語言、記不住、開口困難的成人設計。每天 7–15 分鐘，先學「真正會用的句子」，再慢慢理解規則。</div>
+    <div class="badges">
+      <span class="badge">isiZulu 祖魯語</span>
+      <span class="badge">A0 → A1 生存會話</span>
+      <span class="badge">手機離線可用</span>
+      <span class="badge">點擊朗讀</span>
+      <span class="badge">自動保存進度</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <a href="#start">開始</a><a href="#sound">發音</a><a href="#modules">核心課程</a>
+  <a href="#grammar">超簡文法</a><a href="#flash">單字卡</a><a href="#quiz">測驗</a>
+  <a href="#plan">30天計畫</a><a href="#sources">資料來源</a>
+</nav>
+
+<main>
+<section id="start">
+  <h2>先講清楚：祖魯語和史瓦濟語不完全相同</h2>
+  <div class="notice">
+    <b>祖魯語 isiZulu</b> 與 <b>史瓦濟語 siSwati</b> 都屬於 Nguni 語群，很多詞看起來相近，例如
+    <b>Sawubona、Yebo、Unjani、Ngiyabonga</b>，但拼字、部分發音和句型仍不同。本課程專教祖魯語；你以前在史瓦濟蘭生活的經驗，反而會讓某些詞更有熟悉感。
+  </div>
+
+  <h3>你不需要「語言天分」，只做四件事</h3>
+  <div class="grid">
+    <div class="method-card"><div class="big">① 聽 3 次</div>先不要背，按慢速朗讀，讓耳朵習慣聲音。</div>
+    <div class="method-card"><div class="big">② 跟說 3 次</div>不求完美，只求嘴巴真的動起來。</div>
+    <div class="method-card"><div class="big">③ 看情境</div>把句子綁在「見人、買東西、問路、工作」上。</div>
+    <div class="method-card"><div class="big">④ 隔天再見</div>忘記很正常；重複遇見，才會變成長期記憶。</div>
+  </div>
+
+  <h3>🔊 語音設定</h3>
+  <div class="controls">
+    <button class="btn" onclick="testVoice()">測試祖魯語語音</button>
+    <button class="btn secondary" onclick="speakText('Sawubona. Unjani?',0.68)">慢速測試</button>
+    <select id="voiceSelect" aria-label="選擇語音"></select>
+    <span id="voiceStatus" class="voice-status">正在讀取手機語音引擎……</span>
+  </div>
+  <div class="notice good">
+    語音按鈕使用手機或瀏覽器內建的 <b>文字轉語音</b>。若裝置有「Zulu / zu-ZA」聲音，會優先使用；若沒有，可能由南非英文聲音代讀，發音只能當輔助。最重要的發音仍應以祖魯母語者或正式錄音為準。
+  </div>
+
+  <h3>學習進度</h3>
+  <div class="progress-shell"><div id="progressBar" class="progress-bar"></div></div>
+  <div id="progressText" class="progress-text">已完成 0 / 10 個單元</div>
+  <div class="controls">
+    <button class="btn secondary" onclick="window.print()">🖨️ 列印／存成 PDF</button>
+    <button class="btn red" onclick="resetProgress()">清除進度</button>
+  </div>
+</section>
+
+<section id="sound">
+  <h2>第 0 課：先把聲音聽懂</h2>
+  <p>祖魯語大多數字母的讀音比英文固定。先掌握五個母音，已經能把很多字念得八九不離十。</p>
+  <div class="grid">
+    <div class="method-card"><div class="big">A</div>像「啊」：<b>lala</b>（睡）</div>
+    <div class="method-card"><div class="big">E</div>像短「欸」：<b>yebo</b>（是）</div>
+    <div class="method-card"><div class="big">I</div>像「衣」：<b>fika</b>（到達）</div>
+    <div class="method-card"><div class="big">O</div>像「喔」：<b>bona</b>（看見）</div>
+    <div class="method-card"><div class="big">U</div>像「烏」：<b>umuntu</b>（人）</div>
+  </div>
+
+  <h3>三個「喀噠音」Click sounds</h3>
+  <p>不用第一天就完美。初學時先能辨認，之後慢慢模仿。</p>
+  <div class="click-box">
+    <div class="click"><div class="big">c</div>舌尖靠上門牙後方，像表示不耐煩的「嘖」。例：<b>cela</b>（請求）。<br><button class="btn secondary speak" onclick="speakText('cela',0.55)">🔊</button></div>
+    <div class="click"><div class="big">q</div>舌面吸住上顎後突然彈開，像拔軟木塞。例：<b>qala</b>（開始）。<br><button class="btn secondary speak" onclick="speakText('qala',0.55)">🔊</button></div>
+    <div class="click"><div class="big">x</div>舌頭一側放開，像趕馬的側喀聲。例：<b>uxolo</b>（抱歉）。<br><button class="btn secondary speak" onclick="speakText('uxolo',0.55)">🔊</button></div>
+  </div>
+
+  <div class="notice">
+    <b>中文注音只是記憶提示，不是精確發音。</b>祖魯語通常把倒數第二個音節念得稍明顯，例如
+    sa-wu-<b>BO</b>-na、ngi-ya-<b>BO</b>-nga。
+  </div>
+</section>
+
+<div id="modules"></div>
+
+<section id="grammar">
+  <h2>超簡文法：只學最能立刻開口的部分</h2>
+  <div class="grid">
+    <div class="grammar-card">
+      <h3>1. 人稱常藏在動詞前面</h3>
+      <p><b>ngi-</b> 我、<b>u-</b> 你／他／她、<b>si-</b> 我們、<b>ni-</b> 你們、<b>ba-</b> 他們。</p>
+      <p>例：<b>Ngiyasebenza</b> 我在工作；<b>Bayasebenza</b> 他們在工作。</p>
+      <button class="btn secondary" onclick="speakText('Ngiyasebenza. Bayasebenza.',0.7)">🔊 聽例句</button>
+    </div>
+    <div class="grammar-card">
+      <h3>2. 不會說時先用三個否定句</h3>
+      <p><b>Angazi</b> 我不知道。<br><b>Angiqondi</b> 我不明白。<br><b>Angifuni</b> 我不要。</p>
+      <button class="btn secondary" onclick="speakText('Angazi. Angiqondi. Angifuni.',0.7)">🔊 聽例句</button>
+    </div>
+    <div class="grammar-card">
+      <h3>3. uku- 常像英文的「to」</h3>
+      <p><b>ukudla</b> 吃／食物、<b>ukuphuza</b> 喝、<b>ukusebenza</b> 工作、<b>ukufunda</b> 學習。</p>
+      <p>現在不用背規則，只要知道看到 <b>uku-</b> 時，常是一個動作的基本形式。</p>
+    </div>
+    <div class="grammar-card">
+      <h3>4. 問句關鍵詞</h3>
+      <p><b>Yini?</b> 什麼？　<b>Ubani?</b> 誰？　<b>Kuphi?</b> 哪裡？<br><b>Nini?</b> 何時？　<b>Kungani?</b> 為什麼？　<b>Kanjani?</b> 如何？</p>
+      <button class="btn secondary" onclick="speakText('Yini? Ubani? Kuphi? Nini? Kungani? Kanjani?',0.67)">🔊 慢聽</button>
+    </div>
+  </div>
+
+  <details>
+    <summary>為什麼同一個「他、她、你」都可能是 u-？</summary>
+    <p>祖魯語的動詞會用前綴表示主詞，但第三人稱單數與第二人稱單數常同樣使用 <b>u-</b>。實際意思由前後文判斷。這和中文常省略「他／她」有點像，對話情境會告訴你正在說誰。</p>
+  </details>
+  <details>
+    <summary>為什麼名詞前面常有 umu-、isi-、ama-、izi-？</summary>
+    <p>這些是祖魯語的<b>名詞類別前綴</b>，有點像把名詞分成不同群組。它會影響形容詞、代詞和動詞的一致形式。初級階段先把整個詞當成一塊記，例如 <b>umuntu</b>（一個人）、<b>abantu</b>（人們），不用急著背完整分類表。</p>
+  </details>
+</section>
+
+<section id="flash">
+  <h2>翻牌單字卡</h2>
+  <p>先看祖魯語，大聲猜一次，再點卡片看答案。</p>
+  <div id="flashcard" class="flashcard" onclick="revealFlash()">
+    <div id="flashZulu" class="flash-zulu">Sawubona</div>
+    <div id="flashAnswer" class="flash-answer">你好（對一人）</div>
+  </div>
+  <div class="controls">
+    <button class="btn" onclick="speakCurrentFlash()">🔊 聽</button>
+    <button class="btn secondary" onclick="nextFlash()">下一張</button>
+    <button class="btn gold" onclick="shuffleFlash()">打亂</button>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2>隨機 10 題測驗</h2>
+  <p>分數不是重點。錯題代表「下次要再遇見一次」。</p>
+  <div id="quizArea"></div>
+  <div class="controls">
+    <button class="btn" onclick="gradeQuiz()">批改</button>
+    <button class="btn secondary" onclick="buildQuiz()">換一組題目</button>
+  </div>
+  <div id="quizResult" class="result"></div>
+</section>
+
+<section id="plan">
+  <h2>30 天練習計畫</h2>
+  <div class="notice good"><b>最低有效劑量：</b>每天 7 分鐘。精神好時做 15 分鐘；很累時只聽 3 句也算完成。不要一次學一小時後停兩週。</div>
+  <div id="dayPlan" class="grid" style="margin-top:14px"></div>
+
+  <h3>⏱️ 7 分鐘計時器</h3>
+  <div id="timer" class="timer">07:00</div>
+  <div id="timerControls" class="controls">
+    <button class="btn" onclick="startTimer()">開始</button>
+    <button class="btn secondary" onclick="pauseTimer()">暫停</button>
+    <button class="btn gold" onclick="resetTimer()">重設</button>
+  </div>
+</section>
+
+<section id="sources">
+  <h2>資料依據與使用說明</h2>
+  <p>課程核心詞句與發音原則參考 Peace Corps South Africa 的 <i>An Introduction to Zulu Language</i>，並用成人初學者的方式重新編排；祖魯語與 siSwati 的區別說明參考 Peace Corps Swaziland 的 siSwati 教材。</p>
+  <ul>
+    <li><a href="https://files.peacecorps.gov/multimedia/audio/languagelessons/southafrica/ZA_isiZulu_Language_Lessons.pdf" target="_blank">Peace Corps South Africa：Zulu Language Lessons</a></li>
+    <li><a href="https://files.peacecorps.gov/multimedia/audio/languagelessons/swaziland/SZ_siSwati_language_Lessons.pdf" target="_blank">Peace Corps Swaziland：siSwati Language Materials</a></li>
+  </ul>
+  <div class="notice danger">
+    本課程屬於「第一階段生存會話」。完成後的合理目標是：能打招呼、自我介紹、請人慢說、買東西、問路、處理基本工作與緊急狀況。要聽懂快速母語對話，仍需進入第二階段的慢速聽力與真實對話訓練。
+  </div>
+</section>
+</main>
+
+<footer>
+  版本：1.0｜單檔離線課程。學習進度保存在目前瀏覽器的 localStorage；更換手機或清除瀏覽器資料後，進度可能消失。
+</footer>
+
+<script>
+const modules = [
+{
+ title:"第 1 課｜見面先會說：打招呼", icon:"👋", goal:"能完成最基本的見面與道別",
+ phrases:[
+ ["Sawubona","你好（對一人）","薩－烏－波－那"],
+ ["Sanibonani","你們好／向多人問候","薩－尼－波－那－尼"],
+ ["Yebo","是；也可用作問候回應","耶－波"],
+ ["Unjani?","你好嗎？（一人）","烏恩－加－尼"],
+ ["Ninjani?","你們好嗎？","寧－加－尼"],
+ ["Ngiyaphila.","我很好／我平安。","恩－吉－亞－批－拉"],
+ ["Ngiyabonga.","謝謝。","恩－吉－亞－波恩－嘎"],
+ ["Ulale kahle.","晚安；睡好。","烏－拉－雷 卡－雷"]
+ ],
+ dialogue:[
+ ["A","Sawubona!","你好！"],["B","Yebo, sawubona!","你好！"],
+ ["A","Unjani?","你好嗎？"],["B","Ngiyaphila, wena unjani?","我很好，你呢？"],
+ ["A","Nami ngiyaphila. Ngiyabonga.","我也很好，謝謝。"]
+ ]
+},
+{
+ title:"第 2 課｜有禮貌地請、謝謝、道歉", icon:"🙏", goal:"能禮貌開口，不怕犯錯",
+ phrases:[
+ ["Ngiyacela.","請／拜託。","恩－吉－亞－切－拉"],
+ ["Ngicela...","我想請……／請給我……","恩－吉－切－拉"],
+ ["Uxolo.","對不起／不好意思。","烏－口（x喀聲）－羅"],
+ ["Ngiyabonga kakhulu.","非常感謝。","恩－吉－亞－波恩－嘎 卡－庫－魯"],
+ ["Kulungile.","好的／沒問題／正確。","庫－隆－吉－雷"],
+ ["Akulungile.","不對／不可以／不好。","阿－庫－隆－吉－雷"],
+ ["Hamba kahle.","慢走；對離開的人說。","漢－巴 卡－雷"],
+ ["Sala kahle.","再見；離開者對留下的人說。","薩－拉 卡－雷"]
+ ],
+ dialogue:[
+ ["A","Uxolo, ngicela usizo.","不好意思，我需要幫助。"],
+ ["B","Yebo, kulungile.","可以，沒問題。"],
+ ["A","Ngiyabonga kakhulu.","非常感謝。"],
+ ["B","Hamba kahle.","慢走。"],["A","Sala kahle.","再見。"]
+ ]
+},
+{
+ title:"第 3 課｜自我介紹", icon:"🙋", goal:"能說名字、來自哪裡、住在哪裡",
+ phrases:[
+ ["Ngubani igama lakho?","你叫什麼名字？","恩－古－巴－尼 伊－嘎－馬 拉－口"],
+ ["Igama lami ngu-Paul.","我的名字是 Paul。","伊－嘎－馬 拉－米 恩－古 Paul"],
+ ["Ngivela eTaiwan.","我來自台灣。","恩－吉－維－拉 誒 Taiwan"],
+ ["Ngihlala eCambodia.","我住在柬埔寨。","恩－吉－拉－拉 誒 Cambodia"],
+ ["Ngikhuluma isiShayina.","我說中文。","恩－吉－庫－魯－馬 伊－西－沙－伊－納"],
+ ["Ngisaqala ukufunda isiZulu.","我才剛開始學祖魯語。","恩－吉－薩－卡－拉 烏－庫－豐－達 伊－西－祖－魯"],
+ ["Ngiyajabula ukukwazi.","很高興認識你。","恩－吉－亞－加－布－拉 烏－庫－克瓦－齊"],
+ ["Uvelaphi?","你從哪裡來？","烏－維－拉－批"]
+ ],
+ dialogue:[
+ ["A","Sawubona. Ngubani igama lakho?","你好，你叫什麼名字？"],
+ ["B","Igama lami ngu-Paul. Wena?","我叫 Paul。你呢？"],
+ ["A","Igama lami ngu-Sipho. Uvelaphi?","我叫 Sipho。你從哪裡來？"],
+ ["B","Ngivela eTaiwan. Ngiyajabula ukukwazi.","我來自台灣。很高興認識你。"]
+ ]
+},
+{
+ title:"第 4 課｜聽不懂時的救命句", icon:"🛟", goal:"能要求慢說、重複與改用英文",
+ phrases:[
+ ["Angiqondi.","我不明白。","安－吉－空－迪"],
+ ["Angazi.","我不知道。","安－嘎－齊"],
+ ["Ngiyaqonda.","我明白。","恩－吉－亞－空－達"],
+ ["Khuluma kancane, ngiyacela.","請說慢一點。","庫－魯－馬 甘－恰－內"],
+ ["Phinda futhi, ngiyacela.","請再說一次。","批恩－達 富－提"],
+ ["Usho ukuthini?","你是什麼意思？","烏－秀 烏－庫－提－尼"],
+ ["Uyakhuluma isiNgisi?","你會說英文嗎？","烏－亞－庫－魯－馬 伊－西－恩－吉－西"],
+ ["Ngikhuluma isiZulu kancane.","我只會說一點祖魯語。","恩－吉－庫－魯－馬 伊－西－祖－魯 甘－恰－內"]
+ ],
+ dialogue:[
+ ["A","Uyasizwa isiZulu?","你聽得懂祖魯語嗎？"],
+ ["B","Kancane. Khuluma kancane, ngiyacela.","一點點。請說慢一點。"],
+ ["A","Kulungile.","好的。"],
+ ["B","Phinda futhi, ngiyacela.","請再說一次。"]
+ ]
+},
+{
+ title:"第 5 課｜吃飯、喝水、買東西", icon:"🍲", goal:"能表達想要、需要與價格",
+ phrases:[
+ ["Ngifuna lokhu.","我要這個。","恩－吉－富－納 洛－庫"],
+ ["Angifuni lokhu.","我不要這個。","安－吉－富－尼 洛－庫"],
+ ["Ngicela amanzi.","請給我水。","恩－吉－切－拉 阿－曼－齊"],
+ ["Ngicela ukudla.","請給我食物／我要吃的。","恩－吉－切－拉 烏－庫－德拉"],
+ ["Ngilambile.","我餓了。","恩－吉－蘭－比－雷"],
+ ["Ngomile.","我渴了。","恩－戈－米－雷"],
+ ["Malini?","多少錢？","馬－里－尼"],
+ ["Kubiza malini?","這要多少錢？","庫－比－扎 馬－里－尼"],
+ ["Kumnandi.","很好吃／很美味。","庫姆－南－迪"],
+ ["Ngicela ibhili.","請給我帳單。","恩－吉－切－拉 伊－比－里"]
+ ],
+ dialogue:[
+ ["A","Ngicela amanzi nokudla.","請給我水和食物。"],
+ ["B","Kulungile.","好的。"],
+ ["A","Kubiza malini?","多少錢？"],
+ ["B","Kubiza amarandi angamashumi amabili.","20 蘭特。"],
+ ["A","Ngiyabonga.","謝謝。"]
+ ]
+},
+{
+ title:"第 6 課｜時間與數字辨認", icon:"🕒", goal:"聽懂今天、明天與 1–10",
+ phrases:[
+ ["Namuhla","今天","納－穆－拉"],
+ ["Izolo","昨天","伊－佐－洛"],
+ ["Kusasa","明天","庫－薩－薩"],
+ ["Manje","現在","曼－傑"],
+ ["Ekuseni","早上","誒－庫－塞－尼"],
+ ["Ntambama","下午","恩－坦－巴－馬"],
+ ["Kusihlwa","晚上","庫－西－拉"],
+ ["Ebusuku","夜裡","誒－布－蘇－庫"],
+ ["Isikhathi sithini?","現在幾點？","伊－西－卡－提 西－提－尼"],
+ ["Ngizokubona kusasa.","明天見。","恩－吉－佐－庫－波－納 庫－薩－薩"]
+ ],
+ dialogue:[
+ ["A","Uzofika nini?","你什麼時候到？"],
+ ["B","Ngizofika kusasa ekuseni.","我明天早上到。"],
+ ["A","Kulungile. Ngizokubona kusasa.","好的，明天見。"]
+ ]
+},
+{
+ title:"第 7 課｜問路與交通", icon:"🧭", goal:"能問位置、左右與目的地",
+ phrases:[
+ ["Ikuphi indlu yangasese?","洗手間在哪裡？","伊－庫－批 恩－德魯 揚－嘎－塞－塞"],
+ ["Kuphi...?","……在哪裡？","庫－批"],
+ ["Lapha","這裡","拉－批"],
+ ["Lapho","那裡","拉－波"],
+ ["Eduze","附近／近","誒－杜－澤"],
+ ["Kude","遠","庫－德"],
+ ["Jikela kwesokudla.","向右轉。","吉－克－拉 奎－索－庫－德拉"],
+ ["Jikela kwesokunxele.","向左轉。","吉－克－拉 奎－索－昆－謝－雷"],
+ ["Hamba uqonde.","直走。","漢－巴 烏－空－德"],
+ ["Ngifuna ukuya e...","我想去……","恩－吉－富－納 烏－庫－亞 誒"]
+ ],
+ dialogue:[
+ ["A","Uxolo, ikuphi indlu yangasese?","不好意思，洗手間在哪裡？"],
+ ["B","Hamba uqonde, bese ujikela kwesokudla.","直走，然後右轉。"],
+ ["A","Kude?","很遠嗎？"],
+ ["B","Cha, kuseduze.","不，在附近。"]
+ ]
+},
+{
+ title:"第 8 課｜家庭與家裡", icon:"🏠", goal:"能辨認最常見家庭稱呼",
+ phrases:[
+ ["Umama","媽媽／母親","烏－馬－馬"],
+ ["Ubaba","爸爸／父親；也可尊稱年長男性","烏－巴－巴"],
+ ["Umyeni","丈夫","烏姆－耶－尼"],
+ ["Unkosikazi","妻子／太太／女士","烏恩－口－西－卡－齊"],
+ ["Ingane","小孩","恩－嘎－內"],
+ ["Izingane","孩子們","伊－齊恩－嘎－內"],
+ ["Umndeni","家庭／家人","烏姆－恩－德－尼"],
+ ["Lona umndeni wami.","這是我的家人。","洛－納 烏姆－恩－德－尼 瓦－米"]
+ ],
+ dialogue:[
+ ["A","Lona ubani?","這位是誰？"],
+ ["B","Lona unkosikazi wami.","這是我太太。"],
+ ["A","Nalezi izingane zakho?","這些也是你的孩子嗎？"],
+ ["B","Yebo, lezi izingane zami.","是的，這些是我的孩子。"]
+ ]
+},
+{
+ title:"第 9 課｜工作與工廠實用句", icon:"🏭", goal:"能處理等待、機器問題與安全",
+ phrases:[
+ ["Ngiyasebenza.","我在工作。","恩－吉－亞－塞－本－扎"],
+ ["Umsebenzi","工作／任務","烏姆－塞－本－齊"],
+ ["Ifektri","工廠","伊－費－克－特里"],
+ ["Umshini","機器","烏姆－希－尼"],
+ ["Kunenkinga ngomshini.","機器有問題。","庫－內－恩－金－嘎 恩－戈姆－希－尼"],
+ ["Ngicela ulinde.","請等一下。","恩－吉－切－拉 烏－林－德"],
+ ["Qaphela!","小心！","卡（q喀聲）－配－拉"],
+ ["Misa umshini.","停止機器。","米－薩 烏姆－希－尼"],
+ ["Qala umshini.","啟動機器。","卡（q喀聲）－拉 烏姆－希－尼"],
+ ["Umsebenzi usuphelile.","工作已完成。","烏姆－塞－本－齊 烏－蘇－配－里－雷"]
+ ],
+ dialogue:[
+ ["A","Kunenkinga ngomshini.","機器有問題。"],
+ ["B","Misa umshini. Qaphela!","停機，小心！"],
+ ["A","Ngicela usizo.","我需要幫忙。"],
+ ["B","Kulungile, ngiyeza.","好的，我來了。"]
+ ]
+},
+{
+ title:"第 10 課｜身體不舒服與緊急狀況", icon:"🚑", goal:"能求助、叫醫生與說明疼痛",
+ phrases:[
+ ["Ngiyagula.","我生病了／不舒服。","恩－吉－亞－古－拉"],
+ ["Ngibuhlungu lapha.","我這裡痛。","恩－吉－布－倫－古 拉－批"],
+ ["Ngidinga usizo.","我需要幫助。","恩－吉－丁－嘎 烏－西－佐"],
+ ["Ngidinga udokotela.","我需要醫生。","恩－吉－丁－嘎 烏－多－口－特－拉"],
+ ["Siza!","救命／幫忙！","西－扎"],
+ ["Shayela i-ambulensi.","叫救護車。","沙－耶－拉 伊－安－布－冷－西"],
+ ["Ingozi!","危險／事故！","恩－戈－齊"],
+ ["Ngiphe amanzi.","請給我水。","恩－吉－配 阿－曼－齊"],
+ ["Ngiphe umuthi.","請給我藥。","恩－吉－配 烏－穆－提"],
+ ["Ngcono manje.","現在好多了。","恩－口－諾 曼－傑"]
+ ],
+ dialogue:[
+ ["A","Ngiyagula. Ngibuhlungu lapha.","我不舒服，這裡痛。"],
+ ["B","Udinga udokotela?","你需要醫生嗎？"],
+ ["A","Yebo, ngidinga udokotela.","是的，我需要醫生。"],
+ ["B","Kulungile. Ngizobiza udokotela.","好的，我會叫醫生。"]
+ ]
+}
+];
+
+const numberWords = [
+["kunye","1"],["kubili","2"],["kuthathu","3"],["kune","4"],["kuhlanu","5"],
+["isithupha","6"],["isikhombisa","7"],["isishiyagalombili","8"],
+["isishiyagalolunye","9"],["ishumi","10"]
+];
+
+function makeModule(m,i){
+  const rows=m.phrases.map(p=>`<tr class="phrase-row">
+    <td><div class="zulu">${p[0]}</div><div class="pron">近似提示：${p[2]}</div></td>
+    <td>${p[1]}</td>
+    <td><button class="btn secondary speak" onclick="speakText(${JSON.stringify(p[0])},0.78)">🔊 正常</button>
+        <button class="btn secondary speak" onclick="speakText(${JSON.stringify(p[0])},0.58)">🐢 慢</button></td>
+  </tr>`).join("");
+  const dialog=m.dialogue.map(d=>`<p><span class="speaker">${d[0]}：</span>
+    <b>${d[1]}</b> <button class="btn secondary speak" onclick="speakText(${JSON.stringify(d[1])},0.7)">🔊</button><br>
+    <span class="muted">${d[2]}</span></p>`).join("");
+  let extra = "";
+  if(i===5){
+    extra=`<h3>數字 1–10（先練辨認，不急著學名詞一致變化）</h3>
+    <div class="grid">${numberWords.map(n=>`<div class="method-card"><div class="big">${n[1]}</div><b>${n[0]}</b>
+    <button class="btn secondary speak" onclick="speakText('${n[0]}',0.62)">🔊</button></div>`).join("")}</div>`;
+  }
+  return `<section id="module${i+1}">
+    <div class="module-head">
+      <div><h2>${m.icon} ${m.title}</h2><p><b>本課目標：</b>${m.goal}</p></div>
+      <label class="done-label"><input type="checkbox" class="moduleDone" data-id="${i}" onchange="saveProgress()"> 本課完成</label>
+    </div>
+    <table class="phrase-table">
+      <thead><tr><th>祖魯語與發音提示</th><th>中文意思</th><th>播放</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <h3>情境短對話</h3>
+    <div class="dialogue">${dialog}</div>
+    ${extra}
+    <div class="notice good" style="margin-top:14px"><b>本課通關：</b>不看中文，能說出其中 3 句就算完成，不要求一次全部記住。</div>
+  </section>`;
+}
+document.getElementById("modules").innerHTML=modules.map(makeModule).join("");
+
+let voices=[];
+function loadVoices(){
+  voices=speechSynthesis.getVoices();
+  const sel=document.getElementById("voiceSelect");
+  sel.innerHTML="";
+  const preferred=voices.filter(v=>/^(zu|en-ZA)/i.test(v.lang));
+  const list=preferred.length?preferred:voices;
+  list.forEach(v=>{
+    const o=document.createElement("option");
+    o.value=voices.indexOf(v);
+    o.textContent=`${v.name} (${v.lang})`;
+    sel.appendChild(o);
+  });
+  const zu=voices.find(v=>/^zu/i.test(v.lang));
+  const za=voices.find(v=>/^en-ZA/i.test(v.lang));
+  const chosen=zu||za||voices[0];
+  if(chosen) sel.value=voices.indexOf(chosen);
+  document.getElementById("voiceStatus").textContent=zu?
+    "✅ 找到祖魯語聲音（zu）。":
+    "⚠️ 未找到專用祖魯語聲音；目前使用可用的替代聲音。";
+}
+if("speechSynthesis" in window){
+  loadVoices();
+  speechSynthesis.onvoiceschanged=loadVoices;
+}else{
+  document.getElementById("voiceStatus").textContent="此瀏覽器不支援文字轉語音。";
+}
+function speakText(text,rate=0.78){
+  if(!("speechSynthesis" in window)){alert("此瀏覽器不支援語音播放");return;}
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  const idx=parseInt(document.getElementById("voiceSelect").value,10);
+  if(voices[idx]) u.voice=voices[idx];
+  u.lang=voices[idx]?.lang||"zu-ZA";
+  u.rate=rate;u.pitch=1;
+  speechSynthesis.speak(u);
+}
+function testVoice(){speakText("Sawubona. Unjani? Ngiyaphila. Ngiyabonga.",0.72);}
+
+function saveProgress(){
+  const vals=[...document.querySelectorAll(".moduleDone")].map(x=>x.checked);
+  localStorage.setItem("zulu_course_progress",JSON.stringify(vals));
+  updateProgress();
+}
+function loadProgress(){
+  let vals=[];
+  try{vals=JSON.parse(localStorage.getItem("zulu_course_progress")||"[]")}catch(e){}
+  document.querySelectorAll(".moduleDone").forEach((x,i)=>x.checked=!!vals[i]);
+  updateProgress();
+}
+function updateProgress(){
+  const boxes=[...document.querySelectorAll(".moduleDone")];
+  const done=boxes.filter(x=>x.checked).length;
+  document.getElementById("progressBar").style.width=(done/boxes.length*100)+"%";
+  document.getElementById("progressText").textContent=`已完成 ${done} / ${boxes.length} 個單元`;
+}
+function resetProgress(){
+  if(confirm("確定清除全部學習進度？")){
+    localStorage.removeItem("zulu_course_progress");
+    document.querySelectorAll(".moduleDone").forEach(x=>x.checked=false);
+    updateProgress();
+  }
+}
+
+const allPhrases=modules.flatMap(m=>m.phrases.map(p=>({z:p[0],c:p[1]})));
+let flashDeck=[...allPhrases],flashIndex=0;
+function showFlash(){
+  const f=flashDeck[flashIndex%flashDeck.length];
+  document.getElementById("flashZulu").textContent=f.z;
+  document.getElementById("flashAnswer").textContent=f.c;
+  document.getElementById("flashcard").classList.remove("revealed");
+}
+function revealFlash(){document.getElementById("flashcard").classList.toggle("revealed")}
+function nextFlash(){flashIndex=(flashIndex+1)%flashDeck.length;showFlash()}
+function shuffleFlash(){flashDeck.sort(()=>Math.random()-.5);flashIndex=0;showFlash()}
+function speakCurrentFlash(){speakText(flashDeck[flashIndex%flashDeck.length].z,0.68)}
+
+let quiz=[];
+function sample(arr,n){return [...arr].sort(()=>Math.random()-.5).slice(0,n)}
+function buildQuiz(){
+  quiz=sample(allPhrases,10);
+  document.getElementById("quizArea").innerHTML=quiz.map((q,i)=>{
+    const wrong=sample(allPhrases.filter(x=>x.c!==q.c),3).map(x=>x.c);
+    const opts=[q.c,...wrong].sort(()=>Math.random()-.5);
+    return `<div class="quiz-card">
+      <b>${i+1}.「${q.z}」是什麼意思？</b>
+      <button class="btn secondary speak" onclick="speakText(${JSON.stringify(q.z)},0.7)">🔊</button>
+      <div class="quiz-options">${opts.map(o=>`<label><input type="radio" name="q${i}" value=${JSON.stringify(o)}> ${o}</label>`).join("")}</div>
+    </div>`;
+  }).join("");
+  document.getElementById("quizResult").textContent="";
+}
+function gradeQuiz(){
+  let score=0;
+  quiz.forEach((q,i)=>{
+    const chosen=document.querySelector(`input[name="q${i}"]:checked`);
+    if(chosen&&chosen.value===q.c)score++;
+  });
+  document.getElementById("quizResult").textContent=
+    score>=8?`🎉 ${score}/10：很好，已接近能直接使用。`:
+    score>=5?`👍 ${score}/10：基礎正在形成，重聽錯題即可。`:
+    `🔁 ${score}/10：很正常。回到第 1–4 課，每天只練 5 句。`;
+}
+
+const dayTasks=[
+"只聽第 1 課 8 句，各 3 次","跟讀第 1 課，完成問候對話","不看中文說出 3 句問候",
+"學第 2 課禮貌句","練 Hamba kahle / Sala kahle 的使用對象","複習第 1–2 課，做單字卡",
+"學第 3 課自我介紹","把 Paul、Taiwan、Cambodia 換成自己的資料","錄下 30 秒自我介紹",
+"學第 4 課救命句","只練『慢一點、再說一次、不明白』","找影片或真人，實際用一次救命句",
+"學第 5 課吃飯購物","模擬點水、點餐、問價錢","複習第 3–5 課並做測驗",
+"學第 6 課時間詞","數字 1–5 只練聽辨","數字 6–10 只練聽辨",
+"學第 7 課問路","在房間內比左右並說祖魯語","完整演一次問廁所對話",
+"學第 8 課家庭","看家庭照片說 4 個稱呼","完成第 8 課短對話",
+"學第 9 課工廠句","練『停機、小心、有問題、請等』","在工作情境模擬說 5 次",
+"學第 10 課健康求助","指著身體練『這裡痛』","完成緊急狀況短對話",
+"全部單字卡打亂練習","做 10 題測驗；錯題各聽 3 次","完成 1 分鐘綜合對話，慶祝通關"
+];
+document.getElementById("dayPlan").innerHTML=dayTasks.map((t,i)=>`<div class="day"><span class="day-num">${i+1}</span><b>第 ${i+1} 天</b><br>${t}</div>`).join("");
+
+let seconds=420,timerId=null;
+function renderTimer(){
+  const m=String(Math.floor(seconds/60)).padStart(2,"0");
+  const s=String(seconds%60).padStart(2,"0");
+  document.getElementById("timer").textContent=`${m}:${s}`;
+}
+function startTimer(){
+  if(timerId)return;
+  timerId=setInterval(()=>{
+    seconds--;renderTimer();
+    if(seconds<=0){clearInterval(timerId);timerId=null;speakText("Kulungile. Wenze kahle. Ngiyabonga.",0.72);alert("7 分鐘完成！今天到這裡就夠了。");resetTimer();}
+  },1000);
+}
+function pauseTimer(){clearInterval(timerId);timerId=null}
+function resetTimer(){pauseTimer();seconds=420;renderTimer()}
+
+loadProgress();showFlash();buildQuiz();renderTimer();
+</script>
+</body>
+</html>

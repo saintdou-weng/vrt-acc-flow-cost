@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>零基礎馬來西亞語生活課</title>
+<style>
+@font-face{font-family:CJK;src:local("Noto Sans CJK TC"),local("Noto Sans TC"),local("Microsoft JhengHei");}
+:root{--ink:#17324d;--blue:#eaf5ff;--blue2:#d6edff;--green:#eaf8ef;--gold:#fff5d8;--red:#fff0ef;--line:#cad7e3;--muted:#5b6d7c;}
+*{box-sizing:border-box} body{margin:0;font-family:CJK,"Noto Sans",Arial,sans-serif;color:#1c2b36;background:#f5f8fb;line-height:1.55}
+.hero{background:linear-gradient(135deg,#17324d,#2e6e96);color:#fff;padding:42px 22px 34px;text-align:center}
+.hero h1{margin:0 0 10px;font-size:clamp(28px,5vw,48px)}.hero p{max-width:820px;margin:8px auto;font-size:17px}.badge{display:inline-block;background:#fff2c9;color:#5b4200;border-radius:999px;padding:6px 12px;font-weight:700;margin:4px}
+.container{max-width:1080px;margin:auto;padding:22px} .panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;margin:18px 0;box-shadow:0 8px 26px rgba(25,52,76,.06)}
+.notice{background:var(--gold);border-left:6px solid #d5a400;padding:14px 16px;border-radius:10px} .method-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}.method{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}.method b{color:#0d5f8d}
+nav{position:sticky;top:0;z-index:8;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line);padding:10px;overflow:auto;white-space:nowrap}nav a{display:inline-block;text-decoration:none;color:#17324d;background:#eef5fa;border:1px solid #d6e1e9;padding:7px 10px;margin:3px;border-radius:9px;font-size:14px}
+.lesson{background:#fff;margin:24px auto;padding:24px;border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 26px rgba(25,52,76,.06);page-break-before:always}.lesson-head{display:flex;gap:15px;align-items:flex-start;border-bottom:3px solid #d7eaf6;padding-bottom:12px}.lesson-icon{font-size:42px} h2{margin:0;color:#17324d;font-size:27px}h3{color:#1e668c;margin-top:25px;border-left:5px solid #4fa0cb;padding-left:10px}.goal{margin:6px 0;color:var(--muted)}
+.tipbox{background:var(--green);border:1px solid #b9dfc7;padding:13px 15px;border-radius:10px;margin:15px 0} table{width:100%;border-collapse:collapse}th,td{border:1px solid var(--line);padding:9px;vertical-align:top}th{background:#edf6fc;color:#17324d;text-align:left}
+.phrase-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:12px}.phrase-card{border:1px solid #cfdce6;border-radius:13px;padding:14px;background:linear-gradient(#fff,#fbfdff)}.ms{font-size:21px;font-weight:800;color:#0d5f8d}.zh{font-size:16px;margin:2px 0 8px}.pron{background:#f0f5f8;padding:6px 8px;border-radius:7px;color:#3f5362}.note{font-size:14px;color:#5b6d7c;margin-top:7px}.audio-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}button{border:0;border-radius:8px;background:#1e668c;color:#fff;padding:8px 10px;cursor:pointer}button:hover{background:#154b68}
+.dialogue{background:#f4f8fb;border-radius:15px;padding:15px}.bubble{max-width:82%;padding:10px 13px;border-radius:13px;margin:8px 0;display:flex;flex-direction:column}.bubble.other{background:#fff;border:1px solid #d3dee6}.bubble.me{background:#dff2ff;margin-left:auto;border:1px solid #b5d9ef}.d-ms{font-weight:800;color:#164f70}.d-zh{font-size:14px;color:#596b78}.practice{background:var(--red);border-left:5px solid #d7645a;padding:12px 14px;border-radius:8px;margin-top:16px}
+.grammar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}.grammar-card{border:1px solid var(--line);border-radius:12px;padding:13px;background:#fff}.grammar-card h4{margin:0 0 6px;color:#1e668c}.check{font-size:20px;text-align:center}.quiz-box{background:#f0f8ff;border-radius:14px;padding:18px}.quiz-ms{font-size:25px;font-weight:800;color:#0d5f8d}.quiz-options button{display:block;width:100%;text-align:left;margin:8px 0;background:#fff;color:#17324d;border:1px solid #aebfcb}.quiz-options button.correct{background:#ddf5e5}.quiz-options button.wrong{background:#ffe3e0}.score{font-weight:800}
+.mouth-map{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin:18px 0}.vowel{width:110px;height:110px;border-radius:50%;background:#eaf5ff;border:3px solid #7eb8d7;display:flex;flex-direction:column;align-items:center;justify-content:center}.vowel b{font-size:30px;color:#1b668e}
+.footer{text-align:center;color:#60717d;padding:35px 20px}.small{font-size:13px;color:#647580}.print-only{display:none}.print-break{display:none}
+@page{size:A4;margin:10mm}@media print{body{background:#fff;font-size:9.2pt;line-height:1.34}.no-print,nav,.footer{display:none!important}.print-only{display:block}.print-break{display:block;break-before:page;height:0}.container{max-width:none;padding:0}.panel,.lesson{box-shadow:none;border-radius:0;margin:0 0 7px;padding:9px;border-color:#aab8c2}.lesson{page-break-before:always}.lesson-head{padding-bottom:7px}.lesson-icon{font-size:30px}.tipbox{padding:7px 9px;margin:8px 0}.phrase-grid{grid-template-columns:1fr 1fr;gap:4px}.phrase-card{padding:5px;break-inside:avoid}.pron{padding:3px 5px}.note{margin-top:3px;font-size:8.3pt}.ms{font-size:13.2pt}.zh{font-size:9pt;margin:1px 0 4px}h2{font-size:18pt}h3{font-size:12pt;margin-top:9px;margin-bottom:5px}.hero{padding:20px 8px}.hero h1{font-size:26pt}th,td{padding:5px}.dialogue{padding:8px}.bubble{break-inside:avoid;padding:6px 8px;margin:4px 0}.practice{padding:7px 9px;margin-top:7px}.goal{margin:3px 0}}
+</style></head><body>
+<header class="hero"><div class="badge">Bahasa Melayu</div><div class="badge">零基礎 A0 → 生活 A1</div><div class="badge">30 天 × 每天 15 分鐘</div><h1>馬來西亞語零基礎生活課</h1><p>給「聽不懂、開不了口、覺得自己沒語言天分」的成人學習者。先學能馬上用的短句，再逐步理解句型。</p><p class="small" style="color:#dcebf5">本課中的中文近似音只用來幫你開口；真正發音請以音檔或手機的 ms-MY 語音為準。</p></header>
+<nav class="no-print"><a href="#start">開始方式</a><a href="#grammar">超簡單文法</a><a href="#plan">30 天計畫</a><a href="#L00">🔊 先把嘴巴打開：馬來語發音急救</a><a href="#L01">👋 打招呼與基本禮貌</a><a href="#L02">🛟 聽不懂時的救命句</a><a href="#L03">👨‍👩‍👧 介紹自己與家人</a><a href="#L04">🏠 在家和老婆最常說的話</a><a href="#L05">🍜 吃飯、點餐與口味</a><a href="#L06">🛍️ 購物、價錢與數字</a><a href="#L07">🚕 叫車、問路與方向</a><a href="#L08">⏰ 時間、今天明天與日常安排</a><a href="#L09">🩺 身體不舒服與緊急求助</a><a href="#L10">💬 馬來西亞人口語：正式說法怎麼縮短</a><a href="#L11">🧱 句型積木：用 20 個字組出 100 句</a><a href="#quiz">總測驗</a></nav>
+<main class="container">
+<section class="panel" id="start"><h2>這套課怎麼學，才不會三天就放棄</h2><div class="notice"><b>目標不是一次學會整個馬來語。</b>第一階段只要求：聽懂 100 個高頻詞、能說 60–100 句生活短句、遇到聽不懂時懂得自救。</div>
+<div class="method-grid"><div class="method"><b>① 先聽 3 次</b><br/>第一遍只聽節奏；第二遍看馬來文；第三遍看中文。</div><div class="method"><b>② 一句只練 30 秒</b><br/>慢速跟念 3 次，自然速度 2 次，不要一次硬背十句。</div><div class="method"><b>③ 每天說給太太聽</b><br/>不用正式上課，吃飯、出門、等人時自然說一句。</div><div class="method"><b>④ 忘記很正常</b><br/>第 1、3、7、14 天各複習一次，叫「間隔複習」。</div></div>
+<h3>五個母音先抓住</h3><div class="mouth-map"><div class="vowel"><b>a</b><span>啊</span></div><div class="vowel"><b>i</b><span>衣</span></div><div class="vowel"><b>u</b><span>屋</span></div><div class="vowel"><b>o</b><span>喔</span></div><div class="vowel"><b>e</b><span>欸／輕聲呃</span></div></div>
+<p><b>語言名稱：</b>馬來語通常稱 <i>Bahasa Melayu</i>，在馬來西亞也常聽到 <i>Bahasa Malaysia</i>。本教材以馬來西亞日常用法為主。</p></section>
+<section class="panel" id="grammar"><h2>零基礎先懂這 8 條文法就夠</h2><div class="grammar-grid"><div class="grammar-card"><h4>1. 動詞不用變化</h4><p>英文有 I am / he is、go / went；馬來語動詞通常不因人稱改變。Saya makan＝我吃；Dia makan＝他／她吃。</p></div><div class="grammar-card"><h4>2. 基本順序：誰＋做什麼＋什麼</h4><p>Saya makan nasi＝我＋吃＋飯。先用中文直覺組句即可。</p></div><div class="grammar-card"><h4>3. 形容詞多放在名詞後</h4><p>air panas＝熱水；saiz besar＝大尺寸；rumah besar＝大房子。</p></div><div class="grammar-card"><h4>4. 所有格放在名詞後</h4><p>isteri saya＝我的太太；anak saya＝我的孩子；rumah kami＝我們的家。</p></div><div class="grammar-card"><h4>5. 否定先用 tak</h4><p>Saya tak tahu＝我不知道；Saya tak mahu＝我不要。較正式寫法是 tidak。</p></div><div class="grammar-card"><h4>6. 時間靠時間詞，不靠動詞變化</h4><p>Saya makan semalam＝我昨天吃；Saya makan sekarang＝我現在吃；Saya makan nanti＝我晚點吃。</p></div><div class="grammar-card"><h4>7. 問句常靠語氣或問詞</h4><p>Apa＝什麼、Siapa＝誰、Mana＝哪裡／哪一個、Berapa＝多少、Kenapa＝為什麼、Macam mana＝怎麼。</p></div><div class="grammar-card"><h4>8. 先跳過字首字尾變化</h4><p>meN-、ber-、-kan 等叫「詞綴」，會改變詞性或語意。初級先認得整個常用字，不必一開始背規則。</p></div></div></section>
+<section class="panel" id="plan"><h2>30 天行動表</h2><p>每天約 15 分鐘。完成後在右欄打勾；第 14、29 天必須實際開口，不只看書。</p><table><thead><tr><th>天數</th><th>內容</th><th>任務</th><th>完成</th></tr></thead><tbody><tr><td>1</td><td>第0課</td><td>聽發音＋跟念 6 個字，各 5 次</td><td class="check">□</td></tr><tr><td>2</td><td>第1課</td><td>早安、謝謝、不客氣</td><td class="check">□</td></tr><tr><td>3</td><td>第1課</td><td>問候小對話，錄自己一次</td><td class="check">□</td></tr><tr><td>4</td><td>第2課</td><td>只練：我不懂、慢一點、再說一次</td><td class="check">□</td></tr><tr><td>5</td><td>第2課</td><td>和太太做 3 分鐘救命句演練</td><td class="check">□</td></tr><tr><td>6</td><td>複習</td><td>抽 15 張字卡，不看中文說意思</td><td class="check">□</td></tr><tr><td>7</td><td>第3課</td><td>自我介紹前 5 句</td><td class="check">□</td></tr><tr><td>8</td><td>第3課</td><td>介紹太太、孩子、工作</td><td class="check">□</td></tr><tr><td>9</td><td>第4課</td><td>Dah / Nak / Tak 三個口語字</td><td class="check">□</td></tr><tr><td>10</td><td>第4課</td><td>家庭對話：吃飯了嗎？想吃什麼？</td><td class="check">□</td></tr><tr><td>11</td><td>第5課</td><td>點餐：食物＋不要辣＋水</td><td class="check">□</td></tr><tr><td>12</td><td>第5課</td><td>結帳與打包</td><td class="check">□</td></tr><tr><td>13</td><td>複習</td><td>把第3–5課對話各讀 2 次</td><td class="check">□</td></tr><tr><td>14</td><td>實戰日</td><td>在家至少說 5 句馬來語</td><td class="check">□</td></tr><tr><td>15</td><td>第6課</td><td>數字 1–10、20、50、100</td><td class="check">□</td></tr><tr><td>16</td><td>第6課</td><td>問價與便宜一點</td><td class="check">□</td></tr><tr><td>17</td><td>第7課</td><td>地圖、目的地、多久</td><td class="check">□</td></tr><tr><td>18</td><td>第7課</td><td>左右、直走、停這裡</td><td class="check">□</td></tr><tr><td>19</td><td>第8課</td><td>今天、明天、現在、晚點</td><td class="check">□</td></tr><tr><td>20</td><td>第8課</td><td>約時間：幾點見</td><td class="check">□</td></tr><tr><td>21</td><td>複習</td><td>隨機播放音檔，先猜意思再看字</td><td class="check">□</td></tr><tr><td>22</td><td>第9課</td><td>頭痛、肚痛、發燒、醫生</td><td class="check">□</td></tr><tr><td>23</td><td>第9課</td><td>緊急求助對話</td><td class="check">□</td></tr><tr><td>24</td><td>第10課</td><td>聽懂 tak / dah / nak / lah</td><td class="check">□</td></tr><tr><td>25</td><td>第10課</td><td>和太太只用短版對話 3 分鐘</td><td class="check">□</td></tr><tr><td>26</td><td>第11課</td><td>Saya / Boleh / Ada 三種積木</td><td class="check">□</td></tr><tr><td>27</td><td>第11課</td><td>自己替換造 20 句</td><td class="check">□</td></tr><tr><td>28</td><td>總複習</td><td>完成 30 題小測驗</td><td class="check">□</td></tr><tr><td>29</td><td>實戰日</td><td>點餐或購物時至少說 3 句</td><td class="check">□</td></tr><tr><td>30</td><td>成果日</td><td>完成 1 分鐘自我介紹＋家庭對話</td><td class="check">□</td></tr></tbody></table></section>
+<section class="lesson" id="L00">
+<div class="lesson-head"><div class="lesson-icon">🔊</div><div><h2>第 0 課｜先把嘴巴打開：馬來語發音急救</h2><p class="goal"><b>本課目標：</b>看見單字大致就能念；先抓節奏，不追求一次完美。</p></div></div>
+<div class="tipbox"><b>先記這件事：</b>馬來語拼字比英文規則。先把每個音節念清楚，比追求口音更重要。</div>
+<h3>句型骨架</h3><table class="patterns"><thead><tr><th>骨架</th><th>作用</th><th>例子</th></tr></thead><tbody><tr><td><b>a</b></td><td>像「啊」</td><td>makan（吃）</td></tr><tr><td><b>i</b></td><td>像「衣」</td><td>minum（喝）</td></tr><tr><td><b>u</b></td><td>像「屋」</td><td>buku（書）</td></tr><tr><td><b>c</b></td><td>永遠念 ch</td><td>cakap（說）</td></tr><tr><td><b>g</b></td><td>永遠是硬 g</td><td>garam（鹽）</td></tr><tr><td><b>ng</b></td><td>像「昂」尾音</td><td>orang（人）</td></tr><tr><td><b>ny</b></td><td>像「娘」開頭的 ny</td><td>banyak（很多）</td></tr><tr><td><b>e</b></td><td>可能是「欸」或輕聲「呃」</td><td>besar（大）</td></tr></tbody></table>
+<h3>核心單字與句子</h3><div class="phrase-grid"><div class="phrase-card" data-ms="makan" data-zh="吃">
+<div class="phrase-main"><div class="ms">makan</div><div class="zh">吃</div></div>
+<div class="pron">中文近似音：嘛干</div>
+<div class="note">💡 兩拍：ma-kan</div>
+<div class="audio-row no-print">
+<button onclick="speakText('makan',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('makan',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L00_01')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="minum" data-zh="喝">
+<div class="phrase-main"><div class="ms">minum</div><div class="zh">喝</div></div>
+<div class="pron">中文近似音：咪努姆</div>
+<div class="note">💡 尾音 m 要收住</div>
+<div class="audio-row no-print">
+<button onclick="speakText('minum',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('minum',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L00_02')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="cakap" data-zh="說話">
+<div class="phrase-main"><div class="ms">cakap</div><div class="zh">說話</div></div>
+<div class="pron">中文近似音：查卡普</div>
+<div class="note">💡 c = ch</div>
+<div class="audio-row no-print">
+<button onclick="speakText('cakap',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('cakap',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L00_03')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="orang" data-zh="人">
+<div class="phrase-main"><div class="ms">orang</div><div class="zh">人</div></div>
+<div class="pron">中文近似音：喔朗</div>
+<div class="note">💡 ng 連在一起</div>
+<div class="audio-row no-print">
+<button onclick="speakText('orang',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('orang',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L00_04')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="banyak" data-zh="很多">
+<div class="phrase-main"><div class="ms">banyak</div><div class="zh">很多</div></div>
+<div class="pron">中文近似音：巴娘</div>
+<div class="note">💡 ny 不是 n+y 分開念</div>
+<div class="audio-row no-print">
+<button onclick="speakText('banyak',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('banyak',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L00_05')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="selamat" data-zh="平安／祝福；常見於問候語">
+<div class="phrase-main"><div class="ms">selamat</div><div class="zh">平安／祝福；常見於問候語</div></div>
+<div class="pron">中文近似音：瑟拉媽</div>
+<div class="note">💡 最後 t 輕收</div>
+<div class="audio-row no-print">
+<button onclick="speakText('selamat',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('selamat',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L00_06')">🔉 系統語音</button>
+</div>
+</div></div>
+<h3>情境小對話</h3><div class="dialogue"><div class="bubble other"><b>老師</b><span class="d-ms">Dengar dan ikut.</span><span class="d-zh">聽，然後跟著念。</span></div><div class="bubble me"><b>你</b><span class="d-ms">Baik.</span><span class="d-zh">好。</span></div></div>
+<div class="practice"><b>今日開口任務：</b>遮住中文，連續說三次；再把其中一個關鍵字換掉，自己造一句。</div>
+</section><section class="lesson" id="L01">
+<div class="lesson-head"><div class="lesson-icon">👋</div><div><h2>第 1 課｜打招呼與基本禮貌</h2><p class="goal"><b>本課目標：</b>能完成第一次見面、早晚問候、道謝與道歉。</p></div></div>
+<div class="tipbox"><b>先記這件事：</b>先把「Selamat pagi、Terima kasih、Maaf」練成反射動作，生活中每天至少用一次。</div>
+<h3>句型骨架</h3><table class="patterns"><thead><tr><th>骨架</th><th>作用</th><th>例子</th></tr></thead><tbody><tr><td><b>Selamat + 時段</b></td><td>問候句型</td><td>Selamat pagi.</td></tr><tr><td><b>Terima kasih</b></td><td>謝謝</td><td>可縮短為 kasih，但初學先說完整</td></tr><tr><td><b>Maaf</b></td><td>對不起／不好意思</td><td>也可用於打擾別人</td></tr></tbody></table>
+<h3>核心單字與句子</h3><div class="phrase-grid"><div class="phrase-card" data-ms="Selamat pagi." data-zh="早安。">
+<div class="phrase-main"><div class="ms">Selamat pagi.</div><div class="zh">早安。</div></div>
+<div class="pron">中文近似音：瑟拉媽 巴吉</div>
+<div class="note">💡 pagi＝早上</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Selamat pagi.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Selamat pagi.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L01_01')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Selamat petang." data-zh="下午好／傍晚好。">
+<div class="phrase-main"><div class="ms">Selamat petang.</div><div class="zh">下午好／傍晚好。</div></div>
+<div class="pron">中文近似音：瑟拉媽 波當</div>
+<div class="note">💡 petang 常用於下午到傍晚</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Selamat petang.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Selamat petang.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L01_02')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Selamat malam." data-zh="晚安／晚上好。">
+<div class="phrase-main"><div class="ms">Selamat malam.</div><div class="zh">晚安／晚上好。</div></div>
+<div class="pron">中文近似音：瑟拉媽 馬朗</div>
+<div class="note">💡 malam＝晚上</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Selamat malam.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Selamat malam.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L01_03')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Apa khabar?" data-zh="你好嗎？">
+<div class="phrase-main"><div class="ms">Apa khabar?</div><div class="zh">你好嗎？</div></div>
+<div class="pron">中文近似音：阿帕 卡巴</div>
+<div class="note">💡 khabar 的 kh 可先念普通 k</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Apa khabar?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Apa khabar?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L01_04')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Khabar baik." data-zh="我很好。">
+<div class="phrase-main"><div class="ms">Khabar baik.</div><div class="zh">我很好。</div></div>
+<div class="pron">中文近似音：卡巴 拜克</div>
+<div class="note">💡 baik＝好</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Khabar baik.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Khabar baik.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L01_05')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Terima kasih." data-zh="謝謝。">
+<div class="phrase-main"><div class="ms">Terima kasih.</div><div class="zh">謝謝。</div></div>
+<div class="pron">中文近似音：德里瑪 卡西</div>
+<div class="note">💡 最重要禮貌句</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Terima kasih.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Terima kasih.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L01_06')">🔉 系統語音</button>
+</div>
+</div></div><div class="print-break"></div><div class="phrase-grid phrase-grid-cont"><div class="phrase-card" data-ms="Sama-sama." data-zh="不客氣。">
+<div class="phrase-main"><div class="ms">Sama-sama.</div><div class="zh">不客氣。</div></div>
+<div class="pron">中文近似音：沙瑪 沙瑪</div>
+<div class="note">💡 字面：彼此彼此</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Sama-sama.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Sama-sama.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L01_07')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Maaf." data-zh="對不起／不好意思。">
+<div class="phrase-main"><div class="ms">Maaf.</div><div class="zh">對不起／不好意思。</div></div>
+<div class="pron">中文近似音：馬阿夫</div>
+<div class="note">💡 a-a 分開一點</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Maaf.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Maaf.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L01_08')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Jumpa lagi." data-zh="下次見。">
+<div class="phrase-main"><div class="ms">Jumpa lagi.</div><div class="zh">下次見。</div></div>
+<div class="pron">中文近似音：中巴 拉吉</div>
+<div class="note">💡 jumpa＝見面</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Jumpa lagi.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Jumpa lagi.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L01_09')">🔉 系統語音</button>
+</div>
+</div></div>
+<h3>情境小對話</h3><div class="dialogue"><div class="bubble other"><b>A</b><span class="d-ms">Selamat pagi. Apa khabar?</span><span class="d-zh">早安，你好嗎？</span></div><div class="bubble other"><b>B</b><span class="d-ms">Khabar baik. Terima kasih.</span><span class="d-zh">很好，謝謝。</span></div><div class="bubble other"><b>A</b><span class="d-ms">Sama-sama.</span><span class="d-zh">不客氣。</span></div></div>
+<div class="practice"><b>今日開口任務：</b>遮住中文，連續說三次；再把其中一個關鍵字換掉，自己造一句。</div>
+</section><section class="lesson" id="L02">
+<div class="lesson-head"><div class="lesson-icon">🛟</div><div><h2>第 2 課｜聽不懂時的救命句</h2><p class="goal"><b>本課目標：</b>聽不懂也能讓對方放慢、重說、換簡單說法。</p></div></div>
+<div class="tipbox"><b>先記這件事：</b>遇到聽不懂，不要沉默。固定說「Maaf, saya tak faham. Cakap perlahan sikit.」就能把對話救回來。</div>
+<h3>句型骨架</h3><table class="patterns"><thead><tr><th>骨架</th><th>作用</th><th>例子</th></tr></thead><tbody><tr><td><b>Saya tak + 動詞</b></td><td>我不……</td><td>Saya tak faham.</td></tr><tr><td><b>Boleh + 動詞?</b></td><td>可以……嗎？</td><td>Boleh ulang?</td></tr><tr><td><b>... sikit</b></td><td>一點點</td><td>perlahan sikit＝慢一點</td></tr></tbody></table>
+<h3>核心單字與句子</h3><div class="phrase-grid"><div class="phrase-card" data-ms="Saya tak faham." data-zh="我不明白。">
+<div class="phrase-main"><div class="ms">Saya tak faham.</div><div class="zh">我不明白。</div></div>
+<div class="pron">中文近似音：沙雅 打 發哈姆</div>
+<div class="note">💡 tak＝口語「不」</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya tak faham.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya tak faham.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L02_01')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya tak tahu." data-zh="我不知道。">
+<div class="phrase-main"><div class="ms">Saya tak tahu.</div><div class="zh">我不知道。</div></div>
+<div class="pron">中文近似音：沙雅 打 搭胡</div>
+<div class="note">💡 tahu＝知道</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya tak tahu.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya tak tahu.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L02_02')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Boleh ulang?" data-zh="可以再說一次嗎？">
+<div class="phrase-main"><div class="ms">Boleh ulang?</div><div class="zh">可以再說一次嗎？</div></div>
+<div class="pron">中文近似音：波雷 烏朗</div>
+<div class="note">💡 ulang＝重複</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Boleh ulang?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Boleh ulang?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L02_03')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Cakap perlahan sikit." data-zh="請說慢一點。">
+<div class="phrase-main"><div class="ms">Cakap perlahan sikit.</div><div class="zh">請說慢一點。</div></div>
+<div class="pron">中文近似音：查卡普 波拉漢 西吉</div>
+<div class="note">💡 sikit＝一點</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Cakap perlahan sikit.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Cakap perlahan sikit.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L02_04')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Cakap sekali lagi." data-zh="再說一次。">
+<div class="phrase-main"><div class="ms">Cakap sekali lagi.</div><div class="zh">再說一次。</div></div>
+<div class="pron">中文近似音：查卡普 瑟卡里 拉吉</div>
+<div class="note">💡 sekali lagi＝再一次</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Cakap sekali lagi.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Cakap sekali lagi.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L02_05')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Apa maksudnya?" data-zh="這是什麼意思？">
+<div class="phrase-main"><div class="ms">Apa maksudnya?</div><div class="zh">這是什麼意思？</div></div>
+<div class="pron">中文近似音：阿帕 馬蘇德尼亞</div>
+<div class="note">💡 maksud＝意思</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Apa maksudnya?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Apa maksudnya?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L02_06')">🔉 系統語音</button>
+</div>
+</div></div><div class="print-break"></div><div class="phrase-grid phrase-grid-cont"><div class="phrase-card" data-ms="Macam mana nak cakap?" data-zh="這要怎麼說？">
+<div class="phrase-main"><div class="ms">Macam mana nak cakap?</div><div class="zh">這要怎麼說？</div></div>
+<div class="pron">中文近似音：馬參 馬那 納 查卡普</div>
+<div class="note">💡 很實用的馬來西亞口語</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Macam mana nak cakap?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Macam mana nak cakap?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L02_07')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Tolong tunjuk." data-zh="請指給我看。">
+<div class="phrase-main"><div class="ms">Tolong tunjuk.</div><div class="zh">請指給我看。</div></div>
+<div class="pron">中文近似音：多隆 吐朱</div>
+<div class="note">💡 tolong＝請／幫忙</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Tolong tunjuk.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Tolong tunjuk.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L02_08')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya baru belajar Bahasa Melayu." data-zh="我剛開始學馬來語。">
+<div class="phrase-main"><div class="ms">Saya baru belajar Bahasa Melayu.</div><div class="zh">我剛開始學馬來語。</div></div>
+<div class="pron">中文近似音：沙雅 巴魯 波拉加 巴哈沙 默拉優</div>
+<div class="note">💡 可降低對方語速</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya baru belajar Bahasa Melayu.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya baru belajar Bahasa Melayu.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L02_09')">🔉 系統語音</button>
+</div>
+</div></div>
+<h3>情境小對話</h3><div class="dialogue"><div class="bubble other"><b>對方</b><span class="d-ms">Encik mahu pergi ke mana?</span><span class="d-zh">先生要去哪裡？</span></div><div class="bubble me"><b>你</b><span class="d-ms">Maaf, saya tak faham. Cakap perlahan sikit.</span><span class="d-zh">不好意思，我聽不懂。請慢一點。</span></div><div class="bubble other"><b>對方</b><span class="d-ms">Mahu pergi mana?</span><span class="d-zh">要去哪裡？</span></div><div class="bubble me"><b>你</b><span class="d-ms">Oh, saya mahu pergi ke hotel.</span><span class="d-zh">喔，我要去飯店。</span></div></div>
+<div class="practice"><b>今日開口任務：</b>遮住中文，連續說三次；再把其中一個關鍵字換掉，自己造一句。</div>
+</section><section class="lesson" id="L03">
+<div class="lesson-head"><div class="lesson-icon">👨‍👩‍👧</div><div><h2>第 3 課｜介紹自己與家人</h2><p class="goal"><b>本課目標：</b>能說姓名、國籍、住哪裡，以及介紹老婆和孩子。</p></div></div>
+<div class="tipbox"><b>先記這件事：</b>馬來語的 dia 同時代表「他／她」，動詞也不因人稱改變，因此比英文容易。</div>
+<h3>句型骨架</h3><table class="patterns"><thead><tr><th>骨架</th><th>作用</th><th>例子</th></tr></thead><tbody><tr><td><b>Nama saya + 名字</b></td><td>我的名字是……</td><td>Nama saya Paul.</td></tr><tr><td><b>Saya dari + 地方</b></td><td>我來自……</td><td>Saya dari Taiwan.</td></tr><tr><td><b>Ini + 人／物</b></td><td>這是……</td><td>Ini isteri saya.</td></tr></tbody></table>
+<h3>核心單字與句子</h3><div class="phrase-grid"><div class="phrase-card" data-ms="Nama saya Paul." data-zh="我叫 Paul。">
+<div class="phrase-main"><div class="ms">Nama saya Paul.</div><div class="zh">我叫 Paul。</div></div>
+<div class="pron">中文近似音：那瑪 沙雅 Paul</div>
+<div class="note">💡 名字可替換</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Nama saya Paul.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Nama saya Paul.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L03_01')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya dari Taiwan." data-zh="我來自台灣。">
+<div class="phrase-main"><div class="ms">Saya dari Taiwan.</div><div class="zh">我來自台灣。</div></div>
+<div class="pron">中文近似音：沙雅 達里 Taiwan</div>
+<div class="note">💡 dari＝從／來自</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya dari Taiwan.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya dari Taiwan.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L03_02')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya tinggal di Kemboja." data-zh="我住在柬埔寨。">
+<div class="phrase-main"><div class="ms">Saya tinggal di Kemboja.</div><div class="zh">我住在柬埔寨。</div></div>
+<div class="pron">中文近似音：沙雅 丁嘎 迪 肯波甲</div>
+<div class="note">💡 Kemboja＝柬埔寨</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya tinggal di Kemboja.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya tinggal di Kemboja.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L03_03')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Ini isteri saya." data-zh="這是我太太。">
+<div class="phrase-main"><div class="ms">Ini isteri saya.</div><div class="zh">這是我太太。</div></div>
+<div class="pron">中文近似音：伊尼 伊斯德里 沙雅</div>
+<div class="note">💡 所有格順序：太太＋我的</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Ini isteri saya.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Ini isteri saya.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L03_04')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Dia orang Malaysia." data-zh="她是馬來西亞人。">
+<div class="phrase-main"><div class="ms">Dia orang Malaysia.</div><div class="zh">她是馬來西亞人。</div></div>
+<div class="pron">中文近似音：迪亞 喔朗 Malaysia</div>
+<div class="note">💡 dia＝他／她，不分性別</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Dia orang Malaysia.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Dia orang Malaysia.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L03_05')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Kami sudah kahwin dua puluh tahun." data-zh="我們結婚二十年了。">
+<div class="phrase-main"><div class="ms">Kami sudah kahwin dua puluh tahun.</div><div class="zh">我們結婚二十年了。</div></div>
+<div class="pron">中文近似音：卡米 蘇達 卡溫 杜阿 普魯 達胡恩</div>
+<div class="note">💡 kami＝我們（不包含聽者）</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Kami sudah kahwin dua puluh tahun.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Kami sudah kahwin dua puluh tahun.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L03_06')">🔉 系統語音</button>
+</div>
+</div></div><div class="print-break"></div><div class="phrase-grid phrase-grid-cont"><div class="phrase-card" data-ms="Kami ada anak." data-zh="我們有孩子。">
+<div class="phrase-main"><div class="ms">Kami ada anak.</div><div class="zh">我們有孩子。</div></div>
+<div class="pron">中文近似音：卡米 阿達 阿納</div>
+<div class="note">💡 ada＝有</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Kami ada anak.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Kami ada anak.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L03_07')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya umur lima puluh tahun." data-zh="我五十歲。">
+<div class="phrase-main"><div class="ms">Saya umur lima puluh tahun.</div><div class="zh">我五十歲。</div></div>
+<div class="pron">中文近似音：沙雅 烏穆 利瑪 普魯 達胡恩</div>
+<div class="note">💡 umur＝年齡</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya umur lima puluh tahun.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya umur lima puluh tahun.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L03_08')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya kerja di kilang pakaian." data-zh="我在成衣廠工作。">
+<div class="phrase-main"><div class="ms">Saya kerja di kilang pakaian.</div><div class="zh">我在成衣廠工作。</div></div>
+<div class="pron">中文近似音：沙雅 格惹 迪 吉朗 巴卡央</div>
+<div class="note">💡 kilang＝工廠；pakaian＝服裝</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya kerja di kilang pakaian.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya kerja di kilang pakaian.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L03_09')">🔉 系統語音</button>
+</div>
+</div></div>
+<h3>情境小對話</h3><div class="dialogue"><div class="bubble other"><b>A</b><span class="d-ms">Nama encik siapa?</span><span class="d-zh">先生叫什麼名字？</span></div><div class="bubble me"><b>你</b><span class="d-ms">Nama saya Paul. Saya dari Taiwan.</span><span class="d-zh">我叫 Paul，來自台灣。</span></div><div class="bubble other"><b>A</b><span class="d-ms">Tinggal di mana?</span><span class="d-zh">住在哪裡？</span></div><div class="bubble me"><b>你</b><span class="d-ms">Saya tinggal di Kemboja.</span><span class="d-zh">我住在柬埔寨。</span></div></div>
+<div class="practice"><b>今日開口任務：</b>遮住中文，連續說三次；再把其中一個關鍵字換掉，自己造一句。</div>
+</section><section class="lesson" id="L04">
+<div class="lesson-head"><div class="lesson-icon">🏠</div><div><h2>第 4 課｜在家和老婆最常說的話</h2><p class="goal"><b>本課目標：</b>能用短句處理吃飯、出門、等一下、累不累等家庭日常。</p></div></div>
+<div class="tipbox"><b>先記這件事：</b>家庭口語先學 dah、nak、tak。這三個字能讓你立刻聽懂很多馬來西亞人的日常對話。</div>
+<h3>句型骨架</h3><table class="patterns"><thead><tr><th>骨架</th><th>作用</th><th>例子</th></tr></thead><tbody><tr><td><b>Dah + 動詞?</b></td><td>已經……了嗎？</td><td>Dah makan?</td></tr><tr><td><b>Nak + 動詞／名詞</b></td><td>想要……</td><td>Nak makan apa?</td></tr><tr><td><b>Jangan + 動詞</b></td><td>不要……</td><td>Jangan risau.</td></tr></tbody></table>
+<h3>核心單字與句子</h3><div class="phrase-grid"><div class="phrase-card" data-ms="Dah makan?" data-zh="吃過了嗎？">
+<div class="phrase-main"><div class="ms">Dah makan?</div><div class="zh">吃過了嗎？</div></div>
+<div class="pron">中文近似音：達 嘛干</div>
+<div class="note">💡 完整說法：Sudah makan?</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Dah makan?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Dah makan?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L04_01')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Belum lagi." data-zh="還沒有。">
+<div class="phrase-main"><div class="ms">Belum lagi.</div><div class="zh">還沒有。</div></div>
+<div class="pron">中文近似音：波倫 拉吉</div>
+<div class="note">💡 belum＝尚未</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Belum lagi.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Belum lagi.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L04_02')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Nak makan apa?" data-zh="想吃什麼？">
+<div class="phrase-main"><div class="ms">Nak makan apa?</div><div class="zh">想吃什麼？</div></div>
+<div class="pron">中文近似音：納 嘛干 阿帕</div>
+<div class="note">💡 nak＝口語 mahu（想要）</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Nak makan apa?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Nak makan apa?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L04_03')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Kita makan di rumah." data-zh="我們在家吃。">
+<div class="phrase-main"><div class="ms">Kita makan di rumah.</div><div class="zh">我們在家吃。</div></div>
+<div class="pron">中文近似音：吉打 嘛干 迪 魯馬</div>
+<div class="note">💡 kita＝包含聽者的我們</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Kita makan di rumah.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Kita makan di rumah.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L04_04')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya keluar sekejap." data-zh="我出去一下。">
+<div class="phrase-main"><div class="ms">Saya keluar sekejap.</div><div class="zh">我出去一下。</div></div>
+<div class="pron">中文近似音：沙雅 格路阿 瑟格甲</div>
+<div class="note">💡 sekejap＝一下</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya keluar sekejap.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya keluar sekejap.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L04_05')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Tunggu saya." data-zh="等我。">
+<div class="phrase-main"><div class="ms">Tunggu saya.</div><div class="zh">等我。</div></div>
+<div class="pron">中文近似音：東古 沙雅</div>
+<div class="note">💡 tunggu＝等</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Tunggu saya.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Tunggu saya.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L04_06')">🔉 系統語音</button>
+</div>
+</div></div><div class="print-break"></div><div class="phrase-grid phrase-grid-cont"><div class="phrase-card" data-ms="Saya balik lewat sikit." data-zh="我會晚一點回來。">
+<div class="phrase-main"><div class="ms">Saya balik lewat sikit.</div><div class="zh">我會晚一點回來。</div></div>
+<div class="pron">中文近似音：沙雅 巴力 雷瓦 西吉</div>
+<div class="note">💡 balik＝回去／回家</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya balik lewat sikit.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya balik lewat sikit.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L04_07')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Awak penat tak?" data-zh="你累不累？">
+<div class="phrase-main"><div class="ms">Awak penat tak?</div><div class="zh">你累不累？</div></div>
+<div class="pron">中文近似音：阿瓦 波納 打</div>
+<div class="note">💡 句尾 tak 形成口語問句</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Awak penat tak?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Awak penat tak?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L04_08')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Jangan risau." data-zh="別擔心。">
+<div class="phrase-main"><div class="ms">Jangan risau.</div><div class="zh">別擔心。</div></div>
+<div class="pron">中文近似音：江岸 里紹</div>
+<div class="note">💡 jangan＝不要</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Jangan risau.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Jangan risau.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L04_09')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya sayang awak." data-zh="我愛你。">
+<div class="phrase-main"><div class="ms">Saya sayang awak.</div><div class="zh">我愛你。</div></div>
+<div class="pron">中文近似音：沙雅 沙央 阿瓦</div>
+<div class="note">💡 sayang＝疼愛／親愛的</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya sayang awak.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya sayang awak.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L04_10')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Terima kasih, sayang." data-zh="謝謝你，親愛的。">
+<div class="phrase-main"><div class="ms">Terima kasih, sayang.</div><div class="zh">謝謝你，親愛的。</div></div>
+<div class="pron">中文近似音：德里瑪 卡西 沙央</div>
+<div class="note">💡 家庭中自然好用</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Terima kasih, sayang.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Terima kasih, sayang.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L04_11')">🔉 系統語音</button>
+</div>
+</div></div>
+<h3>情境小對話</h3><div class="dialogue"><div class="bubble me"><b>你</b><span class="d-ms">Sayang, dah makan?</span><span class="d-zh">親愛的，吃過了嗎？</span></div><div class="bubble other"><b>太太</b><span class="d-ms">Belum lagi. Nak makan apa?</span><span class="d-zh">還沒。想吃什麼？</span></div><div class="bubble me"><b>你</b><span class="d-ms">Kita makan di rumah. Saya masak.</span><span class="d-zh">我們在家吃，我來煮。</span></div><div class="bubble other"><b>太太</b><span class="d-ms">Baiklah.</span><span class="d-zh">好吧。</span></div></div>
+<div class="practice"><b>今日開口任務：</b>遮住中文，連續說三次；再把其中一個關鍵字換掉，自己造一句。</div>
+</section><section class="lesson" id="L05">
+<div class="lesson-head"><div class="lesson-icon">🍜</div><div><h2>第 5 課｜吃飯、點餐與口味</h2><p class="goal"><b>本課目標：</b>能點餐、說不要辣、要水、結帳。</p></div></div>
+<div class="tipbox"><b>先記這件事：</b>馬來西亞點餐不用完整長句。說「食物名＋satu」通常就能完成，例如 Kopi satu（咖啡一杯）。</div>
+<h3>句型骨架</h3><table class="patterns"><thead><tr><th>骨架</th><th>作用</th><th>例子</th></tr></thead><tbody><tr><td><b>Saya nak + 食物</b></td><td>我要……</td><td>Saya nak nasi goreng.</td></tr><tr><td><b>Jangan + 調味／動作</b></td><td>不要……</td><td>Jangan pedas.</td></tr><tr><td><b>Ada + 名詞?</b></td><td>有……嗎？</td><td>Ada air kosong?</td></tr></tbody></table>
+<h3>核心單字與句子</h3><div class="phrase-grid"><div class="phrase-card" data-ms="Saya nak nasi goreng." data-zh="我要炒飯。">
+<div class="phrase-main"><div class="ms">Saya nak nasi goreng.</div><div class="zh">我要炒飯。</div></div>
+<div class="pron">中文近似音：沙雅 納 那西 果冷</div>
+<div class="note">💡 nasi＝飯；goreng＝炒／炸</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya nak nasi goreng.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya nak nasi goreng.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L05_01')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Ada mi goreng?" data-zh="有炒麵嗎？">
+<div class="phrase-main"><div class="ms">Ada mi goreng?</div><div class="zh">有炒麵嗎？</div></div>
+<div class="pron">中文近似音：阿達 咪 果冷</div>
+<div class="note">💡 mi＝麵</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Ada mi goreng?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Ada mi goreng?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L05_02')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Jangan pedas." data-zh="不要辣。">
+<div class="phrase-main"><div class="ms">Jangan pedas.</div><div class="zh">不要辣。</div></div>
+<div class="pron">中文近似音：江岸 波達斯</div>
+<div class="note">💡 pedas＝辣</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Jangan pedas.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Jangan pedas.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L05_03')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Pedas sikit saja." data-zh="只要一點辣。">
+<div class="phrase-main"><div class="ms">Pedas sikit saja.</div><div class="zh">只要一點辣。</div></div>
+<div class="pron">中文近似音：波達斯 西吉 沙甲</div>
+<div class="note">💡 saja＝只</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Pedas sikit saja.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Pedas sikit saja.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L05_04')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya tak makan daging lembu." data-zh="我不吃牛肉。">
+<div class="phrase-main"><div class="ms">Saya tak makan daging lembu.</div><div class="zh">我不吃牛肉。</div></div>
+<div class="pron">中文近似音：沙雅 打 嘛干 達京 林布</div>
+<div class="note">💡 daging lembu＝牛肉</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya tak makan daging lembu.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya tak makan daging lembu.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L05_05')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Air kosong satu." data-zh="一杯白開水。">
+<div class="phrase-main"><div class="ms">Air kosong satu.</div><div class="zh">一杯白開水。</div></div>
+<div class="pron">中文近似音：阿耶 果松 沙度</div>
+<div class="note">💡 馬來西亞常說 air kosong</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Air kosong satu.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Air kosong satu.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L05_06')">🔉 系統語音</button>
+</div>
+</div></div><div class="print-break"></div><div class="phrase-grid phrase-grid-cont"><div class="phrase-card" data-ms="Sedap!" data-zh="好吃！">
+<div class="phrase-main"><div class="ms">Sedap!</div><div class="zh">好吃！</div></div>
+<div class="pron">中文近似音：瑟達普</div>
+<div class="note">💡 非常常用</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Sedap!',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Sedap!',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L05_07')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Terlalu manis." data-zh="太甜了。">
+<div class="phrase-main"><div class="ms">Terlalu manis.</div><div class="zh">太甜了。</div></div>
+<div class="pron">中文近似音：德拉魯 馬尼斯</div>
+<div class="note">💡 terlalu＝太過</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Terlalu manis.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Terlalu manis.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L05_08')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Bungkus, ya." data-zh="請打包。">
+<div class="phrase-main"><div class="ms">Bungkus, ya.</div><div class="zh">請打包。</div></div>
+<div class="pron">中文近似音：崩古斯 呀</div>
+<div class="note">💡 bungkus＝包起來／外帶</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Bungkus, ya.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Bungkus, ya.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L05_09')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Minta bil." data-zh="麻煩結帳。">
+<div class="phrase-main"><div class="ms">Minta bil.</div><div class="zh">麻煩結帳。</div></div>
+<div class="pron">中文近似音：敏打 比爾</div>
+<div class="note">💡 bil＝帳單</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Minta bil.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Minta bil.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L05_10')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Berapa semua?" data-zh="全部多少錢？">
+<div class="phrase-main"><div class="ms">Berapa semua?</div><div class="zh">全部多少錢？</div></div>
+<div class="pron">中文近似音：波拉帕 瑟穆阿</div>
+<div class="note">💡 semua＝全部</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Berapa semua?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Berapa semua?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L05_11')">🔉 系統語音</button>
+</div>
+</div></div>
+<h3>情境小對話</h3><div class="dialogue"><div class="bubble other"><b>服務員</b><span class="d-ms">Nak makan apa?</span><span class="d-zh">想吃什麼？</span></div><div class="bubble me"><b>你</b><span class="d-ms">Saya nak nasi goreng. Jangan pedas.</span><span class="d-zh">我要炒飯，不要辣。</span></div><div class="bubble other"><b>服務員</b><span class="d-ms">Minum?</span><span class="d-zh">喝什麼？</span></div><div class="bubble me"><b>你</b><span class="d-ms">Air kosong satu.</span><span class="d-zh">一杯白開水。</span></div><div class="bubble me"><b>你</b><span class="d-ms">Minta bil. Berapa semua?</span><span class="d-zh">麻煩結帳，全部多少？</span></div></div>
+<div class="practice"><b>今日開口任務：</b>遮住中文，連續說三次；再把其中一個關鍵字換掉，自己造一句。</div>
+</section><section class="lesson" id="L06">
+<div class="lesson-head"><div class="lesson-icon">🛍️</div><div><h2>第 6 課｜購物、價錢與數字</h2><p class="goal"><b>本課目標：</b>會問價、聽基本數字、要求便宜一點。</p></div></div>
+<div class="tipbox"><b>先記這件事：</b>先聽懂 puluh（十位）與 ringgit。Lima puluh ringgit＝50 令吉，dua puluh＝20。</div>
+<h3>句型骨架</h3><table class="patterns"><thead><tr><th>骨架</th><th>作用</th><th>例子</th></tr></thead><tbody><tr><td><b>Berapa harga + 名詞?</b></td><td>……多少錢？</td><td>Berapa harga ini?</td></tr><tr><td><b>Boleh + 形容／動詞 + sikit?</b></td><td>可以……一點嗎？</td><td>Boleh kurang sikit?</td></tr><tr><td><b>Saya mahu + 數量</b></td><td>我要……</td><td>Saya mahu dua.</td></tr></tbody></table>
+<h3>核心單字與句子</h3><div class="phrase-grid"><div class="phrase-card" data-ms="Berapa harga ini?" data-zh="這個多少錢？">
+<div class="phrase-main"><div class="ms">Berapa harga ini?</div><div class="zh">這個多少錢？</div></div>
+<div class="pron">中文近似音：波拉帕 哈嘎 伊尼</div>
+<div class="note">💡 ini＝這個</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Berapa harga ini?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Berapa harga ini?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L06_01')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Yang itu berapa?" data-zh="那個多少？">
+<div class="phrase-main"><div class="ms">Yang itu berapa?</div><div class="zh">那個多少？</div></div>
+<div class="pron">中文近似音：央 伊度 波拉帕</div>
+<div class="note">💡 itu＝那個</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Yang itu berapa?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Yang itu berapa?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L06_02')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Mahal sangat." data-zh="太貴了。">
+<div class="phrase-main"><div class="ms">Mahal sangat.</div><div class="zh">太貴了。</div></div>
+<div class="pron">中文近似音：馬哈爾 桑阿</div>
+<div class="note">💡 sangat＝很／非常</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Mahal sangat.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Mahal sangat.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L06_03')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Boleh kurang sikit?" data-zh="可以便宜一點嗎？">
+<div class="phrase-main"><div class="ms">Boleh kurang sikit?</div><div class="zh">可以便宜一點嗎？</div></div>
+<div class="pron">中文近似音：波雷 古朗 西吉</div>
+<div class="note">💡 kurang＝減少</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Boleh kurang sikit?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Boleh kurang sikit?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L06_04')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya tengok dulu." data-zh="我先看看。">
+<div class="phrase-main"><div class="ms">Saya tengok dulu.</div><div class="zh">我先看看。</div></div>
+<div class="pron">中文近似音：沙雅 登郭 杜魯</div>
+<div class="note">💡 dulu＝先</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya tengok dulu.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya tengok dulu.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L06_05')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya mahu yang ini." data-zh="我要這個。">
+<div class="phrase-main"><div class="ms">Saya mahu yang ini.</div><div class="zh">我要這個。</div></div>
+<div class="pron">中文近似音：沙雅 馬胡 央 伊尼</div>
+<div class="note">💡 較正式；口語可說 nak</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya mahu yang ini.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya mahu yang ini.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L06_06')">🔉 系統語音</button>
+</div>
+</div></div><div class="print-break"></div><div class="phrase-grid phrase-grid-cont"><div class="phrase-card" data-ms="Ada saiz besar?" data-zh="有大尺寸嗎？">
+<div class="phrase-main"><div class="ms">Ada saiz besar?</div><div class="zh">有大尺寸嗎？</div></div>
+<div class="pron">中文近似音：阿達 賽茲 波沙</div>
+<div class="note">💡 besar＝大</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Ada saiz besar?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Ada saiz besar?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L06_07')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Ada warna lain?" data-zh="有別的顏色嗎？">
+<div class="phrase-main"><div class="ms">Ada warna lain?</div><div class="zh">有別的顏色嗎？</div></div>
+<div class="pron">中文近似音：阿達 瓦納 賴因</div>
+<div class="note">💡 lain＝其他</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Ada warna lain?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Ada warna lain?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L06_08')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya bayar tunai." data-zh="我付現金。">
+<div class="phrase-main"><div class="ms">Saya bayar tunai.</div><div class="zh">我付現金。</div></div>
+<div class="pron">中文近似音：沙雅 巴亞 吐奈</div>
+<div class="note">💡 tunai＝現金</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya bayar tunai.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya bayar tunai.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L06_09')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Boleh bayar dengan kad?" data-zh="可以刷卡嗎？">
+<div class="phrase-main"><div class="ms">Boleh bayar dengan kad?</div><div class="zh">可以刷卡嗎？</div></div>
+<div class="pron">中文近似音：波雷 巴亞 登岸 卡德</div>
+<div class="note">💡 dengan＝用／和</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Boleh bayar dengan kad?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Boleh bayar dengan kad?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L06_10')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Satu, dua, tiga, empat, lima." data-zh="一、二、三、四、五。">
+<div class="phrase-main"><div class="ms">Satu, dua, tiga, empat, lima.</div><div class="zh">一、二、三、四、五。</div></div>
+<div class="pron">中文近似音：沙度 杜阿 迪嘎 恩巴 利瑪</div>
+<div class="note">💡 先熟 1–5</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Satu, dua, tiga, empat, lima.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Satu, dua, tiga, empat, lima.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L06_11')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Sepuluh, dua puluh, seratus." data-zh="十、二十、一百。">
+<div class="phrase-main"><div class="ms">Sepuluh, dua puluh, seratus.</div><div class="zh">十、二十、一百。</div></div>
+<div class="pron">中文近似音：瑟普魯 杜阿 普魯 瑟拉度斯</div>
+<div class="note">💡 puluh＝十位；ratus＝百</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Sepuluh, dua puluh, seratus.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Sepuluh, dua puluh, seratus.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L06_12')">🔉 系統語音</button>
+</div>
+</div></div>
+<h3>情境小對話</h3><div class="dialogue"><div class="bubble me"><b>你</b><span class="d-ms">Berapa harga ini?</span><span class="d-zh">這個多少錢？</span></div><div class="bubble other"><b>店員</b><span class="d-ms">Lima puluh ringgit.</span><span class="d-zh">五十令吉。</span></div><div class="bubble me"><b>你</b><span class="d-ms">Mahal sangat. Boleh kurang sikit?</span><span class="d-zh">太貴了，可以便宜一點嗎？</span></div><div class="bubble other"><b>店員</b><span class="d-ms">Empat puluh lima.</span><span class="d-zh">四十五。</span></div><div class="bubble me"><b>你</b><span class="d-ms">Baik, saya ambil.</span><span class="d-zh">好，我買了。</span></div></div>
+<div class="practice"><b>今日開口任務：</b>遮住中文，連續說三次；再把其中一個關鍵字換掉，自己造一句。</div>
+</section><section class="lesson" id="L07">
+<div class="lesson-head"><div class="lesson-icon">🚕</div><div><h2>第 7 課｜叫車、問路與方向</h2><p class="goal"><b>本課目標：</b>能說目的地、問在哪裡、聽懂左右直走。</p></div></div>
+<div class="tipbox"><b>先記這件事：</b>不會念地名時，直接說「Tolong hantar saya ke sini」並指手機地圖，成功率最高。</div>
+<h3>句型骨架</h3><table class="patterns"><thead><tr><th>骨架</th><th>作用</th><th>例子</th></tr></thead><tbody><tr><td><b>... di mana?</b></td><td>……在哪裡？</td><td>Tandas di mana?</td></tr><tr><td><b>Pergi ke + 地點</b></td><td>去……</td><td>Pergi ke hotel.</td></tr><tr><td><b>Terus / kiri / kanan</b></td><td>直走／左／右</td><td>Terus, kemudian belok kiri.</td></tr></tbody></table>
+<h3>核心單字與句子</h3><div class="phrase-grid"><div class="phrase-card" data-ms="Saya mahu pergi ke hotel." data-zh="我要去飯店。">
+<div class="phrase-main"><div class="ms">Saya mahu pergi ke hotel.</div><div class="zh">我要去飯店。</div></div>
+<div class="pron">中文近似音：沙雅 馬胡 波吉 格 hotel</div>
+<div class="note">💡 ke＝到／往</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya mahu pergi ke hotel.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya mahu pergi ke hotel.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L07_01')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Tolong hantar saya ke sini." data-zh="請送我到這裡。">
+<div class="phrase-main"><div class="ms">Tolong hantar saya ke sini.</div><div class="zh">請送我到這裡。</div></div>
+<div class="pron">中文近似音：多隆 漢達 沙雅 格 西尼</div>
+<div class="note">💡 可配合手機地圖</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Tolong hantar saya ke sini.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Tolong hantar saya ke sini.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L07_02')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Berapa lama?" data-zh="要多久？">
+<div class="phrase-main"><div class="ms">Berapa lama?</div><div class="zh">要多久？</div></div>
+<div class="pron">中文近似音：波拉帕 拉瑪</div>
+<div class="note">💡 lama＝久</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Berapa lama?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Berapa lama?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L07_03')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Berapa jauh?" data-zh="有多遠？">
+<div class="phrase-main"><div class="ms">Berapa jauh?</div><div class="zh">有多遠？</div></div>
+<div class="pron">中文近似音：波拉帕 加烏</div>
+<div class="note">💡 jauh＝遠</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Berapa jauh?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Berapa jauh?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L07_04')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Tandas di mana?" data-zh="廁所在哪裡？">
+<div class="phrase-main"><div class="ms">Tandas di mana?</div><div class="zh">廁所在哪裡？</div></div>
+<div class="pron">中文近似音：丹達斯 迪 馬那</div>
+<div class="note">💡 Malaysia 常用 tandas</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Tandas di mana?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Tandas di mana?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L07_05')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Jalan terus." data-zh="直走。">
+<div class="phrase-main"><div class="ms">Jalan terus.</div><div class="zh">直走。</div></div>
+<div class="pron">中文近似音：加蘭 德魯斯</div>
+<div class="note">💡 jalan＝走／路</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Jalan terus.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Jalan terus.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L07_06')">🔉 系統語音</button>
+</div>
+</div></div><div class="print-break"></div><div class="phrase-grid phrase-grid-cont"><div class="phrase-card" data-ms="Belok kiri." data-zh="左轉。">
+<div class="phrase-main"><div class="ms">Belok kiri.</div><div class="zh">左轉。</div></div>
+<div class="pron">中文近似音：波洛 吉里</div>
+<div class="note">💡 kiri＝左</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Belok kiri.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Belok kiri.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L07_07')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Belok kanan." data-zh="右轉。">
+<div class="phrase-main"><div class="ms">Belok kanan.</div><div class="zh">右轉。</div></div>
+<div class="pron">中文近似音：波洛 卡南</div>
+<div class="note">💡 kanan＝右</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Belok kanan.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Belok kanan.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L07_08')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Berhenti di sini." data-zh="在這裡停。">
+<div class="phrase-main"><div class="ms">Berhenti di sini.</div><div class="zh">在這裡停。</div></div>
+<div class="pron">中文近似音：波亨迪 迪 西尼</div>
+<div class="note">💡 berhenti＝停止</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Berhenti di sini.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Berhenti di sini.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L07_09')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya sesat." data-zh="我迷路了。">
+<div class="phrase-main"><div class="ms">Saya sesat.</div><div class="zh">我迷路了。</div></div>
+<div class="pron">中文近似音：沙雅 瑟薩</div>
+<div class="note">💡 sesat＝迷路</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya sesat.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya sesat.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L07_10')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Boleh tunjuk dalam peta?" data-zh="可以在地圖上指給我看嗎？">
+<div class="phrase-main"><div class="ms">Boleh tunjuk dalam peta?</div><div class="zh">可以在地圖上指給我看嗎？</div></div>
+<div class="pron">中文近似音：波雷 吐朱 達蘭 波達</div>
+<div class="note">💡 peta＝地圖</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Boleh tunjuk dalam peta?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Boleh tunjuk dalam peta?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L07_11')">🔉 系統語音</button>
+</div>
+</div></div>
+<h3>情境小對話</h3><div class="dialogue"><div class="bubble other"><b>司機</b><span class="d-ms">Nak pergi mana?</span><span class="d-zh">要去哪裡？</span></div><div class="bubble me"><b>你</b><span class="d-ms">Tolong hantar saya ke sini.</span><span class="d-zh">請送我到這裡。</span></div><div class="bubble me"><b>你</b><span class="d-ms">Berapa lama?</span><span class="d-zh">要多久？</span></div><div class="bubble other"><b>司機</b><span class="d-ms">Lebih kurang dua puluh minit.</span><span class="d-zh">大約二十分鐘。</span></div><div class="bubble me"><b>你</b><span class="d-ms">Baik.</span><span class="d-zh">好。</span></div></div>
+<div class="practice"><b>今日開口任務：</b>遮住中文，連續說三次；再把其中一個關鍵字換掉，自己造一句。</div>
+</section><section class="lesson" id="L08">
+<div class="lesson-head"><div class="lesson-icon">⏰</div><div><h2>第 8 課｜時間、今天明天與日常安排</h2><p class="goal"><b>本課目標：</b>會約時間、說今天明天、現在等一下。</p></div></div>
+<div class="tipbox"><b>先記這件事：</b>馬來語時間常把日期放句首：Esok saya kerja（明天我工作）。不用變化動詞。</div>
+<h3>句型骨架</h3><table class="patterns"><thead><tr><th>骨架</th><th>作用</th><th>例子</th></tr></thead><tbody><tr><td><b>Hari ini / esok / semalam</b></td><td>今天／明天／昨天</td><td>Hari ini saya sibuk.</td></tr><tr><td><b>Pukul + 數字</b></td><td>幾點</td><td>Pukul tiga.</td></tr><tr><td><b>Sekarang / nanti</b></td><td>現在／等一下或之後</td><td>Nanti saya telefon.</td></tr></tbody></table>
+<h3>核心單字與句子</h3><div class="phrase-grid"><div class="phrase-card" data-ms="Hari ini saya sibuk." data-zh="我今天很忙。">
+<div class="phrase-main"><div class="ms">Hari ini saya sibuk.</div><div class="zh">我今天很忙。</div></div>
+<div class="pron">中文近似音：哈里 伊尼 沙雅 西布</div>
+<div class="note">💡 hari ini＝今天</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Hari ini saya sibuk.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Hari ini saya sibuk.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L08_01')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Esok saya lapang." data-zh="我明天有空。">
+<div class="phrase-main"><div class="ms">Esok saya lapang.</div><div class="zh">我明天有空。</div></div>
+<div class="pron">中文近似音：欸索 沙雅 拉邦</div>
+<div class="note">💡 lapang＝有空</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Esok saya lapang.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Esok saya lapang.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L08_02')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Sekarang pukul berapa?" data-zh="現在幾點？">
+<div class="phrase-main"><div class="ms">Sekarang pukul berapa?</div><div class="zh">現在幾點？</div></div>
+<div class="pron">中文近似音：瑟卡朗 普古 波拉帕</div>
+<div class="note">💡 pukul＝鐘點</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Sekarang pukul berapa?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Sekarang pukul berapa?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L08_03')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Pukul tiga petang." data-zh="下午三點。">
+<div class="phrase-main"><div class="ms">Pukul tiga petang.</div><div class="zh">下午三點。</div></div>
+<div class="pron">中文近似音：普古 迪嘎 波當</div>
+<div class="note">💡 petang＝下午／傍晚</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Pukul tiga petang.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Pukul tiga petang.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L08_04')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Jumpa pukul tujuh malam." data-zh="晚上七點見。">
+<div class="phrase-main"><div class="ms">Jumpa pukul tujuh malam.</div><div class="zh">晚上七點見。</div></div>
+<div class="pron">中文近似音：中巴 普古 吐朱 馬朗</div>
+<div class="note">💡 jumpa＝見面</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Jumpa pukul tujuh malam.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Jumpa pukul tujuh malam.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L08_05')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Tunggu sekejap." data-zh="等一下。">
+<div class="phrase-main"><div class="ms">Tunggu sekejap.</div><div class="zh">等一下。</div></div>
+<div class="pron">中文近似音：東古 瑟格甲</div>
+<div class="note">💡 常用程度極高</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Tunggu sekejap.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Tunggu sekejap.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L08_06')">🔉 系統語音</button>
+</div>
+</div></div><div class="print-break"></div><div class="phrase-grid phrase-grid-cont"><div class="phrase-card" data-ms="Nanti saya telefon." data-zh="我晚點打電話。">
+<div class="phrase-main"><div class="ms">Nanti saya telefon.</div><div class="zh">我晚點打電話。</div></div>
+<div class="pron">中文近似音：南迪 沙雅 德勒風</div>
+<div class="note">💡 nanti＝待會／之後</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Nanti saya telefon.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Nanti saya telefon.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L08_07')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya datang lambat sikit." data-zh="我會晚一點到。">
+<div class="phrase-main"><div class="ms">Saya datang lambat sikit.</div><div class="zh">我會晚一點到。</div></div>
+<div class="pron">中文近似音：沙雅 達當 蘭巴 西吉</div>
+<div class="note">💡 datang＝來；lambat＝晚</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya datang lambat sikit.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya datang lambat sikit.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L08_08')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Tak apa, saya tunggu." data-zh="沒關係，我等。">
+<div class="phrase-main"><div class="ms">Tak apa, saya tunggu.</div><div class="zh">沒關係，我等。</div></div>
+<div class="pron">中文近似音：打 阿帕 沙雅 東古</div>
+<div class="note">💡 tak apa＝沒關係</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Tak apa, saya tunggu.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Tak apa, saya tunggu.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L08_09')">🔉 系統語音</button>
+</div>
+</div></div>
+<h3>情境小對話</h3><div class="dialogue"><div class="bubble other"><b>A</b><span class="d-ms">Esok awak lapang tak?</span><span class="d-zh">你明天有空嗎？</span></div><div class="bubble me"><b>你</b><span class="d-ms">Lapang. Jumpa pukul berapa?</span><span class="d-zh">有空。幾點見？</span></div><div class="bubble other"><b>A</b><span class="d-ms">Pukul tujuh malam.</span><span class="d-zh">晚上七點。</span></div><div class="bubble me"><b>你</b><span class="d-ms">Baik. Jumpa esok.</span><span class="d-zh">好，明天見。</span></div></div>
+<div class="practice"><b>今日開口任務：</b>遮住中文，連續說三次；再把其中一個關鍵字換掉，自己造一句。</div>
+</section><section class="lesson" id="L09">
+<div class="lesson-head"><div class="lesson-icon">🩺</div><div><h2>第 9 課｜身體不舒服與緊急求助</h2><p class="goal"><b>本課目標：</b>會說哪裡痛、需要醫生、打電話求助。</p></div></div>
+<div class="tipbox"><b>先記這件事：</b>緊急時先說關鍵字，不必完整：Doktor! Hospital! Tolong! 對方就能理解。</div>
+<h3>句型骨架</h3><table class="patterns"><thead><tr><th>骨架</th><th>作用</th><th>例子</th></tr></thead><tbody><tr><td><b>Saya sakit + 部位</b></td><td>我……痛</td><td>Saya sakit kepala.</td></tr><tr><td><b>Saya perlukan + 名詞</b></td><td>我需要……</td><td>Saya perlukan doktor.</td></tr><tr><td><b>Tolong + 動詞</b></td><td>請幫忙……</td><td>Tolong panggil ambulans.</td></tr></tbody></table>
+<h3>核心單字與句子</h3><div class="phrase-grid"><div class="phrase-card" data-ms="Saya tak sihat." data-zh="我不舒服。">
+<div class="phrase-main"><div class="ms">Saya tak sihat.</div><div class="zh">我不舒服。</div></div>
+<div class="pron">中文近似音：沙雅 打 西哈</div>
+<div class="note">💡 sihat＝健康</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya tak sihat.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya tak sihat.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L09_01')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya sakit kepala." data-zh="我頭痛。">
+<div class="phrase-main"><div class="ms">Saya sakit kepala.</div><div class="zh">我頭痛。</div></div>
+<div class="pron">中文近似音：沙雅 沙吉 哥巴拉</div>
+<div class="note">💡 kepala＝頭</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya sakit kepala.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya sakit kepala.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L09_02')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya sakit perut." data-zh="我肚子痛。">
+<div class="phrase-main"><div class="ms">Saya sakit perut.</div><div class="zh">我肚子痛。</div></div>
+<div class="pron">中文近似音：沙雅 沙吉 波魯</div>
+<div class="note">💡 perut＝肚子</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya sakit perut.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya sakit perut.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L09_03')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya demam." data-zh="我發燒。">
+<div class="phrase-main"><div class="ms">Saya demam.</div><div class="zh">我發燒。</div></div>
+<div class="pron">中文近似音：沙雅 德馬姆</div>
+<div class="note">💡 demam＝發燒</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya demam.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya demam.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L09_04')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya pening." data-zh="我頭暈。">
+<div class="phrase-main"><div class="ms">Saya pening.</div><div class="zh">我頭暈。</div></div>
+<div class="pron">中文近似音：沙雅 波寧</div>
+<div class="note">💡 pening＝暈</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya pening.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya pening.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L09_05')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya perlukan doktor." data-zh="我需要醫生。">
+<div class="phrase-main"><div class="ms">Saya perlukan doktor.</div><div class="zh">我需要醫生。</div></div>
+<div class="pron">中文近似音：沙雅 波魯古安 多多</div>
+<div class="note">💡 doktor＝醫生</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya perlukan doktor.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya perlukan doktor.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L09_06')">🔉 系統語音</button>
+</div>
+</div></div><div class="print-break"></div><div class="phrase-grid phrase-grid-cont"><div class="phrase-card" data-ms="Hospital di mana?" data-zh="醫院在哪裡？">
+<div class="phrase-main"><div class="ms">Hospital di mana?</div><div class="zh">醫院在哪裡？</div></div>
+<div class="pron">中文近似音：hospital 迪 馬那</div>
+<div class="note">💡 hospital 拼字相近英文</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Hospital di mana?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Hospital di mana?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L09_07')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Tolong panggil ambulans." data-zh="請叫救護車。">
+<div class="phrase-main"><div class="ms">Tolong panggil ambulans.</div><div class="zh">請叫救護車。</div></div>
+<div class="pron">中文近似音：多隆 邦吉 ambulans</div>
+<div class="note">💡 panggil＝叫／呼叫</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Tolong panggil ambulans.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Tolong panggil ambulans.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L09_08')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Ini kecemasan." data-zh="這是緊急狀況。">
+<div class="phrase-main"><div class="ms">Ini kecemasan.</div><div class="zh">這是緊急狀況。</div></div>
+<div class="pron">中文近似音：伊尼 格遮馬山</div>
+<div class="note">💡 kecemasan＝緊急</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Ini kecemasan.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Ini kecemasan.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L09_09')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya alah kepada ubat ini." data-zh="我對這個藥過敏。">
+<div class="phrase-main"><div class="ms">Saya alah kepada ubat ini.</div><div class="zh">我對這個藥過敏。</div></div>
+<div class="pron">中文近似音：沙雅 阿拉 格巴達 烏巴 伊尼</div>
+<div class="note">💡 alah kepada＝對……過敏</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya alah kepada ubat ini.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya alah kepada ubat ini.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L09_10')">🔉 系統語音</button>
+</div>
+</div></div>
+<h3>情境小對話</h3><div class="dialogue"><div class="bubble me"><b>你</b><span class="d-ms">Maaf, saya tak sihat. Saya sakit perut.</span><span class="d-zh">不好意思，我不舒服，肚子痛。</span></div><div class="bubble other"><b>對方</b><span class="d-ms">Perlu doktor?</span><span class="d-zh">需要醫生嗎？</span></div><div class="bubble me"><b>你</b><span class="d-ms">Ya, saya perlukan doktor.</span><span class="d-zh">是，我需要醫生。</span></div></div>
+<div class="practice"><b>今日開口任務：</b>遮住中文，連續說三次；再把其中一個關鍵字換掉，自己造一句。</div>
+</section><section class="lesson" id="L10">
+<div class="lesson-head"><div class="lesson-icon">💬</div><div><h2>第 10 課｜馬來西亞人口語：正式說法怎麼縮短</h2><p class="goal"><b>本課目標：</b>聽懂真人說話常見的短版，不再覺得課本和生活完全不同。</p></div></div>
+<div class="tipbox"><b>先記這件事：</b>初學時「會聽短版、開口可說完整或短版」都可以。先求能溝通，不必裝成本地人。</div>
+<h3>句型骨架</h3><table class="patterns"><thead><tr><th>骨架</th><th>作用</th><th>例子</th></tr></thead><tbody><tr><td><b>tidak → tak</b></td><td>不</td><td>Saya tak tahu.</td></tr><tr><td><b>sudah → dah</b></td><td>已經</td><td>Dah makan?</td></tr><tr><td><b>mahu → nak</b></td><td>想要</td><td>Nak pergi mana?</td></tr><tr><td><b>sebentar → sekejap</b></td><td>一下</td><td>Tunggu sekejap.</td></tr><tr><td><b>bagaimana → macam mana</b></td><td>怎麼樣／怎麼</td><td>Macam mana?</td></tr></tbody></table>
+<h3>核心單字與句子</h3><div class="phrase-grid"><div class="phrase-card" data-ms="Tak tahu." data-zh="不知道。">
+<div class="phrase-main"><div class="ms">Tak tahu.</div><div class="zh">不知道。</div></div>
+<div class="pron">中文近似音：打 搭胡</div>
+<div class="note">💡 完整：Tidak tahu.</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Tak tahu.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Tak tahu.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L10_01')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Dah siap?" data-zh="好了嗎？">
+<div class="phrase-main"><div class="ms">Dah siap?</div><div class="zh">好了嗎？</div></div>
+<div class="pron">中文近似音：達 西阿普</div>
+<div class="note">💡 siap＝完成／準備好</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Dah siap?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Dah siap?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L10_02')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Nak pergi mana?" data-zh="要去哪裡？">
+<div class="phrase-main"><div class="ms">Nak pergi mana?</div><div class="zh">要去哪裡？</div></div>
+<div class="pron">中文近似音：納 波吉 馬那</div>
+<div class="note">💡 完整：Mahu pergi ke mana?</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Nak pergi mana?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Nak pergi mana?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L10_03')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Buat apa?" data-zh="做什麼？／幹嘛？">
+<div class="phrase-main"><div class="ms">Buat apa?</div><div class="zh">做什麼？／幹嘛？</div></div>
+<div class="pron">中文近似音：布阿 阿帕</div>
+<div class="note">💡 buat＝做</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Buat apa?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Buat apa?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L10_04')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Macam mana?" data-zh="怎麼樣？／怎麼辦？">
+<div class="phrase-main"><div class="ms">Macam mana?</div><div class="zh">怎麼樣？／怎麼辦？</div></div>
+<div class="pron">中文近似音：馬參 馬那</div>
+<div class="note">💡 極常用</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Macam mana?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Macam mana?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L10_05')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Boleh lah." data-zh="可以啦／還行。">
+<div class="phrase-main"><div class="ms">Boleh lah.</div><div class="zh">可以啦／還行。</div></div>
+<div class="pron">中文近似音：波雷 拉</div>
+<div class="note">💡 lah 是語氣詞，不必硬翻</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Boleh lah.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Boleh lah.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L10_06')">🔉 系統語音</button>
+</div>
+</div></div><div class="print-break"></div><div class="phrase-grid phrase-grid-cont"><div class="phrase-card" data-ms="Tak apa lah." data-zh="沒關係啦。">
+<div class="phrase-main"><div class="ms">Tak apa lah.</div><div class="zh">沒關係啦。</div></div>
+<div class="pron">中文近似音：打 阿帕 拉</div>
+<div class="note">💡 讓語氣較自然</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Tak apa lah.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Tak apa lah.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L10_07')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Betul ke?" data-zh="真的嗎？">
+<div class="phrase-main"><div class="ms">Betul ke?</div><div class="zh">真的嗎？</div></div>
+<div class="pron">中文近似音：波度 格</div>
+<div class="note">💡 ke 是口語疑問語氣</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Betul ke?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Betul ke?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L10_08')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Ya ke?" data-zh="是喔？真的？">
+<div class="phrase-main"><div class="ms">Ya ke?</div><div class="zh">是喔？真的？</div></div>
+<div class="pron">中文近似音：呀 格</div>
+<div class="note">💡 對話中常聽到</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Ya ke?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Ya ke?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L10_09')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Jom!" data-zh="走吧！／一起吧！">
+<div class="phrase-main"><div class="ms">Jom!</div><div class="zh">走吧！／一起吧！</div></div>
+<div class="pron">中文近似音：中姆</div>
+<div class="note">💡 邀請別人一起行動</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Jom!',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Jom!',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L10_10')">🔉 系統語音</button>
+</div>
+</div></div>
+<h3>情境小對話</h3><div class="dialogue"><div class="bubble other"><b>太太</b><span class="d-ms">Dah siap?</span><span class="d-zh">好了嗎？</span></div><div class="bubble me"><b>你</b><span class="d-ms">Belum. Tunggu sekejap.</span><span class="d-zh">還沒，等一下。</span></div><div class="bubble other"><b>太太</b><span class="d-ms">Nak pergi mana dulu?</span><span class="d-zh">等一下先去哪裡？</span></div><div class="bubble me"><b>你</b><span class="d-ms">Kita makan dulu.</span><span class="d-zh">我們先吃飯。</span></div><div class="bubble other"><b>太太</b><span class="d-ms">Boleh lah. Jom!</span><span class="d-zh">可以啦，走吧！</span></div></div>
+<div class="practice"><b>今日開口任務：</b>遮住中文，連續說三次；再把其中一個關鍵字換掉，自己造一句。</div>
+</section><section class="lesson" id="L11">
+<div class="lesson-head"><div class="lesson-icon">🧱</div><div><h2>第 11 課｜句型積木：用 20 個字組出 100 句</h2><p class="goal"><b>本課目標：</b>不再背整句，而是用固定骨架替換關鍵字。</p></div></div>
+<div class="tipbox"><b>先記這件事：</b>真正的「會說」不是記住一百句，而是會替換：Saya lapar / penat / sibuk / sakit。</div>
+<h3>句型骨架</h3><table class="patterns"><thead><tr><th>骨架</th><th>作用</th><th>例子</th></tr></thead><tbody><tr><td><b>Saya + 狀態／動作</b></td><td>我……</td><td>Saya lapar / Saya mahu pergi.</td></tr><tr><td><b>Saya tak + 動詞／形容</b></td><td>我不……</td><td>Saya tak faham / Saya tak mahu.</td></tr><tr><td><b>Boleh + 動詞?</b></td><td>可以……嗎？</td><td>Boleh masuk? / Boleh tunggu?</td></tr><tr><td><b>Ada + 名詞?</b></td><td>有……嗎？</td><td>Ada air? / Ada saiz besar?</td></tr><tr><td><b>Di mana + 名詞? 或 名詞 di mana?</b></td><td>……在哪？</td><td>Tandas di mana?</td></tr><tr><td><b>Nak + 動詞／名詞</b></td><td>想要……</td><td>Nak makan / Nak kopi</td></tr></tbody></table>
+<h3>核心單字與句子</h3><div class="phrase-grid"><div class="phrase-card" data-ms="Saya lapar." data-zh="我餓了。">
+<div class="phrase-main"><div class="ms">Saya lapar.</div><div class="zh">我餓了。</div></div>
+<div class="pron">中文近似音：沙雅 拉巴</div>
+<div class="note">💡 換成 penat＝累、haus＝渴</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya lapar.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya lapar.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L11_01')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya haus." data-zh="我渴了。">
+<div class="phrase-main"><div class="ms">Saya haus.</div><div class="zh">我渴了。</div></div>
+<div class="pron">中文近似音：沙雅 豪斯</div>
+<div class="note">💡 h 要輕吐氣</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya haus.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya haus.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L11_02')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya penat." data-zh="我累了。">
+<div class="phrase-main"><div class="ms">Saya penat.</div><div class="zh">我累了。</div></div>
+<div class="pron">中文近似音：沙雅 波納</div>
+<div class="note">💡 家庭常用</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya penat.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya penat.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L11_03')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya mahu pergi." data-zh="我想走／我要去。">
+<div class="phrase-main"><div class="ms">Saya mahu pergi.</div><div class="zh">我想走／我要去。</div></div>
+<div class="pron">中文近似音：沙雅 馬胡 波吉</div>
+<div class="note">💡 口語：Saya nak pergi.</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya mahu pergi.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya mahu pergi.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L11_04')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Saya tak mahu." data-zh="我不要。">
+<div class="phrase-main"><div class="ms">Saya tak mahu.</div><div class="zh">我不要。</div></div>
+<div class="pron">中文近似音：沙雅 打 馬胡</div>
+<div class="note">💡 禮貌一點可加 terima kasih</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Saya tak mahu.',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Saya tak mahu.',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L11_05')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Boleh masuk?" data-zh="可以進去嗎？">
+<div class="phrase-main"><div class="ms">Boleh masuk?</div><div class="zh">可以進去嗎？</div></div>
+<div class="pron">中文近似音：波雷 馬蘇</div>
+<div class="note">💡 masuk＝進入</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Boleh masuk?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Boleh masuk?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L11_06')">🔉 系統語音</button>
+</div>
+</div></div><div class="print-break"></div><div class="phrase-grid phrase-grid-cont"><div class="phrase-card" data-ms="Boleh duduk sini?" data-zh="可以坐這裡嗎？">
+<div class="phrase-main"><div class="ms">Boleh duduk sini?</div><div class="zh">可以坐這裡嗎？</div></div>
+<div class="pron">中文近似音：波雷 杜杜 西尼</div>
+<div class="note">💡 duduk＝坐</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Boleh duduk sini?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Boleh duduk sini?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L11_07')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Ada air?" data-zh="有水嗎？">
+<div class="phrase-main"><div class="ms">Ada air?</div><div class="zh">有水嗎？</div></div>
+<div class="pron">中文近似音：阿達 阿耶</div>
+<div class="note">💡 air 念近「阿耶」</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Ada air?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Ada air?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L11_08')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Ada masalah?" data-zh="有問題嗎？">
+<div class="phrase-main"><div class="ms">Ada masalah?</div><div class="zh">有問題嗎？</div></div>
+<div class="pron">中文近似音：阿達 馬薩拉</div>
+<div class="note">💡 masalah＝問題</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Ada masalah?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Ada masalah?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L11_09')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Apa ini?" data-zh="這是什麼？">
+<div class="phrase-main"><div class="ms">Apa ini?</div><div class="zh">這是什麼？</div></div>
+<div class="pron">中文近似音：阿帕 伊尼</div>
+<div class="note">💡 最基本問句</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Apa ini?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Apa ini?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L11_10')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Siapa itu?" data-zh="那是誰？">
+<div class="phrase-main"><div class="ms">Siapa itu?</div><div class="zh">那是誰？</div></div>
+<div class="pron">中文近似音：西阿帕 伊度</div>
+<div class="note">💡 siapa＝誰</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Siapa itu?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Siapa itu?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L11_11')">🔉 系統語音</button>
+</div>
+</div><div class="phrase-card" data-ms="Kenapa?" data-zh="為什麼？">
+<div class="phrase-main"><div class="ms">Kenapa?</div><div class="zh">為什麼？</div></div>
+<div class="pron">中文近似音：格那帕</div>
+<div class="note">💡 正式：mengapa</div>
+<div class="audio-row no-print">
+<button onclick="speakText('Kenapa?',0.72)">🔊 手機慢速</button>
+<button onclick="speakText('Kenapa?',0.95)">▶ 自然速度</button>
+<button onclick="playFallback('L11_12')">🔉 系統語音</button>
+</div>
+</div></div>
+<h3>情境小對話</h3><div class="dialogue"><div class="bubble me"><b>你</b><span class="d-ms">Saya lapar. Ada makanan?</span><span class="d-zh">我餓了，有食物嗎？</span></div><div class="bubble other"><b>太太</b><span class="d-ms">Ada. Nak makan apa?</span><span class="d-zh">有，想吃什麼？</span></div><div class="bubble me"><b>你</b><span class="d-ms">Apa-apa pun boleh.</span><span class="d-zh">什麼都可以。</span></div><div class="bubble other"><b>太太</b><span class="d-ms">Baik, tunggu sekejap.</span><span class="d-zh">好，等一下。</span></div></div>
+<div class="practice"><b>今日開口任務：</b>遮住中文，連續說三次；再把其中一個關鍵字換掉，自己造一句。</div>
+</section>
+<section class="panel" id="quiz"><h2>隨機總測驗</h2><div class="quiz-box no-print"><div>看到馬來語，選正確中文：</div><div class="quiz-ms" id="quizMs">按「開始」</div><div class="quiz-options" id="quizOptions"></div><button onclick="newQuestion()">開始／下一題</button> <span class="score" id="score">0 / 0</span></div>
+<div class="print-only"><p>紙本自測：遮住中文欄，隨機挑 30 句朗讀並說出意思；答對 24 句以上即達到本冊通過標準。</p></div></section>
+<section class="panel"><h2>完成本冊後，你應該能做到</h2><ul><li>用 30–60 秒介紹自己、家人、住處與工作。</li><li>在家庭、餐廳、商店、計程車情境中完成基本溝通。</li><li>聽懂 tak、dah、nak、boleh、ada、mana 等高頻詞。</li><li>聽不懂時主動要求放慢、重複或指給你看。</li><li>用句型積木自行組出新句，而不是只會背固定台詞。</li></ul><div class="notice"><b>重要：</b>機器音適合練節奏與拆音，但可能與不同地區的馬來西亞口音略有差異。家庭實戰時，以太太的自然說法為優先。</div></section>
+</main><footer class="footer">馬來西亞語零基礎生活課｜第一階段：生活生存與家庭對話</footer>
+<script>
+const fallbackAudio={}; function speakText(text,rate){ if('speechSynthesis' in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='ms-MY';u.rate=rate;const voices=speechSynthesis.getVoices();const v=voices.find(x=>x.lang&&x.lang.toLowerCase().startsWith('ms'));if(v)u.voice=v;speechSynthesis.speak(u);} else alert('此瀏覽器沒有語音功能，請使用內建音檔。');}
+function playFallback(){const card=document.activeElement&&document.activeElement.closest?document.activeElement.closest('.phrase-card'):null;const text=card&&card.dataset?card.dataset.ms:'';if(text)speakText(text,0.82);else alert('請使用上方慢速或自然速度朗讀。');}
+const quizData=[{"ms": "makan", "zh": "吃", "lesson": "L00"}, {"ms": "minum", "zh": "喝", "lesson": "L00"}, {"ms": "cakap", "zh": "說話", "lesson": "L00"}, {"ms": "orang", "zh": "人", "lesson": "L00"}, {"ms": "banyak", "zh": "很多", "lesson": "L00"}, {"ms": "selamat", "zh": "平安／祝福；常見於問候語", "lesson": "L00"}, {"ms": "Selamat pagi.", "zh": "早安。", "lesson": "L01"}, {"ms": "Selamat petang.", "zh": "下午好／傍晚好。", "lesson": "L01"}, {"ms": "Selamat malam.", "zh": "晚安／晚上好。", "lesson": "L01"}, {"ms": "Apa khabar?", "zh": "你好嗎？", "lesson": "L01"}, {"ms": "Khabar baik.", "zh": "我很好。", "lesson": "L01"}, {"ms": "Terima kasih.", "zh": "謝謝。", "lesson": "L01"}, {"ms": "Sama-sama.", "zh": "不客氣。", "lesson": "L01"}, {"ms": "Maaf.", "zh": "對不起／不好意思。", "lesson": "L01"}, {"ms": "Jumpa lagi.", "zh": "下次見。", "lesson": "L01"}, {"ms": "Saya tak faham.", "zh": "我不明白。", "lesson": "L02"}, {"ms": "Saya tak tahu.", "zh": "我不知道。", "lesson": "L02"}, {"ms": "Boleh ulang?", "zh": "可以再說一次嗎？", "lesson": "L02"}, {"ms": "Cakap perlahan sikit.", "zh": "請說慢一點。", "lesson": "L02"}, {"ms": "Cakap sekali lagi.", "zh": "再說一次。", "lesson": "L02"}, {"ms": "Apa maksudnya?", "zh": "這是什麼意思？", "lesson": "L02"}, {"ms": "Macam mana nak cakap?", "zh": "這要怎麼說？", "lesson": "L02"}, {"ms": "Tolong tunjuk.", "zh": "請指給我看。", "lesson": "L02"}, {"ms": "Saya baru belajar Bahasa Melayu.", "zh": "我剛開始學馬來語。", "lesson": "L02"}, {"ms": "Nama saya Paul.", "zh": "我叫 Paul。", "lesson": "L03"}, {"ms": "Saya dari Taiwan.", "zh": "我來自台灣。", "lesson": "L03"}, {"ms": "Saya tinggal di Kemboja.", "zh": "我住在柬埔寨。", "lesson": "L03"}, {"ms": "Ini isteri saya.", "zh": "這是我太太。", "lesson": "L03"}, {"ms": "Dia orang Malaysia.", "zh": "她是馬來西亞人。", "lesson": "L03"}, {"ms": "Kami sudah kahwin dua puluh tahun.", "zh": "我們結婚二十年了。", "lesson": "L03"}, {"ms": "Kami ada anak.", "zh": "我們有孩子。", "lesson": "L03"}, {"ms": "Saya umur lima puluh tahun.", "zh": "我五十歲。", "lesson": "L03"}, {"ms": "Saya kerja di kilang pakaian.", "zh": "我在成衣廠工作。", "lesson": "L03"}, {"ms": "Dah makan?", "zh": "吃過了嗎？", "lesson": "L04"}, {"ms": "Belum lagi.", "zh": "還沒有。", "lesson": "L04"}, {"ms": "Nak makan apa?", "zh": "想吃什麼？", "lesson": "L04"}, {"ms": "Kita makan di rumah.", "zh": "我們在家吃。", "lesson": "L04"}, {"ms": "Saya keluar sekejap.", "zh": "我出去一下。", "lesson": "L04"}, {"ms": "Tunggu saya.", "zh": "等我。", "lesson": "L04"}, {"ms": "Saya balik lewat sikit.", "zh": "我會晚一點回來。", "lesson": "L04"}, {"ms": "Awak penat tak?", "zh": "你累不累？", "lesson": "L04"}, {"ms": "Jangan risau.", "zh": "別擔心。", "lesson": "L04"}, {"ms": "Saya sayang awak.", "zh": "我愛你。", "lesson": "L04"}, {"ms": "Terima kasih, sayang.", "zh": "謝謝你，親愛的。", "lesson": "L04"}, {"ms": "Saya nak nasi goreng.", "zh": "我要炒飯。", "lesson": "L05"}, {"ms": "Ada mi goreng?", "zh": "有炒麵嗎？", "lesson": "L05"}, {"ms": "Jangan pedas.", "zh": "不要辣。", "lesson": "L05"}, {"ms": "Pedas sikit saja.", "zh": "只要一點辣。", "lesson": "L05"}, {"ms": "Saya tak makan daging lembu.", "zh": "我不吃牛肉。", "lesson": "L05"}, {"ms": "Air kosong satu.", "zh": "一杯白開水。", "lesson": "L05"}, {"ms": "Sedap!", "zh": "好吃！", "lesson": "L05"}, {"ms": "Terlalu manis.", "zh": "太甜了。", "lesson": "L05"}, {"ms": "Bungkus, ya.", "zh": "請打包。", "lesson": "L05"}, {"ms": "Minta bil.", "zh": "麻煩結帳。", "lesson": "L05"}, {"ms": "Berapa semua?", "zh": "全部多少錢？", "lesson": "L05"}, {"ms": "Berapa harga ini?", "zh": "這個多少錢？", "lesson": "L06"}, {"ms": "Yang itu berapa?", "zh": "那個多少？", "lesson": "L06"}, {"ms": "Mahal sangat.", "zh": "太貴了。", "lesson": "L06"}, {"ms": "Boleh kurang sikit?", "zh": "可以便宜一點嗎？", "lesson": "L06"}, {"ms": "Saya tengok dulu.", "zh": "我先看看。", "lesson": "L06"}, {"ms": "Saya mahu yang ini.", "zh": "我要這個。", "lesson": "L06"}, {"ms": "Ada saiz besar?", "zh": "有大尺寸嗎？", "lesson": "L06"}, {"ms": "Ada warna lain?", "zh": "有別的顏色嗎？", "lesson": "L06"}, {"ms": "Saya bayar tunai.", "zh": "我付現金。", "lesson": "L06"}, {"ms": "Boleh bayar dengan kad?", "zh": "可以刷卡嗎？", "lesson": "L06"}, {"ms": "Satu, dua, tiga, empat, lima.", "zh": "一、二、三、四、五。", "lesson": "L06"}, {"ms": "Sepuluh, dua puluh, seratus.", "zh": "十、二十、一百。", "lesson": "L06"}, {"ms": "Saya mahu pergi ke hotel.", "zh": "我要去飯店。", "lesson": "L07"}, {"ms": "Tolong hantar saya ke sini.", "zh": "請送我到這裡。", "lesson": "L07"}, {"ms": "Berapa lama?", "zh": "要多久？", "lesson": "L07"}, {"ms": "Berapa jauh?", "zh": "有多遠？", "lesson": "L07"}, {"ms": "Tandas di mana?", "zh": "廁所在哪裡？", "lesson": "L07"}, {"ms": "Jalan terus.", "zh": "直走。", "lesson": "L07"}, {"ms": "Belok kiri.", "zh": "左轉。", "lesson": "L07"}, {"ms": "Belok kanan.", "zh": "右轉。", "lesson": "L07"}, {"ms": "Berhenti di sini.", "zh": "在這裡停。", "lesson": "L07"}, {"ms": "Saya sesat.", "zh": "我迷路了。", "lesson": "L07"}, {"ms": "Boleh tunjuk dalam peta?", "zh": "可以在地圖上指給我看嗎？", "lesson": "L07"}, {"ms": "Hari ini saya sibuk.", "zh": "我今天很忙。", "lesson": "L08"}, {"ms": "Esok saya lapang.", "zh": "我明天有空。", "lesson": "L08"}, {"ms": "Sekarang pukul berapa?", "zh": "現在幾點？", "lesson": "L08"}, {"ms": "Pukul tiga petang.", "zh": "下午三點。", "lesson": "L08"}, {"ms": "Jumpa pukul tujuh malam.", "zh": "晚上七點見。", "lesson": "L08"}, {"ms": "Tunggu sekejap.", "zh": "等一下。", "lesson": "L08"}, {"ms": "Nanti saya telefon.", "zh": "我晚點打電話。", "lesson": "L08"}, {"ms": "Saya datang lambat sikit.", "zh": "我會晚一點到。", "lesson": "L08"}, {"ms": "Tak apa, saya tunggu.", "zh": "沒關係，我等。", "lesson": "L08"}, {"ms": "Saya tak sihat.", "zh": "我不舒服。", "lesson": "L09"}, {"ms": "Saya sakit kepala.", "zh": "我頭痛。", "lesson": "L09"}, {"ms": "Saya sakit perut.", "zh": "我肚子痛。", "lesson": "L09"}, {"ms": "Saya demam.", "zh": "我發燒。", "lesson": "L09"}, {"ms": "Saya pening.", "zh": "我頭暈。", "lesson": "L09"}, {"ms": "Saya perlukan doktor.", "zh": "我需要醫生。", "lesson": "L09"}, {"ms": "Hospital di mana?", "zh": "醫院在哪裡？", "lesson": "L09"}, {"ms": "Tolong panggil ambulans.", "zh": "請叫救護車。", "lesson": "L09"}, {"ms": "Ini kecemasan.", "zh": "這是緊急狀況。", "lesson": "L09"}, {"ms": "Saya alah kepada ubat ini.", "zh": "我對這個藥過敏。", "lesson": "L09"}, {"ms": "Tak tahu.", "zh": "不知道。", "lesson": "L10"}, {"ms": "Dah siap?", "zh": "好了嗎？", "lesson": "L10"}, {"ms": "Nak pergi mana?", "zh": "要去哪裡？", "lesson": "L10"}, {"ms": "Buat apa?", "zh": "做什麼？／幹嘛？", "lesson": "L10"}, {"ms": "Macam mana?", "zh": "怎麼樣？／怎麼辦？", "lesson": "L10"}, {"ms": "Boleh lah.", "zh": "可以啦／還行。", "lesson": "L10"}, {"ms": "Tak apa lah.", "zh": "沒關係啦。", "lesson": "L10"}, {"ms": "Betul ke?", "zh": "真的嗎？", "lesson": "L10"}, {"ms": "Ya ke?", "zh": "是喔？真的？", "lesson": "L10"}, {"ms": "Jom!", "zh": "走吧！／一起吧！", "lesson": "L10"}, {"ms": "Saya lapar.", "zh": "我餓了。", "lesson": "L11"}, {"ms": "Saya haus.", "zh": "我渴了。", "lesson": "L11"}, {"ms": "Saya penat.", "zh": "我累了。", "lesson": "L11"}, {"ms": "Saya mahu pergi.", "zh": "我想走／我要去。", "lesson": "L11"}, {"ms": "Saya tak mahu.", "zh": "我不要。", "lesson": "L11"}, {"ms": "Boleh masuk?", "zh": "可以進去嗎？", "lesson": "L11"}, {"ms": "Boleh duduk sini?", "zh": "可以坐這裡嗎？", "lesson": "L11"}, {"ms": "Ada air?", "zh": "有水嗎？", "lesson": "L11"}, {"ms": "Ada masalah?", "zh": "有問題嗎？", "lesson": "L11"}, {"ms": "Apa ini?", "zh": "這是什麼？", "lesson": "L11"}, {"ms": "Siapa itu?", "zh": "那是誰？", "lesson": "L11"}, {"ms": "Kenapa?", "zh": "為什麼？", "lesson": "L11"}]; let right=0,total=0,current=null;
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function newQuestion(){current=quizData[Math.floor(Math.random()*quizData.length)];document.getElementById('quizMs').textContent=current.ms;let wrong=shuffle(quizData.filter(x=>x.zh!==current.zh)).slice(0,3).map(x=>x.zh);let opts=shuffle([current.zh,...wrong]);let box=document.getElementById('quizOptions');box.innerHTML='';opts.forEach(z=>{let b=document.createElement('button');b.textContent=z;b.onclick=()=>answer(b,z);box.appendChild(b)})}
+function answer(btn,z){if([...document.querySelectorAll('#quizOptions button')].some(b=>b.disabled))return;total++;document.querySelectorAll('#quizOptions button').forEach(b=>{b.disabled=true;if(b.textContent===current.zh)b.classList.add('correct')});if(z===current.zh)right++;else btn.classList.add('wrong');document.getElementById('score').textContent=right+' / '+total;}
+</script></body></html>

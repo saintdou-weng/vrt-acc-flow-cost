@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7f2ea">
+<title>零基礎日語｜日劇聽力互動課程</title>
+<style>
+:root{
+  --bg:#f7f2ea; --paper:#fffdf8; --ink:#24221f; --muted:#716c65;
+  --red:#b43b39; --red2:#d45a50; --gold:#c9973e; --line:#e8dfd2;
+  --green:#377e5b; --blue:#3c6f9f; --shadow:0 14px 38px rgba(62,43,26,.10);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:
+radial-gradient(circle at 10% 0%,rgba(180,59,57,.10),transparent 30%),
+radial-gradient(circle at 92% 8%,rgba(201,151,62,.13),transparent 26%),
+var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.65}
+button,select,input{font:inherit}
+button{cursor:pointer}
+.hero{padding:42px 18px 28px;max-width:1180px;margin:auto}
+.heroCard{position:relative;overflow:hidden;background:linear-gradient(135deg,#fffdf9,#f4e9dc);border:1px solid #eadccd;border-radius:30px;padding:30px;box-shadow:var(--shadow)}
+.sun{position:absolute;right:-40px;top:-55px;width:190px;height:190px;border-radius:50%;background:rgba(180,59,57,.12)}
+.torii{position:absolute;right:45px;bottom:16px;width:170px;height:120px;opacity:.16}
+.kicker{display:inline-flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:14px;color:var(--red);font-weight:800}
+h1{font-size:clamp(34px,7vw,66px);line-height:1.07;margin:18px 0 12px;letter-spacing:-.04em}
+.subtitle{font-size:clamp(17px,2.4vw,22px);max-width:750px;color:#4f4a44}
+.heroGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px;max-width:760px}
+.mini{background:rgba(255,255,255,.74);border:1px solid var(--line);border-radius:18px;padding:13px}
+.mini b{display:block;color:var(--red);font-size:20px}
+.wrap{max-width:1180px;margin:auto;padding:0 18px 70px}
+.toolbar{position:sticky;top:0;z-index:20;background:rgba(247,242,234,.92);backdrop-filter:blur(14px);border-bottom:1px solid rgba(205,190,172,.8);padding:10px 0;margin-bottom:20px}
+.toolbarInner{max-width:1180px;margin:auto;padding:0 18px;display:flex;gap:10px;align-items:center;overflow:auto}
+.tab{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 14px;font-weight:800;color:#554f47}
+.tab.active{background:var(--red);color:#fff;border-color:var(--red)}
+.panel{display:none}
+.panel.active{display:block}
+.sectionTitle{display:flex;justify-content:space-between;gap:20px;align-items:end;margin:26px 0 14px}
+.sectionTitle h2{font-size:clamp(26px,4vw,38px);margin:0;letter-spacing:-.03em}
+.note{color:var(--muted);font-size:15px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)}
+.guide{padding:24px}
+.guideGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.step{padding:18px;border-radius:20px;background:#fff;border:1px solid var(--line)}
+.step .n{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--red);color:#fff;font-weight:900}
+.step h3{margin:12px 0 4px}
+.plan{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.phase{padding:20px}
+.phase h3{margin:0 0 8px;color:var(--red)}
+.lessonGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.lesson{overflow:hidden}
+.lessonHead{padding:18px 20px;background:linear-gradient(110deg,#fff7ef,#fff);border-bottom:1px solid var(--line)}
+.lessonHeadTop{display:flex;gap:12px;align-items:start}
+.lessonIcon{font-size:34px}
+.lesson h3{margin:0;font-size:21px}
+.badge{display:inline-block;margin-top:7px;background:#f3e2df;color:#8e302e;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:900}
+.goal{font-size:14px;color:var(--muted);margin-top:8px}
+.phrases{padding:8px 12px 15px}
+.phrase{padding:13px 8px;border-bottom:1px dashed var(--line)}
+.phrase:last-child{border-bottom:0}
+.jpRow{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.jp{font-family:"Noto Sans JP","Yu Gothic","Hiragino Kaku Gothic ProN",sans-serif;font-size:23px;font-weight:850;letter-spacing:.02em}
+.zh{font-weight:800;margin-top:3px}
+.reading{font-size:13px;color:var(--muted)}
+.noteSmall{font-size:13px;color:#7f6042;background:#fbf3e9;padding:7px 9px;border-radius:10px;margin-top:7px}
+.audioBtns{display:flex;gap:6px;flex-wrap:wrap}
+.audio{border:0;border-radius:10px;padding:7px 10px;background:#efe4d6;color:#4d3e30;font-weight:800}
+.audio.slow{background:#e6edf5;color:#315777}
+.know{border:1px solid #d9cfc2;background:#fff;border-radius:10px;padding:7px 10px}
+.know.done{background:#e7f3ec;color:var(--green);border-color:#b8dac8}
+.quizBox{padding:20px}
+.quizQ{font-size:22px;font-weight:900;margin-bottom:12px}
+.option{display:block;width:100%;text-align:left;margin:8px 0;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.option.correct{border-color:#75ad8e;background:#e9f5ee}
+.option.wrong{border-color:#d98d86;background:#faeceb}
+.result{font-weight:900;margin-top:12px}
+.progressWrap{display:flex;gap:12px;align-items:center;min-width:240px}
+.progressBar{height:12px;background:#e8dfd2;border-radius:999px;overflow:hidden;flex:1}
+.progressFill{height:100%;width:0;background:linear-gradient(90deg,var(--red),var(--gold));transition:.3s}
+.kanaGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.kanaCell{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 6px;text-align:center;font-weight:800}
+.kanaCell button{display:block;width:100%;background:transparent;border:0;font-size:20px}
+.dramaGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.dramaCard{padding:18px}
+.dramaCard h3{margin:0 0 8px;font-size:21px}
+.pattern{font-size:24px;font-weight:900;color:var(--red)}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.primary{border:0;background:var(--red);color:#fff;border-radius:14px;padding:11px 16px;font-weight:900}
+.secondary{border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 14px;font-weight:900}
+.checklist label{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line)}
+.checklist input{margin-top:5px;transform:scale(1.2)}
+footer{text-align:center;color:var(--muted);padding:30px 18px 55px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(30px);opacity:0;z-index:50;background:#26221e;color:#fff;padding:11px 16px;border-radius:999px;transition:.25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:900px){
+  .guideGrid{grid-template-columns:repeat(2,1fr)} .plan{grid-template-columns:1fr}
+  .lessonGrid{grid-template-columns:1fr} .dramaGrid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .hero{padding-top:20px} .heroCard{padding:22px;border-radius:24px} .heroGrid{grid-template-columns:1fr}
+  .guideGrid{grid-template-columns:1fr} .dramaGrid{grid-template-columns:1fr}
+  .jpRow{align-items:flex-start;flex-direction:column} .audioBtns{width:100%}
+  .audio,.know{flex:1} .kanaCell{padding:9px 3px} .kanaCell button{font-size:17px}
+}
+@media print{
+  .toolbar,.audioBtns,.controls,.toast{display:none!important}
+  .panel{display:block!important} .lessonGrid{grid-template-columns:1fr 1fr} body{background:white}
+  .card{box-shadow:none;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="heroCard">
+    <div class="sun"></div>
+    <svg class="torii" viewBox="0 0 200 140" aria-hidden="true"><path d="M28 18h144v16H28zM42 8h116v9H42zM55 34h14v94H55zM131 34h14v94h-14zM44 62h112v10H44z" fill="#b43b39"/></svg>
+    <span class="kicker">🎧 聽得懂日劇・敢開口說</span>
+    <h1>零基礎日語<br>互動入門課程</h1>
+    <div class="subtitle">專為「完全不會、記性普通、害怕開口」的人設計。先聽、再模仿、最後才看文法；每天 15–20 分鐘即可。</div>
+    <div class="heroGrid">
+      <div class="mini"><b>16 課</b>從招呼到日劇口語</div>
+      <div class="mini"><b>96 句</b>全都能按鈕發音</div>
+      <div class="mini"><b>30 天</b>低壓漸進路線</div>
+    </div>
+  </div>
+</header>
+
+<nav class="toolbar">
+  <div class="toolbarInner">
+    <button class="tab active" data-tab="home">學習方法</button>
+    <button class="tab" data-tab="course">16 課課程</button>
+    <button class="tab" data-tab="kana">五十音</button>
+    <button class="tab" data-tab="drama">日劇聽力</button>
+    <button class="tab" data-tab="quiz">隨機測驗</button>
+    <button class="tab" data-tab="progress">我的進度</button>
+  </div>
+</nav>
+
+<main class="wrap">
+<section id="home" class="panel active">
+  <div class="sectionTitle"><div><h2>先用耳朵學，不先被文字嚇到</h2><div class="note">羅馬拼音只當扶手，熟悉後慢慢移除。</div></div></div>
+  <div class="card guide">
+    <div class="guideGrid">
+      <div class="step"><span class="n">1</span><h3>先聽 3 次</h3><div>第一遍只聽聲音；第二遍看中文；第三遍看日文。</div></div>
+      <div class="step"><span class="n">2</span><h3>影子跟讀</h3><div>聲音一開始就跟著說，不等整句播完。像跟著演員念台詞。</div></div>
+      <div class="step"><span class="n">3</span><h3>只記語塊</h3><div>不要一次分析每個字。先把「すみません」當成一整塊聲音。</div></div>
+      <div class="step"><span class="n">4</span><h3>隔天再測</h3><div>今天會不等於真的會。隔天能認出來，才算進入長期記憶。</div></div>
+    </div>
+  </div>
+
+  <div class="sectionTitle"><div><h2>30 天低壓路線</h2><div class="note">每天只做一小段，不追求一次全部記住。</div></div></div>
+  <div class="plan">
+    <div class="card phase"><h3>第 1–7 天｜建立耳感</h3><p>學第 1–4 課，每天 6 句。目標是聽到招呼、是非、這個那個時能立即反應。</p><b>每天：聽 5 分鐘＋跟讀 5 分鐘＋測驗 5 分鐘。</b></div>
+    <div class="card phase"><h3>第 8–18 天｜生活能說</h3><p>學第 5–10 課，練數字、點餐、喜好、請求與問路。開始用自己的生活替換例句。</p><b>例如：日本へ行きたいです → 京都へ行きたいです。</b></div>
+    <div class="card phase"><h3>第 19–30 天｜看日劇抓語塊</h3><p>學第 11–16 課，專攻過去式、心情與日劇縮略口語。每天選 10 分鐘日劇重播同一段。</p><b>目標不是全懂，而是每段抓到 3–5 個熟悉語塊。</b></div>
+  </div>
+
+  <div class="sectionTitle"><div><h2>發音功能先測試</h2><div class="note">Android 建議用 Chrome 開啟；系統需有日語語音。</div></div></div>
+  <div class="card guide">
+    <div class="controls">
+      <button class="primary" onclick="speak('こんにちは',0.9)">🔊 測試日語發音</button>
+      <button class="secondary" onclick="speak('もう一度お願いします',0.65)">🐢 測試慢速</button>
+      <select id="voiceSelect" class="secondary" aria-label="選擇日語語音"><option>自動選擇日語語音</option></select>
+    </div>
+    <p class="note">若沒有聲音：先提高手機媒體音量，再到手機「文字轉語音／Text-to-Speech」設定下載日語語音。部分手機第一次播放需按兩次。</p>
+  </div>
+</section>
+
+<section id="course" class="panel">
+  <div class="sectionTitle">
+    <div><h2>16 課生活日語</h2><div class="note">每句先按「慢速」，跟讀三遍，再按「我會了」。</div></div>
+    <div class="progressWrap"><span id="courseProgressText">0 / 96</span><div class="progressBar"><div id="courseProgressFill" class="progressFill"></div></div></div>
+  </div>
+  <div id="lessonGrid" class="lessonGrid"></div>
+</section>
+
+<section id="kana" class="panel">
+  <div class="sectionTitle"><div><h2>五十音：每天只記 5 個</h2><div class="note">先能看懂，不急著寫得漂亮。點字即可發音。</div></div></div>
+  <div class="card guide">
+    <p><b>平假名</b>主要用於日語原生詞與文法；<b>片假名</b>主要用於外來語，例如 テレビ（電視）。初學前兩週只學平假名即可。</p>
+    <div id="kanaGrid" class="kanaGrid"></div>
+  </div>
+  <div class="sectionTitle"><div><h2>容易念錯的 8 個音</h2></div></div>
+  <div class="dramaGrid">
+    <div class="card dramaCard"><div class="pattern">し shi</div><p>接近「西」，不是 si。</p><button class="audio" onclick="speak('し',0.75)">🔊 聽</button></div>
+    <div class="card dramaCard"><div class="pattern">ち chi</div><p>接近「七」，不是 ti。</p><button class="audio" onclick="speak('ち',0.75)">🔊 聽</button></div>
+    <div class="card dramaCard"><div class="pattern">つ tsu</div><p>先有 t，再快速接 su。</p><button class="audio" onclick="speak('つ',0.65)">🔊 聽</button></div>
+    <div class="card dramaCard"><div class="pattern">ふ fu</div><p>嘴唇不要完全碰合，輕輕吹氣。</p><button class="audio" onclick="speak('ふ',0.65)">🔊 聽</button></div>
+    <div class="card dramaCard"><div class="pattern">ら ra</div><p>舌尖輕彈一次，介於中文 r、l 之間。</p><button class="audio" onclick="speak('ら',0.65)">🔊 聽</button></div>
+    <div class="card dramaCard"><div class="pattern">ん n</div><p>後面音不同，實際鼻音會稍變。</p><button class="audio" onclick="speak('ん',0.65)">🔊 聽</button></div>
+  </div>
+</section>
+
+<section id="drama" class="panel">
+  <div class="sectionTitle"><div><h2>日劇聽力拆解</h2><div class="note">日劇難，不是因為每個字都很難，而是常省略、縮短、黏在一起。</div></div></div>
+  <div class="dramaGrid">
+    <div class="card dramaCard"><h3>① ています → てる</h3><div class="pattern">何してるの？</div><p>原本是「何をしていますか」。口語把 を、省略，しています縮成してる。</p><button class="audio" onclick="shadow(['何をしていますか','何してるの'])">▶ 對比聽</button></div>
+    <div class="card dramaCard"><h3>② なければ → なきゃ</h3><div class="pattern">行かなきゃ</div><p>表示「非去不可／得走了」。日劇中常只說到這裡，後半句省略。</p><button class="audio" onclick="shadow(['行かなければなりません','行かなきゃ'])">▶ 對比聽</button></div>
+    <div class="card dramaCard"><h3>③ という → って</h3><div class="pattern">何だって？</div><p>「って」在口語中常用來引用對方說的話，也可表示「你說什麼？」</p><button class="audio" onclick="speak('何だって？',0.75)">🔊 聽</button></div>
+    <div class="card dramaCard"><h3>④ 助詞被吃掉</h3><div class="pattern">ご飯食べた？</div><p>完整是「ご飯を食べましたか」。口語會省略 を、ます、か。</p><button class="audio" onclick="shadow(['ご飯を食べましたか','ご飯食べた？'])">▶ 對比聽</button></div>
+    <div class="card dramaCard"><h3>⑤ 語尾表情</h3><div class="pattern">そうなの？</div><p>の？常帶有想確認、關心或驚訝。理解語氣比逐字翻譯更重要。</p><button class="audio" onclick="speak('そうなの？',0.8)">🔊 聽</button></div>
+    <div class="card dramaCard"><h3>⑥ 先抓關鍵詞</h3><div class="pattern">昨日・会社・行った</div><p>就算中間沒聽懂，只要抓到「昨天、公司、去了」，也能推測八成內容。</p><button class="audio" onclick="speak('昨日、会社に行ったよ',0.85)">🔊 聽</button></div>
+  </div>
+
+  <div class="sectionTitle"><div><h2>10 分鐘日劇練習法</h2></div></div>
+  <div class="card guide checklist">
+    <label><input type="checkbox"> <span><b>第 1 遍：</b>開中文字幕，只理解劇情，不暫停。</span></label>
+    <label><input type="checkbox"> <span><b>第 2 遍：</b>重播 30–60 秒，找出已學過的語塊。</span></label>
+    <label><input type="checkbox"> <span><b>第 3 遍：</b>切日文字幕，圈出 3 句，不超過 3 句。</span></label>
+    <label><input type="checkbox"> <span><b>第 4 遍：</b>每句跟讀 3 次，模仿速度和情緒，不只模仿字音。</span></label>
+    <label><input type="checkbox"> <span><b>最後：</b>關字幕再聽一次。聽懂 30% 就算成功，不追求 100%。</span></label>
+  </div>
+</section>
+
+<section id="quiz" class="panel">
+  <div class="sectionTitle"><div><h2>隨機測驗</h2><div class="note">先聽聲音，再選中文意思。答錯不扣分，只代表需要再聽幾次。</div></div></div>
+  <div class="card quizBox">
+    <div class="controls">
+      <button class="primary" onclick="newQuiz()">換一題</button>
+      <button class="secondary" onclick="playQuiz()">🔊 只聽不看</button>
+      <button class="secondary" onclick="toggleQuizText()">顯示／隱藏日文</button>
+    </div>
+    <div id="quizQ" class="quizQ" style="margin-top:18px"></div>
+    <div id="quizOptions"></div>
+    <div id="quizResult" class="result"></div>
+  </div>
+</section>
+
+<section id="progress" class="panel">
+  <div class="sectionTitle"><div><h2>我的進度</h2><div class="note">進度只儲存在這台手機／瀏覽器，不會上傳。</div></div></div>
+  <div class="card guide">
+    <h3 id="bigProgress">已掌握 0 / 96 句</h3>
+    <div class="progressBar" style="height:18px"><div id="bigProgressFill" class="progressFill"></div></div>
+    <p id="progressAdvice"></p>
+    <div class="controls">
+      <button class="secondary" onclick="exportProgress()">匯出進度文字</button>
+      <button class="secondary" onclick="resetProgress()">清除全部進度</button>
+      <button class="primary" onclick="window.print()">列印／另存 PDF</button>
+    </div>
+  </div>
+  <div class="sectionTitle"><div><h2>一週自我檢查</h2></div></div>
+  <div class="card guide checklist">
+    <label><input type="checkbox"> <span>不看文字，能聽懂本週至少 20 句。</span></label>
+    <label><input type="checkbox"> <span>能自然說出 10 句，不需要先翻成中文。</span></label>
+    <label><input type="checkbox"> <span>看日劇 10 分鐘時，能抓到至少 5 個熟悉語塊。</span></label>
+    <label><input type="checkbox"> <span>能用「もう一度お願いします」與「ゆっくり話してください」救場。</span></label>
+  </div>
+</section>
+</main>
+
+<div id="toast" class="toast"></div>
+<footer>零基礎日語互動課程｜建議每天 15–20 分鐘，固定比大量更有效。</footer>
+
+<script>
+const lessons = [{"id": "L01", "title": "第1課｜先聽懂招呼與回應", "goal": "看日劇時先抓到人物在打招呼、道謝、道歉。", "icon": "👋", "drama": "高頻", "phrases": [["おはよう", "おはよう", "ohayō", "早安", "較熟的人常省略「ございます」。"], ["こんにちは", "こんにちは", "konnichiwa", "你好／午安", "白天最安全的招呼。"], ["こんばんは", "こんばんは", "konbanwa", "晚上好", "傍晚後使用。"], ["ありがとう", "ありがとう", "arigatō", "謝謝", "正式說法：ありがとうございます。"], ["すみません", "すみません", "sumimasen", "不好意思／對不起／借過", "日語萬用句，日劇出現率很高。"], ["大丈夫です", "だいじょうぶです", "daijōbu desu", "沒事／不用了／我可以", "依情境可能是接受，也可能是婉拒。"]]}, {"id": "L02", "title": "第2課｜是、不是、真的嗎", "goal": "聽懂最常見的肯定、否定與驚訝反應。", "icon": "✅", "drama": "超高頻", "phrases": [["はい", "はい", "hai", "是／好的", "有時只是表示「我在聽」。"], ["いいえ", "いいえ", "iie", "不是／不用", "日常也常用「ううん」表示不是。"], ["そうです", "そうです", "sō desu", "是那樣／沒錯", "用來確認資訊。"], ["そうですか", "そうですか", "sō desu ka", "原來如此／是嗎", "語調不同，感覺也不同。"], ["本当ですか", "ほんとうですか", "hontō desu ka", "真的嗎", "口語常說：ほんと？"], ["違います", "ちがいます", "chigaimasu", "不是／不對", "比直接說「いいえ」更常見。"]]}, {"id": "L03", "title": "第3課｜自我介紹", "goal": "能說姓名、國籍、工作與初次見面。", "icon": "🙋", "drama": "實用", "phrases": [["はじめまして", "はじめまして", "hajimemashite", "初次見面", "第一次見面時使用。"], ["私はポールです", "わたしは ポールです", "watashi wa Pōru desu", "我是 Paul", "「は」寫作 ha，但此處念 wa。"], ["台湾から来ました", "たいわんから きました", "Taiwan kara kimashita", "我來自台灣", "から＝從……。"], ["会社員です", "かいしゃいんです", "kaishain desu", "我是公司職員", "です讓語氣較禮貌。"], ["よろしくお願いします", "よろしく おねがいします", "yoroshiku onegaishimasu", "請多指教", "日語文化中的固定句。"], ["お名前は？", "おなまえは", "onamae wa", "請問您叫什麼名字？", "完整說法：お名前は何ですか。"]]}, {"id": "L04", "title": "第4課｜這個、那個、哪一個", "goal": "能指物、問物品與聽懂簡單說明。", "icon": "👉", "drama": "基礎", "phrases": [["これは何ですか", "これは なんですか", "kore wa nan desu ka", "這是什麼？", "これ＝靠近自己的這個。"], ["それは携帯です", "それは けいたいです", "sore wa keitai desu", "那是手機", "それ＝靠近對方的那個。"], ["あれは何ですか", "あれは なんですか", "are wa nan desu ka", "那邊那個是什麼？", "あれ＝離雙方都遠。"], ["どれですか", "どれですか", "dore desu ka", "是哪一個？", "三個以上選擇時常用。"], ["この人は誰ですか", "このひとは だれですか", "kono hito wa dare desu ka", "這個人是誰？", "この後面一定要接名詞。"], ["私のです", "わたしのです", "watashi no desu", "是我的", "の可代替前面已知的名詞。"]]}, {"id": "L05", "title": "第5課｜數字、價錢與時間", "goal": "能聽懂基本數字、問價錢與時間。", "icon": "🕒", "drama": "生活", "phrases": [["いくらですか", "いくらですか", "ikura desu ka", "多少錢？", "購物必備句。"], ["千円です", "せんえんです", "sen-en desu", "一千日圓", "円念 en。"], ["今、何時ですか", "いま なんじですか", "ima nanji desu ka", "現在幾點？", "何時＝幾點。"], ["三時です", "さんじです", "sanji desu", "三點", "四點念 よじ，七點念 しちじ。"], ["半です", "はんです", "han desu", "半點", "三時半＝三點半。"], ["ちょっと高いです", "ちょっと たかいです", "chotto takai desu", "有點貴", "ちょっと可讓拒絕變柔和。"]]}, {"id": "L06", "title": "第6課｜吃飯與點餐", "goal": "能在餐廳點餐，聽懂好吃、不吃與想要。", "icon": "🍜", "drama": "生活", "phrases": [["これをください", "これを ください", "kore o kudasai", "請給我這個", "「を」此處念 o。"], ["水をお願いします", "みずを おねがいします", "mizu o onegaishimasu", "麻煩給我水", "比ください稍柔和。"], ["おいしいです", "おいしいです", "oishii desu", "很好吃", "日劇常省略です：おいしい！"], ["辛いですか", "からいですか", "karai desu ka", "辣嗎？", "辛い可表示辣，也可表示辛苦。"], ["肉は食べません", "にくは たべません", "niku wa tabemasen", "我不吃肉", "ません＝禮貌否定。"], ["お会計お願いします", "おかいけい おねがいします", "okaikei onegaishimasu", "麻煩結帳", "餐廳非常實用。"]]}, {"id": "L07", "title": "第7課｜每天做什麼", "goal": "會說起床、工作、回家、看電視等日常動作。", "icon": "🏠", "drama": "基礎", "phrases": [["毎朝六時に起きます", "まいあさ ろくじに おきます", "maiasa rokuji ni okimasu", "每天早上六點起床", "に標示時間點。"], ["会社へ行きます", "かいしゃへ いきます", "kaisha e ikimasu", "去公司", "「へ」此處念 e。"], ["仕事をします", "しごとを します", "shigoto o shimasu", "工作", "します＝做。"], ["家に帰ります", "いえに かえります", "ie ni kaerimasu", "回家", "帰ります＝回去。"], ["テレビを見ます", "テレビを みます", "terebi o mimasu", "看電視", "見ます＝看。"], ["もう寝ます", "もう ねます", "mō nemasu", "我要睡了", "もう＝已經／快要。"]]}, {"id": "L08", "title": "第8課｜喜歡、不喜歡、想要", "goal": "能表達喜好與想做的事。", "icon": "❤️", "drama": "情感", "phrases": [["日本のドラマが好きです", "にほんの ドラマが すきです", "Nihon no dorama ga suki desu", "我喜歡日本電視劇", "好き前常用が。"], ["音楽も好きです", "おんがくも すきです", "ongaku mo suki desu", "我也喜歡音樂", "も＝也。"], ["納豆は苦手です", "なっとうは にがてです", "nattō wa nigate desu", "我不太能接受納豆", "苦手比「討厭」更柔和。"], ["日本へ行きたいです", "にほんへ いきたいです", "Nihon e ikitai desu", "我想去日本", "動詞ます去掉ます＋たい。"], ["何が好きですか", "なにが すきですか", "nani ga suki desu ka", "你喜歡什麼？", "問喜好常用何が。"], ["私もです", "わたしもです", "watashi mo desu", "我也是", "日劇反應句。"]]}, {"id": "L09", "title": "第9課｜請求、允許與禁止", "goal": "聽懂「可以嗎」「不可以」「請等一下」。", "icon": "🙏", "drama": "超實用", "phrases": [["ちょっと待ってください", "ちょっと まってください", "chotto matte kudasai", "請等一下", "日劇常說：ちょっと待って！"], ["もう一度お願いします", "もういちど おねがいします", "mō ichido onegaishimasu", "請再說一次", "聽不懂時最重要的一句。"], ["ゆっくり話してください", "ゆっくり はなしてください", "yukkuri hanashite kudasai", "請說慢一點", "話す＝說話。"], ["入ってもいいですか", "はいっても いいですか", "haitte mo ii desu ka", "可以進去嗎？", "て形＋もいい＝可以。"], ["ここで写真を撮ってはいけません", "ここで しゃしんを とってはいけません", "koko de shashin o totte wa ikemasen", "這裡不可以拍照", "てはいけません＝禁止。"], ["分かりました", "わかりました", "wakarimashita", "明白了", "非常高頻的回應。"]]}, {"id": "L10", "title": "第10課｜問路與交通", "goal": "能問地點、方向、車站與所需時間。", "icon": "🚉", "drama": "旅遊", "phrases": [["駅はどこですか", "えきは どこですか", "eki wa doko desu ka", "車站在哪裡？", "どこ＝哪裡。"], ["まっすぐ行ってください", "まっすぐ いってください", "massugu itte kudasai", "請直走", "まっすぐ＝一直。"], ["右に曲がってください", "みぎに まがってください", "migi ni magatte kudasai", "請右轉", "右＝みぎ。"], ["左です", "ひだりです", "hidari desu", "在左邊", "左＝ひだり。"], ["何分かかりますか", "なんぷん かかりますか", "nanpun kakarimasu ka", "要幾分鐘？", "かかります＝花費時間。"], ["電車で行きます", "でんしゃで いきます", "densha de ikimasu", "搭電車去", "で標示交通工具。"]]}, {"id": "L11", "title": "第11課｜現在、過去與否定", "goal": "聽懂「做／不做／做了／沒做」。", "icon": "🔁", "drama": "文法核心", "phrases": [["今日は働きます", "きょうは はたらきます", "kyō wa hatarakimasu", "今天工作", "ます＝現在／未來的禮貌形。"], ["今日は働きません", "きょうは はたらきません", "kyō wa hatarakimasen", "今天不工作", "ません＝否定。"], ["昨日働きました", "きのう はたらきました", "kinō hatarakimashita", "昨天工作了", "ました＝過去。"], ["昨日働きませんでした", "きのう はたらきませんでした", "kinō hatarakimasen deshita", "昨天沒有工作", "ませんでした＝過去否定。"], ["もう食べました", "もう たべました", "mō tabemashita", "已經吃了", "もう＋過去式。"], ["まだ食べていません", "まだ たべていません", "mada tabete imasen", "還沒吃", "まだ＝尚未。"]]}, {"id": "L12", "title": "第12課｜形容人、物與心情", "goal": "能聽懂好看、忙、累、開心、可怕等描述。", "icon": "😊", "drama": "情緒", "phrases": [["この店は安いです", "このみせは やすいです", "kono mise wa yasui desu", "這家店很便宜", "い形容詞直接接です。"], ["今日は忙しいです", "きょうは いそがしいです", "kyō wa isogashii desu", "今天很忙", "忙しい＝忙。"], ["ちょっと疲れました", "ちょっと つかれました", "chotto tsukaremashita", "有點累了", "很自然的日常說法。"], ["元気ですか", "げんきですか", "genki desu ka", "你好嗎／有精神嗎？", "元気是な形容詞類型。"], ["うれしいです", "うれしいです", "ureshii desu", "我很高興", "日劇感情句。"], ["怖いです", "こわいです", "kowai desu", "我害怕／很可怕", "怖い＝可怕。"]]}, {"id": "L13", "title": "第13課｜家人與人際關係", "goal": "能介紹家人，聽懂誰和誰的關係。", "icon": "👨‍👩‍👧", "drama": "生活", "phrases": [["妻です", "つまです", "tsuma desu", "這是我太太", "向外人說自己的妻子可用妻。"], ["夫です", "おっとです", "otto desu", "這是我先生", "夫＝自己的丈夫。"], ["子どもが二人います", "こどもが ふたりいます", "kodomo ga futari imasu", "我有兩個小孩", "人用います。"], ["兄がいます", "あにが います", "ani ga imasu", "我有哥哥", "說自己的哥哥用兄。"], ["友達と会います", "ともだちと あいます", "tomodachi to aimasu", "和朋友見面", "と＝和。"], ["一緒に行きましょう", "いっしょに いきましょう", "issho ni ikimashō", "一起去吧", "ましょう＝一起做吧。"]]}, {"id": "L14", "title": "第14課｜電話與工作場合", "goal": "能應對簡單電話、確認資訊與工作指示。", "icon": "📞", "drama": "工作", "phrases": [["もしもし", "もしもし", "moshi moshi", "喂", "只在電話開頭使用。"], ["少々お待ちください", "しょうしょう おまちください", "shōshō omachi kudasai", "請稍等", "較正式的電話用語。"], ["確認します", "かくにんします", "kakunin shimasu", "我確認一下", "工作場合高頻。"], ["もう一度説明してください", "もういちど せつめいしてください", "mō ichido setsumei shite kudasai", "請再說明一次", "説明する＝說明。"], ["問題ありません", "もんだい ありません", "mondai arimasen", "沒有問題", "正式、工作場合常見。"], ["後で連絡します", "あとで れんらくします", "ato de renraku shimasu", "晚點聯絡", "後で＝之後。"]]}, {"id": "L15", "title": "第15課｜日劇超高頻口語", "goal": "聽到這些句子時，不再只覺得是一串聲音。", "icon": "🎬", "drama": "日劇核心", "phrases": [["何してるの？", "なにしてるの", "nani shiteru no", "你在做什麼？", "「何をしていますか」的口語。"], ["どうしたの？", "どうしたの", "dō shita no", "怎麼了？", "關心對方狀況。"], ["ありえない", "ありえない", "arienai", "不可能／太扯了", "戲劇、年輕人口語高頻。"], ["しょうがない", "しょうがない", "shōganai", "沒辦法", "完整：仕方がない。"], ["気をつけて", "きをつけて", "ki o tsukete", "小心／保重", "送人離開時也常用。"], ["頑張って", "がんばって", "ganbatte", "加油", "不是只指考試，也可用於工作生活。"]]}, {"id": "L16", "title": "第16課｜聽力拆音與影子跟讀", "goal": "把日劇快速語音拆成能辨認的語塊。", "icon": "🎧", "drama": "聽力訓練", "phrases": [["分からない", "わからない", "wakaranai", "不知道／不懂", "「分かりません」的普通形。"], ["知らない", "しらない", "shiranai", "不知道這件事／不認識", "與分からない用法不同。"], ["行かなきゃ", "いかなきゃ", "ikanakya", "我得走了／非去不可", "行かなければ的縮略口語。"], ["食べてる", "たべてる", "tabeteru", "正在吃", "食べている的口語縮短。"], ["何だって？", "なんだって", "nandatte", "你說什麼？", "驚訝或沒聽清楚。"], ["別に", "べつに", "betsu ni", "沒什麼／也沒有特別", "日劇常見冷淡反應。"]]}];
+const kanaRows = [["あ a", "い i", "う u", "え e", "お o"], ["か ka", "き ki", "く ku", "け ke", "こ ko"], ["さ sa", "し shi", "す su", "せ se", "そ so"], ["た ta", "ち chi", "つ tsu", "て te", "と to"], ["な na", "に ni", "ぬ nu", "ね ne", "の no"], ["は ha", "ひ hi", "ふ fu", "へ he", "ほ ho"], ["ま ma", "み mi", "む mu", "め me", "も mo"], ["や ya", "—", "ゆ yu", "—", "よ yo"], ["ら ra", "り ri", "る ru", "れ re", "ろ ro"], ["わ wa", "—", "—", "—", "を o"], ["ん n", "が ga", "ざ za", "だ da", "ぱ pa"]];
+const allPhrases = lessons.flatMap(l=>l.phrases.map((p,i)=>({lesson:l.id,index:i,jp:p[0],kana:p[1],romaji:p[2],zh:p[3],note:p[4]})));
+let known = JSON.parse(localStorage.getItem('jp_known_v1')||'{}');
+let voices = [];
+let currentQuiz = null;
+let quizTextVisible = true;
+
+function showToast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1800);
+}
+function loadVoices(){
+  voices = speechSynthesis.getVoices();
+  const sel=document.getElementById('voiceSelect');
+  const jp=voices.filter(v=>/^ja[-_]/i.test(v.lang)||/Japanese|日本/i.test(v.name));
+  sel.innerHTML='<option value="">自動選擇日語語音</option>'+jp.map((v,i)=>`<option value="${voices.indexOf(v)}">${v.name} (${v.lang})</option>`).join('');
+}
+speechSynthesis.onvoiceschanged=loadVoices; loadVoices();
+
+function speak(text,rate=0.85){
+  if(!('speechSynthesis' in window)){alert('此瀏覽器不支援語音播放。請改用 Chrome。');return;}
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='ja-JP'; u.rate=rate; u.pitch=1;
+  const idx=document.getElementById('voiceSelect')?.value;
+  if(idx!=='' && voices[Number(idx)]) u.voice=voices[Number(idx)];
+  else {
+    const v=voices.find(v=>/^ja[-_]/i.test(v.lang)||/Japanese|日本/i.test(v.name));
+    if(v) u.voice=v;
+  }
+  speechSynthesis.speak(u);
+}
+function shadow(items){
+  speechSynthesis.cancel();
+  items.forEach((text,i)=>{
+    const u=new SpeechSynthesisUtterance(text);u.lang='ja-JP';u.rate=i===0?.7:.85;
+    const v=voices.find(v=>/^ja[-_]/i.test(v.lang)||/Japanese|日本/i.test(v.name));if(v)u.voice=v;
+    speechSynthesis.speak(u);
+  });
+}
+function renderLessons(){
+  const grid=document.getElementById('lessonGrid');
+  grid.innerHTML=lessons.map(l=>`
+  <article class="card lesson">
+    <div class="lessonHead">
+      <div class="lessonHeadTop"><div class="lessonIcon">${l.icon}</div><div><h3>${l.title}</h3><span class="badge">${l.drama}</span><div class="goal">${l.goal}</div></div></div>
+    </div>
+    <div class="phrases">
+      ${l.phrases.map((p,i)=>{
+        const key=`${l.id}_${i}`; const done=!!known[key];
+        return `<div class="phrase">
+          <div class="jpRow">
+            <div><div class="jp">${p[0]}</div><div class="reading">${p[1]} ｜ ${p[2]}</div></div>
+            <div class="audioBtns">
+              <button class="audio" onclick='speak(${JSON.stringify(p[0])},.88)'>🔊 正常</button>
+              <button class="audio slow" onclick='speak(${JSON.stringify(p[0])},.62)'>🐢 慢速</button>
+              <button class="know ${done?'done':''}" data-key="${key}" onclick="toggleKnown('${key}',this)">${done?'✓ 已會':'○ 我會了'}</button>
+            </div>
+          </div>
+          <div class="zh">${p[3]}</div><div class="noteSmall">${p[4]}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  </article>`).join('');
+  updateProgress();
+}
+function renderKana(){
+  document.getElementById('kanaGrid').innerHTML=kanaRows.flat().map(cell=>{
+    if(cell==='—') return '<div class="kanaCell">—</div>';
+    const kana=cell.split(' ')[0];
+    return `<div class="kanaCell"><button onclick="speak('${kana}',.65)">${cell}</button></div>`;
+  }).join('');
+}
+function toggleKnown(key,btn){
+  known[key]=!known[key];
+  if(!known[key]) delete known[key];
+  localStorage.setItem('jp_known_v1',JSON.stringify(known));
+  btn.classList.toggle('done',!!known[key]);
+  btn.textContent=known[key]?'✓ 已會':'○ 我會了';
+  updateProgress();
+}
+function updateProgress(){
+  const n=Object.keys(known).length, total=allPhrases.length, pct=Math.round(n/total*100);
+  document.getElementById('courseProgressText').textContent=`${n} / ${total}`;
+  document.getElementById('courseProgressFill').style.width=pct+'%';
+  document.getElementById('bigProgress').textContent=`已掌握 ${n} / ${total} 句（${pct}%）`;
+  document.getElementById('bigProgressFill').style.width=pct+'%';
+  document.getElementById('progressAdvice').textContent=
+    pct<15?'先完成第 1–3 課，不必急著學五十音。':
+    pct<40?'開始把例句替換成自己的姓名、工作、家庭與日常。':
+    pct<70?'進入日劇口語階段，請增加「只聽不看」練習。':
+    pct<90?'已建立基礎，接下來要提高反應速度與口語縮略辨識。':
+    '基礎課幾乎完成。請用日劇片段做循環跟讀，鞏固自動反應。';
+}
+function newQuiz(){
+  const q=allPhrases[Math.floor(Math.random()*allPhrases.length)];
+  const distract=[...allPhrases].filter(x=>x.zh!==q.zh).sort(()=>Math.random()-.5).slice(0,3);
+  const opts=[q,...distract].sort(()=>Math.random()-.5);
+  currentQuiz=q; quizTextVisible=true;
+  document.getElementById('quizQ').textContent=q.jp;
+  document.getElementById('quizOptions').innerHTML=opts.map(o=>`<button class="option" onclick='answerQuiz(this,${JSON.stringify(o.zh)},${JSON.stringify(q.zh)})'>${o.zh}</button>`).join('');
+  document.getElementById('quizResult').textContent='';
+}
+function answerQuiz(btn,ans,correct){
+  document.querySelectorAll('.option').forEach(b=>b.disabled=true);
+  if(ans===correct){btn.classList.add('correct');document.getElementById('quizResult').textContent='答對了！再跟讀一次，讓耳朵和嘴巴一起記住。';showToast('正確 ✅');}
+  else{btn.classList.add('wrong');[...document.querySelectorAll('.option')].find(b=>b.textContent===correct)?.classList.add('correct');document.getElementById('quizResult').textContent=`正確答案：${correct}。先慢速聽三遍再換題。`;}
+}
+function playQuiz(){if(currentQuiz)speak(currentQuiz.jp,.75)}
+function toggleQuizText(){
+  quizTextVisible=!quizTextVisible;
+  document.getElementById('quizQ').textContent=quizTextVisible?currentQuiz.jp:'（先聽聲音，不看文字）';
+}
+function exportProgress(){
+  const done=allPhrases.filter(p=>known[`${p.lesson}_${p.index}`]);
+  const text=['我的日語學習進度',`已掌握：${done.length} / ${allPhrases.length} 句`,'',...done.map(p=>`${p.jp}｜${p.zh}`)].join('\n');
+  navigator.clipboard?.writeText(text).then(()=>showToast('進度已複製到剪貼簿')).catch(()=>alert(text));
+}
+function resetProgress(){
+  if(confirm('確定清除全部學習進度嗎？')){known={};localStorage.removeItem('jp_known_v1');renderLessons();}
+}
+document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');document.getElementById(btn.dataset.tab).classList.add('active');
+  window.scrollTo({top:document.querySelector('.toolbar').offsetTop,behavior:'smooth'});
+}));
+renderLessons();renderKana();newQuiz();
+</script>
+</body>
+</html>

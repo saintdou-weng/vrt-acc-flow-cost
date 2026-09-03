@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>30天零基礎柬埔寨語｜50歲也能開口</title>
+<style>
+:root {
+  --bg:#f4f7f5; --card:#ffffff; --text:#1f2925; --muted:#67736d;
+  --accent:#136f63; --accent2:#e6f4f1; --line:#dce7e2; --warn:#a35a00;
+  --shadow:0 8px 24px rgba(19,55,46,.08); --radius:18px;
+}
+body.dark {
+  --bg:#101714; --card:#18211d; --text:#eef6f2; --muted:#a7b7af;
+  --accent:#63d3bd; --accent2:#20372f; --line:#30463d; --warn:#ffc36b;
+  --shadow:0 8px 24px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Khmer","Noto Sans TC",Arial,sans-serif;line-height:1.55}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1100px;margin:auto;padding:10px 16px;display:flex;gap:8px;align-items:center;justify-content:space-between}
+.brand{font-weight:800;white-space:nowrap}
+.actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:12px;padding:8px 11px;font-weight:700}
+.btn.primary{background:var(--accent);color:white;border-color:var(--accent)}
+.btn.small{padding:6px 9px;font-size:.9rem}
+.hero{max-width:1100px;margin:22px auto;padding:0 16px}
+.hero-card{background:linear-gradient(135deg,var(--accent),#224d70);color:white;border-radius:26px;padding:26px;box-shadow:var(--shadow);display:grid;grid-template-columns:1.4fr .8fr;gap:18px;align-items:center}
+.hero h1{font-size:clamp(1.8rem,4vw,3.1rem);line-height:1.15;margin:0 0 12px}
+.hero p{margin:7px 0;opacity:.95}
+.hero-art{min-height:210px;border-radius:20px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:7rem}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.stat{background:rgba(255,255,255,.13);padding:10px;border-radius:14px;text-align:center}
+.stat b{display:block;font-size:1.25rem}
+.layout{max-width:1100px;margin:auto;padding:0 16px 50px;display:grid;grid-template-columns:260px 1fr;gap:18px}
+.sidebar{position:sticky;top:70px;align-self:start;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);max-height:calc(100vh - 90px);overflow:auto}
+.side-title{font-weight:900;margin:4px 0 8px}
+.navbtn{width:100%;text-align:left;border:0;background:transparent;color:var(--text);padding:9px 10px;border-radius:10px;margin:2px 0}
+.navbtn:hover,.navbtn.active{background:var(--accent2);color:var(--accent);font-weight:800}
+.main{min-width:0}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:16px}
+.panel h2,.panel h3{margin-top:0}
+.progress-wrap{height:12px;background:var(--line);border-radius:999px;overflow:hidden}
+.progress-bar{height:100%;background:var(--accent);width:0;transition:.3s}
+.method{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.method-card{padding:12px;border-radius:14px;background:var(--accent2);border:1px solid var(--line)}
+.method-card b{display:block;margin-bottom:4px}
+.day-header{display:flex;gap:12px;align-items:flex-start;justify-content:space-between}
+.day-title-wrap{display:flex;gap:12px;align-items:center}
+.scene{font-size:2.2rem;background:var(--accent2);width:58px;height:58px;border-radius:16px;display:grid;place-items:center}
+.pill{display:inline-block;background:var(--accent2);color:var(--accent);padding:4px 9px;border-radius:999px;font-size:.85rem;font-weight:800}
+.phrase-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+.phrase-card{border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--card);position:relative}
+.km{font-family:"Noto Sans Khmer","Khmer OS System",sans-serif;font-size:1.9rem;font-weight:800;line-height:1.5;margin-bottom:3px}
+.zh{font-size:1.05rem;font-weight:800}
+.roman{color:var(--accent);font-weight:800;margin-top:6px}
+.hint{color:var(--muted);font-size:.92rem}
+.card-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+.audio-btn{border:1px solid var(--line);background:var(--accent2);color:var(--accent);border-radius:10px;padding:7px 9px;font-weight:800}
+.master-btn{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;padding:7px 9px;font-weight:800}
+.master-btn.done{background:var(--accent);color:white}
+.mission{margin-top:14px;padding:12px 14px;border-left:5px solid var(--warn);background:color-mix(in srgb,var(--accent2) 65%,transparent);border-radius:10px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.search{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:12px;padding:11px}
+.bank-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.bank-item{border:1px solid var(--line);border-radius:14px;padding:12px}
+.quiz-box{text-align:center;padding:18px}
+.quiz-prompt{font-size:1.25rem;font-weight:900;margin:14px 0}
+.options{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.option{border:1px solid var(--line);background:var(--card);color:var(--text);padding:13px;border-radius:12px;font-size:1.25rem}
+.option.correct{background:#dff6e8;border-color:#4aa56a;color:#174d2a}
+.option.wrong{background:#ffe4e4;border-color:#d96b6b;color:#7c2020}
+.patterns{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.pattern{padding:14px;border:1px solid var(--line);border-radius:14px}
+.pattern .formula{font-size:1.25rem;font-weight:900;color:var(--accent)}
+.note{color:var(--muted);font-size:.93rem}
+.footer{text-align:center;color:var(--muted);padding:24px}
+.hidden{display:none!important}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#111;color:white;padding:10px 15px;border-radius:999px;z-index:99;opacity:0;pointer-events:none;transition:.25s}
+.toast.show{opacity:1}
+@media (max-width:850px){
+  .hero-card{grid-template-columns:1fr} .hero-art{min-height:130px;font-size:5rem}
+  .layout{grid-template-columns:1fr} .sidebar{position:static;max-height:none}
+  .sidebar nav{display:flex;overflow:auto;gap:5px} .navbtn{min-width:max-content;width:auto}
+  .stats,.method{grid-template-columns:repeat(2,1fr)} .phrase-grid,.bank-grid,.patterns{grid-template-columns:1fr}
+}
+@media print{
+  .topbar,.sidebar,.audio-btn,.master-btn,.controls,.quiz-panel{display:none!important}
+  body{background:white;color:black} .layout{display:block} .panel{box-shadow:none;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">🇰🇭 30天零基礎柬埔寨語</div>
+    <div class="actions">
+      <button class="btn small" onclick="toggleDark()">🌙 顯示</button>
+      <button class="btn small" onclick="window.print()">🖨️ 列印</button>
+      <button class="btn small" onclick="resetProgress()">↺ 重設</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-card">
+    <div>
+      <span class="pill" style="background:rgba(255,255,255,.18);color:white">為長住柬埔寨、成年零基礎者設計</span>
+      <h1>不先背字母，先讓嘴巴會說、耳朵聽得出來</h1>
+      <p>每天 15 分鐘，3～4 句。先學市場、餐廳、交通、工廠與同事溝通，30 天建立第一套可真正使用的柬語。</p>
+      <p><b>你的目標不是像母語者，而是敢開口、對方聽得懂、你能抓到關鍵字。</b></p>
+      <div class="stats">
+        <div class="stat"><b>30</b>每日課程</div>
+        <div class="stat"><b>120</b>高頻詞句</div>
+        <div class="stat"><b>15分</b>每天練習</div>
+        <div class="stat"><b>0</b>前置基礎</div>
+      </div>
+    </div>
+    <div class="hero-art">🗣️🇰🇭</div>
+  </div>
+</section>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="side-title">課程導覽</div>
+    <nav id="nav">
+      <button class="navbtn active" data-target="home">🏠 使用方式</button>
+      <button class="navbtn" data-target="today">📅 今日課程</button>
+      <button class="navbtn" data-target="all">📚 30天全部課程</button>
+      <button class="navbtn" data-target="patterns">🧩 萬用句型</button>
+      <button class="navbtn" data-target="bank">🔎 句子搜尋</button>
+      <button class="navbtn" data-target="quiz">🎯 隨機測驗</button>
+    </nav>
+    <hr style="border:0;border-top:1px solid var(--line);margin:13px 0">
+    <div class="side-title">學習進度</div>
+    <div class="progress-wrap"><div id="progressBar" class="progress-bar"></div></div>
+    <p id="progressText" class="note">0 / 120 句已掌握</p>
+    <button class="btn primary" style="width:100%" onclick="showSection('today')">開始今天的課</button>
+  </aside>
+
+  <main class="main">
+    <section id="home" class="section">
+      <div class="panel">
+        <h2>先改變學法，不是怪自己沒語言天分</h2>
+        <p>成年人最常失敗的原因不是年齡，而是一次塞太多、只看不說、學的內容跟日常無關。這套課程把每次練習限制在 15 分鐘，讓大腦用「重複＋真實使用」形成長期記憶。</p>
+        <div class="method">
+          <div class="method-card"><b>① 聽 3 分鐘</b>慢速聽兩次，正常速度聽一次。</div>
+          <div class="method-card"><b>② 跟說 5 分鐘</b>看著文字說三次，再遮住中文說三次。</div>
+          <div class="method-card"><b>③ 回想 3 分鐘</b>只看中文，試著說出柬語。</div>
+          <div class="method-card"><b>④ 真用 4 分鐘</b>當天找同事、司機或店員用一句。</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>發音功能說明</h3>
+        <p>按「🔊 正常」或「🐢 慢速」會呼叫手機／電腦內建的語音合成功能。若裝置有 <b>Khmer／ខ្មែរ（km-KH）</b> 語音，效果最好；沒有時，系統可能使用其他語音，發音只適合輔助，不可完全取代柬埔寨真人。</p>
+        <div class="controls">
+          <button class="btn primary" onclick="testVoice()">測試柬語語音</button>
+          <span id="voiceStatus" class="note">正在偵測裝置語音……</span>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>30 天後應達到的實際程度</h3>
+        <p>你應能完成基本問候、點餐、問價、搭車、問路、表達聽不懂，以及用簡短詞句追蹤工廠進度、品質、數量與安全。這是「生存會話＋工作入門」，不是一次學完整文法。</p>
+      </div>
+    </section>
+
+    <section id="today" class="section hidden">
+      <div class="panel">
+        <div class="controls" style="justify-content:space-between">
+          <div>
+            <label for="daySelect"><b>選擇學習日：</b></label>
+            <select id="daySelect" class="btn"></select>
+          </div>
+          <button class="btn primary" onclick="nextDay()">下一課 →</button>
+        </div>
+      </div>
+      <div id="todayLesson"></div>
+    </section>
+
+    <section id="all" class="section hidden">
+      <div class="panel">
+        <h2>30 天完整課程</h2>
+        <p class="note">不建議一天全部看完。每完成一句，按「尚未掌握」切換成「✓ 已掌握」。</p>
+      </div>
+      <div id="allLessons"></div>
+    </section>
+
+    <section id="patterns" class="section hidden">
+      <div class="panel">
+        <h2>六個萬用句型</h2>
+        <p>只要替換最後的物品、動作或地點，就能自己造出大量句子。</p>
+        <div class="patterns">
+          <div class="pattern"><div class="formula">ខ្ញុំ + 動作</div><b>我……</b><p>例：ខ្ញុំធ្វើការ（我工作）</p></div>
+          <div class="pattern"><div class="formula">ខ្ញុំចង់ + 動作／東西</div><b>我想……</b><p>例：ខ្ញុំចង់ញ៉ាំបាយ（我想吃飯）</p></div>
+          <div class="pattern"><div class="formula">ខ្ញុំមិន...ទេ</div><b>我不……</b><p>例：ខ្ញុំមិនយល់ទេ（我不懂）</p></div>
+          <div class="pattern"><div class="formula">សូម + 動作</div><b>請……</b><p>例：សូមនិយាយយឺតៗ（請說慢一點）</p></div>
+          <div class="pattern"><div class="formula">...បានទេ?</div><b>可以……嗎？</b><p>例：ចុះថ្លៃបានទេ?（能便宜嗎？）</p></div>
+          <div class="pattern"><div class="formula">...នៅឯណា?</div><b>……在哪裡？</b><p>例：បង្គន់នៅឯណា?（廁所在哪裡？）</p></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>柬語其實有一個好消息</h3>
+        <p>柬語不像中文、泰語或越南語那樣以聲調改變詞義。初學時更重要的是把音節說清楚、抓住關鍵字，而不是害怕聲調不準。</p>
+      </div>
+    </section>
+
+    <section id="bank" class="section hidden">
+      <div class="panel">
+        <h2>120 句快速搜尋</h2>
+        <input id="searchInput" class="search" placeholder="輸入中文、柬文或拼音，例如：謝謝、工廠、khnhom">
+        <div id="bankResults" class="bank-grid"></div>
+      </div>
+    </section>
+
+    <section id="quiz" class="section hidden">
+      <div class="panel quiz-panel">
+        <h2>隨機四選一</h2>
+        <p class="note">先看中文，選出正確柬語。做錯不扣分，只是告訴大腦「這句還要再遇見幾次」。</p>
+        <div id="quizBox" class="quiz-box"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="footer">30天零基礎柬埔寨語｜個人互動學習版</div>
+<div id="toast" class="toast"></div>
+
+<script>
+const lessons = [{"day": 1, "title": "打招呼：先讓對方願意跟你說", "scene": "👋", "goal": "能自然地說你好、你好嗎", "phrases": [{"km": "សួស្តី", "roman": "suos-dei", "zh": "你好（一般、日常）", "hint": "蘇斯－得"}, {"km": "ជំរាបសួរ", "roman": "chom-reap-suor", "zh": "您好（正式、尊敬）", "hint": "中－利阿－蘇"}, {"km": "សុខសប្បាយទេ?", "roman": "sok-sabbai-te?", "zh": "你好嗎？／過得好嗎？", "hint": "索－沙拜－得？"}, {"km": "សុខសប្បាយ", "roman": "sok-sabbai", "zh": "很好／我很好", "hint": "索－沙拜"}], "mission": "今天至少對 3 位柬埔寨同事說「សួស្តី」。"}, {"day": 2, "title": "禮貌四件套：謝謝、抱歉、沒關係、請", "scene": "🙏", "goal": "讓任何短句都更有禮貌", "phrases": [{"km": "អរគុណ", "roman": "aw-kun", "zh": "謝謝", "hint": "歐－棍"}, {"km": "សុំទោស", "roman": "som-toh", "zh": "對不起／不好意思", "hint": "松－多"}, {"km": "មិនអីទេ", "roman": "min-ey-te", "zh": "沒關係／不要緊", "hint": "敏－欸－得"}, {"km": "សូម", "roman": "som", "zh": "請", "hint": "松"}], "mission": "別追求標準音，今天只要把「អរគុណ」說滿 5 次。"}, {"day": 3, "title": "是、不是、可以、不可以", "scene": "✅", "goal": "聽懂最常見的回答", "phrases": [{"km": "បាទ", "roman": "baat", "zh": "是／好的（男性說）", "hint": "巴特"}, {"km": "ទេ", "roman": "te", "zh": "不／不是", "hint": "得"}, {"km": "បាន", "roman": "baan", "zh": "可以／完成／好的", "hint": "班"}, {"km": "មិនបានទេ", "roman": "min-baan-te", "zh": "不可以／辦不到", "hint": "敏－班－得"}], "mission": "男性回答「是」用 បាទ；今天刻意用 5 次。"}, {"day": 4, "title": "自我介紹：名字與身分", "scene": "🙂", "goal": "用四句話介紹自己", "phrases": [{"km": "ខ្ញុំឈ្មោះ Paul", "roman": "khnhom-chhmoh Paul", "zh": "我叫 Paul", "hint": "克妞姆－七莫 Paul"}, {"km": "អ្នកឈ្មោះអ្វី?", "roman": "neak-chhmoh-a-vey?", "zh": "你叫什麼名字？", "hint": "聶－七莫－阿威？"}, {"km": "ខ្ញុំជាជនជាតិតៃវ៉ាន់", "roman": "khnhom-chea-chun-cheat Taiwan", "zh": "我是台灣人", "hint": "克妞姆－吉亞－準吉特－Taiwan"}, {"km": "ខ្ញុំរស់នៅកម្ពុជា", "roman": "khnhom-roas-nov Kampuchea", "zh": "我住在柬埔寨", "hint": "克妞姆－羅－腦－甘布吉亞"}], "mission": "把自己的名字代入第一句，連說 5 遍。"}, {"day": 5, "title": "聽不懂時的救命句", "scene": "👂", "goal": "不再只會尷尬微笑", "phrases": [{"km": "ខ្ញុំមិនយល់ទេ", "roman": "khnhom-min-yol-te", "zh": "我聽不懂／我不明白", "hint": "克妞姆－敏－優－得"}, {"km": "សូមនិយាយម្តងទៀត", "roman": "som-niyeay-mdong-tiet", "zh": "請再說一次", "hint": "松－尼耶－東－迪"}, {"km": "សូមនិយាយយឺតៗ", "roman": "som-niyeay-yeut-yeut", "zh": "請說慢一點", "hint": "松－尼耶－玉－玉"}, {"km": "ខ្ញុំយល់ហើយ", "roman": "khnhom-yol-haey", "zh": "我懂了", "hint": "克妞姆－優－嘿"}], "mission": "請一位熟同事故意說一句，再使用「請慢一點」。"}, {"day": 6, "title": "我想要、我不要、我需要幫忙", "scene": "🙋", "goal": "能清楚表達需求", "phrases": [{"km": "ខ្ញុំចង់បាននេះ", "roman": "khnhom-chong-baan-nih", "zh": "我想要這個", "hint": "克妞姆－鐘－班－尼"}, {"km": "ខ្ញុំមិនចង់បានទេ", "roman": "khnhom-min-chong-baan-te", "zh": "我不要", "hint": "克妞姆－敏－鐘－班－得"}, {"km": "ខ្ញុំត្រូវការជំនួយ", "roman": "khnhom-trov-kar-chom-nuoy", "zh": "我需要幫助", "hint": "克妞姆－特柔－嘎－中努依"}, {"km": "ជួយខ្ញុំផង", "roman": "chuoy-khnhom-pong", "zh": "請幫幫我", "hint": "朱依－克妞姆－碰"}], "mission": "拿一個物品，指著它說「ខ្ញុំចង់បាននេះ」。"}, {"day": 7, "title": "數字 1～5：先聽價格", "scene": "🔢", "goal": "聽懂最基本數量", "phrases": [{"km": "មួយ", "roman": "muoy", "zh": "一", "hint": "木依"}, {"km": "ពីរ", "roman": "pii", "zh": "二", "hint": "披"}, {"km": "បី", "roman": "bei", "zh": "三", "hint": "杯"}, {"km": "បួន / ប្រាំ", "roman": "buon / pram", "zh": "四／五", "hint": "布恩／布蘭"}], "mission": "看著手指從 1 數到 5，來回做 3 次。"}, {"day": 8, "title": "數字 6～10：柬語的加法邏輯", "scene": "🧮", "goal": "理解 6～9 是「5＋數字」", "phrases": [{"km": "ប្រាំមួយ", "roman": "pram-muoy", "zh": "六（5＋1）", "hint": "布蘭－木依"}, {"km": "ប្រាំពីរ", "roman": "pram-pii", "zh": "七（5＋2）", "hint": "布蘭－披"}, {"km": "ប្រាំបី", "roman": "pram-bei", "zh": "八（5＋3）", "hint": "布蘭－杯"}, {"km": "ប្រាំបួន / ដប់", "roman": "pram-buon / dop", "zh": "九／十", "hint": "布蘭－布恩／多"}], "mission": "請同事隨機比手指，你用柬語回答數字。"}, {"day": 9, "title": "買東西：多少錢與殺價", "scene": "🛒", "goal": "市場與商店可直接使用", "phrases": [{"km": "តម្លៃប៉ុន្មាន?", "roman": "dom-lai-pon-maan?", "zh": "多少錢？", "hint": "冬來－波曼？"}, {"km": "ថ្លៃពេក", "roman": "thlai-pek", "zh": "太貴了", "hint": "特萊－杯"}, {"km": "ចុះថ្លៃបានទេ?", "roman": "choh-thlai-baan-te?", "zh": "可以便宜一點嗎？", "hint": "桌－特萊－班－得？"}, {"km": "ខ្ញុំយកមួយ", "roman": "khnhom-yok-muoy", "zh": "我要一個", "hint": "克妞姆－優－木依"}], "mission": "今天買東西時，至少用柬語問一次價格。"}, {"day": 10, "title": "吃飯：餓、吃、喝、好吃", "scene": "🍚", "goal": "餐廳基本生存", "phrases": [{"km": "ខ្ញុំឃ្លាន", "roman": "khnhom-khlean", "zh": "我餓了", "hint": "克妞姆－克連"}, {"km": "ខ្ញុំចង់ញ៉ាំបាយ", "roman": "khnhom-chong-nyam-bai", "zh": "我想吃飯", "hint": "克妞姆－鐘－娘－拜"}, {"km": "សុំទឹកមួយ", "roman": "som-tuk-muoy", "zh": "請給我一杯／一瓶水", "hint": "松－德－木依"}, {"km": "ឆ្ងាញ់ណាស់", "roman": "chnganh-nah", "zh": "非常好吃", "hint": "強－納"}], "mission": "吃第一口後，對店員或家人說「ឆ្ងាញ់ណាស់」。"}, {"day": 11, "title": "口味與結帳", "scene": "🌶️", "goal": "避免太辣、太甜，順利買單", "phrases": [{"km": "មិនហឹរ", "roman": "min-hel", "zh": "不要辣／不辣", "hint": "敏－赫"}, {"km": "ហឹរតិចៗ", "roman": "hel-tich-tich", "zh": "一點點辣", "hint": "赫－迪－迪"}, {"km": "កុំដាក់ស្ករ", "roman": "kom-dak-skor", "zh": "不要放糖", "hint": "貢－達－斯果"}, {"km": "គិតលុយផង", "roman": "kit-loy-pong", "zh": "請結帳", "hint": "吉－雷－碰"}], "mission": "今天點餐時，用其中一句修改口味。"}, {"day": 12, "title": "問路：廁所、直走、左右轉", "scene": "🧭", "goal": "能問也能聽懂方向", "phrases": [{"km": "បង្គន់នៅឯណា?", "roman": "bong-kun-nov-ae-na?", "zh": "廁所在哪裡？", "hint": "崩棍－腦－欸納？"}, {"km": "ទៅត្រង់", "roman": "tov-trang", "zh": "直走", "hint": "豆－莊"}, {"km": "បត់ឆ្វេង", "roman": "bot-chhveng", "zh": "左轉", "hint": "波－春威"}, {"km": "បត់ស្តាំ", "roman": "bot-sdam", "zh": "右轉", "hint": "波－斯丹"}], "mission": "在工廠裡找一條路線，邊走邊說直走、左轉、右轉。"}, {"day": 13, "title": "搭車：去市場、停這裡、慢一點", "scene": "🛺", "goal": "搭嘟嘟車時不靠翻譯軟體", "phrases": [{"km": "ទៅផ្សារ", "roman": "tov-psaa", "zh": "去市場", "hint": "豆－撒"}, {"km": "ឈប់ទីនេះ", "roman": "chhob-ti-nih", "zh": "停在這裡", "hint": "秋－迪－尼"}, {"km": "បើកយឺតៗ", "roman": "baek-yeut-yeut", "zh": "開慢一點", "hint": "杯－玉－玉"}, {"km": "ទៅដល់ប៉ុន្មាននាទី?", "roman": "tov-dol-pon-maan-niati?", "zh": "還要幾分鐘到？", "hint": "豆－多－波曼－尼阿迪？"}], "mission": "下車前先說「ឈប់ទីនេះ」，不要先用中文。"}, {"day": 14, "title": "時間：現在、今天、明天、昨天", "scene": "🕒", "goal": "掌握最常用時間詞", "phrases": [{"km": "ឥឡូវម៉ោងប៉ុន្មាន?", "roman": "ey-lov-maong-pon-maan?", "zh": "現在幾點？", "hint": "欸樓－芒－波曼？"}, {"km": "ថ្ងៃនេះ", "roman": "thngai-nih", "zh": "今天", "hint": "吞艾－尼"}, {"km": "ថ្ងៃស្អែក", "roman": "thngai-saek", "zh": "明天", "hint": "吞艾－塞"}, {"km": "ម្សិលមិញ", "roman": "msel-minh", "zh": "昨天", "hint": "木色－明"}], "mission": "每天早上自己說一次「今天」，晚上說一次「明天」。"}, {"day": 15, "title": "工作日常：上班、開始、休息、下班", "scene": "🏭", "goal": "工作場合基本動詞", "phrases": [{"km": "ខ្ញុំទៅធ្វើការ", "roman": "khnhom-tov-tver-kar", "zh": "我去上班", "hint": "克妞姆－豆－特威嘎"}, {"km": "ចាប់ផ្តើមការងារ", "roman": "chap-pdaem-kar-ngia", "zh": "開始工作", "hint": "甲－登－嘎尼亞"}, {"km": "សម្រាកបន្តិច", "roman": "som-rak-bon-tich", "zh": "休息一下", "hint": "松拉－崩迪"}, {"km": "ចប់ការងារ", "roman": "chob-kar-ngia", "zh": "工作結束／下班", "hint": "周－嘎尼亞"}], "mission": "到工廠時說開始工作，下班時說工作結束。"}, {"day": 16, "title": "管理現場：來、去、等、再做一次", "scene": "👉", "goal": "能下最基本的現場指示", "phrases": [{"km": "មកទីនេះ", "roman": "mok-ti-nih", "zh": "來這裡", "hint": "莫－迪－尼"}, {"km": "ទៅទីនោះ", "roman": "tov-ti-nuh", "zh": "去那裡", "hint": "豆－迪－努"}, {"km": "ចាំបន្តិច", "roman": "cham-bon-tich", "zh": "等一下", "hint": "將－崩迪"}, {"km": "ធ្វើម្តងទៀត", "roman": "tver-mdong-tiet", "zh": "再做一次", "hint": "特威－東－迪"}], "mission": "配合手勢練習四句，不用先追求完整句子。"}, {"day": 17, "title": "工作狀態：好了、還沒、出問題、沒問題", "scene": "📋", "goal": "快速確認進度", "phrases": [{"km": "រួចហើយ", "roman": "ruoch-haey", "zh": "好了／完成了", "hint": "魯吉－嘿"}, {"km": "មិនទាន់រួចទេ", "roman": "min-toan-ruoch-te", "zh": "還沒完成", "hint": "敏－端－魯吉－得"}, {"km": "មានបញ្ហា", "roman": "mean-banha", "zh": "有問題", "hint": "米安－班哈"}, {"km": "គ្មានបញ្ហា", "roman": "kmean-banha", "zh": "沒問題", "hint": "格米安－班哈"}], "mission": "今天詢問一件工作時，先讓對方用「好了／還沒」回答。"}, {"day": 18, "title": "品質：檢查、壞了、很好、要修改", "scene": "🔍", "goal": "處理品質問題的最小詞庫", "phrases": [{"km": "សូមពិនិត្យមើល", "roman": "som-pinit-merl", "zh": "請檢查一下", "hint": "松－批尼－莫"}, {"km": "នេះខូច", "roman": "nih-khoch", "zh": "這個壞了／有瑕疵", "hint": "尼－扣"}, {"km": "នេះល្អ", "roman": "nih-la-or", "zh": "這個很好／合格", "hint": "尼－拉喔"}, {"km": "ត្រូវកែ", "roman": "trov-kae", "zh": "需要修改", "hint": "特柔－該"}], "mission": "拿一件樣品，分別指著好與壞的位置說兩句。"}, {"day": 19, "title": "數量與進度：完成多少、剩多少", "scene": "📦", "goal": "不靠完整長句也能追產量", "phrases": [{"km": "បានប៉ុន្មានហើយ?", "roman": "baan-pon-maan-haey?", "zh": "已經完成多少？", "hint": "班－波曼－嘿？"}, {"km": "នៅសល់ប៉ុន្មាន?", "roman": "nov-sol-pon-maan?", "zh": "還剩多少？", "hint": "腦－索－波曼？"}, {"km": "ត្រូវការបន្ថែម", "roman": "trov-kar-bon-thaem", "zh": "需要增加／補充", "hint": "特柔嘎－崩添"}, {"km": "គ្រប់ហើយ", "roman": "krop-haey", "zh": "夠了／齊了", "hint": "格羅－嘿"}], "mission": "查看一項實際數量，使用「完成多少／剩多少」各問一次。"}, {"day": 20, "title": "安全：小心、危險、戴口罩、別碰", "scene": "⚠️", "goal": "能立即阻止危險行為", "phrases": [{"km": "ប្រយ័ត្ន", "roman": "pro-yat", "zh": "小心", "hint": "布羅－亞"}, {"km": "គ្រោះថ្នាក់", "roman": "kroh-thnak", "zh": "危險／事故", "hint": "格羅－特那"}, {"km": "ពាក់ម៉ាស់", "roman": "peak-mas", "zh": "戴口罩", "hint": "比阿－馬斯"}, {"km": "កុំប៉ះ", "roman": "kom-pah", "zh": "不要碰", "hint": "貢－巴"}], "mission": "把四句跟工廠中的真實安全情境連在一起記。"}, {"day": 21, "title": "職場人物：老闆、工人、主管、團隊", "scene": "👥", "goal": "聽懂常見職稱", "phrases": [{"km": "ថៅកែ", "roman": "thao-kae", "zh": "老闆／主管（口語）", "hint": "套－該"}, {"km": "កម្មករ", "roman": "kam-ma-kor", "zh": "工人", "hint": "甘－瑪－果"}, {"km": "អ្នកគ្រប់គ្រង", "roman": "neak-krop-krong", "zh": "管理人員／主管", "hint": "聶－格羅－格隆"}, {"km": "ក្រុម", "roman": "krom", "zh": "組／團隊", "hint": "格隆"}], "mission": "指著組織圖或現場人員，把四個詞各說三次。"}, {"day": 22, "title": "位置：這裡、那裡、裡面、外面", "scene": "📍", "goal": "快速指出位置", "phrases": [{"km": "នៅទីនេះ", "roman": "nov-ti-nih", "zh": "在這裡", "hint": "腦－迪－尼"}, {"km": "នៅទីនោះ", "roman": "nov-ti-nuh", "zh": "在那裡", "hint": "腦－迪－努"}, {"km": "ខាងក្នុង", "roman": "khang-knong", "zh": "裡面", "hint": "康－克農"}, {"km": "ខាងក្រៅ", "roman": "khang-krao", "zh": "外面", "hint": "康－格勞"}], "mission": "在辦公室或工廠走一圈，用柬語指出四種位置。"}, {"day": 23, "title": "身體與感受：開心、累、不舒服、休息", "scene": "😮‍💨", "goal": "說明自己的狀態", "phrases": [{"km": "ខ្ញុំសប្បាយចិត្ត", "roman": "khnhom-sabbai-chet", "zh": "我很開心", "hint": "克妞姆－沙拜－吉"}, {"km": "ខ្ញុំហត់", "roman": "khnhom-hot", "zh": "我累了", "hint": "克妞姆－霍"}, {"km": "ខ្ញុំឈឺ", "roman": "khnhom-chheu", "zh": "我痛／我不舒服", "hint": "克妞姆－秋"}, {"km": "ខ្ញុំចង់សម្រាក", "roman": "khnhom-chong-som-rak", "zh": "我想休息", "hint": "克妞姆－鐘－松拉"}], "mission": "今天真實感到累時，直接說「ខ្ញុំហត់」。"}, {"day": 24, "title": "天氣：熱、下雨、今天很熱、帶傘", "scene": "🌦️", "goal": "用最簡單話題開口聊天", "phrases": [{"km": "ក្តៅណាស់", "roman": "kdav-nah", "zh": "非常熱", "hint": "格道－納"}, {"km": "ភ្លៀង", "roman": "phliang", "zh": "下雨／雨", "hint": "普連"}, {"km": "ថ្ងៃនេះក្តៅ", "roman": "thngai-nih-kdav", "zh": "今天很熱", "hint": "吞艾尼－格道"}, {"km": "យកឆ័ត្រ", "roman": "yok-chat", "zh": "帶雨傘", "hint": "優－恰"}], "mission": "用天氣開場，主動對同事說一句。"}, {"day": 25, "title": "家庭與待客：老婆、孩子、坐下", "scene": "👨‍👩‍👧", "goal": "介紹家人與基本待客", "phrases": [{"km": "នេះជាប្រពន្ធខ្ញុំ", "roman": "nih-chea-pro-pon-khnhom", "zh": "這是我太太", "hint": "尼－吉亞－布羅奔－克妞姆"}, {"km": "នេះជាកូនខ្ញុំ", "roman": "nih-chea-kon-khnhom", "zh": "這是我的孩子", "hint": "尼－吉亞－貢－克妞姆"}, {"km": "អ្នកមានកូនទេ?", "roman": "neak-mean-kon-te?", "zh": "你有孩子嗎？", "hint": "聶－米安－貢－得？"}, {"km": "អញ្ជើញអង្គុយ", "roman": "an-choen-ang-kuy", "zh": "請坐", "hint": "安尊－安古依"}], "mission": "用手機家庭照片練習介紹，不必真的給別人看。"}, {"day": 26, "title": "電話與訊息：傳訊息、打給我、聽不到", "scene": "📱", "goal": "處理手機溝通問題", "phrases": [{"km": "សូមផ្ញើសារ", "roman": "som-phnher-sa", "zh": "請傳訊息", "hint": "松－普涅－沙"}, {"km": "សូមទូរស័ព្ទមកខ្ញុំ", "roman": "som-tu-rasap-mok-khnhom", "zh": "請打電話給我", "hint": "松－杜拉薩－莫－克妞姆"}, {"km": "ខ្ញុំមិនបានឮទេ", "roman": "khnhom-min-baan-leu-te", "zh": "我沒聽到", "hint": "克妞姆－敏班－勒－得"}, {"km": "អ៊ីនធឺណិតមិនដំណើរការ", "roman": "internet-min-dom-naer-kar", "zh": "網路不能用", "hint": "Internet－敏－冬內嘎"}], "mission": "把常用聯絡方式改成柬語說一次。"}, {"day": 27, "title": "四大問句：什麼、哪裡、為什麼、何時", "scene": "❓", "goal": "聽懂問題的核心字", "phrases": [{"km": "អ្វី?", "roman": "a-vey?", "zh": "什麼？", "hint": "阿威？"}, {"km": "នៅឯណា?", "roman": "nov-ae-na?", "zh": "在哪裡？", "hint": "腦－欸納？"}, {"km": "ហេតុអ្វី?", "roman": "haet-a-vey?", "zh": "為什麼？", "hint": "嘿－阿威？"}, {"km": "ពេលណា?", "roman": "pel-na?", "zh": "什麼時候？", "hint": "杯－納？"}], "mission": "聽到長句時，只抓這四個問句字，不必每個字都懂。"}, {"day": 28, "title": "四個萬用句型：有、沒有、喜歡、不喜歡", "scene": "🧩", "goal": "開始自己組句子", "phrases": [{"km": "ខ្ញុំមាន...", "roman": "khnhom-mean...", "zh": "我有……", "hint": "克妞姆－米安"}, {"km": "ខ្ញុំអត់មាន...", "roman": "khnhom-ot-mean...", "zh": "我沒有……", "hint": "克妞姆－歐－米安"}, {"km": "ខ្ញុំចូលចិត្ត...", "roman": "khnhom-chol-chet...", "zh": "我喜歡……", "hint": "克妞姆－周－吉"}, {"km": "ខ្ញុំមិនចូលចិត្ត...ទេ", "roman": "khnhom-min-chol-chet...te", "zh": "我不喜歡……", "hint": "克妞姆－敏－周吉－得"}], "mission": "把食物、電影、工作或天氣代入四個句型。"}, {"day": 29, "title": "時間感：去過、將去、正在做", "scene": "⏳", "goal": "初步表達過去、未來、現在進行", "phrases": [{"km": "ខ្ញុំបានទៅ", "roman": "khnhom-baan-tov", "zh": "我去了／我去過", "hint": "克妞姆－班－豆"}, {"km": "ខ្ញុំនឹងទៅ", "roman": "khnhom-nueng-tov", "zh": "我將要去", "hint": "克妞姆－能－豆"}, {"km": "ខ្ញុំកំពុងធ្វើការ", "roman": "khnhom-kom-pong-tver-kar", "zh": "我正在工作", "hint": "克妞姆－貢碰－特威嘎"}, {"km": "ខ្ញុំនៅទីនេះ", "roman": "khnhom-nov-ti-nih", "zh": "我在這裡", "hint": "克妞姆－腦－迪尼"}], "mission": "分別用昨天、明天、現在各說一句。"}, {"day": 30, "title": "結業：我會一點柬語，請幫我糾正", "scene": "🏆", "goal": "把學習變成每天可持續的習慣", "phrases": [{"km": "ខ្ញុំអាចនិយាយភាសាខ្មែរបានតិចតួច", "roman": "khnhom-ach-niyeay-pheasa-khmae-baan-tich-tuoch", "zh": "我會說一點點柬埔寨語", "hint": "克妞姆－阿吉－尼耶－披阿沙克邁－班－迪杜吉"}, {"km": "សូមជួយកែឱ្យខ្ញុំ", "roman": "som-chuoy-kae-aoy-khnhom", "zh": "請幫我糾正", "hint": "松－朱依－該－奧依－克妞姆"}, {"km": "ខ្ញុំរៀនរាល់ថ្ងៃ", "roman": "khnhom-rien-roal-thngai", "zh": "我每天學習", "hint": "克妞姆－連－羅－吞艾"}, {"km": "កុំខ្លាចនិយាយ", "roman": "kom-khlach-niyeay", "zh": "不要害怕開口說", "hint": "貢－克拉－尼耶"}], "mission": "找一位固定同事，每天只跟他練 3 分鐘。"}];
+const phraseBank = [{"km": "សួស្តី", "roman": "suos-dei", "zh": "你好（一般、日常）", "hint": "蘇斯－得", "day": 1, "lesson": "打招呼：先讓對方願意跟你說", "scene": "👋"}, {"km": "ជំរាបសួរ", "roman": "chom-reap-suor", "zh": "您好（正式、尊敬）", "hint": "中－利阿－蘇", "day": 1, "lesson": "打招呼：先讓對方願意跟你說", "scene": "👋"}, {"km": "សុខសប្បាយទេ?", "roman": "sok-sabbai-te?", "zh": "你好嗎？／過得好嗎？", "hint": "索－沙拜－得？", "day": 1, "lesson": "打招呼：先讓對方願意跟你說", "scene": "👋"}, {"km": "សុខសប្បាយ", "roman": "sok-sabbai", "zh": "很好／我很好", "hint": "索－沙拜", "day": 1, "lesson": "打招呼：先讓對方願意跟你說", "scene": "👋"}, {"km": "អរគុណ", "roman": "aw-kun", "zh": "謝謝", "hint": "歐－棍", "day": 2, "lesson": "禮貌四件套：謝謝、抱歉、沒關係、請", "scene": "🙏"}, {"km": "សុំទោស", "roman": "som-toh", "zh": "對不起／不好意思", "hint": "松－多", "day": 2, "lesson": "禮貌四件套：謝謝、抱歉、沒關係、請", "scene": "🙏"}, {"km": "មិនអីទេ", "roman": "min-ey-te", "zh": "沒關係／不要緊", "hint": "敏－欸－得", "day": 2, "lesson": "禮貌四件套：謝謝、抱歉、沒關係、請", "scene": "🙏"}, {"km": "សូម", "roman": "som", "zh": "請", "hint": "松", "day": 2, "lesson": "禮貌四件套：謝謝、抱歉、沒關係、請", "scene": "🙏"}, {"km": "បាទ", "roman": "baat", "zh": "是／好的（男性說）", "hint": "巴特", "day": 3, "lesson": "是、不是、可以、不可以", "scene": "✅"}, {"km": "ទេ", "roman": "te", "zh": "不／不是", "hint": "得", "day": 3, "lesson": "是、不是、可以、不可以", "scene": "✅"}, {"km": "បាន", "roman": "baan", "zh": "可以／完成／好的", "hint": "班", "day": 3, "lesson": "是、不是、可以、不可以", "scene": "✅"}, {"km": "មិនបានទេ", "roman": "min-baan-te", "zh": "不可以／辦不到", "hint": "敏－班－得", "day": 3, "lesson": "是、不是、可以、不可以", "scene": "✅"}, {"km": "ខ្ញុំឈ្មោះ Paul", "roman": "khnhom-chhmoh Paul", "zh": "我叫 Paul", "hint": "克妞姆－七莫 Paul", "day": 4, "lesson": "自我介紹：名字與身分", "scene": "🙂"}, {"km": "អ្នកឈ្មោះអ្វី?", "roman": "neak-chhmoh-a-vey?", "zh": "你叫什麼名字？", "hint": "聶－七莫－阿威？", "day": 4, "lesson": "自我介紹：名字與身分", "scene": "🙂"}, {"km": "ខ្ញុំជាជនជាតិតៃវ៉ាន់", "roman": "khnhom-chea-chun-cheat Taiwan", "zh": "我是台灣人", "hint": "克妞姆－吉亞－準吉特－Taiwan", "day": 4, "lesson": "自我介紹：名字與身分", "scene": "🙂"}, {"km": "ខ្ញុំរស់នៅកម្ពុជា", "roman": "khnhom-roas-nov Kampuchea", "zh": "我住在柬埔寨", "hint": "克妞姆－羅－腦－甘布吉亞", "day": 4, "lesson": "自我介紹：名字與身分", "scene": "🙂"}, {"km": "ខ្ញុំមិនយល់ទេ", "roman": "khnhom-min-yol-te", "zh": "我聽不懂／我不明白", "hint": "克妞姆－敏－優－得", "day": 5, "lesson": "聽不懂時的救命句", "scene": "👂"}, {"km": "សូមនិយាយម្តងទៀត", "roman": "som-niyeay-mdong-tiet", "zh": "請再說一次", "hint": "松－尼耶－東－迪", "day": 5, "lesson": "聽不懂時的救命句", "scene": "👂"}, {"km": "សូមនិយាយយឺតៗ", "roman": "som-niyeay-yeut-yeut", "zh": "請說慢一點", "hint": "松－尼耶－玉－玉", "day": 5, "lesson": "聽不懂時的救命句", "scene": "👂"}, {"km": "ខ្ញុំយល់ហើយ", "roman": "khnhom-yol-haey", "zh": "我懂了", "hint": "克妞姆－優－嘿", "day": 5, "lesson": "聽不懂時的救命句", "scene": "👂"}, {"km": "ខ្ញុំចង់បាននេះ", "roman": "khnhom-chong-baan-nih", "zh": "我想要這個", "hint": "克妞姆－鐘－班－尼", "day": 6, "lesson": "我想要、我不要、我需要幫忙", "scene": "🙋"}, {"km": "ខ្ញុំមិនចង់បានទេ", "roman": "khnhom-min-chong-baan-te", "zh": "我不要", "hint": "克妞姆－敏－鐘－班－得", "day": 6, "lesson": "我想要、我不要、我需要幫忙", "scene": "🙋"}, {"km": "ខ្ញុំត្រូវការជំនួយ", "roman": "khnhom-trov-kar-chom-nuoy", "zh": "我需要幫助", "hint": "克妞姆－特柔－嘎－中努依", "day": 6, "lesson": "我想要、我不要、我需要幫忙", "scene": "🙋"}, {"km": "ជួយខ្ញុំផង", "roman": "chuoy-khnhom-pong", "zh": "請幫幫我", "hint": "朱依－克妞姆－碰", "day": 6, "lesson": "我想要、我不要、我需要幫忙", "scene": "🙋"}, {"km": "មួយ", "roman": "muoy", "zh": "一", "hint": "木依", "day": 7, "lesson": "數字 1～5：先聽價格", "scene": "🔢"}, {"km": "ពីរ", "roman": "pii", "zh": "二", "hint": "披", "day": 7, "lesson": "數字 1～5：先聽價格", "scene": "🔢"}, {"km": "បី", "roman": "bei", "zh": "三", "hint": "杯", "day": 7, "lesson": "數字 1～5：先聽價格", "scene": "🔢"}, {"km": "បួន / ប្រាំ", "roman": "buon / pram", "zh": "四／五", "hint": "布恩／布蘭", "day": 7, "lesson": "數字 1～5：先聽價格", "scene": "🔢"}, {"km": "ប្រាំមួយ", "roman": "pram-muoy", "zh": "六（5＋1）", "hint": "布蘭－木依", "day": 8, "lesson": "數字 6～10：柬語的加法邏輯", "scene": "🧮"}, {"km": "ប្រាំពីរ", "roman": "pram-pii", "zh": "七（5＋2）", "hint": "布蘭－披", "day": 8, "lesson": "數字 6～10：柬語的加法邏輯", "scene": "🧮"}, {"km": "ប្រាំបី", "roman": "pram-bei", "zh": "八（5＋3）", "hint": "布蘭－杯", "day": 8, "lesson": "數字 6～10：柬語的加法邏輯", "scene": "🧮"}, {"km": "ប្រាំបួន / ដប់", "roman": "pram-buon / dop", "zh": "九／十", "hint": "布蘭－布恩／多", "day": 8, "lesson": "數字 6～10：柬語的加法邏輯", "scene": "🧮"}, {"km": "តម្លៃប៉ុន្មាន?", "roman": "dom-lai-pon-maan?", "zh": "多少錢？", "hint": "冬來－波曼？", "day": 9, "lesson": "買東西：多少錢與殺價", "scene": "🛒"}, {"km": "ថ្លៃពេក", "roman": "thlai-pek", "zh": "太貴了", "hint": "特萊－杯", "day": 9, "lesson": "買東西：多少錢與殺價", "scene": "🛒"}, {"km": "ចុះថ្លៃបានទេ?", "roman": "choh-thlai-baan-te?", "zh": "可以便宜一點嗎？", "hint": "桌－特萊－班－得？", "day": 9, "lesson": "買東西：多少錢與殺價", "scene": "🛒"}, {"km": "ខ្ញុំយកមួយ", "roman": "khnhom-yok-muoy", "zh": "我要一個", "hint": "克妞姆－優－木依", "day": 9, "lesson": "買東西：多少錢與殺價", "scene": "🛒"}, {"km": "ខ្ញុំឃ្លាន", "roman": "khnhom-khlean", "zh": "我餓了", "hint": "克妞姆－克連", "day": 10, "lesson": "吃飯：餓、吃、喝、好吃", "scene": "🍚"}, {"km": "ខ្ញុំចង់ញ៉ាំបាយ", "roman": "khnhom-chong-nyam-bai", "zh": "我想吃飯", "hint": "克妞姆－鐘－娘－拜", "day": 10, "lesson": "吃飯：餓、吃、喝、好吃", "scene": "🍚"}, {"km": "សុំទឹកមួយ", "roman": "som-tuk-muoy", "zh": "請給我一杯／一瓶水", "hint": "松－德－木依", "day": 10, "lesson": "吃飯：餓、吃、喝、好吃", "scene": "🍚"}, {"km": "ឆ្ងាញ់ណាស់", "roman": "chnganh-nah", "zh": "非常好吃", "hint": "強－納", "day": 10, "lesson": "吃飯：餓、吃、喝、好吃", "scene": "🍚"}, {"km": "មិនហឹរ", "roman": "min-hel", "zh": "不要辣／不辣", "hint": "敏－赫", "day": 11, "lesson": "口味與結帳", "scene": "🌶️"}, {"km": "ហឹរតិចៗ", "roman": "hel-tich-tich", "zh": "一點點辣", "hint": "赫－迪－迪", "day": 11, "lesson": "口味與結帳", "scene": "🌶️"}, {"km": "កុំដាក់ស្ករ", "roman": "kom-dak-skor", "zh": "不要放糖", "hint": "貢－達－斯果", "day": 11, "lesson": "口味與結帳", "scene": "🌶️"}, {"km": "គិតលុយផង", "roman": "kit-loy-pong", "zh": "請結帳", "hint": "吉－雷－碰", "day": 11, "lesson": "口味與結帳", "scene": "🌶️"}, {"km": "បង្គន់នៅឯណា?", "roman": "bong-kun-nov-ae-na?", "zh": "廁所在哪裡？", "hint": "崩棍－腦－欸納？", "day": 12, "lesson": "問路：廁所、直走、左右轉", "scene": "🧭"}, {"km": "ទៅត្រង់", "roman": "tov-trang", "zh": "直走", "hint": "豆－莊", "day": 12, "lesson": "問路：廁所、直走、左右轉", "scene": "🧭"}, {"km": "បត់ឆ្វេង", "roman": "bot-chhveng", "zh": "左轉", "hint": "波－春威", "day": 12, "lesson": "問路：廁所、直走、左右轉", "scene": "🧭"}, {"km": "បត់ស្តាំ", "roman": "bot-sdam", "zh": "右轉", "hint": "波－斯丹", "day": 12, "lesson": "問路：廁所、直走、左右轉", "scene": "🧭"}, {"km": "ទៅផ្សារ", "roman": "tov-psaa", "zh": "去市場", "hint": "豆－撒", "day": 13, "lesson": "搭車：去市場、停這裡、慢一點", "scene": "🛺"}, {"km": "ឈប់ទីនេះ", "roman": "chhob-ti-nih", "zh": "停在這裡", "hint": "秋－迪－尼", "day": 13, "lesson": "搭車：去市場、停這裡、慢一點", "scene": "🛺"}, {"km": "បើកយឺតៗ", "roman": "baek-yeut-yeut", "zh": "開慢一點", "hint": "杯－玉－玉", "day": 13, "lesson": "搭車：去市場、停這裡、慢一點", "scene": "🛺"}, {"km": "ទៅដល់ប៉ុន្មាននាទី?", "roman": "tov-dol-pon-maan-niati?", "zh": "還要幾分鐘到？", "hint": "豆－多－波曼－尼阿迪？", "day": 13, "lesson": "搭車：去市場、停這裡、慢一點", "scene": "🛺"}, {"km": "ឥឡូវម៉ោងប៉ុន្មាន?", "roman": "ey-lov-maong-pon-maan?", "zh": "現在幾點？", "hint": "欸樓－芒－波曼？", "day": 14, "lesson": "時間：現在、今天、明天、昨天", "scene": "🕒"}, {"km": "ថ្ងៃនេះ", "roman": "thngai-nih", "zh": "今天", "hint": "吞艾－尼", "day": 14, "lesson": "時間：現在、今天、明天、昨天", "scene": "🕒"}, {"km": "ថ្ងៃស្អែក", "roman": "thngai-saek", "zh": "明天", "hint": "吞艾－塞", "day": 14, "lesson": "時間：現在、今天、明天、昨天", "scene": "🕒"}, {"km": "ម្សិលមិញ", "roman": "msel-minh", "zh": "昨天", "hint": "木色－明", "day": 14, "lesson": "時間：現在、今天、明天、昨天", "scene": "🕒"}, {"km": "ខ្ញុំទៅធ្វើការ", "roman": "khnhom-tov-tver-kar", "zh": "我去上班", "hint": "克妞姆－豆－特威嘎", "day": 15, "lesson": "工作日常：上班、開始、休息、下班", "scene": "🏭"}, {"km": "ចាប់ផ្តើមការងារ", "roman": "chap-pdaem-kar-ngia", "zh": "開始工作", "hint": "甲－登－嘎尼亞", "day": 15, "lesson": "工作日常：上班、開始、休息、下班", "scene": "🏭"}, {"km": "សម្រាកបន្តិច", "roman": "som-rak-bon-tich", "zh": "休息一下", "hint": "松拉－崩迪", "day": 15, "lesson": "工作日常：上班、開始、休息、下班", "scene": "🏭"}, {"km": "ចប់ការងារ", "roman": "chob-kar-ngia", "zh": "工作結束／下班", "hint": "周－嘎尼亞", "day": 15, "lesson": "工作日常：上班、開始、休息、下班", "scene": "🏭"}, {"km": "មកទីនេះ", "roman": "mok-ti-nih", "zh": "來這裡", "hint": "莫－迪－尼", "day": 16, "lesson": "管理現場：來、去、等、再做一次", "scene": "👉"}, {"km": "ទៅទីនោះ", "roman": "tov-ti-nuh", "zh": "去那裡", "hint": "豆－迪－努", "day": 16, "lesson": "管理現場：來、去、等、再做一次", "scene": "👉"}, {"km": "ចាំបន្តិច", "roman": "cham-bon-tich", "zh": "等一下", "hint": "將－崩迪", "day": 16, "lesson": "管理現場：來、去、等、再做一次", "scene": "👉"}, {"km": "ធ្វើម្តងទៀត", "roman": "tver-mdong-tiet", "zh": "再做一次", "hint": "特威－東－迪", "day": 16, "lesson": "管理現場：來、去、等、再做一次", "scene": "👉"}, {"km": "រួចហើយ", "roman": "ruoch-haey", "zh": "好了／完成了", "hint": "魯吉－嘿", "day": 17, "lesson": "工作狀態：好了、還沒、出問題、沒問題", "scene": "📋"}, {"km": "មិនទាន់រួចទេ", "roman": "min-toan-ruoch-te", "zh": "還沒完成", "hint": "敏－端－魯吉－得", "day": 17, "lesson": "工作狀態：好了、還沒、出問題、沒問題", "scene": "📋"}, {"km": "មានបញ្ហា", "roman": "mean-banha", "zh": "有問題", "hint": "米安－班哈", "day": 17, "lesson": "工作狀態：好了、還沒、出問題、沒問題", "scene": "📋"}, {"km": "គ្មានបញ្ហា", "roman": "kmean-banha", "zh": "沒問題", "hint": "格米安－班哈", "day": 17, "lesson": "工作狀態：好了、還沒、出問題、沒問題", "scene": "📋"}, {"km": "សូមពិនិត្យមើល", "roman": "som-pinit-merl", "zh": "請檢查一下", "hint": "松－批尼－莫", "day": 18, "lesson": "品質：檢查、壞了、很好、要修改", "scene": "🔍"}, {"km": "នេះខូច", "roman": "nih-khoch", "zh": "這個壞了／有瑕疵", "hint": "尼－扣", "day": 18, "lesson": "品質：檢查、壞了、很好、要修改", "scene": "🔍"}, {"km": "នេះល្អ", "roman": "nih-la-or", "zh": "這個很好／合格", "hint": "尼－拉喔", "day": 18, "lesson": "品質：檢查、壞了、很好、要修改", "scene": "🔍"}, {"km": "ត្រូវកែ", "roman": "trov-kae", "zh": "需要修改", "hint": "特柔－該", "day": 18, "lesson": "品質：檢查、壞了、很好、要修改", "scene": "🔍"}, {"km": "បានប៉ុន្មានហើយ?", "roman": "baan-pon-maan-haey?", "zh": "已經完成多少？", "hint": "班－波曼－嘿？", "day": 19, "lesson": "數量與進度：完成多少、剩多少", "scene": "📦"}, {"km": "នៅសល់ប៉ុន្មាន?", "roman": "nov-sol-pon-maan?", "zh": "還剩多少？", "hint": "腦－索－波曼？", "day": 19, "lesson": "數量與進度：完成多少、剩多少", "scene": "📦"}, {"km": "ត្រូវការបន្ថែម", "roman": "trov-kar-bon-thaem", "zh": "需要增加／補充", "hint": "特柔嘎－崩添", "day": 19, "lesson": "數量與進度：完成多少、剩多少", "scene": "📦"}, {"km": "គ្រប់ហើយ", "roman": "krop-haey", "zh": "夠了／齊了", "hint": "格羅－嘿", "day": 19, "lesson": "數量與進度：完成多少、剩多少", "scene": "📦"}, {"km": "ប្រយ័ត្ន", "roman": "pro-yat", "zh": "小心", "hint": "布羅－亞", "day": 20, "lesson": "安全：小心、危險、戴口罩、別碰", "scene": "⚠️"}, {"km": "គ្រោះថ្នាក់", "roman": "kroh-thnak", "zh": "危險／事故", "hint": "格羅－特那", "day": 20, "lesson": "安全：小心、危險、戴口罩、別碰", "scene": "⚠️"}, {"km": "ពាក់ម៉ាស់", "roman": "peak-mas", "zh": "戴口罩", "hint": "比阿－馬斯", "day": 20, "lesson": "安全：小心、危險、戴口罩、別碰", "scene": "⚠️"}, {"km": "កុំប៉ះ", "roman": "kom-pah", "zh": "不要碰", "hint": "貢－巴", "day": 20, "lesson": "安全：小心、危險、戴口罩、別碰", "scene": "⚠️"}, {"km": "ថៅកែ", "roman": "thao-kae", "zh": "老闆／主管（口語）", "hint": "套－該", "day": 21, "lesson": "職場人物：老闆、工人、主管、團隊", "scene": "👥"}, {"km": "កម្មករ", "roman": "kam-ma-kor", "zh": "工人", "hint": "甘－瑪－果", "day": 21, "lesson": "職場人物：老闆、工人、主管、團隊", "scene": "👥"}, {"km": "អ្នកគ្រប់គ្រង", "roman": "neak-krop-krong", "zh": "管理人員／主管", "hint": "聶－格羅－格隆", "day": 21, "lesson": "職場人物：老闆、工人、主管、團隊", "scene": "👥"}, {"km": "ក្រុម", "roman": "krom", "zh": "組／團隊", "hint": "格隆", "day": 21, "lesson": "職場人物：老闆、工人、主管、團隊", "scene": "👥"}, {"km": "នៅទីនេះ", "roman": "nov-ti-nih", "zh": "在這裡", "hint": "腦－迪－尼", "day": 22, "lesson": "位置：這裡、那裡、裡面、外面", "scene": "📍"}, {"km": "នៅទីនោះ", "roman": "nov-ti-nuh", "zh": "在那裡", "hint": "腦－迪－努", "day": 22, "lesson": "位置：這裡、那裡、裡面、外面", "scene": "📍"}, {"km": "ខាងក្នុង", "roman": "khang-knong", "zh": "裡面", "hint": "康－克農", "day": 22, "lesson": "位置：這裡、那裡、裡面、外面", "scene": "📍"}, {"km": "ខាងក្រៅ", "roman": "khang-krao", "zh": "外面", "hint": "康－格勞", "day": 22, "lesson": "位置：這裡、那裡、裡面、外面", "scene": "📍"}, {"km": "ខ្ញុំសប្បាយចិត្ត", "roman": "khnhom-sabbai-chet", "zh": "我很開心", "hint": "克妞姆－沙拜－吉", "day": 23, "lesson": "身體與感受：開心、累、不舒服、休息", "scene": "😮‍💨"}, {"km": "ខ្ញុំហត់", "roman": "khnhom-hot", "zh": "我累了", "hint": "克妞姆－霍", "day": 23, "lesson": "身體與感受：開心、累、不舒服、休息", "scene": "😮‍💨"}, {"km": "ខ្ញុំឈឺ", "roman": "khnhom-chheu", "zh": "我痛／我不舒服", "hint": "克妞姆－秋", "day": 23, "lesson": "身體與感受：開心、累、不舒服、休息", "scene": "😮‍💨"}, {"km": "ខ្ញុំចង់សម្រាក", "roman": "khnhom-chong-som-rak", "zh": "我想休息", "hint": "克妞姆－鐘－松拉", "day": 23, "lesson": "身體與感受：開心、累、不舒服、休息", "scene": "😮‍💨"}, {"km": "ក្តៅណាស់", "roman": "kdav-nah", "zh": "非常熱", "hint": "格道－納", "day": 24, "lesson": "天氣：熱、下雨、今天很熱、帶傘", "scene": "🌦️"}, {"km": "ភ្លៀង", "roman": "phliang", "zh": "下雨／雨", "hint": "普連", "day": 24, "lesson": "天氣：熱、下雨、今天很熱、帶傘", "scene": "🌦️"}, {"km": "ថ្ងៃនេះក្តៅ", "roman": "thngai-nih-kdav", "zh": "今天很熱", "hint": "吞艾尼－格道", "day": 24, "lesson": "天氣：熱、下雨、今天很熱、帶傘", "scene": "🌦️"}, {"km": "យកឆ័ត្រ", "roman": "yok-chat", "zh": "帶雨傘", "hint": "優－恰", "day": 24, "lesson": "天氣：熱、下雨、今天很熱、帶傘", "scene": "🌦️"}, {"km": "នេះជាប្រពន្ធខ្ញុំ", "roman": "nih-chea-pro-pon-khnhom", "zh": "這是我太太", "hint": "尼－吉亞－布羅奔－克妞姆", "day": 25, "lesson": "家庭與待客：老婆、孩子、坐下", "scene": "👨‍👩‍👧"}, {"km": "នេះជាកូនខ្ញុំ", "roman": "nih-chea-kon-khnhom", "zh": "這是我的孩子", "hint": "尼－吉亞－貢－克妞姆", "day": 25, "lesson": "家庭與待客：老婆、孩子、坐下", "scene": "👨‍👩‍👧"}, {"km": "អ្នកមានកូនទេ?", "roman": "neak-mean-kon-te?", "zh": "你有孩子嗎？", "hint": "聶－米安－貢－得？", "day": 25, "lesson": "家庭與待客：老婆、孩子、坐下", "scene": "👨‍👩‍👧"}, {"km": "អញ្ជើញអង្គុយ", "roman": "an-choen-ang-kuy", "zh": "請坐", "hint": "安尊－安古依", "day": 25, "lesson": "家庭與待客：老婆、孩子、坐下", "scene": "👨‍👩‍👧"}, {"km": "សូមផ្ញើសារ", "roman": "som-phnher-sa", "zh": "請傳訊息", "hint": "松－普涅－沙", "day": 26, "lesson": "電話與訊息：傳訊息、打給我、聽不到", "scene": "📱"}, {"km": "សូមទូរស័ព្ទមកខ្ញុំ", "roman": "som-tu-rasap-mok-khnhom", "zh": "請打電話給我", "hint": "松－杜拉薩－莫－克妞姆", "day": 26, "lesson": "電話與訊息：傳訊息、打給我、聽不到", "scene": "📱"}, {"km": "ខ្ញុំមិនបានឮទេ", "roman": "khnhom-min-baan-leu-te", "zh": "我沒聽到", "hint": "克妞姆－敏班－勒－得", "day": 26, "lesson": "電話與訊息：傳訊息、打給我、聽不到", "scene": "📱"}, {"km": "អ៊ីនធឺណិតមិនដំណើរការ", "roman": "internet-min-dom-naer-kar", "zh": "網路不能用", "hint": "Internet－敏－冬內嘎", "day": 26, "lesson": "電話與訊息：傳訊息、打給我、聽不到", "scene": "📱"}, {"km": "អ្វី?", "roman": "a-vey?", "zh": "什麼？", "hint": "阿威？", "day": 27, "lesson": "四大問句：什麼、哪裡、為什麼、何時", "scene": "❓"}, {"km": "នៅឯណា?", "roman": "nov-ae-na?", "zh": "在哪裡？", "hint": "腦－欸納？", "day": 27, "lesson": "四大問句：什麼、哪裡、為什麼、何時", "scene": "❓"}, {"km": "ហេតុអ្វី?", "roman": "haet-a-vey?", "zh": "為什麼？", "hint": "嘿－阿威？", "day": 27, "lesson": "四大問句：什麼、哪裡、為什麼、何時", "scene": "❓"}, {"km": "ពេលណា?", "roman": "pel-na?", "zh": "什麼時候？", "hint": "杯－納？", "day": 27, "lesson": "四大問句：什麼、哪裡、為什麼、何時", "scene": "❓"}, {"km": "ខ្ញុំមាន...", "roman": "khnhom-mean...", "zh": "我有……", "hint": "克妞姆－米安", "day": 28, "lesson": "四個萬用句型：有、沒有、喜歡、不喜歡", "scene": "🧩"}, {"km": "ខ្ញុំអត់មាន...", "roman": "khnhom-ot-mean...", "zh": "我沒有……", "hint": "克妞姆－歐－米安", "day": 28, "lesson": "四個萬用句型：有、沒有、喜歡、不喜歡", "scene": "🧩"}, {"km": "ខ្ញុំចូលចិត្ត...", "roman": "khnhom-chol-chet...", "zh": "我喜歡……", "hint": "克妞姆－周－吉", "day": 28, "lesson": "四個萬用句型：有、沒有、喜歡、不喜歡", "scene": "🧩"}, {"km": "ខ្ញុំមិនចូលចិត្ត...ទេ", "roman": "khnhom-min-chol-chet...te", "zh": "我不喜歡……", "hint": "克妞姆－敏－周吉－得", "day": 28, "lesson": "四個萬用句型：有、沒有、喜歡、不喜歡", "scene": "🧩"}, {"km": "ខ្ញុំបានទៅ", "roman": "khnhom-baan-tov", "zh": "我去了／我去過", "hint": "克妞姆－班－豆", "day": 29, "lesson": "時間感：去過、將去、正在做", "scene": "⏳"}, {"km": "ខ្ញុំនឹងទៅ", "roman": "khnhom-nueng-tov", "zh": "我將要去", "hint": "克妞姆－能－豆", "day": 29, "lesson": "時間感：去過、將去、正在做", "scene": "⏳"}, {"km": "ខ្ញុំកំពុងធ្វើការ", "roman": "khnhom-kom-pong-tver-kar", "zh": "我正在工作", "hint": "克妞姆－貢碰－特威嘎", "day": 29, "lesson": "時間感：去過、將去、正在做", "scene": "⏳"}, {"km": "ខ្ញុំនៅទីនេះ", "roman": "khnhom-nov-ti-nih", "zh": "我在這裡", "hint": "克妞姆－腦－迪尼", "day": 29, "lesson": "時間感：去過、將去、正在做", "scene": "⏳"}, {"km": "ខ្ញុំអាចនិយាយភាសាខ្មែរបានតិចតួច", "roman": "khnhom-ach-niyeay-pheasa-khmae-baan-tich-tuoch", "zh": "我會說一點點柬埔寨語", "hint": "克妞姆－阿吉－尼耶－披阿沙克邁－班－迪杜吉", "day": 30, "lesson": "結業：我會一點柬語，請幫我糾正", "scene": "🏆"}, {"km": "សូមជួយកែឱ្យខ្ញុំ", "roman": "som-chuoy-kae-aoy-khnhom", "zh": "請幫我糾正", "hint": "松－朱依－該－奧依－克妞姆", "day": 30, "lesson": "結業：我會一點柬語，請幫我糾正", "scene": "🏆"}, {"km": "ខ្ញុំរៀនរាល់ថ្ងៃ", "roman": "khnhom-rien-roal-thngai", "zh": "我每天學習", "hint": "克妞姆－連－羅－吞艾", "day": 30, "lesson": "結業：我會一點柬語，請幫我糾正", "scene": "🏆"}, {"km": "កុំខ្លាចនិយាយ", "roman": "kom-khlach-niyeay", "zh": "不要害怕開口說", "hint": "貢－克拉－尼耶", "day": 30, "lesson": "結業：我會一點柬語，請幫我糾正", "scene": "🏆"}];
+let currentDay = Number(localStorage.getItem('khmerCurrentDay') || 1);
+let mastered = JSON.parse(localStorage.getItem('khmerMastered') || '{}');
+let voices = [];
+
+function toast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1600);
+}
+function save(){
+  localStorage.setItem('khmerMastered',JSON.stringify(mastered));
+  localStorage.setItem('khmerCurrentDay',String(currentDay));
+  updateProgress();
+}
+function keyOf(p){ return p.km+'|'+p.zh; }
+function toggleMaster(p){
+  const k=keyOf(p); mastered[k]=!mastered[k]; save(); renderToday(); renderAll(); renderBank();
+}
+function updateProgress(){
+  const count=phraseBank.filter(p=>mastered[keyOf(p)]).length;
+  document.getElementById('progressBar').style.width=(count/phraseBank.length*100)+'%';
+  document.getElementById('progressText').textContent=`${count} / ${phraseBank.length} 句已掌握`;
+}
+function showSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.target===id));
+  if(id==='today') renderToday();
+  if(id==='all') renderAll();
+  if(id==='bank') renderBank();
+  if(id==='quiz') newQuiz();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>showSection(b.dataset.target));
+
+function escapeAttr(s){return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function phraseCard(p){
+  const done=!!mastered[keyOf(p)];
+  const payload=escapeAttr(JSON.stringify(p));
+  return `<div class="phrase-card">
+    <div class="km">${p.km}</div>
+    <div class="zh">${p.zh}</div>
+    <div class="roman">${p.roman}</div>
+    <div class="hint">中文聽感：約「${p.hint}」</div>
+    <div class="card-actions">
+      <button class="audio-btn" onclick='speak(${JSON.stringify(p.km)},0.88)'>🔊 正常</button>
+      <button class="audio-btn" onclick='speak(${JSON.stringify(p.km)},0.58)'>🐢 慢速</button>
+      <button class="master-btn ${done?'done':''}" onclick='toggleMaster(${JSON.stringify(p)})'>${done?'✓ 已掌握':'尚未掌握'}</button>
+    </div>
+  </div>`;
+}
+function lessonCard(l){
+  return `<article class="panel" id="day-${l.day}">
+    <div class="day-header">
+      <div class="day-title-wrap">
+        <div class="scene">${l.scene}</div>
+        <div><span class="pill">第 ${l.day} 天</span><h2 style="margin:5px 0 2px">${l.title}</h2><div class="note">今日目標：${l.goal}</div></div>
+      </div>
+    </div>
+    <div class="phrase-grid">${l.phrases.map(phraseCard).join('')}</div>
+    <div class="mission"><b>🎯 今日真實任務：</b>${l.mission}</div>
+  </article>`;
+}
+function renderToday(){
+  document.getElementById('daySelect').value=currentDay;
+  const l=lessons.find(x=>x.day===currentDay);
+  document.getElementById('todayLesson').innerHTML=lessonCard(l);
+}
+function renderAll(){
+  document.getElementById('allLessons').innerHTML=lessons.map(lessonCard).join('');
+}
+function nextDay(){
+  currentDay=currentDay>=30?1:currentDay+1; save(); document.getElementById('daySelect').value=currentDay; renderToday();
+}
+const ds=document.getElementById('daySelect');
+lessons.forEach(l=>{ const o=document.createElement('option');o.value=l.day;o.textContent=`第 ${l.day} 天｜${l.title}`;ds.appendChild(o); });
+ds.value=currentDay;
+ds.onchange=e=>{currentDay=Number(e.target.value);save();renderToday();};
+
+function loadVoices(){
+  voices=speechSynthesis.getVoices();
+  const km=voices.filter(v=>v.lang && v.lang.toLowerCase().startsWith('km'));
+  document.getElementById('voiceStatus').textContent=km.length?`已找到 ${km.length} 個柬語語音：${km.map(v=>v.name).join('、')}`:'未找到專用柬語語音；仍可嘗試播放，但請以真人發音為準。';
+}
+if('speechSynthesis' in window){ loadVoices(); speechSynthesis.onvoiceschanged=loadVoices; }
+function speak(text,rate=0.85){
+  if(!('speechSynthesis' in window)){toast('此瀏覽器不支援語音播放');return;}
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  const km=voices.find(v=>v.lang && v.lang.toLowerCase().startsWith('km'));
+  if(km) u.voice=km;
+  u.lang='km-KH';u.rate=rate;u.pitch=1;
+  speechSynthesis.speak(u);
+}
+function testVoice(){speak('សួស្តី អរគុណ',0.72);}
+
+function renderBank(){
+  const q=(document.getElementById('searchInput').value||'').trim().toLowerCase();
+  const arr=phraseBank.filter(p=>!q || [p.km,p.roman,p.zh,p.lesson].join(' ').toLowerCase().includes(q));
+  document.getElementById('bankResults').innerHTML=arr.slice(0,120).map(p=>`<div class="bank-item">
+    <div class="note">${p.scene} 第 ${p.day} 天</div>
+    <div class="km" style="font-size:1.5rem">${p.km}</div>
+    <b>${p.zh}</b><div class="roman">${p.roman}</div>
+    <div class="card-actions"><button class="audio-btn" onclick='speak(${JSON.stringify(p.km)},0.7)'>🔊 播放</button></div>
+  </div>`).join('') || '<p>找不到符合內容。</p>';
+}
+document.getElementById('searchInput').oninput=renderBank;
+
+let quizAnswer=null, score=0, total=0;
+function shuffled(a){return [...a].sort(()=>Math.random()-.5)}
+function newQuiz(){
+  quizAnswer=phraseBank[Math.floor(Math.random()*phraseBank.length)];
+  const wrong=shuffled(phraseBank.filter(p=>p.km!==quizAnswer.km)).slice(0,3);
+  const opts=shuffled([quizAnswer,...wrong]);
+  document.getElementById('quizBox').innerHTML=`<div class="note">成績：${score} / ${total}</div>
+    <div class="quiz-prompt">${quizAnswer.zh}</div>
+    <div class="options">${opts.map(p=>`<button class="option" onclick='answerQuiz(this,${JSON.stringify(p.km)})'>${p.km}</button>`).join('')}</div>
+    <div style="margin-top:14px"><button class="btn" onclick='speak(${JSON.stringify(quizAnswer.km)},0.7)'>先聽答案發音</button></div>`;
+}
+function answerQuiz(btn,km){
+  total++;
+  const ok=km===quizAnswer.km; if(ok) score++;
+  btn.classList.add(ok?'correct':'wrong');
+  document.querySelectorAll('.option').forEach(b=>{b.disabled=true;if(b.textContent===quizAnswer.km)b.classList.add('correct');});
+  setTimeout(newQuiz,1100);
+}
+function toggleDark(){document.body.classList.toggle('dark');localStorage.setItem('khmerDark',document.body.classList.contains('dark')?'1':'0');}
+if(localStorage.getItem('khmerDark')==='1')document.body.classList.add('dark');
+function resetProgress(){
+  if(confirm('確定清除全部學習進度？')){mastered={};currentDay=1;save();renderToday();renderAll();toast('進度已重設');}
+}
+updateProgress();renderToday();renderBank();
+</script>
+</body>
+</html>

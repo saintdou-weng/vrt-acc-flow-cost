@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>柬語從零開始 · 50歲也學得會</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1E2A3A;        /* 深夜藍 */
+  --gold:#C79A2A;       /* 金邊塔金 */
+  --gold-soft:#F3E7C8;
+  --paper:#FBFAF6;
+  --card:#FFFFFF;
+  --green:#2E7D5B;      /* 學會綠 */
+  --red:#B8452F;
+  --line:#E6E1D5;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--paper);color:var(--ink);font-size:18px;line-height:1.6}
+.khmer{font-family:'Noto Sans Khmer','Noto Sans TC',sans-serif}
+header{background:var(--ink);color:#fff;padding:22px 18px 18px;position:relative;overflow:hidden}
+header::after{content:"ក ខ គ ឃ ង";position:absolute;right:-10px;top:-18px;font-family:'Noto Sans Khmer';font-size:90px;color:rgba(199,154,42,.14);letter-spacing:6px;pointer-events:none}
+header h1{font-size:24px;font-weight:900}
+header p{color:var(--gold);font-size:15px;margin-top:2px}
+.wrap{max-width:640px;margin:0 auto;padding:16px 14px 90px}
+.progress-band{background:var(--gold-soft);border-radius:14px;padding:12px 16px;margin-bottom:16px;font-size:16px;display:flex;justify-content:space-between;align-items:center}
+.progress-band b{color:var(--green);font-size:22px}
+/* 課程卡 */
+.lesson-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform .1s}
+.lesson-card:active{transform:scale(.98)}
+.lesson-num{font-family:'Noto Sans Khmer';font-size:30px;color:var(--gold);min-width:46px;text-align:center;font-weight:700}
+.lesson-card h3{font-size:19px;font-weight:700}
+.lesson-card small{color:#7A7466;font-size:14px}
+.lesson-done{margin-left:auto;font-size:14px;color:var(--green);white-space:nowrap}
+/* 片語卡 */
+.topbar{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.btn-back{background:none;border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-size:16px;font-family:inherit;color:var(--ink);cursor:pointer}
+.phrase{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 16px;margin-bottom:14px}
+.phrase .km{font-family:'Noto Sans Khmer';font-size:34px;font-weight:700;line-height:1.5}
+.phrase .roman{font-size:20px;color:var(--gold);font-weight:700;margin-top:2px}
+.phrase .zh{font-size:20px;font-weight:700;margin-top:6px}
+.phrase .memo{background:var(--gold-soft);border-radius:10px;padding:8px 12px;margin-top:10px;font-size:16px}
+.phrase .memo b{color:var(--red)}
+.phrase .row{display:flex;gap:10px;margin-top:12px}
+.btn-say{flex:1;background:var(--ink);color:#fff;border:none;border-radius:12px;padding:12px;font-size:17px;font-family:inherit;cursor:pointer}
+.btn-learn{flex:1;background:#fff;border:2px solid var(--green);color:var(--green);border-radius:12px;padding:12px;font-size:17px;font-family:inherit;cursor:pointer;font-weight:700}
+.btn-learn.on{background:var(--green);color:#fff}
+.tts-hint{background:#FFF4E5;border-radius:12px;padding:12px 14px;font-size:15px;margin-bottom:14px;display:none}
+/* 測驗 */
+.btn-quiz{width:100%;background:var(--gold);color:var(--ink);border:none;border-radius:14px;padding:16px;font-size:19px;font-weight:900;font-family:inherit;cursor:pointer;margin-top:6px}
+.quiz-q{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 16px;text-align:center}
+.quiz-q .ask{font-size:17px;color:#7A7466}
+.quiz-q .big{font-size:26px;font-weight:900;margin:10px 0 18px}
+.opt{display:block;width:100%;background:#fff;border:2px solid var(--line);border-radius:12px;padding:14px;font-size:19px;font-family:inherit;margin-bottom:10px;cursor:pointer;text-align:left}
+.opt .k{font-family:'Noto Sans Khmer';font-size:22px}
+.opt.right{border-color:var(--green);background:#EAF6EF}
+.opt.wrong{border-color:var(--red);background:#FBECE8}
+.quiz-result{text-align:center;padding:30px 10px}
+.quiz-result .score{font-size:52px;font-weight:900;color:var(--gold)}
+.hidden{display:none}
+footer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:10px;text-align:center;font-size:14px;color:#7A7466}
+</style>
+</head>
+<body>
+<header>
+  <h1>柬語從零開始</h1>
+  <p>一天 5 句 · 用中文諧音記 · 講給西港人聽得懂</p>
+</header>
+
+<div class="wrap">
+  <div id="home">
+    <div class="progress-band"><span>已學會片語</span><span><b id="learnedCount">0</b> / <span id="totalCount">0</span> 句</span></div>
+    <div id="lessonList"></div>
+  </div>
+
+  <div id="lessonView" class="hidden">
+    <div class="topbar">
+      <button class="btn-back" onclick="goHome()">← 返回</button>
+      <h2 id="lessonTitle" style="font-size:20px"></h2>
+    </div>
+    <div class="tts-hint" id="ttsHint">📢 你的手機沒有安裝柬語語音。沒關係——先看<b>金色拼音</b>和<b>諧音</b>唸出來就很接近了。想要真人發音，可到 Play 商店安裝「Google 語音服務」並下載高棉語。</div>
+    <div id="phraseList"></div>
+    <button class="btn-quiz" onclick="startQuiz()">✏️ 小測驗（5 題）</button>
+  </div>
+
+  <div id="quizView" class="hidden">
+    <div class="topbar">
+      <button class="btn-back" onclick="openLesson(curLesson)">← 返回課程</button>
+      <h2 style="font-size:20px">小測驗</h2>
+    </div>
+    <div id="quizBody"></div>
+  </div>
+</div>
+
+<footer>慢慢來，每天 5 句，三個月後你會嚇到自己 💪</footer>
+
+<script>
+const LESSONS=[
+ {t:"打招呼",s:"最先要會的 9 句",p:[
+  ["សួស្តី","sua-s'dei（蘇斯地）","你好","像「蘇斯地」，見面先講這句，萬用"],
+  ["អរគុណ","or-kun（哦昆）","謝謝","「哦昆」兩個字，全柬埔寨最好用的一句話"],
+  ["សូមទោស","som-toh（宋透）","不好意思／對不起","「宋透」，叫服務生、借過、道歉都用它"],
+  ["បាទ","baat（拔）","是／對（男生用）","你是男生，回答「是」就說「拔」"],
+  ["ទេ","te（爹）","不是／不要","短短一個「爹」，就是 No"],
+  ["សុខសប្បាយទេ?","sok sa-bai te?（梭薩拜爹?）","你好嗎？","「梭薩拜」=平安快樂，後面加「爹」變問句"],
+  ["សុខសប្បាយ","sok sa-bai（梭薩拜）","我很好","別人問你，就把「爹」拿掉回答"],
+  ["លាហើយ","lia-haey（利亞嗨）","再見","下班跟警衛講「利亞嗨」，他會笑"],
+  ["ខ្ញុំឈ្មោះ Paul","knyom chmuah Paul（克紐 之摸 Paul）","我叫 Paul","「克紐」=我，超常用，先記住"]
+ ]},
+ {t:"數字 1–10",s:"殺價、講錢的基礎",p:[
+  ["មួយ","muoy（木威）","1","「木威」"],
+  ["ពីរ","pi（皮）","2","一個「皮」字"],
+  ["បី","bei（掰）","3","跟中文「掰」幾乎一樣"],
+  ["បួន","buon（布恩）","4","「布恩」"],
+  ["ប្រាំ","pram（布蘭）","5","「布蘭」——重點！6~9 都靠它"],
+  ["ប្រាំមួយ","pram-muoy（布蘭木威）","6","柬語的 6 = 5+1，超有邏輯"],
+  ["ប្រាំពីរ","pram-pi（布蘭皮）","7","5+2"],
+  ["ប្រាំបី","pram-bei（布蘭掰）","8","5+3"],
+  ["ប្រាំបួន","pram-buon（布蘭布恩）","9","5+4"],
+  ["ដប់","dop（都樸）","10","「都樸」；20=m'phei，100=muoy roy（木威駱伊）"]
+ ]},
+ {t:"買東西・殺價",s:"市場、超市必備",p:[
+  ["តម្លៃប៉ុន្មាន?","tam-lai pon-maan?（淡來崩慢?）","多少錢？","「淡來崩慢」，指著東西講就通"],
+  ["ថ្លៃណាស់","thlai nah（太拿）","太貴了","發音真的像中文「太～」，好記"],
+  ["បញ្ចុះបានទេ?","ban-choh baan te?（班秋 般爹?）","可以便宜一點嗎？","殺價金句"],
+  ["ខ្ញុំចង់បាននេះ","knyom jang baan nih（克紐 張般 尼）","我要這個","「尼」=這個，用手指著講"],
+  ["មិនយកទេ","min yok te（敏約爹）","不要／不買","「敏」=不，記住這個否定字"],
+  ["ផ្សារ","phsar（普薩）","市場","西港的「普薩」你一定聽過"]
+ ]},
+ {t:"吃飯・點餐",s:"餐廳生存句",p:[
+  ["ញ៉ាំបាយ","nyam bai（娘拜）","吃飯","「拜」=飯；柬人問候常說「吃飯了沒」"],
+  ["ឆ្ងាញ់","chnganh（昌捏）","好吃！","吃到好吃的講「昌捏！」老闆超開心"],
+  ["ទឹក","teuk（德）","水","一個「德」字就是水"],
+  ["កាហ្វេទឹកកក","kafe teuk-kok（咖啡德鍋）","冰咖啡","咖啡+冰水，柬式冰咖啡必點"],
+  ["កុំដាក់ម្ទេស","kom dak m'teh（貢達 姆爹）","不要放辣椒","怕辣救星"],
+  ["គិតលុយ","kit luy（哥魯伊）","買單","「魯伊」=錢，喊「哥魯伊」就是結帳"]
+ ]},
+ {t:"工廠常用語",s:"跟員工溝通最實用",p:[
+  ["ធ្វើការ","tveu ka（特卡）","工作","「去特卡」=去上班"],
+  ["ល្អ","l'or（囉）","好／很棒","比讚+說「囉」，員工聽得懂你在稱讚"],
+  ["មិនល្អ","min l'or（敏囉）","不好","「敏」+「囉」=不好，否定就加敏"],
+  ["ជួយខ្ញុំបន្តិច","chuoy knyom bon-tik（左伊克紐 崩迪）","幫我一下","「左伊」=幫忙"],
+  ["ប្រយ័ត្ន!","pra-yat!（普拉亞!）","小心！","工安必備，走廊、倉庫都用得到"],
+  ["ចប់ហើយ","chop haey（秋嗨）","完成了／結束了","問「做完沒」得到「秋嗨」就是 OK"],
+  ["ថ្ងៃនេះ","thngai nih（太尼）","今天","「太」=天／日"],
+  ["ថ្ងៃស្អែក","thngai s'aek（太沙耶）","明天","交代工作：「太沙耶」+動作"],
+  ["ម៉ោងប៉ុន្មាន?","maong pon-maan?（矇崩慢?）","幾點？","「矇」=點鐘，問時間就這句"]
+ ]},
+ {t:"搭車・方向",s:"坐嘟嘟車不再比手畫腳",p:[
+  ["ទៅ...","tov...（都…）","去…","「都」+地名，上車第一句"],
+  ["ឈប់ទីនេះ","chhop ti-nih（秋 迪尼）","這裡停","到了就喊「秋！」"],
+  ["ខាងឆ្វេង","khang chveng(康 之聞)","左邊","「康」=邊"],
+  ["ខាងស្តាំ","khang sdam（康 斯當）","右邊","右=斯當"],
+  ["ទៅត្រង់","tov trang（都壯）","直走","「壯」=直"],
+  ["យឺតៗ","yeut-yeut（有有）","慢一點","司機開太快就講「有有」"]
+ ]},
+ {t:"救援句",s:"聽不懂也能活下去",p:[
+  ["ខ្ញុំមិនយល់ទេ","knyom min yol te（克紐 敏悠爹）","我聽不懂","全書最重要！講了對方就會放慢"],
+  ["និយាយម្តងទៀត","ni-yeay m'dang tiet（尼耶 姆當爹）","請再說一次","配上不好意思的笑容"],
+  ["ខ្ញុំនិយាយខ្មែរបានបន្តិច","knyom niyeay khmae baan bon-tik","我只會說一點柬語","先講這句，對方期待值就降低了"],
+  ["ជួយផង!","chuoy phang!（左伊胖!）","救命／請幫忙！","緊急時大喊"],
+  ["បង្គន់នៅឯណា?","bang-kun nov ae-naa?（邦滾 諾 耶那?）","廁所在哪裡？","「諾耶那」=在哪裡，換名詞就能問任何地點"]
+ ]},
+ {t:"時間・星期",s:"排班、約時間必備",p:[
+  ["ថ្ងៃច័ន្ទ","thngai chan（太占）","星期一","星期都是「太」開頭；週一=太占"],
+  ["ថ្ងៃអង្គារ","thngai ang-kea（太安基亞）","星期二","吳哥 Angkor 的「安」，好聯想"],
+  ["ថ្ងៃពុធ","thngai put（太僕）","星期三","「僕」=佛(Buddha)，佛日在中間"],
+  ["ថ្ងៃព្រហស្បតិ៍","thngai pro-hoah（太普羅哈）","星期四","最難唸的一天，唸「普羅哈」就夠像"],
+  ["ថ្ងៃសុក្រ","thngai sok（太梭）","星期五","「梭」跟 sok sabay 的梭一樣，開心的星期五"],
+  ["ថ្ងៃសៅរ៍","thngai sao（太紹）","星期六","「紹」"],
+  ["ថ្ងៃអាទិត្យ","thngai a-tit（太阿迪）","星期日","「阿迪」=太陽，太陽日=週日，跟英文 Sunday 同邏輯"],
+  ["ព្រឹក","preuk（普勒）","早上","早上九點=maong pram-buon preuk（矇布蘭布恩普勒）"],
+  ["ល្ងាច","l'ngeach（勒尼亞）","傍晚／晚上","下午茶之後都算「勒尼亞」"],
+  ["ឥឡូវនេះ","ei-lov nih（唉囉尼）","現在","催事情：「唉囉尼！」=現在就要"]
+ ]},
+ {t:"請假・加班",s:"HR 現場最常聽到的話",p:[
+  ["សុំច្បាប់","som chbap（宋恰）","請假","員工說「宋恰」就是要請假"],
+  ["ឈឺ","chheu（求）","生病","「求」一個字；宋恰+求=病假"],
+  ["ធ្វើថែមម៉ោង","tveu thaem maong（特添矇）","加班","「添矇」=加時數，OT 就是這句"],
+  ["ប្រាក់ខែ","prak khae（布拉開）","薪水","「開」=月，月錢=薪水"],
+  ["ថ្ងៃឈប់សម្រាក","thngai chhop sam-rak（太秋宋拉）","休假日","「宋拉」=休息，記住它下一課還會出現"],
+  ["មកយឺត","mok yeut（莫有）","遲到","「莫」=來，「有」=慢，來得慢=遲到"],
+  ["អត់មកធ្វើការ","ot mok tveu ka（哦莫特卡）","沒來上班（缺勤）","「哦」=沒有，點名時用"],
+  ["ចេញម៉ោងប្រាំ","chenh maong pram（真矇布蘭）","五點下班","「真」=出去；改數字就是其他時間"]
+ ]},
+ {t:"開會・管理",s:"主持會議、交代工作",p:[
+  ["ប្រជុំ","pro-chum（普羅中）","開會","「普羅中」，通知開會就這句"],
+  ["ចាប់ផ្តើម","chab phdaem（恰登）","開始","會議開始：「恰登！」"],
+  ["យល់ទេ?","yol te?（悠爹?）","懂嗎？","交代完工作問一句「悠爹?」"],
+  ["យល់ហើយ","yol haey（悠嗨）","懂了","對方回「悠嗨」就是收到"],
+  ["សំខាន់","som-khan（宋康）","重要","「宋康！」=這件事很重要"],
+  ["បញ្ហា","ban-ha（班哈）","問題／麻煩","「敏班哈」(min banha)=沒問題，超常用"],
+  ["ពិនិត្យម្តងទៀត","pi-nit m'dang tiet（比尼 姆當爹）","再檢查一次","品質管理金句"],
+  ["កុំភ្លេច","kom phlech（貢普烈）","別忘了","「貢」=別，交代事情結尾加一句"],
+  ["ចប់ប្រជុំ","chob pro-chum（秋普羅中）","散會","「秋」=結束，大家最愛聽的一句 😄"]
+ ]},
+ {t:"身體・看醫生",s:"不舒服時保命用",p:[
+  ["ខ្ញុំមិនស្រួលខ្លួន","knyom min sruol khluon（克紐敏 斯羅昆）","我不舒服","進診所先講這句"],
+  ["ឈឺក្បាល","chheu kbal（求卡包）","頭痛","「卡包」=頭"],
+  ["ឈឺពោះ","chheu puah（求波）","肚子痛","「波」=肚子"],
+  ["គ្រុនក្តៅ","krun kdav（滾克到）","發燒","「克到」=熱，下一課還會用到"],
+  ["ពេទ្យ","pet（北）","醫生／醫院","去醫院=tov pet（都北）"],
+  ["ថ្នាំ","thnam（特南）","藥","買藥：「張般特南」(我要藥)"],
+  ["ហត់","hot（賀）","累","工作累了：「克紐賀」"],
+  ["សម្រាក","sam-rak（宋拉）","休息","醫生會叫你「宋拉」多休息"]
+ ]},
+ {t:"閒聊・交朋友",s:"讓柬國同事對你刮目相看",p:[
+  ["អ្នកឈ្មោះអី?","neak chmuah ei?（尼亞之摸唉?）","你叫什麼名字？","「尼亞」=你"],
+  ["ខ្ញុំមកពីតៃវ៉ាន់","knyom mok pi Taiwan（克紐莫比台灣）","我來自台灣","自我介紹第二句"],
+  ["ទៅណា?","tov na?（都那?）","去哪裡？","柬國人打招呼常這樣問，不是查勤，是寒暄"],
+  ["ក្តៅណាស់","kdav nah（克到拿）","好熱啊","西港天氣萬用開場白 🥵"],
+  ["ភ្លៀង","phlieng（普連）","下雨","雨季每天用得到"],
+  ["ស្អាត","s'at（沙啊）","漂亮／乾淨","稱讚廠區整潔、稱讚人都行"],
+  ["អត់អីទេ","ot ei te（哦唉爹）","沒關係／不客氣","別人說哦昆，你回「哦唉爹」"],
+  ["ជួបគ្នាថ្ងៃស្អែក","chuob knea thngai s'aek（左普尼亞 太沙耶）","明天見","下班道別進階版，比利亞嗨更有人情味"]
+ ]}
+];
+
+let learned={}, curLesson=0;
+const KH_NUM="០១២៣៤៥៦៧៨៩";
+
+async function loadProgress(){
+  try{
+    if(window.storage?.get){const r=await window.storage.get('khmer-learned');if(r)learned=JSON.parse(r.value);}
+    else learned=JSON.parse(localStorage.getItem('khmer_primer_learned')||'{}');
+  }catch(e){learned={};}
+  renderHome();
+}
+async function saveProgress(){
+  try{
+    localStorage.setItem('khmer_primer_learned',JSON.stringify(learned));
+    if(window.storage?.set)await window.storage.set('khmer-learned',JSON.stringify(learned));
+  }catch(e){}
+}
+function key(li,pi){return li+'-'+pi}
+function totalPhrases(){return LESSONS.reduce((a,l)=>a+l.p.length,0)}
+function learnedInLesson(li){return LESSONS[li].p.filter((_,i)=>learned[key(li,i)]).length}
+
+function renderHome(){
+  document.getElementById('totalCount').textContent=totalPhrases();
+  document.getElementById('learnedCount').textContent=Object.values(learned).filter(Boolean).length;
+  const el=document.getElementById('lessonList');el.innerHTML='';
+  LESSONS.forEach((l,i)=>{
+    const d=document.createElement('div');d.className='lesson-card';d.onclick=()=>openLesson(i);
+    const done=learnedInLesson(i);
+    d.innerHTML=`<div class="lesson-num">${String(i+1).split('').map(c=>KH_NUM[+c]).join('')}</div>
+      <div><h3>第 ${i+1} 課 · ${l.t}</h3><small>${l.s}</small></div>
+      <div class="lesson-done">${done===l.p.length?'✅ 完成':done+'/'+l.p.length}</div>`;
+    el.appendChild(d);
+  });
+}
+function show(id){['home','lessonView','quizView'].forEach(v=>document.getElementById(v).classList.toggle('hidden',v!==id));window.scrollTo(0,0);}
+function goHome(){renderHome();show('home');}
+
+function openLesson(i){
+  curLesson=i;
+  document.getElementById('lessonTitle').textContent=`第 ${i+1} 課 · ${LESSONS[i].t}`;
+  const el=document.getElementById('phraseList');el.innerHTML='';
+  LESSONS[i].p.forEach((ph,pi)=>{
+    const on=!!learned[key(i,pi)];
+    const d=document.createElement('div');d.className='phrase';
+    d.innerHTML=`<div class="km">${ph[0]}</div>
+      <div class="roman">${ph[1]}</div>
+      <div class="zh">${ph[2]}</div>
+      <div class="memo">💡 <b>記法：</b>${ph[3]}</div>
+      <div class="row">
+        <button class="btn-say" onclick="speak('${ph[0].replace(/'/g,"\\'")}')">🔊 聽發音</button>
+        <button class="btn-learn ${on?'on':''}" onclick="toggleLearn(${i},${pi},this)">${on?'✓ 學會了':'標記學會'}</button>
+      </div>`;
+    el.appendChild(d);
+  });
+  checkTTS();
+  show('lessonView');
+}
+function toggleLearn(li,pi,btn){
+  learned[key(li,pi)]=!learned[key(li,pi)];
+  btn.classList.toggle('on');btn.textContent=learned[key(li,pi)]?'✓ 學會了':'標記學會';
+  saveProgress();
+}
+let kmVoice=null;
+function findVoice(){
+  const vs=speechSynthesis.getVoices();
+  kmVoice=vs.find(v=>v.lang&&v.lang.toLowerCase().startsWith('km'))||null;
+}
+function checkTTS(){
+  if(!('speechSynthesis' in window)){document.getElementById('ttsHint').style.display='block';return;}
+  findVoice();
+  document.getElementById('ttsHint').style.display=kmVoice?'none':'block';
+}
+if('speechSynthesis' in window){speechSynthesis.onvoiceschanged=findVoice;}
+function speak(text){
+  if(!('speechSynthesis' in window))return;
+  findVoice();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='km-KH';u.rate=0.75;
+  if(kmVoice)u.voice=kmVoice;
+  speechSynthesis.cancel();speechSynthesis.speak(u);
+}
+
+/* ---- 測驗 ---- */
+let quiz=[],qi=0,score=0;
+function startQuiz(){
+  const pool=LESSONS[curLesson].p.slice();
+  quiz=shuffle(pool).slice(0,Math.min(5,pool.length));
+  qi=0;score=0;show('quizView');renderQ();
+}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function renderQ(){
+  const body=document.getElementById('quizBody');
+  if(qi>=quiz.length){
+    body.innerHTML=`<div class="quiz-result">
+      <div class="score">${score} / ${quiz.length}</div>
+      <p style="margin:10px 0 20px">${score===quiz.length?'太厲害了！全對 🎉':score>=3?'很不錯，再複習一下 👍':'沒關係，回去多聽幾次再來 💪'}</p>
+      <button class="btn-quiz" onclick="startQuiz()">再測一次</button>
+      <button class="btn-back" style="margin-top:10px;width:100%;padding:14px" onclick="openLesson(curLesson)">回課程</button>
+    </div>`;return;
+  }
+  const q=quiz[qi];
+  const others=shuffle(LESSONS[curLesson].p.filter(p=>p!==q)).slice(0,2);
+  const opts=shuffle([q,...others]);
+  body.innerHTML=`<div class="quiz-q">
+    <div class="ask">第 ${qi+1} 題／共 ${quiz.length} 題 — 「${q[2]}」的柬語是？</div>
+    <div class="big">${q[2]}</div>
+    ${opts.map(o=>`<button class="opt" onclick="answer(this,${o===q})"><span class="k">${o[0]}</span><br><span style="color:#C79A2A">${o[1]}</span></button>`).join('')}
+  </div>`;
+}
+function answer(btn,ok){
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  btn.classList.add(ok?'right':'wrong');
+  if(ok)score++;
+  setTimeout(()=>{qi++;renderQ();},900);
+}
+
+loadProgress();
+</script>
+</body>
+</html>
