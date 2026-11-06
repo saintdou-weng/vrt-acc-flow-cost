@@ -837,5 +837,42 @@ window.addEventListener('online',()=>{if(SETTINGS.gasUrl)setTimeout(()=>autoClou
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&SETTINGS.gasUrl&&isOnline())setTimeout(()=>autoCloudSync(SYNC.pending?(SYNC.lastReason||'resume'):'resume',{showNotice:false}),150)});
 window.addEventListener('pageshow',event=>{if(event.persisted&&SETTINGS.gasUrl&&isOnline())setTimeout(()=>autoCloudSync(SYNC.pending?(SYNC.lastReason||'pageshow'):'pageshow',{showNotice:false}),150)});
 </script>
+<script>'use strict';
+/* 2026-11-06：會計三項（WIP／成品入庫／製造費用）改在 VRT ERP（PSJERP）› 財務 顯示。
+   - 嵌在 PSJERP 裡（?embed=psjerp）：照原樣運作（匯入、合併、版本、雲端、Telegram 全部不變），只把個人工具按鈕收起來。
+   - 直接打開這個網址（含 Telegram 按鈕連進來）：會計頁不再顯示，改成「已移到 VRT ERP」並自動轉過去；工具（?tool=…）不受影響。
+   - ?legacy=1 仍可開舊的會計頁（備用，不在任何選單上）。資料與雲端都沒有搬動。 */
+(function(){
+  const q=new URLSearchParams(location.search);
+  let inFrame=false;try{inFrame=window.top!==window.self}catch(_){inFrame=true}
+  const EMBED=q.get('embed')==='psjerp'||inFrame;
+  const LEGACY=q.get('legacy')==='1';
+  const PSJ='https://saintdou-weng.github.io/PSJERP/?s=fin';
+  const ACC_PAGES=['overview','wip','fg','expense','time','cross','anomaly','history'];
+  const lp=(q.get('lang')||'').toLowerCase();if(['zh','en','km'].includes(lp)){try{LANG=lp;localStorage.setItem('vrt_flow_lang',lp)}catch(_){}}
+  const css=document.createElement('style');
+  if(EMBED){
+    document.documentElement.classList.add('psj-embed');
+    css.textContent='.psj-embed .nav-btn[data-tool],.psj-embed .map-link{display:none!important}';
+  }else if(!LEGACY){
+    css.textContent='.nav-btn[data-page],#smartImportWrap.acc-moved{display:none!important}.acc-moved-card{max-width:640px;margin:32px auto;padding:28px;border-radius:16px;background:var(--card,#fff);box-shadow:0 2px 14px rgba(0,0,0,.08);text-align:center;line-height:1.7}.acc-moved-card h2{margin:0 0 8px}.acc-moved-card a.go{display:inline-block;margin-top:14px;padding:10px 22px;border-radius:10px;background:#1F4E79;color:#fff;text-decoration:none;font-weight:600}';
+  }
+  document.head.appendChild(css);
+  const target=()=>{const p=String(PAGE||'overview');return PSJ+'#acc-'+(['wip','fg','expense'].includes(p)?p:'overview')};
+  const _render=render;
+  render=function(){
+    window.__accReady=true;
+    if(EMBED||LEGACY||PAGE==='tool')return _render.apply(this,arguments);
+    try{updateNavCounts()}catch(_){}
+    const w=document.getElementById('smartImportWrap');if(w){w.classList.add('hidden','acc-moved')}
+    const zh=LANG!=='en'&&LANG!=='km';
+    document.getElementById('appMain').innerHTML=`<div class="acc-moved-card"><h2>📦 ${zh?'會計頁已移到 VRT ERP':'Accounting pages moved to VRT ERP'}</h2>
+      <div>${zh?'WIP、成品入庫、製造費用改在 <b>VRT ERP › 💰 財務 › 會計（ACC Flow）</b> 查看與匯入。資料、雲端、Telegram 都沒變，只是換地方顯示。':'WIP, FG inbound and factory expense now live in <b>VRT ERP › Finance › Accounting</b>. Data, cloud and Telegram are unchanged.'}</div>
+      <a class="go" href="${target()}">${zh?'前往 VRT ERP 財務 →':'Open VRT ERP Finance →'}</a>
+      <div style="margin-top:14px;font-size:13px;opacity:.7">${zh?'上方的工具（薪資、年假、合約…）照常使用。':'The tools above (payroll, leave, contracts…) work as before.'}</div></div>`;
+    if(q.get('page')||q.get('module')){setTimeout(()=>{location.href=target()},1200)}
+  };
+})();
+</script>
 </body>
 </html>
