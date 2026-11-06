@@ -390,7 +390,7 @@ function cell(row,i){return i>=0?row[i]:null}
 
 function parseWip(wb,file){
   let chosen=null;
-  for(const sn of wb.SheetNames){const raw=rowsFromSheet(wb.Sheets[sn]);const h=findHeader(raw,[['ERP order No.'],['WIP Qty.'],['WIP Amt. (US$)']]);if(h){chosen={sn,raw,...h};break}}
+  for(const sn of wb.SheetNames){const raw=rowsFromSheet(wb.Sheets[sn]);const h=findHeader(raw,[['ERP order No.'],['WIP Qty.'],['WIP Amt. (US$)']]);if(h){const n=raw.length-h.row;if(!chosen||n>chosen.n)chosen={sn,raw,n,...h}}}/* 2026-11-06：同一檔有「closing WIP 調整」小表和整份 WIP 表時，取資料最多的那張（Sep.'26 檔第一張只有 1 列調整） */
   if(!chosen)return null;
   const h=chosen.headers,raw=chosen.raw;
   const p={orderNo:idx(h,'ERP order No.'),orderDate:idx(h,'Order Date'),style:idx(h,'Style No.'),selfKey:idx(h,'Self key in No.'),customer:idx(h,'Customer'),orderQty:idx(h,'Order Qty.'),shippedQty:idx(h,'Shipped Qty.'),wipQty:idx(h,'WIP Qty.'),wipAmount:idx(h,'WIP Amt. (US$)'),fabricAmount:idx(h,'Fabrics Amt. (US$)'),trimAmount:idx(h,'Trims Amt. (US$)')};
