@@ -407,7 +407,7 @@ function parseWip(wb,file){
 }
 
 function isOfficialFg(r){return !['Sample','Sell Fabric','Sell Trims'].includes(r&&r.type)}/* 正式成品：樣品、賣布、賣輔料另計，不算進成品件數與產值（對齊會計 Summary_產量／Summary_產值） */
-function normalizeFgType(v){const s=normalizeText(v);if(/sample/.test(s))return 'Sample';if(/sell fabric|賣布/.test(s))return 'Sell Fabric';if(/trim|輔料/.test(s))return 'Sell Trims';if(/apron/.test(s))return 'Apron';if(/pants/.test(s))return 'Garment-Pants';if(/garment/.test(s))return 'Garment';if(/napkin|top|table/.test(s))return 'Napkin/Tabletop';return v?String(v).trim():'Others'}
+function normalizeFgType(v){const s=normalizeText(v);if(/sample/.test(s))return 'Sample';if(/sell[\s-]*fabric|賣布/.test(s))return 'Sell Fabric';if(/trim|輔料/.test(s))return 'Sell Trims';if(/apron/.test(s))return 'Apron';if(/pants/.test(s))return 'Garment-Pants';if(/garment/.test(s))return 'Garment';if(/napkin|top|table/.test(s))return 'Napkin/Tabletop';return v?String(v).trim():'Others'}
 function parseFg(wb,file){
   let chosen=null;
   for(const sn of wb.SheetNames){const raw=rowsFromSheet(wb.Sheets[sn]);const h=findHeader(raw,[['入庫日期'],['數量'],['產值']]);if(h){chosen={sn,raw,...h};break}}
