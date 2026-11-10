@@ -406,7 +406,7 @@ function parseWip(wb,file){
   return {type:'wip',periods:[{period,records}],sheet:chosen.sn};
 }
 
-function isOfficialFg(r){return !['Sample','Sell Fabric','Sell Trims'].includes(r&&r.type)}/* 正式成品：樣品、賣布、賣輔料另計，不算進成品件數與產值（對齊會計 Summary_產量／Summary_產值） */
+function isOfficialFg(r){return !['Sample','Sell Fabric','Sell Trims'].includes(normalizeFgType(r&&r.type))}/* 正式成品：樣品、賣布、賣輔料另計，不算進成品件數與產值（對齊會計 Summary_產量／Summary_產值） */
 function normalizeFgType(v){const s=normalizeText(v);if(/sample/.test(s))return 'Sample';if(/sell[\s-]*fabric|賣布/.test(s))return 'Sell Fabric';if(/trim|輔料/.test(s))return 'Sell Trims';if(/apron/.test(s))return 'Apron';if(/pants/.test(s))return 'Garment-Pants';if(/garment/.test(s))return 'Garment';if(/napkin|top|table/.test(s))return 'Napkin/Tabletop';return v?String(v).trim():'Others'}
 function parseFg(wb,file){
   let chosen=null;
@@ -525,7 +525,7 @@ function previousPeriod(type,period=ACTIVE_PERIOD){return periodsWith(type).filt
 
 function summary(type,period=ACTIVE_PERIOD,records=moduleRecords(type,period)){
   if(type==='wip')return {count:records.length,orderQty:sum(records,'orderQty'),shippedQty:sum(records,'shippedQty'),wipQty:sum(records,'wipQty'),wipAmount:sum(records,'wipAmount'),fabricAmount:sum(records,'fabricAmount'),trimAmount:sum(records,'trimAmount'),customers:uniq(records.map(r=>r.customer)).length,styles:uniq(records.map(r=>r.style)).length};
-  if(type==='fg'){const all=records;records=records.filter(isOfficialFg);const ex=all.filter(r=>!isOfficialFg(r));return {count:records.length,qty:sum(records,'qty'),value:sum(records,'value'),rawQty:sum(all,'qty'),rawValue:sum(all,'value'),sampleQty:sum(ex.filter(r=>r.type==='Sample'),'qty'),sellQty:sum(ex.filter(r=>r.type!=='Sample'),'qty'),sellValue:sum(ex.filter(r=>r.type!=='Sample'),'value'),customers:uniq(records.map(r=>r.customer)).length,styles:uniq(records.map(r=>r.style)).length,pos:uniq(records.map(r=>r.po)).length,avgUnit:sum(records,'qty')?sum(records,'value')/sum(records,'qty'):0}}
+  if(type==='fg'){const all=records;records=records.filter(isOfficialFg);const ex=all.filter(r=>!isOfficialFg(r));return {count:records.length,qty:sum(records,'qty'),value:sum(records,'value'),rawQty:sum(all,'qty'),rawValue:sum(all,'value'),sampleQty:sum(ex.filter(r=>normalizeFgType(r.type)==='Sample'),'qty'),sellQty:sum(ex.filter(r=>normalizeFgType(r.type)!=='Sample'),'qty'),sellValue:sum(ex.filter(r=>normalizeFgType(r.type)!=='Sample'),'value'),customers:uniq(records.map(r=>r.customer)).length,styles:uniq(records.map(r=>r.style)).length,pos:uniq(records.map(r=>r.po)).length,avgUnit:sum(records,'qty')?sum(records,'value')/sum(records,'qty'):0}}
   const r=expenseFinalize({...((records&&records[0])||{})});return {count:records.length,...r,costRatio:num(r.pv)?num(r.totalCost)/num(r.pv):0};
 }
 function groupRows(records,key,valueKey){const out={};records.forEach(r=>{const k=(typeof key==='function'?key(r):r[key])||'—';out[k]=(out[k]||0)+num(typeof valueKey==='function'?valueKey(r):r[valueKey])});return Object.entries(out).map(([name,value])=>({name,value})).sort((a,b)=>b.value-a.value)}
