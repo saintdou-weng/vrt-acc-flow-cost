@@ -124,6 +124,9 @@ break;case"<bookViews":;case"<bookViews>":;case"</bookViews>":break;case"<workbo
 
   <nav class="module-nav">
     <div class="nav-inner" id="mainNav">
+      <a class="nav-btn hub-link" href="learn/index.html?view=learning">📚 學習中心</a>
+      <a class="nav-btn hub-link" href="learn/index.html?view=personal">👤 個人專用</a>
+      <a class="nav-btn hub-link" href="learn/index.html?view=learning&focus=progress">↻ 繼續閱讀</a>
       <button class="nav-btn on" data-page="overview"><span data-i="overview">📊 總覽</span></button>
       <button class="nav-btn" data-page="wip"><span data-i="wip">🧶 WIP</span><span id="wipCount" class="nav-count">0</span></button>
       <button class="nav-btn" data-page="fg"><span data-i="fg">📦 成品入庫</span><span id="fgCount" class="nav-count">0</span></button>
@@ -854,23 +857,30 @@ window.addEventListener('pageshow',event=>{if(event.persisted&&SETTINGS.gasUrl&&
   const css=document.createElement('style');
   if(EMBED){
     document.documentElement.classList.add('psj-embed');
-    css.textContent='.psj-embed .nav-btn[data-tool],.psj-embed .map-link{display:none!important}';
+    css.textContent='.psj-embed .nav-btn[data-tool],.psj-embed .map-link,.psj-embed .hub-link{display:none!important}';
   }else if(!LEGACY){
-    css.textContent='.nav-btn[data-page],#smartImportWrap.acc-moved{display:none!important}.acc-moved-card{max-width:640px;margin:32px auto;padding:28px;border-radius:16px;background:var(--card,#fff);box-shadow:0 2px 14px rgba(0,0,0,.08);text-align:center;line-height:1.7}.acc-moved-card h2{margin:0 0 8px}.acc-moved-card a.go{display:inline-block;margin-top:14px;padding:10px 22px;border-radius:10px;background:#1F4E79;color:#fff;text-decoration:none;font-weight:600}';
+    document.documentElement.classList.add('acc-hub');css.textContent='.acc-hub .period-box,.acc-hub .tool-strip,.acc-hub .header-sep{display:none!important}.nav-btn[data-page],#smartImportWrap.acc-moved{display:none!important}.acc-moved-card{max-width:640px;margin:32px auto;padding:28px;border-radius:16px;background:var(--card,#fff);box-shadow:0 2px 14px rgba(0,0,0,.08);text-align:center;line-height:1.7}.acc-moved-card h2{margin:0 0 8px}.acc-moved-card a.go{display:inline-block;margin-top:14px;padding:10px 22px;border-radius:10px;background:#1F4E79;color:#fff;text-decoration:none;font-weight:600}.hub-link{text-decoration:none}.hub-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:18px 0 6px}.hub-tiles a{display:block;padding:16px 10px;border-radius:14px;border:1px solid #d9e4ec;background:#f6fbff;color:#18344e;text-decoration:none;font-weight:700;line-height:1.5}.hub-tiles a:hover{border-color:#7db0d1;background:#eaf6ff}.hub-tiles a span{display:block;font-size:26px}.hub-tiles a small{display:block;font-weight:400;font-size:11px;opacity:.75}.acc-moved-card .erp-note{margin-top:16px;padding-top:12px;border-top:1px dashed #cfdbe5;font-size:13px}.acc-moved-card .erp-note a{color:#1F4E79;font-weight:600}';
   }
   document.head.appendChild(css);
   const target=()=>{const p=String(PAGE||'overview');return PSJ+'#acc-'+(['wip','fg','expense'].includes(p)?p:'overview')};
   const _render=render;
   render=function(){
     window.__accReady=true;
+    if(!EMBED&&!LEGACY){try{const z=LANG!=='en'&&LANG!=='km';document.querySelector('.brand-title').textContent=z?'ACC Flow｜學習・個人・工具':'ACC Flow · Learning · Personal · Tools';document.querySelector('[data-i="brandSub"]').textContent=z?'學習中心與個人平台':'Learning & personal hub';document.title='ACC Flow｜學習・個人・工具'}catch(_){}}
     if(EMBED||LEGACY||PAGE==='tool')return _render.apply(this,arguments);
     try{updateNavCounts()}catch(_){}
     const w=document.getElementById('smartImportWrap');if(w){w.classList.add('hidden','acc-moved')}
     const zh=LANG!=='en'&&LANG!=='km';
-    document.getElementById('appMain').innerHTML=`<div class="acc-moved-card"><h2>📦 ${zh?'會計頁已移到 VRT ERP':'Accounting pages moved to VRT ERP'}</h2>
-      <div>${zh?'WIP、成品入庫、製造費用改在 <b>VRT ERP › 💰 財務 › 會計（ACC Flow）</b> 查看與匯入。資料、雲端、Telegram 都沒變，只是換地方顯示。':'WIP, FG inbound and factory expense now live in <b>VRT ERP › Finance › Accounting</b>. Data, cloud and Telegram are unchanged.'}</div>
-      <a class="go" href="${target()}">${zh?'前往 VRT ERP 財務 →':'Open VRT ERP Finance →'}</a>
-      <div style="margin-top:14px;font-size:13px;opacity:.7">${zh?'上方的工具（薪資、年假、合約…）照常使用。':'The tools above (payroll, leave, contracts…) work as before.'}</div></div>`;
+    document.getElementById('appMain').innerHTML=`<div class="acc-moved-card"><h2>${zh?'學習・個人・工具':'Learning · Personal · Tools'}</h2>
+      <div style="font-size:13px;opacity:.75">${zh?'這裡現在是學習與個人平台。上方按鈕可直接開各工具。':'This is now the learning and personal platform. Use the buttons above to open each tool.'}</div>
+      <div class="hub-tiles">
+        <a href="learn/index.html?view=learning"><span>📚</span>${zh?'學習中心':'Learning'}<small>${zh?'全部課程與教材':'All courses'}</small></a>
+        <a href="learn/index.html?view=learning&focus=progress"><span>↻</span>${zh?'繼續閱讀':'Continue'}<small>${zh?'上次讀到哪裡':'Resume reading'}</small></a>
+        <a href="learn/index.html?view=personal"><span>👤</span>${zh?'個人專用':'Personal'}<small>${zh?'個人工具與文件':'Personal tools'}</small></a>
+        <a href="learn/index.html?view=tools"><span>🧰</span>${zh?'工具':'Tools'}<small>${zh?'薪資、合約、旅遊、AI…':'Payroll, contracts, travel, AI…'}</small></a>
+        <a href="modules/language-learning.html"><span>🌏</span>${zh?'語言學習':'Languages'}<small>${zh?'柬、泰、越、日、西…':'Khmer, Thai, Vietnamese…'}</small></a>
+      </div>
+      <div class="erp-note">${zh?'💰 會計（WIP／成品入庫／製造費用）已改在 VRT ERP › 財務：':'💰 Accounting (WIP / FG / factory expense) now lives in VRT ERP › Finance: '}<a href="${target()}">${zh?'前往 VRT ERP 財務 →':'Open VRT ERP Finance →'}</a></div></div>`;
     if(q.get('page')||q.get('module')){setTimeout(()=>{location.href=target()},1200)}
   };
 })();
