@@ -124,6 +124,10 @@ break;case"<bookViews":;case"<bookViews>":;case"</bookViews>":break;case"<workbo
 
   <nav class="module-nav">
     <div class="nav-inner" id="mainNav">
+      <a class="nav-btn hub-link" href="os/index.html?view=biz">🏢 企業營運中心</a>
+      <a class="nav-btn hub-link" href="os/index.html?view=law">⚖️ 全球法規中心</a>
+      <a class="nav-btn hub-link" href="os/index.html?view=edu">🎓 知識學習中心</a>
+      <a class="nav-btn hub-link" href="os/index.html?view=acc">👤 個人工具</a>
       <a class="nav-btn hub-link" href="learn/index.html?view=learning">📚 學習中心</a>
       <a class="nav-btn hub-link" href="learn/index.html?view=personal">👤 個人專用</a>
       <a class="nav-btn hub-link" href="learn/index.html?view=learning&focus=progress">↻ 繼續閱讀</a>
@@ -876,6 +880,10 @@ window.addEventListener('pageshow',event=>{if(event.persisted&&SETTINGS.gasUrl&&
     document.getElementById('appMain').innerHTML=`<div class="acc-moved-card"><h2>${zh?'學習・個人・工具':'Learning · Personal · Tools'}</h2>
       <div style="font-size:13px;opacity:.75">${zh?'這裡現在是學習與個人平台。上方按鈕可直接開各工具。':'This is now the learning and personal platform. Use the buttons above to open each tool.'}</div>
       <div class="hub-tiles">
+        <a href="os/index.html?view=biz"><span>🏢</span>${zh?'企業營運中心':'Business OS'}<small>${zh?'咖啡店、鞋廠、五金、超商':'Café, shoe, hardware, retail'}</small></a>
+        <a href="os/index.html?view=law"><span>⚖️</span>${zh?'全球法規中心':'Global Law'}<small>${zh?'跨國法規、薪資、年假、合約':'Law, payroll, leave, contracts'}</small></a>
+        <a href="os/index.html?view=edu"><span>🎓</span>${zh?'知識學習中心':'Knowledge OS'}<small>${zh?'課程、閱讀、語言':'Courses, reading, languages'}</small></a>
+        <a href="os/index.html?view=acc"><span>👤</span>${zh?'個人工具':'Personal Tools'}</a>
         <a href="learn/index.html?view=learning"><span>📚</span>${zh?'學習中心':'Learning'}<small>${zh?'全部課程與教材':'All courses'}</small></a>
         <a href="learn/index.html?view=learning&focus=progress"><span>↻</span>${zh?'繼續閱讀':'Continue'}<small>${zh?'上次讀到哪裡':'Resume reading'}</small></a>
         <a href="learn/index.html?view=personal"><span>👤</span>${zh?'個人專用':'Personal'}<small>${zh?'個人工具與文件':'Personal tools'}</small></a>
