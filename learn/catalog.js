@@ -358,32 +358,6 @@ window.AC_CATALOG = [
   "search": "ai project tracker vrt 數位化"
  },
  {
-  "id": "personal1",
-  "group": "personal",
-  "icon": "🛒",
-  "title": {
-   "zh": "Supermarket Inventory",
-   "en": "Personal Inventory Tool",
-   "km": "គ្រប់គ្រងស្តុកផ្ទាល់ខ្លួន"
-  },
-  "desc": {
-   "zh": "個人進銷存與庫存管理工具。",
-   "en": "Personal Inventory Tool",
-   "km": "គ្រប់គ្រងស្តុកផ្ទាល់ខ្លួន"
-  },
-  "links": [
-   {
-    "label": {
-     "zh": "開啟",
-     "en": "Open",
-     "km": "បើក"
-    },
-    "url": "apps/personal/supermarket_inventory.html"
-   }
-  ],
-  "search": "supermarket inventory 進銷存"
- },
- {
   "id": "personal2",
   "group": "personal",
   "icon": "📡",
@@ -408,32 +382,6 @@ window.AC_CATALOG = [
    }
   ],
   "search": "spy stock market investment dashboard"
- },
- {
-  "id": "personal3",
-  "group": "personal",
-  "icon": "📜",
-  "title": {
-   "zh": "Saintdou Premium Docs",
-   "en": "Personal Document Studio",
-   "km": "Saintdou Premium Docs"
-  },
-  "desc": {
-   "zh": "個人質感文件與版型工具。",
-   "en": "Personal Document Studio",
-   "km": "Saintdou Premium Docs"
-  },
-  "links": [
-   {
-    "label": {
-     "zh": "開啟",
-     "en": "Open",
-     "km": "បើក"
-    },
-    "url": "apps/personal/saintdou_premium_docs.html"
-   }
-  ],
-  "search": "saintdou docs premium document"
  },
  {
   "id": "language",
@@ -487,114 +435,6 @@ window.AC_CATALOG = [
    }
   ],
   "search": "台股上市財報分析 TWSE Financial Analysis"
- },
- {
-  "id": "acc-manager-payroll",
-  "group": "tools",
-  "category": "business",
-  "icon": "💵",
-  "title": {
-   "zh": "外籍／當地管理層薪資",
-   "en": "Manager Payroll",
-   "km": "ប្រាក់ខែអ្នកគ្រប់គ្រង"
-  },
-  "desc": {
-   "zh": "分開管理外籍與當地主管薪資、日曆、比較、異常及匯入歷史。",
-   "en": "Separate expat and local payroll, calendar, comparisons, exceptions and import history.",
-   "km": "ប្រាក់ខែបរទេស និងក្នុងស្រុក ប្រតិទិន ការប្រៀបធៀប និងភាពមិនប្រក្រតី។"
-  },
-  "links": [
-   {
-    "label": {
-     "zh": "開啟",
-     "en": "Open",
-     "km": "បើក"
-    },
-    "url": "../modules/foreign-manager-payroll.html"
-   }
-  ],
-  "search": "外籍／當地管理層薪資 Manager Payroll"
- },
- {
-  "id": "acc-salary-management",
-  "group": "tools",
-  "category": "business",
-  "icon": "🧾",
-  "title": {
-   "zh": "薪資管理／人工成本",
-   "en": "Salary & Labor Cost",
-   "km": "ប្រាក់ខែ និងថ្លៃពលកម្ម"
-  },
-  "desc": {
-   "zh": "管理行政與生產薪資級距、NSSF 及月度人工成本，並連接製造成本指定月份。",
-   "en": "Manage salary grades, NSSF and monthly labor cost linked to a selected manufacturing-cost month.",
-   "km": "គ្រប់គ្រងកម្រិតប្រាក់ខែ NSSF និងថ្លៃពលកម្មតាមខែ។"
-  },
-  "links": [
-   {
-    "label": {
-     "zh": "開啟",
-     "en": "Open",
-     "km": "បើក"
-    },
-    "url": "../modules/salary-management.html"
-   }
-  ],
-  "search": "薪資管理／人工成本 Salary & Labor Cost"
- },
- {
-  "id": "acc-leave-manager",
-  "group": "tools",
-  "category": "business",
-  "icon": "🏖️",
-  "title": {
-   "zh": "外籍幹部年假管理",
-   "en": "Expat Leave Manager",
-   "km": "គ្រប់គ្រងការឈប់សម្រាក"
-  },
-  "desc": {
-   "zh": "年假申請、餘額、季度使用、機票及紀錄摘要。",
-   "en": "Leave requests, balances, quarterly use, tickets and record summaries.",
-   "km": "សំណើ សមតុល្យ ត្រីមាស សំបុត្រ និងសេចក្តីសង្ខេប។"
-  },
-  "links": [
-   {
-    "label": {
-     "zh": "開啟",
-     "en": "Open",
-     "km": "បើក"
-    },
-    "url": "../modules/leave-manager.html"
-   }
-  ],
-  "search": "外籍幹部年假管理 Expat Leave Manager"
- },
- {
-  "id": "acc-contract-manager",
-  "group": "tools",
-  "category": "business",
-  "icon": "📑",
-  "title": {
-   "zh": "海外幹部合約管理",
-   "en": "Expat Contract Manager",
-   "km": "គ្រប់គ្រងកិច្ចសន្យា"
-  },
-  "desc": {
-   "zh": "員工、試用／正式合約、條款、歷史與離職文件分開管理。",
-   "en": "Employees, probation/regular contracts, clauses, history and termination documents.",
-   "km": "បុគ្គលិក កិច្ចសន្យា លក្ខខណ្ឌ ប្រវត្តិ និងឯកសារបញ្ចប់។"
-  },
-  "links": [
-   {
-    "label": {
-     "zh": "開啟",
-     "en": "Open",
-     "km": "បើក"
-    },
-    "url": "../modules/contract-manager.html"
-   }
-  ],
-  "search": "海外幹部合約管理 Expat Contract Manager"
  },
  {
   "id": "acc-life-manager",
@@ -811,32 +651,5 @@ window.AC_CATALOG = [
    }
   ],
   "search": "OCR 文字提取與翻譯 OCR & Translation"
- },
- {
-  "id": "acc-factory-map",
-  "group": "tools",
-  "category": "business",
-  "icon": "📍",
-  "title": {
-   "zh": "工廠數位地圖",
-   "en": "Factory Map",
-   "km": "ផែនទីរោងចក្រ"
-  },
-  "desc": {
-   "zh": "廠區平面圖與設備位置。",
-   "en": "Factory layout drawings and equipment locations.",
-   "km": "ផែនទីរោងចក្រ។"
-  },
-  "links": [
-   {
-    "label": {
-     "zh": "開啟",
-     "en": "Open",
-     "km": "បើក"
-    },
-    "url": "../factory-map.html"
-   }
-  ],
-  "search": "factory map 工廠 地圖"
  }
 ];

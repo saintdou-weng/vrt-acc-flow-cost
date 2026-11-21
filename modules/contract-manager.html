@@ -317,9 +317,19 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-seri
 /* status notice */
 .status-row{background:var(--warn-bg);border:1px solid #e8d060;border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:var(--warn);display:flex;align-items:center;gap:8px;}
 </style>
-  <link rel="stylesheet" href="../acc-module-shell.css">
+  <link rel="stylesheet" href="../acc-module-shell.css?v=20261121">
   <script defer src="../acc-module-shell.js"></script>
-</head>
+<style id="acc-mobile-fit">/* 2026-11-21 手機版：不超出螢幕寬度 */
+@media(max-width:760px){
+body{height:auto!important;overflow:auto!important}
+.tb{flex-wrap:wrap!important;height:auto!important;padding:8px 10px!important;gap:6px!important}
+.tb-right{margin-left:0!important;flex-wrap:wrap;width:100%}
+.app{flex-direction:column!important;overflow:visible!important}
+.sidebar{width:100%!important;max-height:40vh;border-right:0!important;border-bottom:1px solid var(--border)}
+.main{overflow:visible!important}
+.modal{width:auto!important;max-width:calc(100vw - 16px)!important}
+.modal [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}
+}</style></head>
 <body class="lang-zh">
 
 <!-- TOOLBAR -->

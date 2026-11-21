@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Saintdou 餐廳經營｜Restaurant OS</title>
+<style>
+/* 2026-11-21 Paul：Saintdou Premium 整合成「餐廳經營管理」，放到企業營運。
+   三個分頁：菜單・帳單（原 Saintdou Premium 文件）／餐飲營運系統（Café OS：POS・採購・庫存・人事）／開業 SOP（餐飲篇）。
+   各分頁內容與資料都是原本那一份，這頁只是把它們放在一起。 */
+:root{--ink:#1d2b36;--muted:#6b7a86;--line:#e3e8ec;--bg:#f5f3ee;--card:#fff;--gold:#b08a3e;--deep:#1f2a33}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Noto Sans TC",sans-serif;display:flex;flex-direction:column}
+header{background:var(--deep);color:#f4efe4;padding:12px 16px calc(10px);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header .mark{font-size:24px}
+header h1{font-size:16px;margin:0;letter-spacing:.04em}
+header small{display:block;color:#c9bfa8;font-size:11px;letter-spacing:.08em}
+header .grow{flex:1}
+header a{color:#f4efe4;text-decoration:none;border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 10px;font-size:12px;white-space:nowrap}
+nav{display:flex;gap:6px;padding:8px 12px;background:#fff;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+nav::-webkit-scrollbar{display:none}
+nav button{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:8px 14px;font:600 13px/1 inherit;font-family:inherit;cursor:pointer;white-space:nowrap}
+nav button.on{background:var(--deep);color:#fff;border-color:var(--deep)}
+nav button small{font-weight:400;opacity:.7;margin-left:4px}
+.hint{padding:6px 14px;font-size:12px;color:var(--muted);background:#fbfaf7;border-bottom:1px solid var(--line)}
+main{flex:1;position:relative;min-height:0}
+iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+iframe[hidden]{display:none}
+@media(max-width:600px){header{padding:10px 12px}header h1{font-size:15px}.hint{font-size:11px}}
+</style>
+</head>
+<body>
+<header>
+  <span class="mark">🍽️</span>
+  <div><h1 data-zh="Saintdou 餐廳經營" data-en="Saintdou Restaurant OS">Saintdou 餐廳經營</h1><small>RESTAURANT OS · SAINTDOU PREMIUM</small></div>
+  <span class="grow"></span>
+  <a href="../os/index.html?view=biz" data-zh="← 企業營運" data-en="← Business OS">← 企業營運</a>
+</header>
+<nav id="tabs" aria-label="餐廳經營分頁">
+  <button data-tab="docs" class="on"><span data-zh="📜 菜單・帳單" data-en="📜 Menu & Invoice">📜 菜單・帳單</span><small>Premium</small></button>
+  <button data-tab="ops"><span data-zh="☕ 餐飲營運系統" data-en="☕ F&B Operations">☕ 餐飲營運系統</span><small>POS・採購・庫存</small></button>
+  <button data-tab="sop"><span data-zh="📘 開業 SOP（餐飲）" data-en="📘 Startup SOP (F&B)">📘 開業 SOP（餐飲）</span></button>
+</nav>
+<div class="hint" id="hint"></div>
+<main>
+  <iframe id="f-docs" title="Saintdou Premium 菜單與帳單" data-src="premium-docs.html"></iframe>
+  <iframe id="f-ops" title="餐飲營運系統" data-src="cafe.html" hidden></iframe>
+  <iframe id="f-sop" title="開業 SOP 餐飲篇" data-src="sop.html#cafe" hidden></iframe>
+</main>
+<script>
+(function(){
+  var HINT={
+    docs:['Saintdou Premium 質感文件：餐廳帳單（收據）與菜單範本，可直接列印給客人。','Saintdou Premium documents: restaurant invoice and menu templates, ready to print.'],
+    ops:['餐飲營運系統（原 Café OS）：點餐 POS、採購、庫存、人事都在這裡，資料跟原本咖啡店頁同一份。','F&B operations (Café OS): POS, purchasing, stock and staff — same data as the Café page.'],
+    sop:['開業 SOP 學院的餐飲篇：從選址、成本到開幕，用例子一步一步講。','Startup SOP Academy, F&B chapter: location, cost and opening, step by step.']
+  };
+  var lang='zh';try{lang=localStorage.getItem('acc_os_hub_lang')==='en'?'en':'zh';}catch(e){}
+  document.querySelectorAll('[data-zh]').forEach(function(el){el.textContent=el.getAttribute('data-'+lang);});
+  var tabs=document.getElementById('tabs');
+  function show(id){
+    tabs.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b.dataset.tab===id);});
+    document.querySelectorAll('main iframe').forEach(function(f){
+      var on=f.id==='f-'+id;f.hidden=!on;
+      if(on&&!f.getAttribute('src'))f.setAttribute('src',f.dataset.src);
+    });
+    document.getElementById('hint').textContent=HINT[id][lang==='en'?1:0];
+    try{history.replaceState(null,'','#'+id);}catch(e){}
+  }
+  tabs.addEventListener('click',function(e){var b=e.target.closest('button[data-tab]');if(b)show(b.dataset.tab);});
+  var start=(location.hash||'').slice(1);show(HINT[start]?start:'docs');
+})();
+</script>
+<script src="../os/acc-menu.js" defer></script>
+</body>
+</html>

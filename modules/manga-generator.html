@@ -508,9 +508,13 @@ input:focus, textarea:focus, select:focus { border-color: var(--ink); background
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
 </style>
-  <link rel="stylesheet" href="../acc-module-shell.css">
+  <link rel="stylesheet" href="../acc-module-shell.css?v=20261121">
   <script defer src="../acc-module-shell.js"></script>
-</head>
+<style id="acc-mobile-fit">/* 2026-11-21 手機版：不超出螢幕寬度 */
+@media(max-width:760px){
+.options-grid{grid-template-columns:1fr!important}
+.toggle-row{flex-wrap:wrap}
+}</style></head>
 <body>
 
 <!-- HEADER -->

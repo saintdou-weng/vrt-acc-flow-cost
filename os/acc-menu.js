@@ -1,4 +1,5 @@
-/* ACC Flow 平台選單 v1.0（2026-11-21）
+/* ACC Flow 平台選單 v1.1（2026-11-21）
+   v1.1：餐廳經營（含 Saintdou Premium）、超市進銷存移進企業營運；外幹薪資／年假／合約等工廠工具移到 Admin OS 最底下。
    Paul：除了 Telegram 群組的選單，平台本身也要能從選單進各分類。
    · window.ACC_OS_GROUPS：四大分類與入口（os/index.html 也用這一份，改一個地方兩邊一起變）。
    · 每頁左下角一顆「◈ 選單」按鈕 → 側邊選單：ACC 首頁、四大分類（點開看全部入口）、工廠數位地圖、會計 → VRT ERP 財務。
@@ -10,6 +11,8 @@
     {id:'biz',icon:'🏢',zh:'企業營運',en:'Business OS',color:'#13786d',items:[
       ['📘','開業 SOP 學院','Startup SOP Academy','../biz/sop.html','五種生意從無到有・圖解・名詞・中英'],
       ['🏨','精品酒店','Hotel OS','../biz/hotel.html','訂房・房務・餐飲・USALI 財務'],
+      ['🍽️','餐廳經營','Restaurant OS','../biz/restaurant.html','Saintdou Premium 菜單・帳單＋餐飲營運'],
+      ['🛒','超市進銷存','Supermarket','../biz/supermarket.html','進貨・銷售・庫存・報表'],
       ['☕','咖啡店','Café OS','../biz/cafe.html','營運・POS・採購・庫存'],
       ['👞','鞋廠','Shoe OS','../biz/shoe.html','製造・原料・成品・人事'],
       ['🛠️','五金百貨','Hardware OS','../biz/hbs.html','進銷存・採購・零售'],
@@ -17,11 +20,7 @@
       ['🧵','成衣專業','Garment','../learn/index.html?view=learning&category=garment','既有專業教材'],
       ['📈','經營管理','Management','../learn/index.html?view=learning&category=business','既有經營管理教材']]},
     {id:'law',icon:'⚖️',zh:'全球法規',en:'Global Law',color:'#385faf',items:[
-      ['🌐','跨國法規','Global Law OS','../law/global.html','法規・比較・追蹤'],
-      ['💵','外籍／當地薪資','Manager Payroll','../modules/foreign-manager-payroll.html','既有薪資工具'],
-      ['💰','薪資管理','Salary & Labor Cost','../modules/salary-management.html','既有人工成本工具'],
-      ['🏖️','年假','Leave','../modules/leave-manager.html','既有年假系統'],
-      ['📄','合約','Contracts','../modules/contract-manager.html','既有合約系統']]},
+      ['🌐','跨國法規','Global Law OS','../law/global.html','法規・比較・追蹤']]},
     {id:'edu',icon:'🎓',zh:'知識學習',en:'Knowledge OS',color:'#7752a1',items:[
       ['📚','學習中心','Courses','../learn/index.html?view=learning','全部既有課程'],
       ['↻','繼續閱讀／進度','Reading progress','../learn/index.html?view=learning&focus=progress','既有閱讀紀錄'],

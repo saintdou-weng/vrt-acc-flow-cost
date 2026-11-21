@@ -611,9 +611,26 @@ tr:hover .row-actions { opacity:1; }
 .api-dot.on { background:var(--green); }
 .api-dot.off { background:var(--red); }
 </style>
-  <link rel="stylesheet" href="../acc-module-shell.css">
+  <link rel="stylesheet" href="../acc-module-shell.css?v=20261121">
   <script defer src="../acc-module-shell.js"></script>
-</head>
+<style id="acc-mobile-fit">/* 2026-11-21 手機版：左側選單改成上方一排可滑動的分頁，內容用滿整個寬度 */
+@media(max-width:760px){
+body{display:block!important;height:auto!important;overflow:auto!important;padding-left:0!important;padding-right:0!important}
+#sidebar{width:100%!important;min-width:0!important;border-right:0!important;border-bottom:1px solid var(--border);position:sticky;top:var(--acc-shell-h,0px);z-index:50}
+#logo{display:none!important}
+#nav{display:flex!important;overflow-x:auto!important;overflow-y:hidden!important;padding:6px 6px!important;gap:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+#nav::-webkit-scrollbar{display:none}
+#nav .nav-item{flex:0 0 auto;padding:8px 12px!important;border-left:0!important;border-bottom:2px solid transparent;border-radius:8px;white-space:nowrap;gap:6px}
+#nav .nav-item.active{border-bottom-color:var(--gold)}
+#nav .nav-count{margin-left:4px}
+#sidebar>*:not(#nav):not(#logo){padding:6px 12px!important;font-size:11px}
+#main{overflow:visible!important}
+#topbar{height:auto!important;min-height:50px;flex-wrap:wrap;padding:8px 12px!important;gap:8px!important}
+#content{overflow:visible!important;padding:14px 12px!important}
+.form-grid{grid-template-columns:1fr!important}
+.table-wrap{overflow-x:auto}
+.modal{width:calc(100vw - 20px)!important;max-width:none!important}
+}</style></head>
 <body>
 
 <!-- SIDEBAR -->
