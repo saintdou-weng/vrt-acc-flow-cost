@@ -8,6 +8,7 @@
   'use strict';
   var GROUPS=[
     {id:'biz',icon:'🏢',zh:'企業營運',en:'Business OS',color:'#13786d',items:[
+      ['📘','開業 SOP 學院','Startup SOP Academy','../biz/sop.html','五種生意從無到有・圖解・名詞・中英'],
       ['🏨','精品酒店','Hotel OS','../biz/hotel.html','訂房・房務・餐飲・USALI 財務'],
       ['☕','咖啡店','Café OS','../biz/cafe.html','營運・POS・採購・庫存'],
       ['👞','鞋廠','Shoe OS','../biz/shoe.html','製造・原料・成品・人事'],

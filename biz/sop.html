@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#183247">
+<title>聖道開業 SOP 學院</title>
+<style>
+:root{--bg:#eef3f7;--ink:#182d40;--muted:#627487;--line:#dbe4ec;--card:#fff;--tone:#13786d;--soft:#e7f4f1;--good:#17845f;--bad:#c0392b;--warn:#b7791f}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 system-ui,-apple-system,"Noto Sans TC","Microsoft JhengHei",sans-serif}
+header{position:sticky;top:0;z-index:20;background:#ffffffef;backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:10px 14px;display:flex;align-items:center;gap:10px}
+header .logo{width:38px;height:38px;border-radius:11px;background:#183247;color:#fff;display:grid;place-items:center;font-size:20px;flex:none}
+header b{display:block;font-size:16px;line-height:1.2}header small{display:block;color:var(--muted);font-size:11px}
+header .sp{flex:1}
+button,select,input{font:inherit}
+.btn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:7px 11px;font-weight:700;cursor:pointer}
+.btn.on{background:var(--tone);border-color:var(--tone);color:#fff}
+nav.tabs{position:sticky;top:59px;z-index:15;background:var(--bg);display:flex;gap:7px;overflow-x:auto;padding:9px 14px;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{flex:none;border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 13px;font-weight:750;cursor:pointer;color:var(--ink)}
+nav.tabs button.on{background:var(--tone);border-color:var(--tone);color:#fff}
+main{max-width:1000px;margin:auto;padding:4px 14px 90px}
+.hero{border-radius:20px;padding:20px 18px;color:#fff;background:linear-gradient(135deg,var(--tone),#183247);margin:6px 0 14px;position:relative;overflow:hidden}
+.hero h1{margin:0 0 4px;font-size:24px;line-height:1.3}.hero p{margin:4px 0 0;opacity:.92;font-size:13.5px}
+.hero .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}.hero .chip{background:#ffffff26;border:1px solid #ffffff40;border-radius:999px;padding:3px 10px;font-size:12px}
+.hero .big{position:absolute;right:12px;top:6px;font-size:64px;opacity:.18}
+section.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0}
+section.card>h2{margin:0 0 4px;font-size:18px;display:flex;align-items:center;gap:8px}
+section.card>h2 .n{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--tone);color:#fff;font-size:13px;flex:none}
+.sub{color:var(--muted);font-size:13px;margin:0 0 10px}
+.toc{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0}.toc a{font-size:12px;color:var(--tone);background:var(--soft);border-radius:999px;padding:3px 10px;text-decoration:none;font-weight:700}
+/* phases */
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 0 12px}
+.flow button{border:2px solid var(--tone);background:#fff;color:var(--tone);border-radius:12px;padding:6px 10px;font-weight:800;font-size:13px;cursor:pointer}
+.flow button.on{background:var(--tone);color:#fff}
+.flow .ar{color:#9aabba;font-weight:900}
+.phase{border:1px solid var(--line);border-left:5px solid var(--tone);border-radius:14px;padding:12px 14px;background:#fbfdfe}
+.phase h3{margin:0 0 6px;font-size:16px}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}.meta span{font-size:12px;background:var(--soft);color:var(--tone);border-radius:8px;padding:2px 8px;font-weight:700}
+.phase ul{margin:4px 0 6px;padding-left:20px}.phase li{margin:3px 0}
+.tip,.oops{border-radius:11px;padding:8px 11px;margin:8px 0 0;font-size:13.5px}
+.tip{background:#eaf7f0;border:1px solid #c5e8d6}.oops{background:#fdf0ee;border:1px solid #f2cbc4}
+.sys{display:inline-block;margin-top:6px;font-size:12px;font-weight:800;color:#fff;background:#183247;border-radius:8px;padding:3px 9px;text-decoration:none}
+/* tables & bars */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:480px}
+th,td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+th{background:#f3f7fa;font-size:12.5px;color:#41566a}
+table tr>td:first-child{min-width:86px}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bars{display:grid;gap:7px}.bar{display:grid;grid-template-columns:minmax(92px,32%) 1fr auto;gap:8px;align-items:center;font-size:13px}
+.bar .tr{background:#eef2f6;border-radius:8px;height:18px;overflow:hidden}.bar .fl{height:100%;background:var(--tone);border-radius:8px}
+.bar .v{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
+.total{margin-top:10px;font-weight:800;text-align:right}
+/* day timeline */
+.day{display:grid;gap:8px}.slot{display:grid;grid-template-columns:70px 1fr;gap:10px;align-items:start}
+.slot .t{font-weight:900;color:var(--tone);font-variant-numeric:tabular-nums;background:var(--soft);border-radius:9px;text-align:center;padding:4px 0}
+.slot .d{border-left:3px solid var(--line);padding-left:10px}
+/* kpi */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.kpi{border:1px solid var(--line);border-radius:14px;padding:11px 12px;background:#fbfdfe}
+.kpi b{font-size:15px}.kpi .f{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;background:#f1f5f9;border-radius:8px;padding:5px 8px;margin:6px 0;display:block}
+.kpi .ex{font-size:13px}.kpi .good{color:var(--good);font-weight:800}
+/* calc */
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:9px}
+.calc label{font-size:12.5px;color:#41566a;font-weight:700}.calc input{width:100%;border:1px solid #cdd8e3;border-radius:10px;padding:8px 10px;margin-top:3px;font-variant-numeric:tabular-nums}
+.res{margin-top:12px;border-radius:14px;padding:12px 14px;background:#183247;color:#fff}
+.res .r1{font-size:22px;font-weight:900}.res small{opacity:.85}
+.gauge{height:12px;border-radius:8px;background:#ffffff33;margin:8px 0 4px;overflow:hidden}.gauge i{display:block;height:100%;background:#7ee0b8}
+/* pros cons */
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pc>div{border-radius:14px;padding:10px 12px}.pc .p{background:#eaf7f0;border:1px solid #c5e8d6}.pc .c{background:#fdf0ee;border:1px solid #f2cbc4}
+.pc h4{margin:0 0 4px}.pc ul{margin:0;padding-left:18px}
+/* cycle svg */
+.cyc{display:block;margin:4px auto;max-width:440px;width:100%}
+/* glossary */
+abbr.g{text-decoration:none;border-bottom:1.5px dotted var(--tone);cursor:help;color:inherit}
+#gpop{position:fixed;z-index:60;max-width:min(340px,92vw);background:#183247;color:#fff;border-radius:12px;padding:10px 12px;font-size:13px;box-shadow:0 10px 30px rgba(0,0,0,.25);display:none}
+#gpop b{display:block;font-size:14px;margin-bottom:2px}
+.gl{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px}
+.gl .it{border:1px solid var(--line);border-radius:12px;padding:9px 11px;background:#fff}
+.gl .it b{color:var(--tone)}.gl .it small{display:block;color:var(--muted);font-size:11.5px}
+.gsearch{width:100%;border:1px solid #cdd8e3;border-radius:12px;padding:10px 12px;margin:4px 0 10px}
+.stars{color:#e0a100;letter-spacing:1px;white-space:nowrap}
+.note{font-size:12px;color:var(--muted);margin-top:14px}
+.note a{color:var(--muted)}
+@media(max-width:620px){.pc{grid-template-columns:1fr}.hero h1{font-size:21px}.slot{grid-template-columns:58px 1fr}}
+@media print{header,nav.tabs,#accMenuBtn{display:none}section.card{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">📘</div>
+  <div><b id="ttl">聖道開業 SOP 學院</b><small id="stl">Saintdou · 五種生意從無到有</small></div>
+  <div class="sp"></div>
+  <button class="btn" id="langBtn" type="button">EN</button>
+</header>
+<nav class="tabs" id="tabs"></nav>
+<main id="main"></main>
+<div id="gpop"></div>
+<script>
+'use strict';
+/* ───────── 語言與小工具 ───────── */
+let L=(()=>{try{return localStorage.getItem('acc_os_hub_lang')==='en'?'en':'zh'}catch(e){return 'zh'}})();
+const T=(z,e)=>L==='en'?(e??z):z;
+const tx=o=>o==null?'':(typeof o==='string'?o:(L==='en'?(o.e??o.z):o.z));
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=(n,d=0)=>Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+/* 文字裡的 [[詞]] 會變成可點的名詞解釋 */
+function rich(s){return esc(tx(s)).replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g,(m,k,lab)=>`<abbr class="g" data-g="${k}">${lab||(G[k]?tx(G[k].n):k)}</abbr>`)}
+
+/* ───────── 名詞表 ───────── */
+const G={
+CAPEX:{n:{z:'CAPEX 資本支出',e:'CAPEX'},d:{z:'開店前一次花下去、能用很多年的錢：裝修、設備、家具。會分年攤成「折舊」。',e:'One-off spending on things that last years — fit-out, equipment, furniture. Spread over years as depreciation.'}},
+OPEX:{n:{z:'OPEX 營運費用',e:'OPEX'},d:{z:'每個月都要付的錢：房租、薪水、水電、網路。',e:'Recurring monthly costs: rent, wages, utilities, internet.'}},
+BEP:{n:{z:'損益兩平點',e:'Break-even point'},d:{z:'賣到這個量剛好不賺不賠。公式：固定成本 ÷（售價 − 變動成本）。',e:'The sales volume where profit is zero. Fixed cost ÷ (price − variable cost).'}},
+FC:{n:{z:'固定成本',e:'Fixed cost'},d:{z:'不管賣多少都要付的成本，例如房租、正職薪水。',e:'Costs you pay regardless of sales — rent, salaried staff.'}},
+VC:{n:{z:'變動成本',e:'Variable cost'},d:{z:'每多賣一份才多花的成本，例如咖啡豆、牛奶、OTA 佣金。',e:'Cost that rises with each unit sold — beans, milk, OTA commission.'}},
+CM:{n:{z:'邊際貢獻',e:'Contribution margin'},d:{z:'售價 − 變動成本。每賣一份能拿去付固定成本的錢。',e:'Price − variable cost: what each sale contributes toward fixed costs.'}},
+GM:{n:{z:'毛利率',e:'Gross margin'},d:{z:'（營收 − 進貨或原料成本）÷ 營收。零售業最常看的數字。',e:'(Revenue − cost of goods) ÷ revenue.'}},
+WC:{n:{z:'週轉金',e:'Working capital'},d:{z:'開幕後到賺錢前，用來付薪水、進貨的備用現金。一般準備 3–6 個月固定支出。',e:'Cash buffer to pay wages and stock before the business earns enough. Usually 3–6 months of fixed costs.'}},
+DEP:{n:{z:'折舊',e:'Depreciation'},d:{z:'把設備、裝修的錢分年攤進成本。例：$60,000 設備用 5 年，每年折舊 $12,000。',e:'Spreading equipment cost over its useful life, e.g. $60,000 over 5 years = $12,000/yr.'}},
+CF:{n:{z:'現金流',e:'Cash flow'},d:{z:'實際進出口袋的錢。帳上賺錢但收不到款，一樣會倒。',e:'Money actually coming in and going out. Paper profit without cash can still sink you.'}},
+AR:{n:{z:'AR 應收帳款',e:'Accounts receivable'},d:{z:'東西賣了、錢還沒收到，例如企業月結、OTA 每月撥款、承包商賒帳。',e:'Sales made but not yet collected — corporate accounts, OTA payouts, contractor credit.'}},
+AP:{n:{z:'AP 應付帳款',e:'Accounts payable'},d:{z:'貨收了、錢還沒付給供應商。',e:'Goods received but not yet paid to suppliers.'}},
+SOP:{n:{z:'SOP 標準作業程序',e:'SOP'},d:{z:'Standard Operating Procedure：把「誰、什麼時候、怎麼做、做到什麼程度」寫清楚，換人做結果也一樣。',e:'Standard Operating Procedure: who does what, when, how and to what standard — so results are the same whoever does it.'}},
+KPI:{n:{z:'KPI 關鍵指標',e:'KPI'},d:{z:'Key Performance Indicator：用幾個數字判斷生意好不好。',e:'Key Performance Indicator: the few numbers that tell you how the business is doing.'}},
+POS:{n:{z:'POS 收銀系統',e:'POS'},d:{z:'Point of Sale：結帳、開發票、記錄每一筆銷售的系統。',e:'Point of Sale: the till system that records every sale.'}},
+SKU:{n:{z:'SKU 品項',e:'SKU'},d:{z:'Stock Keeping Unit：每一個可賣的規格算一個，例如 1 吋和 2 吋螺絲是兩個 SKU。',e:'Stock Keeping Unit — each sellable variant, e.g. a 1-inch and a 2-inch screw are two SKUs.'}},
+BOM:{n:{z:'BOM 用料表／配方',e:'BOM'},d:{z:'Bill of Materials：做一個產品要用哪些料、各多少。咖啡店叫配方，工廠叫用料表。',e:'Bill of Materials: which materials and how much go into one product — a recipe in a café.'}},
+MRP:{n:{z:'MRP 物料需求計畫',e:'MRP'},d:{z:'Material Requirements Planning：訂單 × BOM − 現有庫存 = 要買多少、什麼時候買。',e:'Material Requirements Planning: orders × BOM − stock on hand = what to buy and when.'}},
+PO:{n:{z:'PO 採購單',e:'Purchase order'},d:{z:'正式向供應商下訂的單據，寫品項、數量、價格、交期。',e:'Formal order to a supplier with items, quantity, price and delivery date.'}},
+GRN:{n:{z:'驗收（GRN／IQC）',e:'Goods receipt (GRN/IQC)'},d:{z:'貨到時點數量、看品質、看效期，合格才入庫並產生應付帳款。',e:'Checking quantity, quality and expiry on arrival before stock-in and creating the payable.'}},
+SS:{n:{z:'安全庫存',e:'Safety stock'},d:{z:'為了怕缺貨多放的一點庫存。',e:'Extra stock kept to avoid running out.'}},
+ROP:{n:{z:'補貨點',e:'Reorder point'},d:{z:'庫存降到這個數字就該下單。= 每日用量 × 交期天數 + 安全庫存。',e:'Stock level that triggers a new order = daily usage × lead time + safety stock.'}},
+FIFO:{n:{z:'FIFO 先進先出',e:'FIFO'},d:{z:'先到的貨先賣，避免過期。上架時新貨放後面。',e:'First In, First Out — sell older stock first; put new stock behind.'}},
+STK:{n:{z:'盤點',e:'Stocktake'},d:{z:'實際點庫存，和帳上數字比對，找出差異（盤差）。',e:'Physically counting stock and comparing with the books.'}},
+SHR:{n:{z:'損耗／短少',e:'Shrinkage'},d:{z:'帳上有、實際沒有的貨：過期、破損、被偷、記錯。損耗率 = 損耗金額 ÷ 營收。',e:'Stock on the books but missing — expiry, damage, theft, errors. Shrink % = shrink ÷ sales.'}},
+VAT:{n:{z:'VAT 加值型營業稅',e:'VAT'},d:{z:'柬埔寨一般稅率 10%；台灣的「營業稅」一般 5%；馬來西亞用 SST（銷售稅與服務稅）。',e:'Cambodia standard rate 10%; Taiwan business tax generally 5%; Malaysia uses SST (sales & service tax).'}},
+TIN:{n:{z:'稅籍編號',e:'TIN'},d:{z:'Tax Identification Number，向稅務機關登記後拿到，開發票、報稅都要用。',e:'Tax Identification Number issued after tax registration; needed for invoices and filings.'}},
+NSSF:{n:{z:'NSSF 柬埔寨社會保障基金',e:'NSSF (Cambodia)'},d:{z:'National Social Security Fund。雇主要幫員工登記並按月繳職災、健康保險與退休金。',e:'Cambodia\'s social security fund; employers register staff and pay monthly occupational-risk, health and pension contributions.'}},
+SinglePortal:{n:{z:'柬埔寨線上單一窗口',e:'Cambodia Online Single Portal'},d:{z:'在同一個網站完成商業部公司登記、稅務總局稅籍登記與勞工部申報。',e:'One website for Ministry of Commerce incorporation, GDT tax registration and labour declaration.'}},
+GDT:{n:{z:'GDT 柬埔寨稅務總局',e:'GDT'},d:{z:'General Department of Taxation，負責稅籍、VAT、每月申報。',e:'General Department of Taxation — tax registration, VAT, monthly filings.'}},
+PATENT:{n:{z:'營業執照稅（Patent Tax）',e:'Patent tax'},d:{z:'柬埔寨每年都要繳的營業登記稅，金額依營業規模而定。',e:'Cambodia\'s annual business-licence tax; amount depends on business size.'}},
+/* hotel */
+OCC:{n:{z:'OCC 住房率',e:'OCC (occupancy)'},d:{z:'賣出的房間夜數 ÷ 可賣的房間夜數。20 間房 × 30 天 = 600 間夜。',e:'Rooms sold ÷ rooms available. 20 rooms × 30 nights = 600 room-nights.'}},
+ADR:{n:{z:'ADR 平均房價',e:'ADR'},d:{z:'Average Daily Rate：房費收入 ÷ 賣出的間夜。',e:'Average Daily Rate = room revenue ÷ room-nights sold.'}},
+RevPAR:{n:{z:'RevPAR 每間可售房收入',e:'RevPAR'},d:{z:'房費收入 ÷ 可售間夜 = OCC × ADR。同時看住房率和房價，最公平的比較數字。',e:'Room revenue ÷ room-nights available = OCC × ADR. The fairest single comparison.'}},
+GOP:{n:{z:'GOP 營業毛利',e:'GOP'},d:{z:'Gross Operating Profit：總營收扣掉各部門成本與營運費用、還沒扣租金折舊利息之前的利潤。',e:'Gross Operating Profit: revenue minus departmental and operating expenses, before rent, depreciation and interest.'}},
+USALI:{n:{z:'USALI 酒店會計制度',e:'USALI'},d:{z:'Uniform System of Accounts for the Lodging Industry：全世界酒店共用的損益表格式，分客房部、餐飲部、營運費用、GOP。',e:'The standard hotel P&L format: Rooms, F&B, undistributed expenses, GOP.'}},
+PMS:{n:{z:'PMS 酒店管理系統',e:'PMS'},d:{z:'Property Management System：訂房、入住、房帳、房態、夜審都在這裡。',e:'Property Management System: reservations, check-in, folios, room status, night audit.'}},
+OTA:{n:{z:'OTA 線上旅行社',e:'OTA'},d:{z:'Online Travel Agency，例如 Booking.com、Agoda。帶客人來，但抽佣金（常見 15–20%）。',e:'Online Travel Agency like Booking.com or Agoda — brings guests, takes commission (often 15–20%).'}},
+FOLIO:{n:{z:'Folio 客帳',e:'Folio'},d:{z:'一位住客在住期間的所有消費明細：房費、餐飲、MiniBar、洗衣。退房時一次結清。',e:'A guest\'s running bill — room, F&B, minibar, laundry — settled at check-out.'}},
+NA:{n:{z:'夜審',e:'Night audit'},d:{z:'每晚把當天房費過帳、核對現金與房態，產出當日營運數字，然後「換日」。',e:'Nightly posting of room charges, cash and status checks, producing the day\'s figures before rolling the date.'}},
+RS:{n:{z:'房態代碼',e:'Room status codes'},d:{z:'VC 空淨可賣、VD 空髒待清、VI 待查房、OC 住客房已清、OD 住客房待清、OOO 維修停售。',e:'VC vacant clean, VD vacant dirty, VI awaiting inspection, OC occupied clean, OD occupied dirty, OOO out of order.'}},
+FFE:{n:{z:'FF&E 家具設備',e:'FF&E'},d:{z:'Furniture, Fixtures & Equipment：床、衣櫃、冷氣、電視等用多年的資產。',e:'Furniture, Fixtures & Equipment — beds, wardrobes, AC, TVs.'}},
+OSE:{n:{z:'OS&E 營運備品',e:'OS&E'},d:{z:'Operating Supplies & Equipment：毛巾、床單、杯子、拖鞋等消耗或短期用品。',e:'Operating Supplies & Equipment — towels, linen, cups, slippers.'}},
+NOSHOW:{n:{z:'No-show 未到',e:'No-show'},d:{z:'訂了房卻沒來。要有押金或扣款規則。',e:'Guest booked but didn\'t arrive — needs a deposit or charge policy.'}},
+OVB:{n:{z:'超賣',e:'Overbooking'},d:{z:'賣出的房比實際房間多。OTA 沒同步最常發生。',e:'Selling more rooms than exist — usually when OTA calendars aren\'t synced.'}},
+ACCTAX:{n:{z:'住宿稅（柬埔寨）',e:'Accommodation tax (KH)'},d:{z:'柬埔寨住宿業者按住宿相關收入繳 2%，次月 20 日前申報。',e:'Cambodian lodging providers pay 2% on accommodation-related income, filed by the 20th of the next month.'}},
+/* café */
+TICKET:{n:{z:'客單價',e:'Average ticket'},d:{z:'營收 ÷ 來客數（或結帳筆數）。',e:'Revenue ÷ number of customers (or bills).'}},
+COGS:{n:{z:'食材成本率',e:'COGS %'},d:{z:'Cost of Goods Sold：原料與包材成本 ÷ 營收。咖啡店常見 25–35%。',e:'Cost of goods sold ÷ revenue. Cafés typically 25–35%.'}},
+PRIME:{n:{z:'主要成本',e:'Prime cost'},d:{z:'食材成本 + 人事成本。一般希望不超過營收的 60–65%。',e:'COGS + labour. Usually kept under 60–65% of sales.'}},
+TURN:{n:{z:'翻桌率',e:'Table turnover'},d:{z:'一個座位一天被坐幾次。來客數 ÷ 座位數。',e:'How many times a seat is used per day = customers ÷ seats.'}},
+KDS:{n:{z:'KDS 出單看板',e:'KDS'},d:{z:'Kitchen Display System：點完單直接顯示在吧台／廚房螢幕，取代紙本單，還能算出餐時間。',e:'Kitchen Display System — orders appear on a bar/kitchen screen with timers.'}},
+SMALLTAX:{n:{z:'小規模營業人（台灣）',e:'Small-scale business (Taiwan)'},d:{z:'營業額不大的店，可由國稅局查定營業額、以 1% 稅率課稅，免開統一發票；一般營業人營業稅 5%。門檻與資格以國稅局核定為準。',e:'Small Taiwanese shops can be assessed by the tax office at 1% without issuing uniform invoices; regular businesses pay 5%. Eligibility is set by the tax office.'}},
+FOODREG:{n:{z:'食品業者登錄（台灣）',e:'Food business registration (TW)'},d:{z:'台灣賣食品、飲料的業者要在食藥署「非登不可」系統登錄。',e:'Taiwanese food and drink sellers must register on the FDA\'s food business registry.'}},
+/* shoe */
+OEM:{n:{z:'OEM／ODM 代工',e:'OEM / ODM'},d:{z:'OEM 照客戶設計生產；ODM 由工廠自己設計再賣給品牌。',e:'OEM builds to the customer\'s design; ODM designs it too and sells to the brand.'}},
+FOB:{n:{z:'FOB 船上交貨價',e:'FOB'},d:{z:'Free On Board：工廠負責把貨送上船，之後運費、保險由買家負責。報價最常用。',e:'Free On Board: the factory delivers onto the vessel; freight and insurance after that are the buyer\'s.'}},
+MOQ:{n:{z:'MOQ 最小訂購量',e:'MOQ'},d:{z:'Minimum Order Quantity：一款最少要下多少雙才接單。',e:'Minimum Order Quantity per style.'}},
+SMV:{n:{z:'SMV 標準工時',e:'SMV'},d:{z:'Standard Minute Value：做一個產品標準要幾分鐘。用來算產能、效率、人工成本。',e:'Standard Minute Value: standard minutes to make one unit — basis for capacity, efficiency and labour cost.'}},
+EFF:{n:{z:'效率',e:'Efficiency'},d:{z:'產出 × SMV ÷（人數 × 上班分鐘）。100% 代表完全照標準。',e:'Output × SMV ÷ (operators × minutes worked). 100% = exactly at standard.'}},
+UPPER:{n:{z:'鞋面',e:'Upper'},d:{z:'鞋子上半部，由裁斷好的皮料／布料在針車車縫而成。',e:'The top part of the shoe, sewn from cut leather/fabric.'}},
+LASTING:{n:{z:'成型（Lasting）',e:'Lasting'},d:{z:'把鞋面套在鞋楦上拉緊、刷膠、和大底壓合定型的工序。',e:'Pulling the upper over the last, cementing and pressing it to the sole.'}},
+OUTSOLE:{n:{z:'大底',e:'Outsole'},d:{z:'接觸地面的鞋底，常向專門的鞋底廠採購。',e:'The ground-contact sole, usually bought from a sole maker.'}},
+AQL:{n:{z:'AQL 抽樣檢驗標準',e:'AQL'},d:{z:'Acceptable Quality Limit：出貨前依批量抽驗幾雙，不良數超過標準就整批退回重檢。',e:'Acceptable Quality Limit: sample inspection before shipment; too many defects and the lot fails.'}},
+DHU:{n:{z:'DHU 每百件不良',e:'DHU'},d:{z:'Defects per Hundred Units：（不良數 ÷ 檢驗數）× 100。',e:'Defects per Hundred Units = defects ÷ units inspected × 100.'}},
+OTD:{n:{z:'OTD 準時交貨率',e:'OTD'},d:{z:'On-Time Delivery：準時出貨的訂單 ÷ 全部訂單。客戶最看重的指標之一。',e:'On-Time Delivery: orders shipped on time ÷ all orders.'}},
+QIP:{n:{z:'QIP 合格投資項目',e:'QIP'},d:{z:'Qualified Investment Project：向柬埔寨發展理事會（CDC）或經濟特區申請，核准後可享進口設備、原料等稅務優惠（依規定）。',e:'Qualified Investment Project approved by Cambodia\'s CDC or SEZ administration, giving tax incentives on imported equipment and materials (per regulations).'}},
+SEZ:{n:{z:'SEZ 經濟特區',e:'SEZ'},d:{z:'Special Economic Zone，例如西港經濟特區：基礎設施和行政手續集中處理。',e:'Special Economic Zone, e.g. Sihanoukville SEZ — infrastructure and paperwork handled in one place.'}},
+PILOT:{n:{z:'試產',e:'Pilot run'},d:{z:'量產前先小量生產，確認工序、SMV、品質都沒問題。',e:'A small run before mass production to prove process, SMV and quality.'}},
+MINWAGE:{n:{z:'柬埔寨製造業最低工資',e:'Cambodia minimum wage'},d:{z:'紡織、成衣、鞋類、旅行用品與包包業：2026 年每月 US$210，2027 年 US$212。',e:'Textile, garment, footwear, travel-goods and bag sector: US$210/month in 2026, US$212 in 2027.'}},
+/* hardware */
+GMROI:{n:{z:'GMROI 庫存投資報酬',e:'GMROI'},d:{z:'一年毛利 ÷ 平均庫存成本。2.0 代表每壓 1 元庫存一年賺回 2 元毛利。',e:'Annual gross margin ÷ average inventory cost. 2.0 = each $1 of stock earns $2 margin a year.'}},
+DIO:{n:{z:'庫存周轉天數',e:'Days inventory'},d:{z:'平均庫存 ÷ 每日銷貨成本。越短代表錢越快回來。',e:'Average inventory ÷ daily cost of goods sold. Shorter = cash returns faster.'}},
+ABC:{n:{z:'ABC 分析',e:'ABC analysis'},d:{z:'把品項依營業額排序：A 類約 20% 品項賺 80% 業績，要最常盤、最不能缺貨。',e:'Rank SKUs by sales: A items (~20% of SKUs, ~80% of sales) get the closest control.'}},
+DSO:{n:{z:'DSO 收款天數',e:'DSO'},d:{z:'應收帳款 ÷ 每日賒銷金額。承包商賒帳越久，DSO 越高、現金越緊。',e:'Receivables ÷ daily credit sales. Longer contractor credit = higher DSO and tighter cash.'}},
+SSM:{n:{z:'SSM 馬來西亞公司委員會',e:'SSM'},d:{z:'Suruhanjaya Syarikat Malaysia，公司與商號註冊機關。',e:'Companies Commission of Malaysia — registers companies and businesses.'}},
+DBKK:{n:{z:'DBKK 亞庇市政廳',e:'DBKK'},d:{z:'Dewan Bandaraya Kota Kinabalu，核發亞庇市的營業執照與招牌許可。',e:'Kota Kinabalu City Hall — issues trading licences and signboard permits in KK.'}},
+SST:{n:{z:'SST 銷售稅與服務稅',e:'SST'},d:{z:'馬來西亞的消費稅：銷售稅 5% 或 10%（依貨品），服務稅 6% 或 8%（依服務）。是否要登記看營業額門檻與品項。',e:'Malaysia\'s consumption tax: sales tax 5% or 10% by goods, service tax 6% or 8% by service; registration depends on thresholds and items.'}},
+EPF:{n:{z:'EPF／SOCSO／EIS',e:'EPF / SOCSO / EIS'},d:{z:'馬來西亞雇主要幫員工繳的公積金、社會保險與就業保險。',e:'Malaysian employer contributions: provident fund, social security, employment insurance.'}},
+/* cvs */
+SALESM2:{n:{z:'坪效',e:'Sales per area'},d:{z:'營業額 ÷ 賣場面積（台灣用坪，其他地方常用平方公尺）。看每一塊地方賺多少。',e:'Sales ÷ selling area — how hard each square metre works.'}},
+EOS:{n:{z:'EOS 電子訂貨',e:'EOS'},d:{z:'Electronic Ordering System：用手機／掃描槍按品項下訂，系統依銷量建議量。',e:'Electronic Ordering System — order by scanning, with suggested quantities from sales.'}},
+PLANO:{n:{z:'棚割圖',e:'Planogram'},d:{z:'規定每一層貨架放什麼、放幾排面。好賣的放在眼睛高度。',e:'A shelf map: what goes where and how many facings. Best-sellers at eye level.'}},
+KHR:{n:{z:'雙幣找零',e:'Dual currency'},d:{z:'柬埔寨美元和瑞爾一起用，小額常用瑞爾找零，匯率約 4,000–4,100 瑞爾兌 1 美元（以店內公告為準）。',e:'Cambodia uses USD and riel together; small change in riel at roughly 4,000–4,100 riel per dollar (post your rate).'}},
+FRESH:{n:{z:'鮮食',e:'Fresh food'},d:{z:'便當、三明治、麵包等短效期商品。毛利高、但報廢風險也高。',e:'Short-life items like boxed meals and sandwiches — high margin, high waste risk.'}}
+};
+
+/* ───────── 五種生意的內容 ───────── */
+const BIZ=[
+{id:'hotel',icon:'🏨',tone:'#1f6f8b',sys:'hotel.html',
+ name:{z:'精品酒店',e:'Boutique Hotel'},
+ brand:{z:'聖道精品酒店 Saintdou Boutique Hotel',e:'Saintdou Boutique Hotel'},
+ city:{z:'柬埔寨・西港（Sihanoukville）',e:'Sihanoukville, Cambodia'},
+ cur:'US$',
+ one:{z:'把「一晚的房間」當商品賣。房間空著一晚，那晚的收入就永遠回不來，所以重點是：住滿、賣對價、退房後快速清好再賣。',e:'You sell room-nights. An empty room tonight is revenue lost forever — so fill rooms, price them right, and turn them around fast.'},
+ facts:[{z:'20 間客房',e:'20 rooms'},{z:'目標住房率 65%',e:'Target occupancy 65%'},{z:'平均房價 $45',e:'ADR $45'},{z:'員工約 12 人',e:'~12 staff'},{z:'附早餐咖啡廳',e:'Breakfast café'}],
+ phases:[
+  {t:{z:'構想與市調',e:'Idea & market study'},d:{z:'2–4 週',e:'2–4 wks'},who:{z:'老闆',e:'Owner'},
+   do:[{z:'決定客群：中國與本地商務客、週末從金邊來的家庭、背包客？客群決定房型和價格。',e:'Pick guests: Chinese and local business travellers, weekend families from Phnom Penh, backpackers? Guests decide room types and price.'},
+       {z:'上 [[OTA|Booking／Agoda]] 查附近 10 家同級酒店：房價、評分、評論最常抱怨什麼。',e:'Check 10 comparable hotels on [[OTA|Booking/Agoda]]: rates, scores, top complaints.'},
+       {z:'看地點：離海灘、市中心、港口多遠？晚上安全嗎？停車方便嗎？',e:'Location: distance to beach, centre, port; safety at night; parking.'}],
+   tip:{z:'西港有明顯淡旺季（假日與中國客多的月份最旺），市調要分淡季、旺季各看一次房價。',e:'Sihanoukville is seasonal — check rates in both high and low season.'},
+   oops:{z:'只看旺季價格算營收，淡季現金就不夠。',e:'Forecasting on high-season rates only, then running out of cash in low season.'},
+   code:'W_CAP110'},
+  {t:{z:'財務試算',e:'Financial model'},d:{z:'1 週',e:'1 wk'},who:{z:'老闆／會計',e:'Owner/accountant'},
+   do:[{z:'營收 = 房間數 × 30 天 × [[OCC|住房率]] × [[ADR|平均房價]]，再加餐飲。',e:'Revenue = rooms × 30 × [[OCC|occupancy]] × [[ADR]], plus F&B.'},
+       {z:'列出每月 [[FC|固定成本]]（房租、薪水、水電、網路）和每間夜 [[VC|變動成本]]（布草、備品、OTA 佣金）。',e:'List monthly [[FC|fixed costs]] and per-night [[VC|variable costs]] (linen, amenities, OTA commission).'},
+       {z:'算出 [[BEP|損益兩平]] 住房率和回本月數，不划算就回到上一步改計畫。',e:'Work out the [[BEP|break-even]] occupancy and payback; if it doesn\'t work, go back and change the plan.'}],
+   tip:{z:'下面第 ⑤ 段有試算器，可以直接改數字看結果。',e:'Use the calculator in section ⑤ below.'},code:'W_CAP110'},
+  {t:{z:'公司登記與證照',e:'Registration & licences'},d:{z:'3–8 週',e:'3–8 wks'},who:{z:'老闆／代辦',e:'Owner/agent'},
+   do:[{z:'在 [[SinglePortal|線上單一窗口]] 完成商業部公司登記、[[GDT|稅務總局]] 稅籍（拿到 [[TIN|稅籍編號]]）與勞工部申報，一般約 1–3 週。',e:'Register via the [[SinglePortal|Online Single Portal]]: Ministry of Commerce, [[GDT]] tax ID ([[TIN]]) and labour declaration — usually 1–3 weeks.'},
+       {z:'向觀光部申請旅館執照；消防安全檢查；招牌稅。',e:'Hotel licence from the Ministry of Tourism; fire-safety inspection; signboard tax.'},
+       {z:'登記 [[VAT]]（10%）；每月申報 [[ACCTAX|住宿稅 2%]]；每年繳 [[PATENT|營業執照稅]]。員工登記 [[NSSF]]。',e:'Register for [[VAT]] (10%); file [[ACCTAX|accommodation tax 2%]] monthly; pay the annual [[PATENT|patent tax]]. Enrol staff in [[NSSF]].'}],
+   oops:{z:'執照還沒下來就先在 OTA 上架開賣。',e:'Listing on OTAs before the licence is issued.'}},
+  {t:{z:'裝修與採購',e:'Fit-out & purchasing'},d:{z:'8–16 週',e:'8–16 wks'},who:{z:'工務／採購',e:'Engineering/purchasing'},
+   do:[{z:'分三類追預算：裝修、[[FFE|FF&E]]（床、冷氣、電視）、[[OSE|OS&E]]（毛巾、床單、杯子）。',e:'Track three buckets: fit-out, [[FFE]] (beds, AC, TV) and [[OSE]] (towels, linen, cups).'},
+       {z:'每間房備 3 套布草（1 套在床、1 套在洗、1 套備用）。',e:'Three linen sets per room: one on the bed, one in the wash, one spare.'},
+       {z:'熱水、冷氣、網路要每一間實測。',e:'Test hot water, AC and Wi-Fi in every room.'}],
+   tip:{z:'在系統的「開辦預算」逐筆記實支，超過預算 10% 就要停下來檢討。',e:'Log every actual cost in the budget module; stop and review at 10% over.'},code:'W_CAP100'},
+  {t:{z:'系統與流程',e:'Systems & procedures'},d:{z:'2 週',e:'2 wks'},who:{z:'前檯經理',e:'Front-office manager'},
+   do:[{z:'在 [[PMS]] 建房型、房號、房價、訂房來源（直客／OTA／企業月結）。',e:'Set up room types, numbers, rates and sources (direct/OTA/corporate) in the [[PMS]].'},
+       {z:'OTA 房量要和 PMS 同步，避免 [[OVB|超賣]]。',e:'Keep OTA inventory in sync with the PMS to avoid [[OVB|overbooking]].'},
+       {z:'寫好入住、退房、[[NOSHOW|No-show]]、押金、遺失物、客訴的 [[SOP]]。',e:'Write [[SOP]]s for check-in/out, [[NOSHOW|no-shows]], deposits, lost & found, complaints.'}],
+   code:'W_PMS200'},
+  {t:{z:'招募與訓練',e:'Hiring & training'},d:{z:'3–4 週',e:'3–4 wks'},who:{z:'人事',e:'HR'},
+   do:[{z:'編制例：前檯 4 人（三班）、房務 4 人、工務 1 人、早餐 2 人、經理 1 人。',e:'Example team: 4 front desk (3 shifts), 4 housekeeping, 1 engineer, 2 breakfast, 1 manager.'},
+       {z:'訓練：系統操作、房態代碼、外語接待、清潔標準（一間房約 30–40 分鐘）。',e:'Train on the system, room status codes, guest languages and cleaning standards (~30–40 min per room).'}],
+   code:'W_HR600'},
+  {t:{z:'試營運',e:'Soft opening'},d:{z:'2 週',e:'2 wks'},who:{z:'全員',e:'All'},
+   do:[{z:'先開一半房間，用優惠價請親友或企業客試住，收集意見。',e:'Open half the rooms at a discount for friends and corporate guests; collect feedback.'},
+       {z:'每天跑一次「訂房 → 入住 → 掛帳 → 退房 → 清潔 → 夜審」一條龍。',e:'Run the full loop daily: booking → check-in → charges → check-out → cleaning → night audit.'}],
+   tip:{z:'用系統內建的一條龍測試腳本練習，全部能順跑再正式開幕。',e:'Use the built-in end-to-end test script before the grand opening.'}},
+  {t:{z:'正式營運',e:'Operations'},d:{z:'每天／每月',e:'Daily/monthly'},who:{z:'經理',e:'Manager'},
+   do:[{z:'每天 [[NA|夜審]]：過帳房費、核對現金、看 [[OCC]]／[[ADR]]／[[RevPAR]]。',e:'Nightly [[NA|night audit]]: post room charges, check cash, review [[OCC]]/[[ADR]]/[[RevPAR]].'},
+       {z:'每月看 [[USALI]] 損益表：客房部、餐飲部、[[GOP]]；催收 OTA 與企業 [[AR|應收]]。',e:'Monthly [[USALI]] P&L: Rooms, F&B, [[GOP]]; chase OTA and corporate [[AR]].'}],
+   code:'W_FIN700'}
+ ],
+ budget:[[{z:'裝修工程',e:'Fit-out works'},120000],[{z:'FF&E 家具設備（每房約 $3,000）',e:'FF&E (~$3,000/room)'},60000],[{z:'OS&E 營運備品',e:'OS&E supplies'},15000],[{z:'系統、網路、監視器',e:'Systems, Wi-Fi, CCTV'},5000],[{z:'證照與開辦費',e:'Licences & set-up'},5000],[{z:'開幕行銷',e:'Launch marketing'},5000],[{z:'週轉金（3 個月固定支出）',e:'Working capital (3 months)'},33000],[{z:'預備金（約 10%）',e:'Contingency (~10%)'},24000]],
+ budgetNote:{z:'承租現成建築改裝。若自建大樓，土地與建築另計，金額會高很多。',e:'Converting a leased building. Building from scratch adds land and construction.'},
+ day:[['06:30',{z:'早班交接：看房態表、今日到店與退房名單、VIP 與特殊需求。',e:'Morning handover: room rack, arrivals/departures, VIPs and requests.'}],
+      ['08:30',{z:'房務派房：退房房優先、續住房次之；工務巡檢冷氣、熱水、消防。',e:'Housekeeping assignments: departures first, stay-overs next; engineering rounds.'}],
+      ['12:00',{z:'退房：結清 [[FOLIO|客帳]]，房態自動轉 VD 並產生清潔單。',e:'Check-out: settle the [[FOLIO|folio]]; room turns VD and a cleaning task is created.'}],
+      ['14:00',{z:'入住：核對證件與押金、分配已查好的 VC 房。',e:'Check-in: verify ID and deposit; assign inspected VC rooms.'}],
+      ['15:30',{z:'主管查房：VI → VC，才能再賣。',e:'Supervisor inspection: VI → VC, ready to sell.'}],
+      ['23:30',{z:'[[NA|夜審]]：過帳房費、核對抽屜現金、產出當日 OCC／ADR／RevPAR。',e:'[[NA|Night audit]]: post room charges, count the drawer, produce OCC/ADR/RevPAR.'}]],
+ loop:[{z:'訂房',e:'Book'},{z:'入住',e:'Check-in'},{z:'消費掛帳',e:'Charges'},{z:'退房結帳',e:'Check-out'},{z:'房務清潔',e:'Clean'},{z:'查房可賣',e:'Inspect'},{z:'夜審報表',e:'Night audit'}],
+ kpis:[
+  {k:'OCC',f:{z:'賣出間夜 ÷ 可售間夜',e:'Room-nights sold ÷ available'},ex:{z:'20 間 × 30 天 = 600；賣出 390 → 65%',e:'20 × 30 = 600; 390 sold → 65%'},std:{z:'西港精品酒店常見 50–75%',e:'Typical 50–75%'}},
+  {k:'ADR',f:{z:'房費收入 ÷ 賣出間夜',e:'Room revenue ÷ room-nights sold'},ex:{z:'$17,550 ÷ 390 = $45',e:'$17,550 ÷ 390 = $45'}},
+  {k:'RevPAR',f:{z:'房費收入 ÷ 可售間夜 = OCC × ADR',e:'Room revenue ÷ available = OCC × ADR'},ex:{z:'$17,550 ÷ 600 = $29.25',e:'$17,550 ÷ 600 = $29.25'},std:{z:'比只看住房率或房價都公平',e:'Fairer than OCC or ADR alone'}},
+  {k:'GOP',f:{z:'總營收 − 部門成本 − 營運費用',e:'Revenue − departmental − operating costs'},ex:{z:'營收 $21,000、成本費用 $13,000 → GOP $8,000（38%）',e:'Revenue $21,000, costs $13,000 → GOP $8,000 (38%)'}}],
+ calc:{unit:{z:'間夜',e:'room-nights'},fixed:11000,price:45,varc:8,commission:15,cap:600,capLab:{z:'每月可售間夜',e:'Room-nights available/month'},
+   fixedLab:{z:'每月固定成本（房租 $4,000＋薪水 $4,200＋水電網路 $1,800＋其他）',e:'Monthly fixed cost (rent, wages, utilities, other)'},priceLab:{z:'平均房價 ADR',e:'ADR'},varLab:{z:'每間夜變動成本（布草、備品、水電）',e:'Variable cost per room-night'},comLab:{z:'OTA 佣金 %（佔房價）',e:'OTA commission % of rate'}},
+ pros:[{z:'房間賣出去後多賣一晚的成本很低，住房率一上來利潤增加很快。',e:'Low extra cost per extra night — profit climbs fast once occupancy rises.'},{z:'可以加賣早餐、洗衣、接送、旅遊行程。',e:'Upsell breakfast, laundry, transfers, tours.'},{z:'OTA 讓小酒店也能接到全世界的客人。',e:'OTAs give small hotels global reach.'}],
+ cons:[{z:'前期投資大、回本常要 4–7 年。',e:'High upfront investment; payback often 4–7 years.'},{z:'淡旺季明顯，OTA 佣金吃掉 15–20% 房價。',e:'Seasonality; OTAs take 15–20% of the rate.'},{z:'24 小時營運，人力與管理壓力大。',e:'24/7 operation — staffing and supervision are demanding.'}],
+ risks:[[{z:'太依賴 OTA',e:'OTA dependence'},{z:'超過 70% 訂房來自 OTA',e:'Over 70% of bookings via OTAs'},{z:'經營官網、LINE／微信直訂、回頭客優惠',e:'Direct booking via website, LINE/WeChat, repeat-guest offers'}],
+        [{z:'超賣',e:'Overbooking'},{z:'同一房號重複訂房',e:'Same room booked twice'},{z:'OTA 房量與 PMS 同步；每天開班先核對',e:'Sync OTA inventory; check at each shift start'}],
+        [{z:'現金短少',e:'Cash shortages'},{z:'夜審現金差額',e:'Night-audit cash variance'},{z:'每班交接點鈔簽名、差額當晚查清',e:'Count and sign at every handover; resolve the same night'}]]
+},
+{id:'cafe',icon:'☕',tone:'#8a5a2b',sys:'cafe.html',
+ name:{z:'咖啡店',e:'Café'},
+ brand:{z:'聖道咖啡 Saintdou Café',e:'Saintdou Café'},
+ city:{z:'台灣・台北大安區',e:'Da\'an District, Taipei'},
+ cur:'NT$',
+ one:{z:'賣的是「一杯飲料 + 一段時間的座位」。毛利看起來高，但房租和人事很重，關鍵是來客數、客單價、成本控制三件事一起顧。',e:'You sell a drink plus time in a seat. Margins look high, but rent and labour are heavy — manage traffic, ticket size and cost together.'},
+ facts:[{z:'店面約 15 坪（50 m²）',e:'~50 m² shop'},{z:'24 個座位',e:'24 seats'},{z:'客單價 NT$180',e:'Average ticket NT$180'},{z:'正職 3 人＋兼職',e:'3 full-time + part-timers'}],
+ phases:[
+  {t:{z:'定位與商圈',e:'Concept & location'},d:{z:'3–6 週',e:'3–6 wks'},who:{z:'老闆',e:'Owner'},
+   do:[{z:'決定主力客群：上班族外帶？學生久坐？觀光客？客群決定座位數、菜單和營業時間。',e:'Main guests: office take-away, students who linger, tourists? That decides seats, menu and hours.'},
+       {z:'在候選店面前，平日、假日各數 3 個時段的人流，記下附近咖啡店與便利店咖啡價格。',e:'Count foot traffic at three times on a weekday and weekend; note nearby café and convenience-store coffee prices.'},
+       {z:'房租最好不超過預估營收的 10–15%。',e:'Keep rent under 10–15% of forecast sales.'}],
+   oops:{z:'只因為喜歡那間店面就簽約，沒有實際算人流。',e:'Signing because you like the space, without counting traffic.'}},
+  {t:{z:'登記與證照',e:'Registration & permits'},d:{z:'2–4 週',e:'2–4 wks'},who:{z:'老闆／記帳士',e:'Owner/bookkeeper'},
+   do:[{z:'行號向縣市政府辦商業登記（或向經濟部辦公司登記），再到國稅局辦稅籍登記。',e:'Register a sole business with the city government (or a company with MOEA), then tax registration at the National Taxation Bureau.'},
+       {z:'營業稅一般 5%；營業額小的可能是 [[SMALLTAX|小規模營業人]]（國稅局查定、1%）。',e:'Business tax is generally 5%; small shops may qualify as [[SMALLTAX|small-scale]] (assessed at 1%).'},
+       {z:'辦 [[FOODREG|食品業者登錄]]；員工加保勞保、健保。招牌與裝修注意消防、建管規定。',e:'Complete [[FOODREG|food business registration]]; enrol staff in labour and health insurance; check fire and building rules for signs and fit-out.'}]},
+  {t:{z:'裝修與設備',e:'Fit-out & equipment'},d:{z:'4–8 週',e:'4–8 wks'},who:{z:'老闆／設計師',e:'Owner/designer'},
+   do:[{z:'吧台動線：點餐 → 製作 → 出杯 → 取餐，一個人也能順手。',e:'Bar flow: order → make → hand-off → pick-up; workable by one person.'},
+       {z:'主要設備：義式咖啡機、磨豆機、製冰機、冷藏冰箱、淨水器、收銀 [[POS]]。',e:'Key kit: espresso machine, grinder, ice maker, fridge, water filter, [[POS]].'}],
+   tip:{z:'咖啡機和磨豆機寧可買好一點，壞一天就少一天營收。',e:'Buy a reliable espresso machine and grinder — a broken day is a lost day.'}},
+  {t:{z:'菜單與配方',e:'Menu & recipes'},d:{z:'2 週',e:'2 wks'},who:{z:'店長',e:'Manager'},
+   do:[{z:'每一杯都建 [[BOM|配方]]：豆子幾克、牛奶幾毫升、杯蓋吸管，算出單杯成本。',e:'Build a [[BOM|recipe]] for every drink — grams of beans, ml of milk, cup and lid — and cost it.'},
+       {z:'單杯 [[COGS|食材成本率]] 目標 25–35%，太高就調價或改配方。',e:'Aim for 25–35% [[COGS]]; adjust price or recipe if higher.'},
+       {z:'菜單 15–25 項就夠，品項太多備料和損耗都會變大。',e:'15–25 items is enough; more items mean more prep and waste.'}],
+   code:'W_BOM300'},
+  {t:{z:'供應商與採購',e:'Suppliers & purchasing'},d:{z:'1–2 週',e:'1–2 wks'},who:{z:'店長',e:'Manager'},
+   do:[{z:'豆子、乳品、杯材、甜點各找 2 家比價；乳品要冷鏈、注意效期。',e:'Two quotes each for beans, dairy, cups and pastries; dairy needs cold chain and expiry checks.'},
+       {z:'設 [[SS|安全庫存]] 與 [[ROP|補貨點]]，低於就下 [[PO|採購單]]，到貨 [[GRN|驗收]]。',e:'Set [[SS|safety stock]] and [[ROP|reorder points]]; raise a [[PO]] below it and [[GRN|inspect]] deliveries.'}],
+   code:'W_PUR500'},
+  {t:{z:'招募與訓練',e:'Hiring & training'},d:{z:'2 週',e:'2 wks'},who:{z:'店長',e:'Manager'},
+   do:[{z:'吧台 SOP：萃取時間、奶泡溫度、出杯標準、清潔表。',e:'Bar SOPs: extraction time, milk temperature, serving standard, cleaning checklist.'},
+       {z:'衛生：洗手、分色砧板、冰箱溫度紀錄。',e:'Hygiene: hand-washing, colour-coded boards, fridge temperature log.'}],
+   code:'W_HR800'},
+  {t:{z:'試營運',e:'Soft opening'},d:{z:'1–2 週',e:'1–2 wks'},who:{z:'全員',e:'All'},
+   do:[{z:'限定菜單、短營業時間，觀察尖峰時段出杯速度（目標 3 分鐘內）。',e:'Limited menu and hours; watch peak-time speed (target under 3 minutes per drink).'},
+       {z:'每天結帳後看哪些品項沒人點，準備刪掉。',e:'After closing each day, note which items nobody orders.'}]},
+  {t:{z:'正式營運',e:'Operations'},d:{z:'每天／每月',e:'Daily/monthly'},who:{z:'店長',e:'Manager'},
+   do:[{z:'每天看來客數、[[TICKET|客單價]]、報廢；每週盤點豆子與乳品。',e:'Daily: customers, [[TICKET|average ticket]], waste. Weekly stocktake of beans and dairy.'},
+       {z:'每月看 [[PRIME|主要成本]]（食材 + 人事）是否低於營收 60–65%。',e:'Monthly: keep [[PRIME|prime cost]] under 60–65% of sales.'}],
+   code:'W_FIN600'}
+ ],
+ budget:[[{z:'裝修工程',e:'Fit-out'},800000],[{z:'吧台設備（咖啡機約 25 萬）',e:'Bar equipment (espresso machine ~250k)'},600000],[{z:'房租押金（3 個月）',e:'Rent deposit (3 months)'},120000],[{z:'首批原料與包材',e:'First stock'},80000],[{z:'招牌、設計、證照',e:'Signage, design, permits'},50000],[{z:'週轉金（3 個月固定支出）',e:'Working capital (3 months)'},450000]],
+ budgetNote:{z:'台北一般街邊店、月租約 NT$4 萬的示意。',e:'Illustrative Taipei street shop at about NT$40,000/month rent.'},
+ day:[['07:00',{z:'開店：開機暖機、校正研磨（試萃 2–3 杯）、檢查冰箱溫度與效期。',e:'Open: warm up machines, dial in the grinder, check fridge temps and expiry.'}],
+      ['07:30',{z:'早上尖峰：外帶優先、預先備好冰塊與牛奶。',e:'Morning rush: prioritise take-away; pre-stage ice and milk.'}],
+      ['11:30',{z:'午餐尖峰：輕食與套餐；[[KDS]] 看出餐時間。',e:'Lunch peak: light meals and sets; watch times on the [[KDS]].'}],
+      ['15:00',{z:'離峰：補貨、清潔、記錄報廢。',e:'Quiet hours: restock, clean, log waste.'}],
+      ['20:00',{z:'打烊：洗機、清磨豆機、日結點收、明天的叫貨。',e:'Close: clean machines, cash-up, place tomorrow\'s orders.'}]],
+ loop:[{z:'叫貨',e:'Order'},{z:'驗收入庫',e:'Receive'},{z:'備料',e:'Prep'},{z:'點餐收銀',e:'POS'},{z:'吧台製作',e:'Make'},{z:'出杯取餐',e:'Serve'},{z:'日結盤點',e:'Close'}],
+ kpis:[
+  {k:'TICKET',f:{z:'營收 ÷ 來客數',e:'Revenue ÷ customers'},ex:{z:'NT$18,000 ÷ 100 人 = NT$180',e:'NT$18,000 ÷ 100 = NT$180'}},
+  {k:'COGS',f:{z:'原料包材成本 ÷ 營收',e:'Ingredients & packaging ÷ revenue'},ex:{z:'拿鐵售 140：豆 18g 約 22、牛奶 12、杯蓋 5 → 39（28%）',e:'Latte NT$140: beans ~22, milk 12, cup 5 → 39 (28%)'},std:{z:'目標 25–35%',e:'Target 25–35%'}},
+  {k:'PRIME',f:{z:'（食材 + 人事）÷ 營收',e:'(COGS + labour) ÷ revenue'},ex:{z:'食材 13 萬 + 人事 14 萬 ÷ 營收 47 萬 = 57%',e:'130k + 140k ÷ 470k = 57%'},std:{z:'低於 60–65%',e:'Under 60–65%'}},
+  {k:'TURN',f:{z:'內用來客 ÷ 座位數',e:'Dine-in customers ÷ seats'},ex:{z:'60 人 ÷ 24 位 = 2.5 次',e:'60 ÷ 24 = 2.5 turns'}}],
+ calc:{unit:{z:'位客人',e:'customers'},fixed:250000,price:180,varc:63,commission:0,cap:3120,capLab:{z:'每月最多來客（24 位 × 5 翻 × 26 天）',e:'Max customers/month (24 seats × 5 turns × 26 days)'},
+   fixedLab:{z:'每月固定成本（房租 4 萬＋人事 10.5 萬＋水電 1.5 萬＋折舊 3 萬＋其他）',e:'Monthly fixed cost (rent, wages, utilities, depreciation, other)'},priceLab:{z:'客單價',e:'Average ticket'},varLab:{z:'每位客人變動成本（約 35% 食材包材）',e:'Variable cost per customer (~35%)'},comLab:{z:'外送平台抽成 %（沒有就填 0）',e:'Delivery-app commission % (0 if none)'}},
+ pros:[{z:'入門門檻比酒店、工廠低，回本較快（常見 2–3 年）。',e:'Lower entry cost than a hotel or factory; payback often 2–3 years.'},{z:'現金收入、每天都有營收。',e:'Cash business with daily revenue.'},{z:'品牌做起來可以開分店或賣豆子、禮盒。',e:'A strong brand can add branches, beans and gift sets.'}],
+ cons:[{z:'競爭非常激烈，連鎖店和便利商店咖啡價格低。',e:'Intense competition, including cheap chain and convenience-store coffee.'},{z:'房租、人事佔比高，生意稍差就虧損。',e:'High rent and labour share — a slow month quickly turns into a loss.'},{z:'工時長、假日最忙。',e:'Long hours; weekends are busiest.'}],
+ risks:[[{z:'食材成本失控',e:'Ingredient cost creep'},{z:'COGS 超過 35%',e:'COGS above 35%'},{z:'每月重算配方成本、調整份量或售價',e:'Re-cost recipes monthly; adjust portions or prices'}],
+        [{z:'報廢太多',e:'Too much waste'},{z:'甜點、牛奶常過期',e:'Pastries and milk expiring'},{z:'依銷量叫貨、[[FIFO|先進先出]]、晚上做折扣',e:'Order by sales, [[FIFO]], evening markdowns'}],
+        [{z:'尖峰出杯慢',e:'Slow peak service'},{z:'客人排隊超過 5 分鐘',e:'Queues over 5 minutes'},{z:'尖峰加兼職、預先備料、菜單精簡',e:'Peak part-timers, pre-prep, simpler menu'}]]
+},
+{id:'shoe',icon:'👞',tone:'#2f5f8f',sys:'shoe.html',
+ name:{z:'鞋廠',e:'Shoe Factory'},
+ brand:{z:'聖道鞋業 Saintdou Footwear',e:'Saintdou Footwear'},
+ city:{z:'柬埔寨・西港經濟特區',e:'Sihanoukville SEZ, Cambodia'},
+ cur:'US$',
+ one:{z:'接海外品牌的 [[OEM|代工]] 訂單，照客戶設計大量生產休閒鞋與涼鞋。賺的是「每雙一點點」，靠產量、效率和準時交貨活下來。',e:'Make shoes to overseas brands\' designs as an [[OEM]]. Margins are thin per pair — volume, efficiency and on-time delivery keep you alive.'},
+ facts:[{z:'員工約 300 人',e:'~300 workers'},{z:'針車 120 台、成型線 1 條',e:'120 sewing machines, 1 lasting line'},{z:'日產約 1,500 雙',e:'~1,500 pairs/day'},{z:'FOB 約 $10.5／雙',e:'FOB ~$10.5/pair'}],
+ phases:[
+  {t:{z:'客戶與市場',e:'Customers & market'},d:{z:'1–3 個月',e:'1–3 months'},who:{z:'老闆／業務',e:'Owner/sales'},
+   do:[{z:'先找到 1–2 個願意下單的品牌或貿易商，再蓋廠。沒有訂單的工廠最危險。',e:'Secure 1–2 brands or traders willing to order before building. A factory without orders is the biggest risk.'},
+       {z:'確認客戶的 [[MOQ]]、[[FOB]] 目標價、品質標準、驗廠要求（社會責任、環保）。',e:'Confirm the customer\'s [[MOQ]], target [[FOB]], quality standard and audit requirements (social, environmental).'}],
+   oops:{z:'只靠一個客戶，客戶一轉單工廠就停擺。',e:'Relying on one customer — when they move orders, the factory stops.'}},
+  {t:{z:'投資與登記',e:'Investment & registration'},d:{z:'2–4 個月',e:'2–4 months'},who:{z:'老闆／顧問',e:'Owner/advisers'},
+   do:[{z:'向 CDC 或 [[SEZ|經濟特區]] 申請 [[QIP|合格投資項目]]，核准後依規定享進口設備與原料的稅務優惠。',e:'Apply to the CDC or the [[SEZ]] administration for [[QIP]] status for import incentives on equipment and materials.'},
+       {z:'公司登記、稅籍、勞工部申報；員工登記 [[NSSF]]；外籍幹部辦工作證。',e:'Company and tax registration, labour declaration; enrol staff in [[NSSF]]; work permits for foreign staff.'},
+       {z:'了解 [[MINWAGE|最低工資]]：2026 年 $210、2027 年 $212，加上全勤、交通、年資等津貼。',e:'Know the [[MINWAGE|minimum wage]]: $210 in 2026, $212 in 2027, plus attendance, transport and seniority allowances.'}]},
+  {t:{z:'廠房與設備',e:'Plant & machinery'},d:{z:'3–6 個月',e:'3–6 months'},who:{z:'工務',e:'Engineering'},
+   do:[{z:'依流程排廠房：倉庫 → 裁斷 → 針車 → 成型 → 包裝 → 出貨，物料一路往前不走回頭路。',e:'Lay out in flow order: warehouse → cutting → stitching → lasting → packing → shipping, no back-tracking.'},
+       {z:'主要設備：裁斷機、針車、[[LASTING|成型]]線（刷膠、烘箱、壓底、冷凍定型）、空壓機、排風（膠水氣味）。',e:'Key machines: cutting presses, sewing machines, a [[LASTING|lasting]] line (cementing, ovens, sole press, chiller), compressors, ventilation for adhesives.'}],
+   tip:{z:'膠水與溶劑要有排風、消防與化學品存放規定，驗廠一定會看。',e:'Adhesive areas need ventilation, fire safety and chemical storage — auditors always check.'}},
+  {t:{z:'打樣與 BOM',e:'Sampling & BOM'},d:{z:'4–8 週',e:'4–8 wks'},who:{z:'開發／IE',e:'Development/IE'},
+   do:[{z:'照客戶圖面打樣，客戶確認後建立每一款的 [[BOM|用料表]]：[[UPPER|鞋面]]皮料、內裡、[[OUTSOLE|大底]]、鞋帶、膠、包材。',e:'Make samples to the customer\'s spec; after approval build each style\'s [[BOM]]: [[UPPER|upper]] material, lining, [[OUTSOLE|outsole]], laces, adhesive, packing.'},
+       {z:'IE 拆工序、量 [[SMV|標準工時]]，算出每條線產能與每雙人工成本。',e:'IE breaks down operations and measures [[SMV]] to set line capacity and labour cost per pair.'}],
+   code:'BOM'},
+  {t:{z:'物料計畫與採購',e:'MRP & purchasing'},d:{z:'4–10 週',e:'4–10 wks'},who:{z:'生管／採購',e:'Planning/purchasing'},
+   do:[{z:'[[MRP]]：訂單數量 × BOM − 現有庫存 = 要買的量；大底、皮料交期長，要最早下單。',e:'[[MRP]]: order qty × BOM − stock = what to buy; soles and leather have long lead times — order first.'},
+       {z:'到料 [[GRN|驗收]]：顏色、厚度、數量，合格才入庫，產生 [[AP|應付]]。',e:'[[GRN|Inspect]] arrivals for colour, thickness and quantity before stock-in and the [[AP|payable]].'}],
+   code:'MRP'},
+  {t:{z:'招募與訓練',e:'Hiring & training'},d:{z:'1–2 個月',e:'1–2 months'},who:{z:'人事',e:'HR'},
+   do:[{z:'先招組長、技術員，再分批招作業員；新手要 2–4 週才跟得上產速。',e:'Hire supervisors and technicians first, then operators in batches; new operators need 2–4 weeks to reach speed.'},
+       {z:'勞動合約、工時、加班、休假照柬埔寨勞動法；建立申訴管道。',e:'Contracts, hours, overtime and leave per Cambodian labour law; set up a grievance channel.'}]},
+  {t:{z:'試產',e:'Pilot run'},d:{z:'2–4 週',e:'2–4 wks'},who:{z:'生產／品管',e:'Production/QC'},
+   do:[{z:'[[PILOT|試產]] 200–500 雙，確認工序、[[SMV]]、不良率、包裝。',e:'[[PILOT|Pilot]] 200–500 pairs to confirm operations, [[SMV]], defects and packing.'},
+       {z:'客戶或第三方驗貨用 [[AQL]] 抽檢，過了才量產。',e:'Customer or third-party [[AQL]] inspection before mass production.'}]},
+  {t:{z:'量產與出貨',e:'Mass production & shipping'},d:{z:'每天／每單',e:'Daily/per order'},who:{z:'廠長',e:'Factory manager'},
+   do:[{z:'每天看各線產量、[[EFF|效率]]、[[DHU]]；每週看訂單進度與 [[OTD|準時交貨]]。',e:'Daily: output, [[EFF|efficiency]], [[DHU]] by line. Weekly: order progress and [[OTD]].'},
+       {z:'出貨後開發票、追 [[AR|應收]]；月底算每雙實際成本和毛利。',e:'Invoice after shipment and chase [[AR]]; at month-end compute actual cost and margin per pair.'}],
+   code:'FIN'}
+ ],
+ budget:[[{z:'廠房押金與裝修（特區租廠）',e:'Factory lease deposit & fit-out (SEZ)'},80000],[{z:'機器設備（裁斷、針車 120 台、成型線）',e:'Machinery (cutting, 120 sewing, lasting line)'},600000],[{z:'開發與打樣',e:'Development & samples'},30000],[{z:'首批物料',e:'First materials'},200000],[{z:'訓練期薪資（300 人 × 3 個月）',e:'Training-period wages (300 × 3 months)'},210000],[{z:'證照、驗廠、顧問',e:'Licences, audits, advisers'},20000],[{z:'預備金（約 10%）',e:'Contingency (~10%)'},115000]],
+ budgetNote:{z:'租用特區廠房的示意；自建廠房與宿舍另計。',e:'Leasing an SEZ building; owning land, buildings or dorms costs more.'},
+ day:[['07:00',{z:'上班前：組長點名、看今天各線目標與換款。',e:'Before shift: roll call, line targets and style changes.'}],
+      ['07:30',{z:'開線：裁斷先行，針車、成型依序接料；每小時記產量。',e:'Lines start: cutting first, stitching and lasting follow; log output hourly.'}],
+      ['10:00',{z:'中檢：品管巡線，問題當場停線改善。',e:'In-line QC: inspectors walk the lines and stop to fix problems.'}],
+      ['14:00',{z:'物料會議：明天要的料到了嗎？缺料就換款或調線。',e:'Material check: is tomorrow\'s material here? If not, switch styles or lines.'}],
+      ['16:30',{z:'下班前：產量、效率、不良匯總，交日報。',e:'End of day: output, efficiency and defects summarised into the daily report.'}]],
+ loop:[{z:'接單',e:'Order'},{z:'BOM／MRP',e:'BOM/MRP'},{z:'採購驗收',e:'Buy & receive'},{z:'裁斷',e:'Cut'},{z:'針車',e:'Stitch'},{z:'成型',e:'Last'},{z:'品管包裝',e:'QC & pack'},{z:'出貨收款',e:'Ship & collect'}],
+ kpis:[
+  {k:'EFF',f:{z:'產出雙數 × SMV ÷（人數 × 上班分鐘）',e:'Pairs × SMV ÷ (operators × minutes)'},ex:{z:'1,500 雙 × 70 分 ÷（300 人 × 480 分）≈ 73%',e:'1,500 × 70 ÷ (300 × 480) ≈ 73%'},std:{z:'新廠 50–60%，成熟廠 70–85%',e:'New plant 50–60%, mature 70–85%'}},
+  {k:'DHU',f:{z:'不良數 ÷ 檢驗數 × 100',e:'Defects ÷ inspected × 100'},ex:{z:'檢驗 1,000 雙、不良 35 → DHU 3.5',e:'35 defects in 1,000 → DHU 3.5'}},
+  {k:'OTD',f:{z:'準時出貨訂單 ÷ 全部訂單',e:'On-time orders ÷ all orders'},ex:{z:'20 張單 18 張準時 → 90%',e:'18 of 20 → 90%'},std:{z:'客戶常要求 95% 以上',e:'Buyers often expect 95%+'}},
+  {k:'SMV',f:{z:'每雙人工成本 = 每分鐘工資 × SMV ÷ 效率',e:'Labour per pair = cost per minute × SMV ÷ efficiency'},ex:{z:'每分鐘約 $0.021 × 70 ÷ 73% ≈ $2.0／雙（＝月薪資 $78,000 ÷ 39,000 雙）',e:'~$0.021 × 70 ÷ 73% ≈ $2.0/pair (= $78,000 wages ÷ 39,000 pairs)'}}],
+ calc:{unit:{z:'雙',e:'pairs'},fixed:140000,price:10.5,varc:5.7,commission:0,cap:39000,capLab:{z:'每月產能（1,500 雙 × 26 天）',e:'Monthly capacity (1,500 × 26)'},
+   fixedLab:{z:'每月固定成本（薪資約 $78,000＋廠租＋折舊＋水電＋管理）',e:'Monthly fixed cost (wages ~$78,000, rent, depreciation, utilities, admin)'},priceLab:{z:'FOB 售價／雙',e:'FOB price/pair'},varLab:{z:'每雙物料與包材',e:'Materials & packing per pair'},comLab:{z:'佣金 %（透過貿易商才填）',e:'Agent commission % (if via trader)'}},
+ pros:[{z:'柬埔寨勞動成本具競爭力，訂單量大時產能利用高。',e:'Competitive labour cost in Cambodia; high utilisation when orders are big.'},{z:'長期客戶訂單穩定，可預先排產。',e:'Long-term customers give steady, plannable orders.'},{z:'特區與 QIP 稅務優惠降低進口成本。',e:'SEZ and QIP incentives cut import costs.'}],
+ cons:[{z:'每雙毛利薄，效率差幾個百分點就從賺變賠。',e:'Thin margin per pair — a few points of efficiency decide profit or loss.'},{z:'客戶集中、出口關稅與匯率政策變動風險。',e:'Customer concentration; export-tariff and currency policy risk.'},{z:'人多：勞資關係、工會、流動率要管好。',e:'Large workforce: labour relations, unions and turnover need care.'}],
+ risks:[[{z:'缺料停線',e:'Material shortage'},{z:'大底或皮料晚到',e:'Late soles or leather'},{z:'MRP 提早下單、每天看到料表、備替代款',e:'Order early via MRP, daily arrival check, backup styles'}],
+        [{z:'交期延誤',e:'Late delivery'},{z:'OTD 低於 90%',e:'OTD under 90%'},{z:'每週排產檢討、瓶頸工序加人或加班',e:'Weekly schedule review; add people or overtime at bottlenecks'}],
+        [{z:'驗貨失敗',e:'Failed inspection'},{z:'AQL 不過、整批重檢',e:'AQL failure, full re-check'},{z:'中檢加強、首件確認、終檢 100% 外觀',e:'Stronger in-line QC, first-piece approval, 100% final visual'}]]
+},
+{id:'hbs',icon:'🛠️',tone:'#9a5b13',sys:'hbs.html',
+ name:{z:'五金百貨',e:'Hardware Store'},
+ brand:{z:'聖道五金百貨 Saintdou Hardware & Home',e:'Saintdou Hardware & Home'},
+ city:{z:'馬來西亞・沙巴亞庇（Kota Kinabalu）',e:'Kota Kinabalu, Sabah, Malaysia'},
+ cur:'RM',
+ one:{z:'賣成千上萬種小東西：螺絲、油漆、水電材料、工具、家用品。毛利不錯但錢都壓在貨架上，關鍵是「該有的不缺、不動的不囤」，還要管好承包商的賒帳。',e:'Thousands of small items — screws, paint, plumbing, tools, homeware. Good margins, but cash sits on the shelves: never run out of what sells, don\'t hoard what doesn\'t, and control contractor credit.'},
+ facts:[{z:'店面約 3,000 平方呎',e:'~3,000 sq ft shop'},{z:'約 5,000 個 SKU',e:'~5,000 SKUs'},{z:'毛利率 28%',e:'28% gross margin'},{z:'員工 6 人、送貨車 1 台',e:'6 staff, 1 delivery truck'}],
+ phases:[
+  {t:{z:'市調與選址',e:'Market & site'},d:{z:'3–6 週',e:'3–6 wks'},who:{z:'老闆',e:'Owner'},
+   do:[{z:'找新住宅區或工業區旁（例：Inanam、Penampang 一帶），屋主修繕和承包商都是客人。',e:'Choose near new housing or industrial areas (e.g. Inanam, Penampang) — homeowners and contractors both buy.'},
+       {z:'店前要好停車、好卸貨，重物（水泥、水管）要能直接上車。',e:'Easy parking and loading; heavy goods (cement, pipes) must go straight to vehicles.'}]},
+  {t:{z:'登記與執照',e:'Registration & licences'},d:{z:'3–6 週',e:'3–6 wks'},who:{z:'老闆／秘書公司',e:'Owner/company secretary'},
+   do:[{z:'在 [[SSM]] 註冊公司或商號；向 [[DBKK]] 申請營業執照與招牌許可。',e:'Register with [[SSM]]; apply to [[DBKK]] for a trading licence and signboard permit.'},
+       {z:'向稅務局（LHDN）登記稅號；營業額與品項達門檻時登記 [[SST]]。',e:'Register with the tax authority (LHDN); register for [[SST]] when thresholds apply.'},
+       {z:'員工加入 [[EPF|EPF／SOCSO／EIS]]。',e:'Enrol staff in [[EPF|EPF/SOCSO/EIS]].'}]},
+  {t:{z:'店面與倉儲',e:'Shop & storage'},d:{z:'4–6 週',e:'4–6 wks'},who:{z:'老闆',e:'Owner'},
+   do:[{z:'分區：工具、五金零件、水電、油漆、園藝、家用品；重物放地面與出口旁。',e:'Zones: tools, fasteners, plumbing/electrical, paint, garden, homeware; heavy goods low and near the exit.'},
+       {z:'小零件用分格盒與標籤，標價與條碼一起貼。',e:'Small parts in labelled bins with price and barcode.'}]},
+  {t:{z:'品項與供應商',e:'Range & suppliers'},d:{z:'4–8 週',e:'4–8 wks'},who:{z:'採購',e:'Purchasing'},
+   do:[{z:'先做 [[ABC|ABC 分析]]：A 類（水泥、PVC 管、電線、常用螺絲）絕不能缺貨。',e:'Start with [[ABC|ABC analysis]]: A items (cement, PVC pipe, cable, common screws) must never run out.'},
+       {z:'沙巴很多貨要從西馬或國外進，交期和運費都要算進成本與 [[ROP|補貨點]]。',e:'Much stock comes from Peninsular Malaysia or abroad — include lead time and freight in cost and [[ROP|reorder points]].'}],
+   code:'PO'},
+  {t:{z:'定價與系統',e:'Pricing & systems'},d:{z:'2 週',e:'2 wks'},who:{z:'老闆',e:'Owner'},
+   do:[{z:'零售價、承包商價分開；設定每類目標 [[GM|毛利率]]。',e:'Separate retail and contractor price lists; set a target [[GM|margin]] per category.'},
+       {z:'所有品項建檔、貼條碼，用 [[POS]] 結帳，庫存自動扣。',e:'Item master and barcodes for everything; checkout on [[POS]] so stock updates automatically.'}]},
+  {t:{z:'首批進貨與驗收',e:'Opening stock'},d:{z:'2–3 週',e:'2–3 wks'},who:{z:'倉管',e:'Store keeper'},
+   do:[{z:'照 [[PO|採購單]] [[GRN|驗收]]：點數、看型號、看破損，入庫才付款。',e:'[[GRN|Receive]] against the [[PO]]: count, check model and damage before paying.'},
+       {z:'開幕前做一次完整 [[STK|盤點]] 當作期初庫存。',e:'Full [[STK|stocktake]] before opening as the opening balance.'}],
+   code:'GRN'},
+  {t:{z:'招募訓練與試營運',e:'Training & soft opening'},d:{z:'2 週',e:'2 wks'},who:{z:'店長',e:'Manager'},
+   do:[{z:'店員要懂產品：螺絲規格、水管尺寸、油漆用量，客人才會信任。',e:'Staff must know products — screw sizes, pipe dimensions, paint coverage — to earn trust.'},
+       {z:'承包商開戶：信用額度與付款天數寫清楚。',e:'Contractor accounts: written credit limits and payment terms.'}]},
+  {t:{z:'正式營運',e:'Operations'},d:{z:'每天／每月',e:'Daily/monthly'},who:{z:'店長',e:'Manager'},
+   do:[{z:'每天看營收、缺貨；每週補貨；A 類每月盤，B、C 類每季盤。',e:'Daily: sales and stock-outs. Weekly: replenishment. A items counted monthly, B/C quarterly.'},
+       {z:'每月看 [[DIO|周轉天數]]、[[GMROI]]、承包商 [[DSO|收款天數]]。',e:'Monthly: [[DIO|days inventory]], [[GMROI]], contractor [[DSO]].'}],
+   code:'LEDGER'}
+ ],
+ budget:[[{z:'租金押金（3 個月）',e:'Rent deposit (3 months)'},30000],[{z:'裝修與貨架',e:'Fit-out & shelving'},120000],[{z:'首批庫存',e:'Opening stock'},400000],[{z:'POS、條碼、監視器',e:'POS, barcodes, CCTV'},15000],[{z:'送貨車',e:'Delivery truck'},80000],[{z:'執照與開辦費',e:'Licences & set-up'},5000],[{z:'週轉金',e:'Working capital'},100000]],
+ budgetNote:{z:'亞庇店屋（shoplot）月租約 RM10,000 的示意。庫存是最大一筆。',e:'Illustrative KK shoplot at ~RM10,000/month. Stock is the biggest line.'},
+ day:[['08:00',{z:'開店：檢查昨天缺貨單、今天要送的貨。',e:'Open: yesterday\'s stock-outs and today\'s deliveries.'}],
+      ['09:00',{z:'承包商尖峰：快速報價、開單、裝車。',e:'Contractor rush: quick quotes, invoices, loading.'}],
+      ['13:00',{z:'收貨驗收、上架、更新標價。',e:'Receive, shelve, update prices.'}],
+      ['16:00',{z:'補貨：系統列出低於補貨點的品項，下採購單。',e:'Replenish: system lists items below reorder point; raise POs.'}],
+      ['18:30',{z:'打烊：日結、核對現金與刷卡、催收到期帳款名單。',e:'Close: cash-up, card reconciliation, list of overdue accounts.'}]],
+ loop:[{z:'需求預測',e:'Forecast'},{z:'採購 PO',e:'PO'},{z:'到貨驗收',e:'Receive'},{z:'上架標價',e:'Shelve'},{z:'銷售 POS',e:'Sell'},{z:'賒帳收款',e:'Collect'},{z:'盤點補貨',e:'Count & reorder'}],
+ kpis:[
+  {k:'GM',f:{z:'（營收 − 銷貨成本）÷ 營收',e:'(Sales − COGS) ÷ sales'},ex:{z:'月營收 RM250,000、成本 RM180,000 → 28%',e:'RM250,000 sales, RM180,000 cost → 28%'}},
+  {k:'DIO',f:{z:'平均庫存 ÷ 每日銷貨成本',e:'Average stock ÷ daily COGS'},ex:{z:'RM400,000 ÷（180,000 ÷ 30）≈ 67 天',e:'RM400,000 ÷ (180,000 ÷ 30) ≈ 67 days'},std:{z:'五金業常見 60–120 天',e:'Hardware often 60–120 days'}},
+  {k:'GMROI',f:{z:'年毛利 ÷ 平均庫存成本',e:'Annual margin ÷ average stock'},ex:{z:'RM70,000 × 12 ÷ RM400,000 = 2.1',e:'RM70,000 × 12 ÷ RM400,000 = 2.1'},std:{z:'大於 2 算健康',e:'Above 2 is healthy'}},
+  {k:'DSO',f:{z:'應收帳款 ÷ 每日賒銷',e:'Receivables ÷ daily credit sales'},ex:{z:'RM90,000 ÷ RM3,000 = 30 天',e:'RM90,000 ÷ RM3,000 = 30 days'}}],
+ calc:{unit:{z:'RM 營收',e:'RM of sales'},fixed:45000,price:1,varc:0.72,commission:0,cap:350000,capLab:{z:'每月營收上限（店面與人力可做到）',e:'Monthly sales ceiling'},
+   fixedLab:{z:'每月固定成本（租金 1 萬＋薪資 1.8 萬＋車與油 4 千＋水電＋折舊＋其他）',e:'Monthly fixed cost (rent, wages, truck, utilities, depreciation, other)'},priceLab:{z:'每 RM1 營收',e:'Per RM1 of sales'},varLab:{z:'每 RM1 營收的進貨成本（1 − 毛利率）',e:'Cost per RM1 of sales (1 − margin)'},comLab:{z:'刷卡手續費 %',e:'Card fees %'}},
+ pros:[{z:'修繕和建築需求穩定，不太受流行影響。',e:'Steady repair and building demand, little fashion risk.'},{z:'多數品項不會過期，可放較久。',e:'Most items don\'t expire.'},{z:'承包商是穩定回頭客。',e:'Contractors are loyal repeat buyers.'}],
+ cons:[{z:'庫存資金大、品項多，管理難度高。',e:'Large stock investment; many SKUs are hard to manage.'},{z:'賒帳收不回來的風險。',e:'Bad-debt risk on contractor credit.'},{z:'大型連鎖和網購比價壓力。',e:'Price pressure from big chains and online.'}],
+ risks:[[{z:'呆滯庫存',e:'Dead stock'},{z:'某些品項 6 個月沒賣',e:'Items unsold for 6 months'},{z:'每季清倉促銷、停止再進',e:'Quarterly clearance; stop re-ordering'}],
+        [{z:'賒帳變呆帳',e:'Bad debts'},{z:'DSO 超過 60 天',e:'DSO above 60 days'},{z:'信用額度、超額停賣、每週催收',e:'Credit limits, hold sales when over, weekly collection'}],
+        [{z:'A 類缺貨',e:'A-item stock-outs'},{z:'客人問了沒貨',e:'Customers asking for missing items'},{z:'A 類設安全庫存、每天看補貨清單',e:'Safety stock on A items; daily reorder list'}]]
+},
+{id:'cvs',icon:'🏪',tone:'#b23a48',sys:'cvs.html',
+ name:{z:'超商',e:'Convenience Store'},
+ brand:{z:'聖道超商 Saintdou Mart',e:'Saintdou Mart'},
+ city:{z:'柬埔寨・西港市區',e:'Central Sihanoukville, Cambodia'},
+ cur:'US$',
+ one:{z:'在客人身邊、隨時開著，賣飲料、零食、日用品、鮮食。每一筆金額小、毛利不高，靠「來客數多、損耗少、貨架永遠滿」賺錢。',e:'Always open and close by: drinks, snacks, daily goods, fresh food. Small baskets and modest margins — win with traffic, low shrinkage and full shelves.'},
+ facts:[{z:'賣場約 80 m²',e:'~80 m² store'},{z:'約 2,000 個 SKU',e:'~2,000 SKUs'},{z:'毛利率約 25%',e:'~25% gross margin'},{z:'24 小時、三班 8 人',e:'24 h, 3 shifts, 8 staff'}],
+ phases:[
+  {t:{z:'商圈評估',e:'Trade-area check'},d:{z:'2–4 週',e:'2–4 wks'},who:{z:'老闆',e:'Owner'},
+   do:[{z:'晚上也要有人潮：住宅、宿舍、工廠下班路線、觀光區。',e:'Need traffic at night too: housing, dorms, factory routes, tourist areas.'},
+       {z:'數 300 公尺內的競爭店，看他們缺什麼（冰品、鮮食、中文商品）。',e:'Map competitors within 300 m and what they lack (ice cream, fresh food, Chinese products).'}]},
+  {t:{z:'登記與許可',e:'Registration & permits'},d:{z:'2–6 週',e:'2–6 wks'},who:{z:'老闆／代辦',e:'Owner/agent'},
+   do:[{z:'在 [[SinglePortal|線上單一窗口]] 完成公司與稅籍登記；依規模登記 [[VAT]]；每年繳 [[PATENT|營業執照稅]]。',e:'Company and tax registration via the [[SinglePortal|Online Single Portal]]; [[VAT]] as required; annual [[PATENT|patent tax]].'},
+       {z:'賣食品、菸酒要確認相關販售許可；員工登記 [[NSSF]]。',e:'Check permits for food, tobacco and alcohol; enrol staff in [[NSSF]].'}]},
+  {t:{z:'店舖設計與設備',e:'Store design & equipment'},d:{z:'3–5 週',e:'3–5 wks'},who:{z:'老闆',e:'Owner'},
+   do:[{z:'動線：飲料冰櫃放最裡面，讓客人經過其他貨架；收銀台在門口看得到全店。',e:'Layout: drinks fridges at the back so customers pass other shelves; the till by the door with a view of the store.'},
+       {z:'設備：冷藏櫃、冷凍櫃、熱食機、收銀 [[POS]]、監視器、發電機或 UPS（停電時冷藏不能斷）。',e:'Equipment: chillers, freezers, hot-food unit, [[POS]], CCTV, generator or UPS so cold chain survives power cuts.'}]},
+  {t:{z:'品項與棚割',e:'Range & planogram'},d:{z:'2–3 週',e:'2–3 wks'},who:{z:'店長',e:'Manager'},
+   do:[{z:'飲料、零食、泡麵、日用品、菸酒、[[FRESH|鮮食]]；每類先選賣得最好的品牌。',e:'Drinks, snacks, noodles, toiletries, tobacco/alcohol, [[FRESH|fresh food]]; start with each category\'s best sellers.'},
+       {z:'畫 [[PLANO|棚割圖]]：好賣的放眼睛高度、同類放一起、價格標清楚（美元與瑞爾）。',e:'Draw a [[PLANO|planogram]]: best-sellers at eye level, categories together, clear USD and riel prices.'}],
+   code:'W_SKU100'},
+  {t:{z:'系統與收銀',e:'Systems & till'},d:{z:'1 週',e:'1 wk'},who:{z:'店長',e:'Manager'},
+   do:[{z:'商品建檔與條碼、設定 [[KHR|雙幣找零]] 匯率、KHQR 掃碼付款。',e:'Item master and barcodes, [[KHR|dual-currency]] rate, KHQR payments.'},
+       {z:'交班點鈔：每班開始和結束各點一次，差額簽名。',e:'Shift cash counts at start and end, sign for variances.'}],
+   code:'W_POS110'},
+  {t:{z:'招募與訓練',e:'Hiring & training'},d:{z:'2 週',e:'2 wks'},who:{z:'店長',e:'Manager'},
+   do:[{z:'三班排班；收銀、上架 [[FIFO|先進先出]]、冰櫃巡溫、防竊。',e:'Three shifts; cashiering, [[FIFO]] shelving, fridge temperature checks, loss prevention.'}],
+   code:'W_HR530'},
+  {t:{z:'試營運',e:'Soft opening'},d:{z:'1 週',e:'1 wk'},who:{z:'全員',e:'All'},
+   do:[{z:'先開 16 小時，看每小時來客，決定要不要 24 小時。',e:'Open 16 hours first; decide on 24 h from hourly traffic.'}]},
+  {t:{z:'正式營運',e:'Operations'},d:{z:'每天／每月',e:'Daily/monthly'},who:{z:'店長',e:'Manager'},
+   do:[{z:'每天 [[EOS|電子訂貨]]、到貨驗收、鮮食報廢登記、冰櫃巡溫。',e:'Daily [[EOS]] ordering, receiving, fresh-food write-offs, fridge temperature rounds.'},
+       {z:'每月看 [[SHR|損耗率]]、[[SALESM2|坪效]]、毛利率；滯銷品換掉。',e:'Monthly: [[SHR|shrinkage]], [[SALESM2|sales per m²]], margin; replace slow sellers.'}],
+   code:'W_FIN420'}
+ ],
+ budget:[[{z:'租金押金（3 個月）',e:'Rent deposit (3 months)'},6000],[{z:'裝修',e:'Fit-out'},25000],[{z:'冷藏冷凍設備',e:'Chillers & freezers'},20000],[{z:'POS、監視器、UPS',e:'POS, CCTV, UPS'},6000],[{z:'首批庫存',e:'Opening stock'},35000],[{z:'證照與開辦',e:'Permits & set-up'},2000],[{z:'週轉金',e:'Working capital'},15000]],
+ budgetNote:{z:'西港市區店面月租約 $2,000 的示意。',e:'Illustrative central Sihanoukville shop at ~$2,000/month.'},
+ day:[['07:00',{z:'早班：收鮮食與麵包、[[FIFO|先進先出]] 上架、補冰櫃。',e:'Morning: receive fresh food and bread, [[FIFO]] shelving, refill fridges.'}],
+      ['11:00',{z:'午間尖峰：便當熱食、飲料；收銀台不能缺人。',e:'Lunch peak: hot food and drinks; never leave the till.'}],
+      ['15:00',{z:'中班交接點鈔；[[EOS|訂貨]]；冰櫃巡溫紀錄。',e:'Shift handover cash count; [[EOS]] ordering; fridge log.'}],
+      ['22:00',{z:'鮮食到期下架登記報廢；整理貨架面。',e:'Remove and log expired fresh food; face up shelves.'}],
+      ['00:00',{z:'夜班：日結、清潔、補貨；注意安全。',e:'Night: end-of-day close, cleaning, restocking; mind safety.'}]],
+ loop:[{z:'電子訂貨',e:'EOS order'},{z:'到貨驗收',e:'Receive'},{z:'先進先出上架',e:'FIFO shelve'},{z:'收銀銷售',e:'Sell'},{z:'巡溫報廢',e:'Temps & waste'},{z:'交班日結',e:'Close'}],
+ kpis:[
+  {k:'TICKET',f:{z:'營收 ÷ 來客數',e:'Sales ÷ customers'},ex:{z:'$1,000 ÷ 250 人 = $4',e:'$1,000 ÷ 250 = $4'}},
+  {k:'SHR',f:{z:'（報廢 + 盤損）÷ 營收',e:'(Write-offs + count loss) ÷ sales'},ex:{z:'$600 ÷ $30,000 = 2%',e:'$600 ÷ $30,000 = 2%'},std:{z:'目標 1–2% 以下',e:'Target under 1–2%'}},
+  {k:'SALESM2',f:{z:'營收 ÷ 賣場面積',e:'Sales ÷ selling area'},ex:{z:'$30,000 ÷ 80 m² = $375／m²／月',e:'$30,000 ÷ 80 = $375/m²/month'}},
+  {k:'GM',f:{z:'（營收 − 進貨成本）÷ 營收',e:'(Sales − COGS) ÷ sales'},ex:{z:'飲料約 20–30%、鮮食約 35–45%、菸約 10%',e:'Drinks ~20–30%, fresh ~35–45%, tobacco ~10%'}}],
+ calc:{unit:{z:'美元營收',e:'US$ of sales'},fixed:6500,price:1,varc:0.75,commission:0,cap:45000,capLab:{z:'每月營收上限',e:'Monthly sales ceiling'},
+   fixedLab:{z:'每月固定成本（租金 $2,000＋薪資約 $2,400＋電費約 $1,200＋其他）',e:'Monthly fixed cost (rent, wages, electricity, other)'},priceLab:{z:'每 $1 營收',e:'Per $1 of sales'},varLab:{z:'每 $1 營收的進貨成本（1 − 毛利率）',e:'Cost per $1 of sales (1 − margin)'},comLab:{z:'刷卡／掃碼手續費 %',e:'Card/QR fees %'}},
+ pros:[{z:'日常必需品，生意不太受景氣影響。',e:'Daily necessities — resilient to the economy.'},{z:'現金周轉快，貨通常幾天就賣掉。',e:'Fast cash turnover; stock sells within days.'},{z:'投資比酒店、工廠小很多。',e:'Far smaller investment than a hotel or factory.'}],
+ cons:[{z:'毛利低，損耗和偷竊一多就沒賺。',e:'Low margin — shrinkage and theft wipe out profit.'},{z:'冷藏電費高、停電風險。',e:'High refrigeration power costs and outage risk.'},{z:'24 小時排班辛苦，連鎖品牌競爭。',e:'24-hour staffing is hard; chain competition.'}],
+ risks:[[{z:'鮮食報廢多',e:'Fresh-food waste'},{z:'每天丟一大袋',e:'A bag thrown out daily'},{z:'依時段銷量訂貨、傍晚折扣',e:'Order by time-of-day sales; evening discounts'}],
+        [{z:'偷竊與收銀差額',e:'Theft & till variances'},{z:'盤損持續增加',e:'Rising count losses'},{z:'監視器、高價品放收銀台後、交班點鈔',e:'CCTV, high-value items behind the till, shift counts'}],
+        [{z:'停電冷藏壞掉',e:'Power cut spoils stock'},{z:'冰櫃溫度超標',e:'Fridge temperature out of range'},{z:'UPS／發電機、每 4 小時巡溫',e:'UPS/generator, temperature check every 4 h'}]]
+}];
+
+/* 五種比較 */
+const CMP={rows:[
+ [{z:'開辦資金（示意）',e:'Start-up capital (illustrative)'},['約 $27 萬','約 NT$210 萬','約 $126 萬','約 RM75 萬','約 $11 萬'],['~$270k','~NT$2.1M','~$1.26M','~RM750k','~$110k']],
+ [{z:'回本時間（常見）',e:'Typical payback'},['4–7 年','2–3 年','3–5 年','3–5 年','2–4 年'],['4–7 yrs','2–3 yrs','3–5 yrs','3–5 yrs','2–4 yrs']],
+ [{z:'毛利',e:'Gross margin'},['高（房間邊際成本低）','高（但被房租人事吃掉）','薄（每雙一點點）','中（25–35%）','低（20–28%）'],['High','High (eaten by rent/labour)','Thin','Medium (25–35%)','Low (20–28%)']],
+ [{z:'現金流',e:'Cash flow'},['中（OTA 月結）','快（現金）','慢（出貨後才收款）','中（承包商賒帳）','很快（現金）'],['Medium (OTA payouts)','Fast (cash)','Slow (paid after shipment)','Medium (contractor credit)','Very fast (cash)']],
+ [{z:'管理難度',e:'Management difficulty'},[4,3,5,4,3]],
+ [{z:'人力',e:'Staff'},['約 12 人、24 小時','4–6 人','約 300 人','約 6 人','約 8 人、三班'],['~12, 24/7','4–6','~300','~6','~8, 3 shifts']],
+ [{z:'最大風險',e:'Biggest risk'},['淡季、OTA 依賴','房租與競爭','缺單、交期、勞資','呆滯庫存、呆帳','損耗、偷竊'],['Seasonality, OTA reliance','Rent & competition','Orders, deadlines, labour','Dead stock, bad debt','Shrinkage, theft']]
+]};
+
+/* ───────── 畫面 ───────── */
+let tab=(()=>{const h=(location.hash||'').slice(1);return ['home','gloss'].concat(BIZ.map(b=>b.id)).includes(h)?h:'home'})();
+const phaseSel={};
+const $=id=>document.getElementById(id);
+
+function drawTabs(){
+  const items=[['home','🧭',{z:'總覽',e:'Overview'}]].concat(BIZ.map(b=>[b.id,b.icon,b.name])).concat([['gloss','📖',{z:'名詞表',e:'Glossary'}]]);
+  $('tabs').innerHTML=items.map(([id,ic,n])=>`<button type="button" data-t="${id}" class="${id===tab?'on':''}">${ic} ${esc(tx(n))}</button>`).join('');
+  $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>go(b.dataset.t));
+  const on=$('tabs').querySelector('.on');if(on)on.scrollIntoView({block:'nearest',inline:'center'});
+}
+function go(id){tab=id;history.replaceState(null,'','#'+id);render();window.scrollTo({top:0})}
+
+function home(){
+  document.documentElement.style.setProperty('--tone','#183247');
+  let h=`<div class="hero"><div class="big">📘</div><h1>${T('聖道開業 SOP 學院','Saintdou Startup SOP Academy')}</h1>
+  <p>${T('五種生意，從一個想法到每天開門營業。每一套都用真實城市當例子，邊看邊學，再到系統裡實際操作。','Five businesses, from an idea to opening every day. Each uses a real city as the example — read, then practise in the matching system.')}</p>
+  <div class="chips"><span class="chip">🇰🇭 ${T('西港','Sihanoukville')}</span><span class="chip">🇹🇼 ${T('台北','Taipei')}</span><span class="chip">🇲🇾 ${T('亞庇','Kota Kinabalu')}</span></div></div>`;
+  h+=`<section class="card"><h2>🧭 ${T('怎麼讀','How to use this page')}</h2>
+  <p class="sub">${T('每一套都分成同樣的 7 段，讀完一套，其他四套就很快。','Every business uses the same 7 sections — learn one and the rest are quick.')}</p>
+  <div class="tw"><table><tr><th>#</th><th>${T('段落','Section')}</th><th>${T('你會學到','You will learn')}</th></tr>
+  ${[['①',T('一句話看懂','In one line'),T('這門生意靠什麼賺錢','How the business makes money')],['②',T('從無到有','From zero to open'),T('8 個階段：做什麼、誰做、多久、常見錯誤','8 stages: what, who, how long, common mistakes')],['③',T('開辦預算','Start-up budget'),T('錢花在哪裡（圖表）','Where the money goes (chart)')],['④',T('每日 SOP','Daily SOP'),T('一天從開門到打烊','A day from opening to closing')],['⑤',T('關鍵數字與試算','Key numbers & calculator'),T('KPI 公式＋例子，自己改數字算損益兩平','KPI formulas with examples; change numbers to find break-even')],['⑥',T('優劣與風險','Pros, cons & risks'),T('好處、壞處、怎麼防','Upsides, downsides and how to protect yourself')],['⑦',T('到系統練習','Practise in the system'),T('每個階段對應的系統畫面','Which screen to use at each stage')]].map(r=>`<tr><td>${r[0]}</td><td><b>${r[1]}</b></td><td>${r[2]}</td></tr>`).join('')}
+  </table></div>
+  <div class="tip">💡 ${T('看到底下有虛線的詞，點一下就有解釋；全部名詞在最後一個分頁「名詞表」。','Tap any dotted-underlined word for an explanation; all terms are in the Glossary tab.')} ${rich({z:'例如：[[BEP|損益兩平]]、[[CAPEX]]、[[RevPAR]]。',e:'For example: [[BEP|break-even]], [[CAPEX]], [[RevPAR]].'})}</div></section>`;
+  h+=`<section class="card"><h2>⚖️ ${T('五種生意比一比','Five businesses compared')}</h2><p class="sub">${T('同樣是「開店」，資金、回本、現金流和難度差很多。數字為教學示意。','Capital, payback, cash flow and difficulty vary widely. Figures are illustrative.')}</p>
+  <div class="tw"><table><tr><th></th>${BIZ.map(b=>`<th>${b.icon} ${esc(tx(b.name))}</th>`).join('')}</tr>
+  ${CMP.rows.map(r=>`<tr><td><b>${esc(tx(r[0]))}</b></td>${BIZ.map((b,i)=>{const v=Array.isArray(r[1])&&typeof r[1][0]==='number'?`<span class="stars">${'★'.repeat(r[1][i])}${'☆'.repeat(5-r[1][i])}</span>`:esc(L==='en'&&r[2]?r[2][i]:r[1][i]);return `<td>${v}</td>`}).join('')}</tr>`).join('')}
+  </table></div>
+  <div class="tip">💡 ${T('想先學、風險小：從超商或咖啡店開始；想學完整管理系統：酒店（前檯、房務、餐飲、財務都有）；想學製造業：鞋廠。','Lowest risk to learn first: convenience store or café. For a full management system: the hotel. For manufacturing: the shoe factory.')}</div></section>`;
+  h+=`<section class="card"><h2>🧱 ${T('每種生意都一樣的 4 個基本功','Four basics every business shares')}</h2>
+  <div class="kpis">
+  ${[[T('先算再做','Run the numbers first'),{z:'開店前先算 [[BEP|損益兩平]]：每月要賣多少才不虧。算不過就改地點、改規模，不要硬開。',e:'Before opening, compute [[BEP|break-even]]. If it doesn\'t work, change the site or size — don\'t force it.'}],
+     [T('現金比利潤重要','Cash beats profit'),{z:'準備 3–6 個月 [[WC|週轉金]]；盯緊 [[AR|應收]]，帳上賺錢但收不到錢一樣會倒。',e:'Keep 3–6 months of [[WC|working capital]]; watch [[AR]] — paper profit without cash still fails.'}],
+     [T('寫成 SOP','Write it as SOPs'),{z:'把每天重複的事寫成 [[SOP]]：誰、何時、怎麼做、做到什麼程度。換人做也一樣。',e:'Turn daily routines into [[SOP]]s so anyone can do them the same way.'}],
+     [T('用數字管理','Manage by numbers'),{z:'每種生意挑 3–4 個 [[KPI]]，每天或每週看，數字變差就找原因。',e:'Pick 3–4 [[KPI]]s, check them daily or weekly, and dig in when they slip.'}]].map(x=>`<div class="kpi"><b>${x[0]}</b><div class="ex" style="margin-top:4px">${rich(x[1])}</div></div>`).join('')}
+  </div></section>`;
+  h+=`<section class="card"><h2>📚 ${T('開始學','Start learning')}</h2><div class="kpis">${BIZ.map(b=>`<div class="kpi" style="cursor:pointer;border-left:5px solid ${b.tone}" data-go="${b.id}"><b>${b.icon} ${esc(tx(b.name))}</b><div class="ex">${esc(tx(b.brand))}<br>📍 ${esc(tx(b.city))}</div></div>`).join('')}</div></section>`;
+  h+=sources();
+  return h;
+}
+
+function cycleSvg(nodes,tone){
+  const n=nodes.length,R=128,cx=210,cy=165,W=420,H=330;
+  const pts=nodes.map((_,i)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [cx+R*Math.cos(a),cy+R*Math.sin(a)]});
+  let s=`<svg class="cyc" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(T('營運循環','Operating loop'))}"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="${tone}"/></marker></defs>`;
+  s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${tone}22" stroke-width="22"/>`;
+  for(let i=0;i<n;i++){const a1=-Math.PI/2+(i+.22)*2*Math.PI/n,a2=-Math.PI/2+(i+.78)*2*Math.PI/n;
+    s+=`<path d="M${cx+R*Math.cos(a1)},${cy+R*Math.sin(a1)} A${R},${R} 0 0 1 ${cx+R*Math.cos(a2)},${cy+R*Math.sin(a2)}" fill="none" stroke="${tone}" stroke-width="2.4" marker-end="url(#ah)"/>`}
+  pts.forEach((p,i)=>{const lab=tx(nodes[i]);const w=Math.max(64,lab.length*(L==='en'?7.4:14)+18);
+    s+=`<g><rect x="${p[0]-w/2}" y="${p[1]-16}" width="${w}" height="32" rx="16" fill="#fff" stroke="${tone}" stroke-width="2"/><text x="${p[0]}" y="${p[1]+5}" text-anchor="middle" font-size="${L==='en'?12:13.5}" font-weight="700" fill="#182d40">${i+1}. ${esc(lab)}</text></g>`});
+  s+=`<text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="15" font-weight="800" fill="${tone}">${esc(T('每天的循環','Daily loop'))}</text><text x="${cx}" y="${cy+16}" text-anchor="middle" font-size="12" fill="#627487">${esc(T('跑完一圈＝一天','one lap = one day'))}</text></svg>`;
+  return s;
+}
+
+function bizPage(b){
+  document.documentElement.style.setProperty('--tone',b.tone);
+  document.documentElement.style.setProperty('--soft',b.tone+'18');
+  const sel=phaseSel[b.id]||0,p=b.phases[sel];
+  const sysUrl=b.sys;
+  let h=`<div class="hero"><div class="big">${b.icon}</div><h1>${esc(tx(b.brand))}</h1><p>📍 ${esc(tx(b.city))}</p>
+   <div class="chips">${b.facts.map(f=>`<span class="chip">${esc(tx(f))}</span>`).join('')}</div>
+   <div class="toc">${[['s1','①'],['s2','②'],['s3','③'],['s4','④'],['s5','⑤'],['s6','⑥'],['s7','⑦']].map(x=>`<a href="#${b.id}-${x[0]}" style="background:#ffffff2a;color:#fff">${x[1]}</a>`).join('')}</div></div>`;
+  h+=`<section class="card" id="${b.id}-s1"><h2><span class="n">1</span>${T('一句話看懂','In one line')}</h2><p style="font-size:16px;margin:4px 0">${rich(b.one)}</p></section>`;
+  /* phases */
+  h+=`<section class="card" id="${b.id}-s2"><h2><span class="n">2</span>${T('從無到有：8 個階段','From zero to open: 8 stages')}</h2>
+  <p class="sub">${T('點下面每一格看細節。總時間大約：','Tap each stage for details. Rough total: ')}${esc(tx({hotel:{z:'6–9 個月',e:'6–9 months'},cafe:{z:'3–5 個月',e:'3–5 months'},shoe:{z:'9–15 個月',e:'9–15 months'},hbs:{z:'4–6 個月',e:'4–6 months'},cvs:{z:'2–4 個月',e:'2–4 months'}}[b.id]))}</p>
+  <div class="flow">${b.phases.map((x,i)=>`${i?'<span class="ar">→</span>':''}<button type="button" data-ph="${i}" class="${i===sel?'on':''}">${i+1}. ${esc(tx(x.t))}</button>`).join('')}</div>
+  <div class="phase"><h3>${sel+1}. ${esc(tx(p.t))}</h3>
+   <div class="meta"><span>⏱ ${esc(tx(p.d))}</span><span>👤 ${esc(tx(p.who))}</span></div>
+   <ul>${p.do.map(d=>`<li>${rich(d)}</li>`).join('')}</ul>
+   ${p.tip?`<div class="tip">💡 ${rich(p.tip)}</div>`:''}${p.oops?`<div class="oops">⚠️ ${T('常見錯誤：','Common mistake: ')}${rich(p.oops)}</div>`:''}
+   ${p.code?`<a class="sys" href="${sysUrl}" target="_blank" rel="noopener">▶ ${T('到系統練習','Practise in the system')}${/^W_/.test(p.code)?' · '+p.code:''}</a>`:''}
+   <div style="display:flex;gap:8px;margin-top:10px"><button class="btn" type="button" data-step="-1" ${sel?'':'disabled'}>← ${T('上一階段','Previous')}</button><button class="btn" type="button" data-step="1" ${sel<b.phases.length-1?'':'disabled'}>${T('下一階段','Next')} →</button></div>
+  </div></section>`;
+  /* budget */
+  const tot=b.budget.reduce((a,x)=>a+x[1],0),mx=Math.max(...b.budget.map(x=>x[1]));
+  h+=`<section class="card" id="${b.id}-s3"><h2><span class="n">3</span>${T('開辦預算（示意）','Start-up budget (illustrative)')}</h2><p class="sub">${rich(b.budgetNote)} ${rich({z:'裝修、設備屬 [[CAPEX]]；開幕後每月的錢是 [[OPEX]]。',e:'Fit-out and equipment are [[CAPEX]]; monthly running costs are [[OPEX]].'})}</p>
+  <div class="bars">${b.budget.map(x=>`<div class="bar"><span>${esc(tx(x[0]))}</span><div class="tr"><div class="fl" style="width:${(x[1]/mx*100).toFixed(1)}%"></div></div><span class="v">${b.cur}${fmt(x[1])} · ${(x[1]/tot*100).toFixed(0)}%</span></div>`).join('')}</div>
+  <div class="total">${T('合計','Total')} ${b.cur}${fmt(tot)}</div></section>`;
+  /* day */
+  h+=`<section class="card" id="${b.id}-s4"><h2><span class="n">4</span>${T('每日 SOP','Daily SOP')}</h2>${cycleSvg(b.loop,b.tone)}
+  <div class="day">${b.day.map(x=>`<div class="slot"><div class="t">${x[0]}</div><div class="d">${rich(x[1])}</div></div>`).join('')}</div></section>`;
+  /* kpi + calc */
+  const c=b.calc;
+  h+=`<section class="card" id="${b.id}-s5"><h2><span class="n">5</span>${T('關鍵數字與損益兩平試算','Key numbers & break-even')}</h2>
+  <div class="kpis">${b.kpis.map(k=>`<div class="kpi"><b>${rich('[['+k.k+']]')}</b><span class="f">${esc(tx(k.f))}</span><div class="ex">${T('例：','e.g. ')}${esc(tx(k.ex))}</div>${k.std?`<div class="ex good">🎯 ${esc(tx(k.std))}</div>`:''}</div>`).join('')}</div>
+  <h3 style="margin:16px 0 6px;font-size:16px">🧮 ${T('自己算算看','Try it yourself')}</h3>
+  <p class="sub">${rich({z:'[[BEP|損益兩平]] = [[FC|固定成本]] ÷ [[CM|邊際貢獻]]（售價 − [[VC|變動成本]] − 佣金）。改下面的數字，結果會即時更新。',e:'[[BEP|Break-even]] = [[FC|fixed cost]] ÷ [[CM|contribution]] (price − [[VC|variable cost]] − commission). Change the numbers below.'})}</p>
+  <div class="calc" data-calc="${b.id}">
+   <div><label>${esc(tx(c.fixedLab))}</label><input type="number" step="any" data-k="fixed" value="${c.fixed}"></div>
+   <div><label>${esc(tx(c.priceLab))}</label><input type="number" step="any" data-k="price" value="${c.price}"></div>
+   <div><label>${esc(tx(c.varLab))}</label><input type="number" step="any" data-k="varc" value="${c.varc}"></div>
+   <div><label>${esc(tx(c.comLab))}</label><input type="number" step="any" data-k="commission" value="${c.commission}"></div>
+   <div><label>${esc(tx(c.capLab))}</label><input type="number" step="any" data-k="cap" value="${c.cap}"></div>
+  </div><div class="res" id="res-${b.id}"></div></section>`;
+  /* pros cons */
+  h+=`<section class="card" id="${b.id}-s6"><h2><span class="n">6</span>${T('優劣與風險','Pros, cons & risks')}</h2>
+  <div class="pc"><div class="p"><h4>👍 ${T('優點','Upsides')}</h4><ul>${b.pros.map(x=>`<li>${rich(x)}</li>`).join('')}</ul></div><div class="c"><h4>👎 ${T('缺點','Downsides')}</h4><ul>${b.cons.map(x=>`<li>${rich(x)}</li>`).join('')}</ul></div></div>
+  <div class="tw" style="margin-top:10px"><table><tr><th>${T('風險','Risk')}</th><th>${T('怎麼發現','Warning sign')}</th><th>${T('怎麼防','What to do')}</th></tr>${b.risks.map(r=>`<tr><td><b>${rich(r[0])}</b></td><td>${rich(r[1])}</td><td>${rich(r[2])}</td></tr>`).join('')}</table></div></section>`;
+  /* system */
+  h+=`<section class="card" id="${b.id}-s7"><h2><span class="n">7</span>${T('到系統練習','Practise in the system')}</h2>
+  <p class="sub">${T('系統裡已經有示範資料（標 DEMO），可以放心按。照這個順序走一遍：','The system comes with DEMO data, so feel free to click. Walk through in this order:')}</p>
+  <div class="tw"><table><tr><th>#</th><th>${T('階段','Stage')}</th><th>${T('系統裡做什麼','In the system')}</th></tr>${b.phases.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(tx(x.t))}</td><td>${x.code?(/^W_/.test(x.code)?`<b>${x.code}</b>`:esc(sysName(x.code))):`<span style="color:#8a9aaa">${T('系統外作業（文件、現場）','Off-system (paperwork, on-site)')}</span>`}</td></tr>`).join('')}</table></div>
+  <a class="sys" style="font-size:14px;padding:9px 14px;margin-top:12px" href="${sysUrl}" target="_blank" rel="noopener">▶ ${T('打開','Open')} ${esc(tx(b.name))} ${T('系統','system')}</a></section>`;
+  h+=sources();
+  return h;
+}
+function sysName(code){return tx({BOM:{z:'BOM 用料表頁',e:'BOM page'},MRP:{z:'MRP 物料需求頁',e:'MRP page'},FIN:{z:'應收／財務報表頁',e:'AR / finance report pages'},PO:{z:'採購單頁',e:'Purchase order page'},GRN:{z:'到貨驗收頁',e:'Goods receipt page'},LEDGER:{z:'帳冊與報表頁',e:'Ledger & reports'}}[code]||{z:code,e:code})}
+
+function calcRun(id){
+  const box=document.querySelector(`[data-calc="${id}"]`);if(!box)return;const b=BIZ.find(x=>x.id===id);
+  const v={};box.querySelectorAll('input').forEach(i=>v[i.dataset.k]=parseFloat(i.value)||0);
+  const cm=v.price-v.varc-v.price*v.commission/100;const out=$('res-'+id);
+  if(cm<=0){out.innerHTML=`<div class="r1">⚠️ ${T('每賣一份都在虧','Every sale loses money')}</div><small>${T('售價要高於變動成本＋佣金。','Price must exceed variable cost + commission.')}</small>`;return}
+  const be=v.fixed/cm,pct=v.cap>0?be/v.cap*100:0;const u=tx(b.calc.unit);
+  const money=b.calc.price===1;
+  const daily=be/(id==='hotel'?30:26);
+  let line=money?`${b.cur}${fmt(be)} ${T('／月','/ month')}`:`${fmt(be)} ${esc(u)} ${T('／月','/ month')}`;
+  let sub=money?`${T('約每天','About')} ${b.cur}${fmt(daily)} ${T('營收','per day')}`:`${T('約每天','About')} ${fmt(daily,1)} ${esc(u)}`;
+  if(id==='hotel')sub=`${T('住房率要達到','Occupancy needed')} ${pct.toFixed(1)}%`;
+  if(id==='cvs')sub+=` · ${T('客單 $4 約','at $4 ticket ≈')} ${fmt(daily/4)} ${T('人／天','customers/day')}`;
+  const color=pct<=60?'#7ee0b8':pct<=85?'#f6d36b':'#ff8f8f';
+  out.innerHTML=`<small>${T('損益兩平','Break-even')}</small><div class="r1">${line}</div><small>${sub}</small>
+   <div class="gauge"><i style="width:${Math.min(100,pct).toFixed(1)}%;background:${color}"></i></div>
+   <small>${T('佔產能／上限','of capacity')} ${pct.toFixed(0)}% · ${pct<=60?T('🟢 有餘裕','🟢 comfortable'):pct<=85?T('🟡 要努力','🟡 needs effort'):T('🔴 太緊，改計畫','🔴 too tight — rethink')} · ${T('每份貢獻','contribution/unit')} ${money?(cm*100).toFixed(0)+'%':b.cur+fmt(cm,2)}</small>`;
+}
+
+function gloss(){
+  document.documentElement.style.setProperty('--tone','#183247');
+  const keys=Object.keys(G);
+  let h=`<div class="hero"><div class="big">📖</div><h1>${T('名詞表','Glossary')}</h1><p>${T('共','')} ${keys.length} ${T('個名詞，中英對照、白話解釋。','terms with plain-language explanations.')}</p></div>
+  <section class="card"><input class="gsearch" id="gq" placeholder="${T('搜尋：例如 ADR、毛利、BOM','Search: e.g. ADR, margin, BOM')}"><div class="gl" id="gl"></div></section>`;
+  return h;
+}
+function glossFill(q){
+  q=(q||'').toLowerCase();const el=$('gl');if(!el)return;
+  el.innerHTML=Object.keys(G).filter(k=>!q||(k+tx(G[k].n)+G[k].n.z+(G[k].n.e||'')+tx(G[k].d)).toLowerCase().includes(q)).map(k=>`<div class="it"><b>${esc(tx(G[k].n))}</b><small>${esc(L==='en'?G[k].n.z:(G[k].n.e||''))}</small><div>${esc(tx(G[k].d))}</div></div>`).join('')||`<div class="sub">${T('找不到','No match')}</div>`;
+}
+function sources(){return `<div class="note">${T('數字為教學示意，不是投資建議；法規、稅率、工資常會調整，實際開業前請向當地政府、會計師或律師確認。','Figures are illustrative, not investment advice. Laws, tax rates and wages change — confirm with local authorities, accountants or lawyers before starting.')}
+ ${T('參考：','Sources: ')}<a href="https://cambodianess.com/article/register-a-business-in-cambodia-a-practical-guide-for-2026" target="_blank" rel="noopener">Cambodianess 2026</a> ·
+ <a href="https://www.vdb-loi.com/wp-content/uploads/2024/06/Cambodia-Tax-Update-Key-Changes-to-Signboard-Rental-Accommodation-and-Public-Lighting-Taxes_June2024.pdf" target="_blank" rel="noopener">VDB Loi</a> ·
+ <a href="https://kpmg.com/kh/en/insights/2026/11/New-Minimum-Wage-for-2027.html" target="_blank" rel="noopener">KPMG Cambodia</a> ·
+ <a href="https://www.ey.com/en_my/insights/tax/malaysia-budget/sst-expansion-from-1-july-2025-what-has-changed-and-what-to-expect-in-budget-2026" target="_blank" rel="noopener">EY Malaysia</a></div>`}
+
+function render(){
+  document.documentElement.lang=L==='en'?'en':'zh-Hant';
+  $('langBtn').textContent=L==='en'?'中文':'EN';
+  $('ttl').textContent=T('聖道開業 SOP 學院','Saintdou SOP Academy');
+  $('stl').textContent=T('Saintdou · 五種生意從無到有','Five businesses from zero');
+  document.title=T('聖道開業 SOP 學院','Saintdou SOP Academy');
+  drawTabs();
+  const b=BIZ.find(x=>x.id===tab);
+  $('main').innerHTML=tab==='home'?home():tab==='gloss'?gloss():bizPage(b);
+  if(tab==='gloss'){glossFill('');$('gq').oninput=e=>glossFill(e.target.value)}
+  if(b){
+    $('main').querySelectorAll('[data-ph]').forEach(x=>x.onclick=()=>{phaseSel[b.id]=+x.dataset.ph;render();document.getElementById(b.id+'-s2').scrollIntoView({block:'start'})});
+    $('main').querySelectorAll('[data-step]').forEach(x=>x.onclick=()=>{phaseSel[b.id]=Math.max(0,Math.min(b.phases.length-1,(phaseSel[b.id]||0)+(+x.dataset.step)));render();document.getElementById(b.id+'-s2').scrollIntoView({block:'start'})});
+    const box=document.querySelector(`[data-calc="${b.id}"]`);box.querySelectorAll('input').forEach(i=>i.oninput=()=>calcRun(b.id));calcRun(b.id);
+    $('main').querySelectorAll('.toc a').forEach(a=>a.onclick=e=>{e.preventDefault();document.getElementById(a.getAttribute('href').slice(1)).scrollIntoView({behavior:'smooth',block:'start'})});
+  }
+  $('main').querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>go(x.dataset.go));
+}
+/* 名詞彈出說明 */
+document.addEventListener('click',e=>{
+  const a=e.target.closest('abbr.g'),pop=$('gpop');
+  if(!a){pop.style.display='none';return}
+  const g=G[a.dataset.g];if(!g)return;
+  pop.innerHTML=`<b>${esc(tx(g.n))}</b>${esc(tx(g.d))}`;pop.style.display='block';
+  const r=a.getBoundingClientRect(),w=pop.offsetWidth,hh=pop.offsetHeight;
+  let x=Math.min(Math.max(8,r.left),innerWidth-w-8),y=r.bottom+8;if(y+hh>innerHeight-8)y=r.top-hh-8;
+  pop.style.left=x+'px';pop.style.top=Math.max(8,y)+'px';
+});
+window.addEventListener('scroll',()=>{$('gpop').style.display='none'},{passive:true});
+$('langBtn').onclick=()=>{L=L==='en'?'zh':'en';try{localStorage.setItem('acc_os_hub_lang',L)}catch(e){};render()};
+window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(h&&h!==tab&&(['home','gloss'].includes(h)||BIZ.some(b=>b.id===h))){tab=h;render()}});
+/* 左右滑換分頁 */
+(function(){let x0=0,y0=0;const m=document.getElementById('main');m.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+ m.addEventListener('touchend',e=>{if(e.target.closest('.tw,input,.flow'))return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;if(Math.abs(dx)>90&&Math.abs(dx)>Math.abs(dy)*1.6){const ids=['home'].concat(BIZ.map(b=>b.id),['gloss']);const i=ids.indexOf(tab);const j=Math.max(0,Math.min(ids.length-1,i+(dx<0?1:-1)));if(j!==i)go(ids[j])}},{passive:true})})();
+render();
+</script>
+<script src="../os/acc-menu.js" defer></script>
+</body>
+</html>
