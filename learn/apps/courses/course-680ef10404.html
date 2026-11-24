@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>一杯茶的學問｜從入門到專業的茶學課程</title>
+<style>
+:root{
+  --paper:#f6f0e4; --card:#fffdf8; --ink:#2d2a24; --muted:#6f685c; --line:#e4d9c5;
+  --green:#4f7a35; --green2:#e6efd9; --amber:#b9852c; --amber2:#f6ead2; --red:#9a3a24; --red2:#f6e0d8;
+  --dark:#4a2e1c; --blue:#2f5d7c; --blue2:#e0ebf2;
+  --serif:"Noto Serif TC","Songti TC","PMingLiU","MingLiU",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;
+  background-image:radial-gradient(#d9ccb2 1px,transparent 1px);background-size:22px 22px;z-index:-1}
+h1,h2,h3{font-family:var(--serif);line-height:1.4;margin:.2em 0 .5em}
+h2{font-size:1.6em}
+h3{font-size:1.2em;margin-top:1.4em;color:var(--dark)}
+p{margin:.5em 0 .9em}
+b,strong{color:var(--dark)}
+small{color:var(--muted)}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:30;background:rgba(246,240,228,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.top-in{max-width:860px;margin:auto;display:flex;align-items:center;gap:10px;padding:8px 14px}
+.brand{font-family:var(--serif);font-weight:700;font-size:1.05em;cursor:pointer;white-space:nowrap}
+.bar{flex:1;height:8px;background:#e8dfcd;border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--amber),var(--red));transition:width .6s}
+.pct{font-size:.8em;color:var(--muted);min-width:3em;text-align:right}
+.mbtn{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:4px 12px;font-size:.9em;cursor:pointer;color:var(--ink)}
+
+/* drawer */
+.drawer{position:fixed;inset:0;z-index:40;display:none}
+.drawer.on{display:block}
+.drawer .mask{position:absolute;inset:0;background:rgba(40,30,20,.35)}
+.drawer .panel{position:absolute;right:0;top:0;bottom:0;width:min(340px,88vw);background:var(--card);overflow:auto;padding:16px;box-shadow:-6px 0 30px rgba(0,0,0,.15);animation:slin .25s}
+@keyframes slin{from{transform:translateX(40px);opacity:0}}
+.lv-h{font-family:var(--serif);font-weight:700;margin:14px 0 4px;color:var(--muted);font-size:.9em}
+.li{display:flex;gap:8px;align-items:center;padding:7px 8px;border-radius:9px;cursor:pointer;font-size:.95em}
+.li:hover{background:var(--amber2)}
+.li .n{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:.75em;background:#eee5d3;flex:none}
+.li.done .n{background:var(--green);color:#fff}
+.li.cur{background:var(--green2)}
+
+main{max-width:860px;margin:auto;padding:16px 14px 80px}
+section.page{display:none;animation:fade .45s ease}
+section.page.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin:14px 0;box-shadow:0 2px 0 #eadfca}
+.tag{display:inline-block;font-size:.75em;padding:2px 10px;border-radius:20px;background:var(--green2);color:var(--green);font-weight:700;letter-spacing:.05em}
+.tag.l2{background:var(--amber2);color:var(--amber)}
+.tag.l3{background:var(--red2);color:var(--red)}
+.tag.l4{background:var(--blue2);color:var(--blue)}
+.lead{font-size:1.05em;color:#4b463c}
+
+/* boxes */
+.box{border-radius:14px;padding:12px 14px;margin:14px 0;border-left:5px solid}
+.box .bt{font-weight:700;font-size:.9em;margin-bottom:2px}
+.origin{background:#fbf4e4;border-color:var(--amber)}
+.origin .bt::before{content:"📜 名詞由來　"}
+.tip{background:var(--green2);border-color:var(--green)}
+.tip .bt::before{content:"💡 小知識　"}
+.think{background:var(--blue2);border-color:var(--blue)}
+.think .bt::before{content:"🤔 想一想　"}
+.warn{background:var(--red2);border-color:var(--red)}
+.warn .bt::before{content:"⚠️ 注意　"}
+.eg{background:#f3efe7;border-color:#9c8f78}
+.eg .bt::before{content:"🍎 生活比喻　"}
+.recap{background:#fff;border:2px dashed var(--line);border-left:5px solid var(--green)}
+.recap .bt::before{content:"✅ 本課重點　"}
+details{background:#fbf6ec;border-radius:10px;padding:6px 12px;margin:8px 0;border:1px solid var(--line)}
+details summary{cursor:pointer;font-weight:700;color:var(--amber)}
+
+/* tables */
+.tw{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:.9em;background:#fff;border-radius:12px;overflow:hidden}
+th,td{border-bottom:1px solid var(--line);padding:8px 9px;text-align:left;vertical-align:top}
+th{background:#efe6d4;font-family:var(--serif);white-space:nowrap}
+.dot{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:4px;border:1px solid rgba(0,0,0,.15)}
+
+/* grid cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.tc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;position:relative}
+.tc h4{margin:0 0 4px;font-family:var(--serif);font-size:1.1em}
+.tc .k{font-size:.75em;font-weight:700;padding:1px 8px;border-radius:10px;color:#fff;display:inline-block}
+.tc p{font-size:.92em;margin:.4em 0}
+.k.g{background:#5e8a3c}.k.w{background:#b9a46a}.k.y{background:#c9a42a}.k.o{background:#c07a28}.k.r{background:#a8402a}.k.b{background:#5a3422}.k.x{background:#6b6b8c}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:12px;padding:10px 18px;font-size:1em;cursor:pointer;font-family:var(--sans);background:var(--green);color:#fff;font-weight:700;transition:transform .1s,filter .2s}
+.btn:active{transform:scale(.96)}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.am{background:var(--amber)}
+.btn.sm{padding:6px 12px;font-size:.9em}
+.lnav{display:flex;justify-content:space-between;gap:10px;margin-top:26px;flex-wrap:wrap}
+
+/* quiz */
+.quiz{background:#fff;border:2px solid var(--line);border-radius:16px;padding:14px 16px;margin-top:22px}
+.quiz>h3{margin-top:0}
+.qq{margin:14px 0 6px;font-weight:700}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;border:1.5px solid var(--line);background:#fdfaf4;border-radius:11px;padding:9px 12px;font-size:.95em;cursor:pointer;font-family:var(--sans);color:var(--ink)}
+.opt:hover{border-color:var(--amber)}
+.opt.ok{background:#e3f1d6;border-color:var(--green)}
+.opt.no{background:#f9dfd7;border-color:var(--red)}
+.opt[disabled]{cursor:default}
+.exp{font-size:.9em;margin-top:6px;padding:8px 10px;border-radius:9px;background:#f4efe4;display:none}
+.exp.on{display:block;animation:fade .3s}
+.qres{margin-top:12px;font-weight:700}
+
+/* hero */
+.hero{text-align:center;padding:20px 6px 8px}
+.hero h1{font-size:2em;margin-bottom:.2em}
+.hero .sub{color:var(--muted)}
+.steam path{stroke:#c9b99b;stroke-width:3;fill:none;stroke-linecap:round;opacity:0;animation:steam 3.2s infinite}
+.steam path:nth-child(2){animation-delay:1s}
+.steam path:nth-child(3){animation-delay:2s}
+@keyframes steam{0%{opacity:0;transform:translateY(10px)}40%{opacity:.8}100%{opacity:0;transform:translateY(-22px)}}
+.map{display:grid;gap:12px;margin-top:10px}
+.lvcard{border-radius:16px;padding:14px;border:1px solid var(--line);background:#fff}
+.lvcard h3{margin:0 0 6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:.85em;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:#fbf6ec;cursor:pointer}
+.chip.done{background:var(--green);color:#fff;border-color:var(--green)}
+
+/* plant */
+.leafsvg .part{cursor:pointer;transition:filter .2s}
+.leafsvg .part:hover{filter:brightness(1.15)}
+.sway{transform-origin:150px 300px;animation:sway 5s ease-in-out infinite}
+@keyframes sway{50%{transform:rotate(1.6deg)}}
+.lbl{font-size:13px;font-family:var(--sans);fill:var(--ink)}
+
+/* timeline */
+.tl{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}
+.tl button{flex:none;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;cursor:pointer;font-family:var(--sans);font-size:.92em;color:var(--ink)}
+.tl button.on{background:var(--amber);color:#fff;border-color:var(--amber)}
+.tlp{background:#fff;border-radius:14px;border:1px solid var(--line);padding:14px;margin-top:8px;min-height:150px;animation:fade .3s}
+.tlp .big{font-size:2.4em;float:right;margin-left:10px}
+
+/* oxidation */
+.ox{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:center}
+input[type=range]{width:100%;accent-color:var(--amber)}
+.oxlbl{font-family:var(--serif);font-size:1.4em;font-weight:700;text-align:center;transition:color .3s}
+.scale{display:flex;justify-content:space-between;font-size:.75em;color:var(--muted)}
+
+/* process */
+.ptabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.ptabs button{border:1.5px solid var(--line);background:#fff;border-radius:20px;padding:5px 12px;cursor:pointer;font-family:var(--sans);font-size:.9em;color:var(--ink)}
+.ptabs button.on{color:#fff;border-color:transparent}
+.steps{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.step{background:#fff;border:2px solid var(--line);border-radius:12px;padding:6px 10px;text-align:center;font-size:.85em;min-width:64px;transition:all .3s}
+.step .ic{font-size:1.5em;display:block}
+.step.on{transform:translateY(-4px) scale(1.06);border-color:var(--amber);box-shadow:0 6px 14px rgba(185,133,44,.25);background:var(--amber2)}
+.arrow{color:#bba987;font-size:1.1em}
+.pdesc{margin-top:10px;background:#fbf6ec;border-radius:12px;padding:10px 12px;min-height:60px;font-size:.95em}
+
+/* soup colors */
+.soups{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.soup{text-align:center;font-size:.85em}
+.soup .c{width:78px;height:78px;border-radius:50%;margin:0 auto 4px;border:6px solid #fff;box-shadow:0 0 0 1px var(--line),inset 0 -8px 16px rgba(0,0,0,.12)}
+
+/* game */
+.game{background:#fff;border:2px solid var(--amber);border-radius:16px;padding:14px}
+.clue{display:flex;gap:10px;align-items:center;margin:6px 0;font-size:.95em}
+.clue .sw{width:34px;height:34px;border-radius:50%;flex:none;border:3px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.gopts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.gopts button{padding:10px 4px;border-radius:12px;border:none;color:#fff;font-weight:700;font-size:1em;cursor:pointer;font-family:var(--sans)}
+.gmsg{margin-top:10px;font-size:.95em;min-height:2em}
+.score{float:right;font-weight:700;color:var(--amber)}
+
+/* is-tea */
+.istea{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.istea button{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px;cursor:pointer;font-family:var(--sans);font-size:.95em;color:var(--ink)}
+.istea button.ok{background:#e3f1d6;border-color:var(--green)}
+.istea button.no{background:#f9dfd7;border-color:var(--red)}
+.istea small{display:block;font-size:.78em}
+
+/* brew */
+.brew{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:640px){.brew{grid-template-columns:1.2fr 1fr}}
+.bstat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.bstat div{background:#fbf6ec;border-radius:12px;padding:8px 4px}
+.bstat b{display:block;font-size:1.4em;font-family:var(--serif)}
+select{font-size:1em;padding:6px 10px;border-radius:10px;border:1px solid var(--line);background:#fff;font-family:var(--sans);color:var(--ink);max-width:100%}
+.timer{font-family:var(--serif);font-size:2em;text-align:center;font-weight:700}
+
+/* glossary */
+.gl input{width:100%;padding:10px 14px;border-radius:12px;border:1.5px solid var(--line);font-size:1em;font-family:var(--sans);background:#fff}
+.gi{padding:10px 0;border-bottom:1px dashed var(--line)}
+.gi b{font-family:var(--serif);font-size:1.05em}
+.gi .py{color:var(--muted);font-size:.85em;margin-left:6px}
+.gi .lvx{font-size:.7em;margin-left:6px}
+
+/* cert */
+.cert{border:6px double var(--amber);border-radius:12px;background:#fffaf0;padding:26px 18px;text-align:center;margin-top:14px}
+.cert h2{letter-spacing:.3em;color:var(--dark)}
+.cert .nm{font-family:var(--serif);font-size:1.8em;border-bottom:1.5px solid var(--amber);display:inline-block;min-width:60%;margin:10px 0}
+input.txt{padding:9px 12px;border-radius:10px;border:1.5px solid var(--line);font-size:1em;font-family:var(--sans);width:min(260px,100%)}
+
+.fl{float:right;margin:0 0 8px 12px}
+@media(max-width:520px){.fl{float:none;display:block;margin:8px auto}}
+.center{text-align:center}
+.flowrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;margin:8px 0}
+.flowrow span.p{background:#fff;border:1px solid var(--line);border-radius:10px;padding:3px 9px;font-size:.9em}
+.route{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:620px){.route{grid-template-columns:1fr 1fr}}
+.rt{border-radius:14px;padding:12px;color:#fff}
+.rt h4{margin:0 0 6px;font-family:var(--serif);font-size:1.15em}
+.rt .w{display:inline-block;background:rgba(255,255,255,.2);border-radius:8px;padding:1px 8px;margin:2px;font-size:.9em}
+.pill{display:inline-block;background:#efe6d4;border-radius:8px;padding:0 7px;font-size:.88em;margin:1px}
+.bars .r{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:.9em}
+.bars .r span:first-child{width:6.5em;flex:none}
+.bars .t{flex:1;background:#efe6d4;border-radius:8px;height:18px;overflow:hidden}
+.bars .t i{display:block;height:100%;border-radius:8px;width:0;transition:width 1.2s ease}
+.bars .r em{font-style:normal;font-size:.85em;color:var(--muted);width:4.5em;text-align:right}
+@media print{.top,.lnav,.drawer,.noprint{display:none!important} section.page{display:none!important} #final{display:block!important} #final>*:not(.cert){display:none!important} body::before{display:none}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-in">
+    <span class="brand" onclick="go('home')">🍵 一杯茶的學問</span>
+    <div class="bar"><i id="pbar"></i></div>
+    <span class="pct" id="ptxt">0%</span>
+    <button class="mbtn" onclick="drawer(true)">☰ 課程</button>
+  </div>
+</div>
+
+<div class="drawer" id="drawer">
+  <div class="mask" onclick="drawer(false)"></div>
+  <div class="panel">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <b style="font-family:var(--serif);font-size:1.1em">課程目錄</b>
+      <button class="mbtn" onclick="drawer(false)">✕</button>
+    </div>
+    <div id="dlist"></div>
+  </div>
+</div>
+
+<main>
+
+<!-- ============ 首頁 ============ -->
+<section class="page on" id="home">
+  <div class="hero">
+    <svg width="150" height="130" viewBox="0 0 150 130" aria-hidden="true">
+      <g class="steam"><path d="M55 40 q-8 -10 0 -20 q8 -10 0 -20"/><path d="M75 40 q-8 -10 0 -20 q8 -10 0 -20"/><path d="M95 40 q-8 -10 0 -20 q8 -10 0 -20"/></g>
+      <path d="M25 50 h100 q0 55 -50 60 q-50 -5 -50 -60z" fill="#fff" stroke="#b9a684" stroke-width="3"/>
+      <ellipse cx="75" cy="52" rx="48" ry="7" fill="#d8a347"/>
+      <ellipse cx="75" cy="118" rx="42" ry="6" fill="#e3d6bd"/>
+      <path d="M62 50 q10 -14 22 -2 q-8 6 -22 2z" fill="#6c9a43"/>
+    </svg>
+    <h1>一杯茶的學問</h1>
+    <p class="sub">從一片葉子開始，學會分辨茶、認識茶的由來，<br>一路從入門走到專業。</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">這門課怎麼上？</h3>
+    <p>課程共 <b>16 課</b>，分成 <b>4 個階段</b>，每一課都建立在前一課的基礎上，<b>請照順序上</b>。每課最後有小測驗，答完按「下一課」就算完成，進度會自動記在這台裝置上。</p>
+    <p>遇到看不懂的專有名詞，課文裡都有「📜 名詞由來」說明；也可以隨時到最後的 <a href="#" onclick="go('gloss');return false">名詞辭典</a> 查。</p>
+    <div class="center" style="margin-top:10px">
+      <button class="btn" id="startBtn" onclick="go(nextUndone())">▶ 開始上課</button>
+    </div>
+  </div>
+
+  <div class="map" id="lvmap"></div>
+</section>
+
+<!-- ============ L1 ============ -->
+<section class="page" id="L1">
+  <span class="tag">第一階段・入門　第 1 課</span>
+  <h2>茶是什麼？——一棵樹的故事</h2>
+  <p class="lead">綠茶、紅茶、烏龍茶、普洱茶……名字和顏色都不一樣，但你知道嗎？它們全部來自<b>同一種植物</b>。</p>
+
+  <div class="box eg"><div class="bt">同一顆馬鈴薯</div>
+    一顆馬鈴薯可以做成薯條、薯泥、洋芋片，味道完全不同，但原料都一樣。茶也是這樣：同一種葉子，<b>用不同方法加工</b>，就變成不同的茶。這是整門課最重要的一句話，請先記住它。
+  </div>
+
+  <h3>認識茶樹</h3>
+  <p>茶樹是一種<b>常綠植物</b>（一年四季葉子都是綠的），屬於「山茶科」，和我們常見的山茶花是親戚。它最早生長在中國西南方（雲南、貴州、四川一帶）的山區。</p>
+  <p>野生的茶樹可以長到十幾公尺高，雲南還有好幾百年、甚至上千年的老茶樹。但茶園裡的茶樹通常被修剪到大約一公尺高、像一排排綠色矮牆，這樣人站著就能採到葉子。</p>
+
+  <div class="box origin"><div class="bt">學名 Camellia sinensis</div>
+    「學名」是科學家給生物取的全世界通用名字，用拉丁文寫。瑞典科學家<b>林奈</b>在 1700 年代訂下規則：學名由兩個字組成，像「姓＋名」。<br>
+    ・<b>Camellia</b>（山茶屬）：紀念一位叫 Kamel（拉丁文寫成 Camellus）的傳教士，他在菲律賓研究植物。<br>
+    ・<b>sinensis</b>：拉丁文「來自中國的」。<br>
+    所以茶樹的學名意思就是「來自中國的山茶」。
+  </div>
+
+  <h3>茶樹的兩大家族</h3>
+  <div class="tw"><table>
+    <tr><th>家族</th><th>樣子</th><th>喜歡的環境</th><th>常做成</th></tr>
+    <tr><td><b>小葉種</b></td><td>葉子小、比較厚實</td><td>比較耐冷，中國東部、台灣、日本常見</td><td>綠茶、烏龍茶</td></tr>
+    <tr><td><b>大葉種</b><br><small>（又叫阿薩姆種）</small></td><td>葉子大，可以比手掌還大</td><td>喜歡熱，雲南、印度、斯里蘭卡常見</td><td>紅茶、普洱茶</td></tr>
+  </table></div>
+
+  <h3>「一心二葉」：採茶採哪裡？</h3>
+  <p>點下圖的各部位看看說明：</p>
+  <div class="card center">
+    <svg class="leafsvg" viewBox="0 0 300 320" width="280" style="max-width:100%">
+      <g class="sway">
+        <path d="M150 310 C150 230 148 160 150 60" stroke="#7c6a3e" stroke-width="6" fill="none"/>
+        <g class="part" data-p="stem"><rect x="140" y="230" width="20" height="80" fill="transparent"/></g>
+        <g class="part" data-p="l3"><path d="M150 200 C 95 170 50 190 30 215 C 70 240 120 230 150 200Z" fill="#3f6b2a"/><path d="M150 200 C110 205 70 210 32 214" stroke="#2c4f1c" stroke-width="1.5" fill="none"/></g>
+        <g class="part" data-p="l2"><path d="M150 140 C 200 110 245 125 265 150 C 225 175 180 168 150 140Z" fill="#5f8f3a"/><path d="M150 140 C190 145 228 150 262 150" stroke="#3f6b2a" stroke-width="1.5" fill="none"/></g>
+        <g class="part" data-p="l1"><path d="M150 95 C 110 70 80 80 66 100 C 95 118 130 115 150 95Z" fill="#86b350"/></g>
+        <g class="part" data-p="bud"><path d="M150 25 C 162 45 162 70 150 90 C 138 70 138 45 150 25Z" fill="#b5d67a" stroke="#fff" stroke-width="1.5" stroke-dasharray="2 2"/></g>
+      </g>
+      <text class="lbl" x="166" y="45">① 芽（心）</text>
+      <text class="lbl" x="20" y="80">② 第一葉</text>
+      <text class="lbl" x="200" y="112">③ 第二葉</text>
+      <text class="lbl" x="18" y="250">④ 第三葉（較老）</text>
+      <text class="lbl" x="165" y="290">⑤ 莖（梗）</text>
+    </svg>
+    <div id="plantInfo" class="pdesc" style="text-align:left">👆 點一點圖上的芽、葉子或莖。</div>
+  </div>
+
+  <div class="box origin"><div class="bt">一心二葉</div>
+    「心」指最頂端還沒打開、捲成一小根的<b>嫩芽</b>，因為它在正中心，所以叫「心」。「一心二葉」就是<b>一個芽＋下面兩片嫩葉</b>，這是做好茶最常見的採摘標準。只採芽叫「單芽」，像「銀針」類的茶就是全用芽做的。
+  </div>
+  <div class="box tip"><div class="bt">白毫</div>
+    仔細看嫩芽，表面有一層細細的白色絨毛，叫做<b>白毫</b>（「毫」就是細毛的意思，像「毫毛」）。它像嫩芽的小外套，可以保護芽。茶葉上白毫越多，通常代表原料越嫩。
+  </div>
+
+  <div class="box recap"><div class="bt"></div>
+    ① 所有「真正的茶」都來自同一種植物：茶樹 Camellia sinensis。<br>
+    ② 茶的種類不同，是因為<b>加工方法</b>不同。<br>
+    ③ 茶樹分小葉種、大葉種；好茶常採「一心二葉」。
+  </div>
+  <div class="quiz" data-quiz="L1"></div>
+  <div class="lnav" data-nav="L1"></div>
+</section>
+
+<!-- ============ L2 ============ -->
+<section class="page" id="L2">
+  <span class="tag">第一階段・入門　第 2 課</span>
+  <h2>茶從哪裡來？——喝茶的歷史</h2>
+  <p class="lead">我們今天把茶葉丟進杯子、倒熱水就能喝。但在一千多年前，人們喝茶的方法完全不一樣，有時候更像在「煮湯」或「打奶泡」！</p>
+
+  <h3>最早的傳說：神農</h3>
+  <p>中國有個流傳很久的故事：遠古時代的<b>神農氏</b>為了找出哪些植物能吃、能治病，親自嚐遍百草，有一天中了很多毒，吃了茶葉才解毒。</p>
+  <div class="box warn"><div class="bt">這是傳說</div>這個故事是後人流傳的，不是真實歷史紀錄。但它告訴我們一件事：<b>茶最早很可能被當成「藥」或「菜」</b>，後來才變成日常飲料。</div>
+
+  <h3>「茶」這個字是怎麼來的？</h3>
+  <p>古代其實還沒有「茶」字，人們用「<b>荼</b>」（音 tú，本來指一種苦苦的菜）來稱呼茶，也有人叫它「檟」「茗」「荈」等等。</p>
+  <div class="flowrow"><span class="p" style="font-size:1.6em;font-family:var(--serif)">荼</span><span class="arrow">→ 減一橫 →</span><span class="p" style="font-size:1.6em;font-family:var(--serif)">茶</span></div>
+  <p>到了<b>唐朝</b>，有一位叫<b>陸羽</b>的人寫了世界上第一本專門講茶的書《<b>茶經</b>》（大約西元 760～780 年完成），書中把這個字統一寫成「茶」，從此「茶」字就流行起來了。陸羽也因此被尊稱為「<b>茶聖</b>」。</p>
+  <div class="box tip"><div class="bt">拆字的趣味</div>「茶」可以拆成上面的「艸（草）」、中間的「人」、下面的「木」，很多人喜歡說成：<b>人在草木之間</b>。這是後人的趣味解讀，但很好記！</div>
+
+  <h3>一千年來，喝茶方式怎麼變？</h3>
+  <p>點選下面的朝代看看：</p>
+  <div class="tl" id="tlBtns"></div>
+  <div class="tlp" id="tlPanel"></div>
+
+  <div class="box eg"><div class="bt">三種喝法對照</div>
+    ・<b>唐朝煎茶</b>：像煮湯，茶粉放進鍋裡煮，還加鹽。<br>
+    ・<b>宋朝點茶</b>：像打奶泡，把茶粉在碗裡打出綿密泡沫——今天的抹茶拿鐵，祖先就在這裡！<br>
+    ・<b>明朝泡茶</b>：像我們現在泡茶包，直接用熱水沖泡葉子。
+  </div>
+
+  <div class="box recap"><div class="bt"></div>
+    ① 茶最早可能當藥、當菜用。<br>② 唐朝陸羽寫《茶經》，「荼」減一橫成為「茶」。<br>③ 喝法演變：唐「煮」→ 宋「打」→ 明「泡」。明朝開始的沖泡法，一直用到今天。
+  </div>
+  <div class="quiz" data-quiz="L2"></div>
+  <div class="lnav" data-nav="L2"></div>
+</section>
+
+<!-- ============ L3 ============ -->
+<section class="page" id="L3">
+  <span class="tag">第一階段・入門　第 3 課</span>
+  <h2>茶走向世界——Tea 和 Chá 的故事</h2>
+  <p class="lead">茶從中國出發，傳到日本、西藏、歐洲、印度……甚至改變了世界歷史。而全世界對「茶」的叫法，竟然只分成兩大派！</p>
+
+  <h3>往東：日本</h3>
+  <p>唐朝時，日本派到中國學習的僧人把茶帶回日本。到了宋朝，日本僧人<b>榮西</b>（1191 年回國）帶回茶種和「點茶」的方法，後來發展成日本的<b>抹茶</b>和<b>茶道</b>。日本茶道大師千利休提出「和、敬、清、寂」四個字，代表喝茶時的心境。</p>
+
+  <h3>往西：茶馬古道</h3>
+  <div class="box origin"><div class="bt">茶馬古道</div>
+    西藏等高原地區的人吃很多肉和奶，需要茶來幫助消化，但高原種不出茶；而中原需要強壯的馬。於是雙方<b>用茶換馬</b>，商隊靠著馬幫和背夫走過險峻的山路運茶，這條路就叫「<b>茶馬古道</b>」。藏族的<b>酥油茶</b>（茶加酥油和鹽）就是這樣來的。
+  </div>
+
+  <h3>往海外：歐洲與英國</h3>
+  <p>大約 1610 年左右，荷蘭商人用船把茶運到歐洲。1662 年，葡萄牙公主<b>凱瑟琳</b>嫁給英國國王，她愛喝茶，帶動英國貴族流行喝茶。</p>
+  <div class="box origin"><div class="bt">下午茶</div>
+    1840 年代左右，英國的貝德福公爵夫人<b>安娜</b>覺得午餐和晚餐隔太久、下午肚子餓，就在下午配茶吃點心，還邀朋友一起，慢慢變成英國有名的「下午茶」文化。
+  </div>
+  <div class="box tip"><div class="bt">茶改變了歷史</div>
+    ・1773 年，北美殖民地的人反對英國的茶稅，把整船茶葉倒進波士頓港，史稱「<b>波士頓茶葉事件</b>」，這是美國獨立的導火線之一。<br>
+    ・英國人太愛茶，花了大量白銀向中國買茶，這也是後來鴉片戰爭的背景之一。<br>
+    ・英國人想自己種茶：1840 年代末，植物學家<b>福鈞</b>（Robert Fortune）從中國帶走茶苗和製茶技術到印度；同時英國人也在印度阿薩姆發現了當地原生的大葉茶樹。從此印度、斯里蘭卡變成紅茶大國。
+  </div>
+
+  <h3>全世界的「茶」只有兩種念法</h3>
+  <p>茶從中國不同地方、走不同路線傳出去，所以各國的念法跟著出發地的方言走：</p>
+  <div class="route">
+    <div class="rt" style="background:#2f5d7c">
+      <h4>🚢 海路派：「Te」</h4>
+      <p style="margin:0 0 6px;font-size:.92em">荷蘭商人在<b>福建</b>一帶買茶，當地閩南話把茶念成「tê」。</p>
+      <span class="w">英文 tea</span><span class="w">法文 thé</span><span class="w">德文 Tee</span><span class="w">荷蘭文 thee</span><span class="w">馬來文 teh</span><span class="w">高棉文 តែ (tae)</span>
+    </div>
+    <div class="rt" style="background:#9a3a24">
+      <h4>🐫 陸路派：「Cha」</h4>
+      <p style="margin:0 0 6px;font-size:.92em">走陸上絲路、或由<b>廣東、澳門</b>出口，當地念「chá」。</p>
+      <span class="w">葡萄牙文 chá</span><span class="w">俄文 чай</span><span class="w">印地文 chai</span><span class="w">土耳其文 çay</span><span class="w">日文 cha</span><span class="w">泰文 cha</span>
+    </div>
+  </div>
+  <div class="box think"><div class="bt"></div>印度奶茶叫「Chai」，英文卻叫「Tea」，現在你知道為什麼了嗎？——因為它們走了不同的路！</div>
+
+  <div class="box recap"><div class="bt"></div>
+    ① 茶傳到日本發展成抹茶與茶道；往西有「茶馬古道」。<br>
+    ② 英國人愛茶，催生下午茶，也影響了美國獨立等大事。<br>
+    ③ 世界上「茶」的念法分成海路的 <b>Te</b> 和陸路的 <b>Cha</b> 兩派。
+  </div>
+  <div class="quiz" data-quiz="L3"></div>
+  <div class="lnav" data-nav="L3"></div>
+</section>
+
+<!-- ============ L4 ============ -->
+<section class="page" id="L4">
+  <span class="tag l2">第二階段・基礎　第 4 課</span>
+  <h2>茶葉裡有什麼？——茶的味道樂團</h2>
+  <p class="lead">茶喝起來有苦、有澀、有甜、有鮮、有香。這些味道來自茶葉裡不同的成分，就像一個樂團，每個成員負責不同的聲音。</p>
+
+  <div class="card bars" id="bars">
+    <b style="font-family:var(--serif)">茶葉乾物質中的主要成分（大約比例）</b>
+    <div class="r"><span>🎸 茶多酚</span><div class="t"><i data-w="70" style="background:#7a9a3a"></i></div><em>約18–36%</em></div>
+    <div class="r"><span>🥁 咖啡因</span><div class="t"><i data-w="14" style="background:#9a3a24"></i></div><em>約2–5%</em></div>
+    <div class="r"><span>🎻 胺基酸</span><div class="t"><i data-w="14" style="background:#2f5d7c"></i></div><em>約1–4%</em></div>
+    <div class="r"><span>🎹 醣類</span><div class="t"><i data-w="40" style="background:#c9a42a"></i></div><em>約20–25%</em></div>
+    <div class="r"><span>🎺 芳香物質</span><div class="t"><i data-w="3" style="background:#c07a28"></i></div><em>很少，但很重要</em></div>
+    <small>比例會因品種、季節、嫩度而不同，這裡只是讓你看出誰多誰少。</small>
+  </div>
+
+  <div class="tw"><table>
+    <tr><th>成員</th><th>帶來的感覺</th><th>說明</th></tr>
+    <tr><td><b>茶多酚</b><br><small>（主角：兒茶素）</small></td><td>苦、<b>澀</b>、茶湯的「骨架」</td><td>茶裡最多的成分。製茶時它會變化成別的物質，讓茶變色、變味道（下一課的重點！）</td></tr>
+    <tr><td><b>咖啡因</b></td><td>苦、提神</td><td>和咖啡裡的咖啡因是同一種東西。以前有人以為茶裡的不一樣，叫它「茶素」，後來證明是同一種分子。</td></tr>
+    <tr><td><b>胺基酸</b><br><small>（主角：茶胺酸）</small></td><td><b>鮮</b>、甜</td><td>嫩芽裡比較多，所以嫩芽做的茶比較鮮甜。</td></tr>
+    <tr><td><b>醣類</b></td><td>甜、湯的厚度</td><td>能溶在水裡的部分會讓茶喝起來甘甜、有厚度。</td></tr>
+    <tr><td><b>芳香物質</b></td><td>香氣</td><td>量非常少，卻有幾百種，花香、果香、蜜香都從這裡來。很多香氣是製茶時才產生的。</td></tr>
+  </table></div>
+
+  <div class="box origin"><div class="bt">兒茶素、茶胺酸、多酚</div>
+    ・<b>多酚</b>：化學上一種叫「酚」的結構，一個分子裡有很多個，所以叫「多酚」。<br>
+    ・<b>兒茶素</b>（catechin）：最早是從一種叫「兒茶」的植物萃取物裡發現的，所以用它命名，跟「兒童」無關。<br>
+    ・<b>茶胺酸</b>（theanine）：1949 年日本科學家從玉露茶裡找到的胺基酸，幾乎只有茶樹才有，因此叫「茶」胺酸。
+  </div>
+
+  <div class="box eg"><div class="bt">「苦」和「澀」不一樣</div>
+    <b>苦</b>是舌頭嚐到的味道，像吃苦瓜；<b>澀</b>是嘴巴裡乾乾、緊緊、好像被吸住的感覺，像咬到還沒熟的柿子或香蕉皮。茶的澀主要來自茶多酚。專業上把「澀」叫做「收斂感」——嘴巴像被「收」起來。
+  </div>
+  <div class="box tip"><div class="bt">太陽與鮮味</div>
+    陽光會讓茶葉裡的茶胺酸慢慢轉成茶多酚。所以日本的<b>玉露</b>、<b>抹茶</b>在採收前會用布把茶樹遮起來，讓茶胺酸保留多一點，喝起來就特別鮮甜。
+  </div>
+
+  <div class="box recap"><div class="bt"></div>
+    茶多酚 → 苦澀、骨架；咖啡因 → 苦、提神；胺基酸 → 鮮甜；醣類 → 甜與厚度；芳香物質 → 香氣。<br>
+    記住<b>茶多酚</b>，下一課它是主角！
+  </div>
+  <div class="quiz" data-quiz="L4"></div>
+  <div class="lnav" data-nav="L4"></div>
+</section>
+
+<!-- ============ L5 ============ -->
+<section class="page" id="L5">
+  <span class="tag l2">第二階段・基礎　第 5 課</span>
+  <h2>最關鍵的觀念：「發酵」其實是氧化</h2>
+  <p class="lead">為什麼同一種葉子，有的泡出來綠綠的，有的卻紅紅的？答案就藏在一個你每天都看得到的現象裡。</p>
+
+  <div class="box eg"><div class="bt">切開的蘋果</div>
+    蘋果切開放一下，切面會慢慢變成咖啡色。這是因為蘋果細胞破了，裡面的<b>酵素</b>碰到空氣中的<b>氧氣</b>，讓果肉裡的物質<b>氧化</b>變色。<br>
+    茶葉也一模一樣！茶葉細胞破掉後，茶多酚在酵素幫忙下碰到氧氣，就會從綠色慢慢變成黃、橙、紅、褐色。
+  </div>
+
+  <div class="flowrow">
+    <span class="p">🍃 茶多酚</span><span class="arrow">＋</span><span class="p">🧪 酵素</span><span class="arrow">＋</span><span class="p">💨 氧氣</span><span class="arrow">→</span><span class="p" style="background:#f3d27a">茶黃素（橙黃）</span><span class="p" style="background:#c8573a;color:#fff">茶紅素（紅）</span><span class="p" style="background:#6b2e16;color:#fff">茶褐素（褐）</span>
+  </div>
+
+  <div class="box origin"><div class="bt">為什麼叫「發酵」？其實叫錯了！</div>
+    古時候的人看到茶葉變色、變香，以為跟釀酒、做醬油一樣，是微生物在作用，所以叫它「<b>發酵</b>」。後來科學家發現：大部分茶的變化，其實是<b>茶葉自己的酵素</b>造成的<b>氧化</b>，跟微生物無關。<br>
+    但「發酵」這個說法用太久了，茶界到現在還在用。所以你聽到「紅茶是全發酵茶」，心裡要翻譯成「紅茶是<b>完全氧化</b>的茶」。<br>
+    ⭐ 唯一真的有微生物參與的是<b>黑茶</b>，所以黑茶又叫「<b>後發酵茶</b>」（第 6、7 課會講）。
+  </div>
+
+  <h3>動手試試：氧化程度滑桿</h3>
+  <p>拖動滑桿，看看葉子和茶湯的顏色怎麼變：</p>
+  <div class="card">
+    <div class="ox">
+      <svg width="130" height="110" viewBox="0 0 130 110"><path id="oxLeaf" d="M10 60 C 40 10 100 10 122 55 C 100 100 40 105 10 60Z" fill="#6a9a3a"/><path d="M12 60 C50 55 90 55 120 56" stroke="rgba(0,0,0,.25)" stroke-width="2" fill="none"/></svg>
+      <svg width="130" height="110" viewBox="0 0 130 110"><path d="M15 25 h100 q0 70 -50 75 q-50 -5 -50 -75z" fill="#fff" stroke="#b9a684" stroke-width="3"/><path id="oxCup" d="M19 32 h92 q-2 58 -46 63 q-44 -5 -46 -63z" fill="#d9dc8a"/><ellipse cx="65" cy="32" rx="46" ry="5" fill="rgba(255,255,255,.35)"/></svg>
+    </div>
+    <div class="oxlbl" id="oxLbl">綠茶</div>
+    <input type="range" min="0" max="100" value="0" id="oxR" aria-label="氧化程度">
+    <div class="scale"><span>0%<br>不氧化</span><span>50%</span><span>100%<br>完全氧化</span></div>
+    <div class="pdesc" id="oxDesc"></div>
+  </div>
+
+  <h3>怎麼讓氧化「停下來」？——加熱！</h3>
+  <p>酵素很怕熱，就像蛋白質遇熱會煮熟、凝固一樣。所以製茶師傅只要在想要的時間點用<b>高溫</b>處理茶葉，酵素就失去作用，氧化就停住了。這個加熱步驟叫做「<b>殺青</b>」（下一課詳細說它的由來）。</p>
+  <ul>
+    <li><b>綠茶</b>：一採下來就趕快殺青 → 幾乎沒氧化 → 保持綠色。</li>
+    <li><b>烏龍茶</b>：先讓它氧化一部分，再殺青 → 半氧化 → 金黃色。</li>
+    <li><b>紅茶</b>：不殺青，讓它完全氧化 → 紅色。</li>
+  </ul>
+
+  <div class="box think"><div class="bt"></div>如果你想讓切開的蘋果不變色，可以怎麼做？（提示：泡鹽水、檸檬汁，或是快速燙一下。）製茶師傅用的就是「燙一下」這招。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    ① 茶的「發酵」大多其實是<b>酵素氧化</b>，跟蘋果變色同一個道理。<br>
+    ② 氧化越多，顏色越從綠 → 黃 → 紅 → 褐。<br>
+    ③ 用<b>高溫（殺青）</b>可以讓氧化停止。黑茶是唯一真的有微生物的「後發酵茶」。
+  </div>
+  <div class="quiz" data-quiz="L5"></div>
+  <div class="lnav" data-nav="L5"></div>
+</section>
+
+<!-- ============ L6 ============ -->
+<section class="page" id="L6">
+  <span class="tag l2">第二階段・基礎　第 6 課</span>
+  <h2>製茶的八個動作——每個名字都有故事</h2>
+  <p class="lead">製茶就像做菜，有幾個固定的「招式」。不同的茶，就是把這些招式用不同的順序、不同的輕重組合起來。先把每一招學會，下一課就能看懂六大茶類。</p>
+
+  <div class="grid">
+    <div class="tc"><h4>✂️ 1. 採摘</h4>
+      <p>從茶樹上摘下芽葉。可以手採（精細）或機器採（快速）。</p>
+      <details><summary>名詞：明前茶、雨前茶</summary>「明前」是<b>清明節前</b>採的茶，「雨前」是<b>穀雨前</b>採的茶。春天最早的芽最嫩、量最少，所以特別珍貴。</details>
+    </div>
+    <div class="tc"><h4>🌬️ 2. 萎凋</h4>
+      <p>把剛採的葉子攤開，讓它慢慢<b>失去水分、變軟</b>，青草味減少、香氣開始出來。</p>
+      <details><summary>名詞由來</summary>「萎」是枯萎、「凋」是凋謝。葉子攤著攤著，看起來就像有點枯萎的樣子，所以叫萎凋。可以用日光（日光萎凋）或室內陰涼處（室內萎凋）。</details>
+    </div>
+    <div class="tc"><h4>🌀 3. 做青（搖青）</h4>
+      <p><b>烏龍茶專屬的招式</b>。把葉子放在竹篩或滾筒裡輕輕搖動，讓葉子邊緣互相碰撞、受傷，然後靜置，再搖、再放，反覆多次。</p>
+      <details><summary>為什麼要搖？</summary>葉子邊緣碰傷的地方會先氧化變紅，中間還是綠的，形成「<b>綠葉紅鑲邊</b>」。這就是烏龍茶「半氧化」的祕密，也是很多花香、果香的來源。</details>
+    </div>
+    <div class="tc"><h4>🔥 4. 殺青</h4>
+      <p>用高溫（炒、蒸、烘）讓酵素失去作用，<b>停止氧化</b>，也去掉青草味。</p>
+      <details><summary>名詞由來（很有意思！）</summary>古代人在<b>竹簡</b>上寫字。新砍的青竹含水分、容易長蟲，所以要先用火烤，把水分逼出來，竹子會像流汗一樣冒水珠，叫「汗青」，這個步驟叫「<b>殺青</b>」。後來「殺青」變成「完成作品」的意思（現在拍電影拍完也叫殺青）。製茶借用這個詞，指<b>用高溫處理青綠的葉子</b>。<br>
+      ・炒青：在鍋裡炒（中國綠茶多用）<br>・蒸青：用蒸氣蒸（日本綠茶多用）<br>・烘青：用熱風烘<br>・曬青：用太陽曬（普洱生茶的原料）</details>
+    </div>
+    <div class="tc"><h4>🤲 5. 揉捻</h4>
+      <p>把葉子揉一揉、搓一搓，捲成條狀或球狀，同時讓細胞破裂、汁液流到表面。</p>
+      <details><summary>名詞由來</summary>「揉」是用手掌推壓，「捻」是用手指搓轉（像搓棉線）。揉捻後泡茶時味道比較容易出來，也決定茶葉的外形。烏龍茶裡把葉子包在布裡揉成球，叫「<b>團揉</b>」或「布球揉捻」。</details>
+    </div>
+    <div class="tc"><h4>🧺 6. 悶黃</h4>
+      <p><b>黃茶專屬</b>。殺青、揉捻後，把還溫溫濕濕的茶葉包起來或堆起來「悶」一段時間，讓葉子和茶湯變黃。</p>
+      <details><summary>原理</summary>在濕熱的環境下，茶葉裡的物質會慢慢起化學變化（不是靠酵素），讓顏色變黃、味道變得更柔和。就像青菜悶在鍋裡太久會變黃一樣。</details>
+    </div>
+    <div class="tc"><h4>🍂 7. 渥堆</h4>
+      <p><b>黑茶專屬</b>。把茶葉灑水後堆成一大堆，蓋上布，保持潮濕溫暖，讓<b>微生物</b>慢慢作用，茶葉變成褐色。</p>
+      <details><summary>名詞由來</summary>「渥」是潮濕、浸潤的意思（「優渥」本來就是雨水充足）。把濕濕的茶「堆」起來，就叫渥堆。這是六大茶類裡唯一真正靠微生物的「發酵」，所以叫<b>後發酵</b>。</details>
+    </div>
+    <div class="tc"><h4>♨️ 8. 乾燥／焙火</h4>
+      <p>最後把水分烘乾，茶才能保存；同時固定外形、讓香氣更穩定。</p>
+      <details><summary>名詞：焙火</summary>「焙」是用小火慢慢烘烤。烏龍茶常用炭火或烘焙機反覆烘焙，叫「焙火」。焙得輕，香氣清新（清香型）；焙得重，香氣像烤堅果、焦糖（熟香型）。</details>
+    </div>
+  </div>
+
+  <div class="box tip"><div class="bt">春夏秋冬茶</div>茶樹一年可以採好幾次：<b>春茶</b>最鮮甜、香氣好；<b>夏茶</b>天氣熱、長得快，比較苦澀（但適合做紅茶、東方美人）；<b>秋茶</b>香氣不錯；台灣還有<b>冬茶</b>，產量少、香氣特別。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    八招：採摘、萎凋、做青、殺青、揉捻、悶黃、渥堆、乾燥。<br>
+    特別記住三個「專屬招」：<b>做青 → 烏龍</b>、<b>悶黃 → 黃茶</b>、<b>渥堆 → 黑茶</b>。
+  </div>
+  <div class="quiz" data-quiz="L6"></div>
+  <div class="lnav" data-nav="L6"></div>
+</section>
+
+<!-- ============ L7 ============ -->
+<section class="page" id="L7">
+  <span class="tag l2">第二階段・基礎　第 7 課</span>
+  <h2>六大茶類——用顏色認識所有的茶</h2>
+  <p class="lead">學會了八個製茶動作，現在把它們組合起來，就是全世界茶的基本分類：<b>六大茶類</b>。</p>
+
+  <div class="box origin"><div class="bt">六大茶類</div>
+    這個分類法是中國茶學家<b>陳椽</b>教授在 1979 年提出的，依照「<b>製作方法</b>」和「<b>氧化程度</b>」把茶分成六類，並用顏色命名：<b>綠、白、黃、青、紅、黑</b>，好記又好懂，現在被廣泛使用。
+  </div>
+
+  <h3>看動畫：每一類茶怎麼做？</h3>
+  <p>點選茶類，再按「▶ 播放」：</p>
+  <div class="card">
+    <div class="ptabs" id="ptabs"></div>
+    <div class="steps" id="psteps"></div>
+    <div style="margin-top:10px"><button class="btn sm am" id="pplay">▶ 播放製程</button></div>
+    <div class="pdesc" id="pdesc"></div>
+  </div>
+
+  <h3>六大茶類總表</h3>
+  <div class="tw"><table>
+    <tr><th>茶類</th><th>氧化程度</th><th>關鍵步驟</th><th>湯色</th><th>代表茶</th></tr>
+    <tr><td><span class="dot" style="background:#d9dc8a"></span><b>綠茶</b></td><td>不氧化</td><td>一開始就殺青</td><td>黃綠、淺綠</td><td>西湖龍井、碧螺春、日本煎茶</td></tr>
+    <tr><td><span class="dot" style="background:#efe3b0"></span><b>白茶</b></td><td>微氧化</td><td>只萎凋＋乾燥，不炒不揉</td><td>淺杏黃</td><td>白毫銀針、白牡丹、壽眉</td></tr>
+    <tr><td><span class="dot" style="background:#e8d36a"></span><b>黃茶</b></td><td>輕微</td><td>悶黃</td><td>杏黃、明黃</td><td>君山銀針、蒙頂黃芽</td></tr>
+    <tr><td><span class="dot" style="background:#e0a940"></span><b>青茶</b><br><small>（烏龍茶）</small></td><td>半氧化<br><small>約 10～70%</small></td><td>做青（搖青）</td><td>金黃～橙紅</td><td>鐵觀音、凍頂烏龍、大紅袍、東方美人</td></tr>
+    <tr><td><span class="dot" style="background:#b5402a"></span><b>紅茶</b></td><td>完全氧化</td><td>揉捻後充分氧化</td><td>紅、紅亮</td><td>祁門紅茶、正山小種、大吉嶺、阿薩姆</td></tr>
+    <tr><td><span class="dot" style="background:#6b2e16"></span><b>黑茶</b></td><td>後發酵<br><small>（微生物）</small></td><td>渥堆</td><td>深紅、褐紅</td><td>普洱熟茶、安化黑茶、六堡茶</td></tr>
+  </table></div>
+
+  <div class="box tip"><div class="bt">口訣</div>
+    <b style="font-family:var(--serif);font-size:1.1em">綠不氧、白微氧、黃悶黃、青半氧、紅全氧、黑後發。</b>
+  </div>
+
+  <h3>名字裡的小謎團</h3>
+  <details><summary>紅茶的英文為什麼是 Black tea，不是 Red tea？</summary>
+    中國人看的是<b>泡出來的湯色</b>（紅色），所以叫紅茶；西方人看的是<b>乾茶葉的顏色</b>（烏黑），所以叫 Black tea。那真正的黑茶呢？英文通常叫 <b>Dark tea</b>。所以跟外國人說「黑茶」時別說成 black tea，會被以為是紅茶！
+  </details>
+  <details><summary>青茶的「青」是什麼顏色？</summary>
+    古代的「青」不只是綠色，也可以指藍綠色、青黑色（像「青絲」是黑頭髮）。烏龍茶乾茶的顏色是青褐、墨綠，所以叫「青茶」。
+  </details>
+  <details><summary>「烏龍」這個名字怎麼來的？</summary>
+    有一個傳說：清朝福建安溪有個茶農，外號叫「烏龍」。某天他採完茶去打獵，回來太晚才處理茶葉，結果葉子邊緣已經變紅，做出來卻特別香，大家就用他的名字稱這種茶。這只是傳說之一，但很能說明烏龍茶「先氧化一部分」的特色。另一種說法是乾茶又黑又彎曲，像一條烏黑的龍。
+  </details>
+  <details><summary>白茶為什麼做法最簡單，卻常常很貴？</summary>
+    白茶只有萎凋和乾燥兩步，看起來簡單，但萎凋要看天氣、溫度、濕度，時間拿捏很難；而且好的白茶（如白毫銀針）全用嫩芽，原料本身就很珍貴。
+  </details>
+
+  <div class="box warn"><div class="bt">分類看「做法」，不是看「顏色」</div>
+    有些綠茶放久了會變黃、有些烏龍焙火很重湯色接近紅茶。所以判斷茶類，最準的是看它<b>怎麼做的</b>。名字裡的顏色是幫助記憶的標籤，不是唯一標準。
+  </div>
+
+  <div class="box recap"><div class="bt"></div>
+    六大茶類：綠、白、黃、青、紅、黑，依「做法＋氧化程度」分類。<br>
+    Black tea ＝ 紅茶，Dark tea ＝ 黑茶。
+  </div>
+  <div class="quiz" data-quiz="L7"></div>
+  <div class="lnav" data-nav="L7"></div>
+</section>
+
+<!-- ============ L8 ============ -->
+<section class="page" id="L8">
+  <span class="tag l3">第三階段・進階　第 8 課</span>
+  <h2>中國名茶巡禮——每個名字都是一個故事</h2>
+  <p class="lead">中國是茶的故鄉，名茶多到數不完。這一課挑出各茶類的代表，每一款都看三件事：<b>在哪裡、長什麼樣、名字怎麼來</b>。</p>
+  <div class="box tip"><div class="bt">怎麼讀名茶的名字</div>很多茶名＝<b>產地＋外形</b>（例如「六安瓜片」＝六安＋像瓜子的葉片），或是<b>產地＋傳說</b>。學會拆名字，看到沒聽過的茶也能猜出幾分。</div>
+
+  <h3>🟢 綠茶</h3>
+  <div class="grid">
+    <div class="tc"><span class="k g">綠茶</span><h4>西湖龍井</h4><p>📍浙江杭州西湖<br>👀 扁平光滑、挺直，像一片片小劍，翠綠帶點米黃。有豆香、栗子香。</p>
+      <details><summary>名字由來</summary>「龍井」本來是西湖旁一口井和村子的名字，傳說這口井與大海相通、裡面住著龍。好龍井有「色綠、香郁、味甘、形美」四絕之稱。</details></div>
+    <div class="tc"><span class="k g">綠茶</span><h4>洞庭碧螺春</h4><p>📍江蘇蘇州太湖洞庭山<br>👀 細細捲曲像小田螺，全身披滿白毫。花果香明顯。</p>
+      <details><summary>名字由來</summary>碧＝翠綠、螺＝捲成螺旋、春＝春天採。傳說它本來叫「嚇煞人香」（香到嚇死人），清朝康熙皇帝覺得名字不雅，改成「碧螺春」。</details></div>
+    <div class="tc"><span class="k g">綠茶</span><h4>黃山毛峰</h4><p>📍安徽黃山<br>👀 芽尖細長、白毫顯露，形狀像雀鳥的舌頭。</p>
+      <details><summary>名字由來</summary>「毛」指白毫多，「峰」指芽尖像山峰般尖挺，又產在黃山，所以叫黃山毛峰。</details></div>
+    <div class="tc"><span class="k g">綠茶</span><h4>六安瓜片</h4><p>📍安徽六安<br>👀 單片葉子捲成像瓜子的形狀，沒有芽也沒有梗。</p>
+      <details><summary>名字由來</summary>它是名茶裡少見<b>去掉芽和梗、只用葉片</b>的茶，葉片形狀像「瓜子」，所以叫「瓜片」。</details></div>
+    <div class="tc"><span class="k g">綠茶</span><h4>信陽毛尖</h4><p>📍河南信陽<br>👀 細、圓、光、直，白毫多，芽尖尖。</p>
+      <details><summary>名字由來</summary>「毛」＝白毫多、「尖」＝芽頭尖，產在信陽。是中國北方的名綠茶。</details></div>
+  </div>
+
+  <h3>⚪ 白茶・🟡 黃茶</h3>
+  <div class="grid">
+    <div class="tc"><span class="k w">白茶</span><h4>白毫銀針</h4><p>📍福建福鼎、政和<br>👀 全部是芽，又直又長，滿身白毫，閃閃發亮。</p>
+      <details><summary>名字由來</summary>芽上的白毫像一層銀白色的絨毛，形狀像針，所以叫「白毫銀針」。同類的「白牡丹」是一芽一二葉，泡開像花朵；「壽眉」用較大的葉子，價格親民。</details></div>
+    <div class="tc"><span class="k y">黃茶</span><h4>君山銀針</h4><p>📍湖南岳陽洞庭湖的君山島<br>👀 芽頭金黃飽滿，像一根根金色的針。</p>
+      <details><summary>特色</summary>用玻璃杯沖泡時，芽頭會在水中一根根豎起來，上上下下浮沉，被稱為「三起三落」，很好看。</details></div>
+  </div>
+
+  <h3>🟠 青茶（烏龍）</h3>
+  <div class="grid">
+    <div class="tc"><span class="k o">青茶</span><h4>安溪鐵觀音</h4><p>📍福建安溪<br>👀 捲成緊實的半球形、沉甸甸的，砂綠色。蘭花香，喝完喉嚨有回甘。</p>
+      <details><summary>名字由來</summary>傳說之一：茶葉又重又黑像「鐵」，泡起來香美如「觀音」，所以叫鐵觀音。它特有的韻味被稱作「<b>觀音韻</b>」（也叫音韻）。</details></div>
+    <div class="tc"><span class="k o">青茶</span><h4>武夷岩茶・大紅袍</h4><p>📍福建武夷山<br>👀 條索粗壯、烏褐油亮，焙火香明顯，湯色橙黃到橙紅。</p>
+      <details><summary>名字由來</summary>武夷山的茶樹長在岩石縫之間，所以叫「岩茶」，特有的風味叫「<b>岩韻</b>」（也形容成「岩骨花香」）。大紅袍傳說：古時一位書生喝了這裡的茶治好病、後來考上狀元，便把皇帝賜的紅袍披在茶樹上感謝。</details></div>
+    <div class="tc"><span class="k o">青茶</span><h4>鳳凰單叢</h4><p>📍廣東潮州鳳凰山<br>👀 條索直挺，香型很多：蜜蘭香、黃枝香、芝蘭香……</p>
+      <details><summary>名字由來</summary>「單叢」意思是<b>一棵茶樹單獨採、單獨製作</b>，所以每棵樹的香氣都不一樣。有一種叫「鴨屎香」，名字很怪，傳說是茶農怕好茶被偷，故意取個難聽的名字。</details></div>
+  </div>
+
+  <h3>🔴 紅茶</h3>
+  <div class="grid">
+    <div class="tc"><span class="k r">紅茶</span><h4>正山小種</h4><p>📍福建武夷山桐木關<br>👀 烏黑條索，傳統做法帶有松木煙燻的香味，像桂圓乾。</p>
+      <details><summary>名字由來</summary>被認為是<b>世界上最早的紅茶</b>。「正山」指桐木關一帶的正宗產區，「小種」指當地的小葉種茶樹。英文叫 Lapsang Souchong。</details></div>
+    <div class="tc"><span class="k r">紅茶</span><h4>祁門紅茶</h4><p>📍安徽祁門<br>👀 細緊烏潤，湯色紅艷，有蘋果、蘭花般的香氣，稱為「祁門香」。</p>
+      <details><summary>小知識</summary>清朝末年才創製，卻很快聞名國際，常和印度大吉嶺、斯里蘭卡烏瓦並稱「世界三大高香紅茶」。</details></div>
+    <div class="tc"><span class="k r">紅茶</span><h4>滇紅</h4><p>📍雲南<br>👀 用大葉種製作，芽上有金黃色的毫，湯色濃、滋味厚。</p>
+      <details><summary>名字由來</summary>「滇」是雲南的簡稱（就像台灣簡稱「台」），所以雲南紅茶叫滇紅。</details></div>
+  </div>
+
+  <h3>🟤 黑茶・🌸 花茶</h3>
+  <div class="grid">
+    <div class="tc"><span class="k b">黑茶</span><h4>普洱茶</h4><p>📍雲南<br>👀 常壓成圓餅狀（茶餅）。分「生普」和「熟普」。</p>
+      <details><summary>名字由來與生熟之分</summary>「普洱」是古代雲南的地名（普洱府），是茶葉的集散地，所以這裡賣出去的茶就叫普洱茶。<br>・<b>生普</b>：曬青的茶直接壓成餅，靠時間慢慢自然變化，年輕時湯色黃綠、較苦澀。<br>・<b>熟普</b>：經過「渥堆」，湯色深紅如紅酒，口感溫和，這種技術在 1970 年代發展成熟。<br>嚴格來說，生普還沒經過渥堆，有些人不把它歸為黑茶；熟普才是典型的黑茶。</details></div>
+    <div class="tc"><span class="k b">黑茶</span><h4>安化黑茶・六堡茶</h4><p>📍湖南安化／廣西梧州<br>👀 常做成磚、簍裝或捆成長柱（千兩茶），湯色深紅。</p>
+      <details><summary>小知識</summary>這類茶以前大量運往西北、西藏和東南亞，因為壓緊後體積小、耐長途運輸，又能久放。六堡茶以前很受南洋（馬來西亞一帶）礦工喜愛。</details></div>
+    <div class="tc"><span class="k x">再加工</span><h4>茉莉花茶</h4><p>📍福建福州、廣西橫縣等<br>👀 大多以綠茶為底，有濃郁茉莉花香。</p>
+      <details><summary>小提示</summary>花茶是用茶葉「吸」花香做成的，屬於<b>再加工茶</b>（第 11 課詳細說）。</details></div>
+  </div>
+
+  <div class="box recap"><div class="bt"></div>
+    名茶名字常＝<b>產地＋外形</b>或<b>產地＋傳說</b>。<br>
+    要特別記：龍井（扁平）、碧螺春（捲螺）、銀針（全芽）、鐵觀音（半球）、岩茶（岩韻）、正山小種（最早紅茶）、普洱（地名，生／熟）。
+  </div>
+  <div class="quiz" data-quiz="L8"></div>
+  <div class="lnav" data-nav="L8"></div>
+</section>
+
+<!-- ============ L9 ============ -->
+<section class="page" id="L9">
+  <span class="tag l3">第三階段・進階　第 9 課</span>
+  <h2>台灣好茶——小島上的烏龍王國</h2>
+  <p class="lead">台灣面積不大，卻有高山、雲霧和多樣的氣候，做出許多世界有名的烏龍茶和特色紅茶。</p>
+
+  <div class="grid">
+    <div class="tc"><span class="k o">青茶・輕氧化</span><h4>文山包種茶</h4><p>📍新北坪林一帶<br>👀 條索狀、深綠色，氧化很輕，有清新花香，喝起來接近綠茶。</p>
+      <details><summary>名字由來</summary>早年茶商用兩張方形紙把茶葉<b>包</b>起來，一包四兩，外面蓋上茶行的印章，這種包裝的茶就叫「包種茶」。</details></div>
+    <div class="tc"><span class="k o">青茶</span><h4>凍頂烏龍茶</h4><p>📍南投鹿谷<br>👀 捲成半球形，傳統做法帶焙火香，湯色金黃，喉韻甘醇。</p>
+      <details><summary>名字由來</summary>「凍頂」是一座山的名字。傳說以前上山的路又濕又滑，要把腳尖繃緊（台語叫「凍腳尖」）才能爬上山頂，所以叫凍頂。也有傳說是清朝時林鳳池從福建帶回茶苗種在這裡。</details></div>
+    <div class="tc"><span class="k o">青茶</span><h4>高山烏龍茶</h4><p>📍阿里山、梨山、杉林溪、合歡山等<br>👀 球形、翠綠，氧化較輕，花香清揚，滋味甘甜。</p>
+      <details><summary>為什麼高山茶好喝？</summary>台灣一般把<b>海拔 1000 公尺以上</b>茶園產的茶叫高山茶。山上雲霧多、日照時間短、日夜溫差大，茶樹長得慢，葉片裡的胺基酸等物質累積得多，所以特別甘甜、香氣細緻。</details></div>
+    <div class="tc"><span class="k o">青茶・重氧化</span><h4>東方美人茶</h4><p>📍新竹北埔、峨眉，苗栗頭份等<br>👀 葉片有白、綠、黃、紅、褐五色，白毫多，湯色像琥珀，有天然蜂蜜香、熟果香。</p>
+      <details><summary>神奇的小蟲（重要！）</summary>夏天時，一種叫<b>小綠葉蟬</b>的小蟲會來吸茶樹嫩芽的汁液。茶樹被叮咬後會產生特別的物質來保護自己，做成茶後就出現獨特的<b>蜜香</b>。因為要讓蟲來咬，茶園不能噴農藥。<br>
+      <b>名字由來</b>：又叫「膨風茶」——傳說茶農把被蟲咬過的茶賣出好價錢，回家說給鄰居聽，大家以為他在吹牛（台語「膨風」＝吹牛）。「東方美人」這個美名，傳說是外國人喝了覺得像東方美女般迷人而取的。也叫「白毫烏龍」。</details></div>
+    <div class="tc"><span class="k r">紅茶</span><h4>日月潭紅茶</h4><p>📍南投魚池鄉（日月潭附近）<br>👀 大葉、湯色紅亮。</p>
+      <details><summary>台茶 18 號「紅玉」</summary>日治時期（1920 年代）從印度引進阿薩姆大葉種在這裡種植。後來台灣的研究單位用緬甸大葉種和<b>台灣野生山茶</b>配種，育成「台茶 18 號」，取名<b>紅玉</b>，有天然的<b>肉桂、薄荷香</b>，被稱為「台灣香」。</details></div>
+    <div class="tc"><span class="k r">紅茶</span><h4>蜜香紅茶</h4><p>📍花蓮瑞穗等<br>👀 和東方美人一樣，用被小綠葉蟬叮咬過的茶菁做成紅茶，帶蜂蜜香。</p>
+      <details><summary>想一想</summary>同一種蟲咬、同一種蜜香，一個做成烏龍（東方美人）、一個做成紅茶——又一次證明「做法決定茶類」。</details></div>
+  </div>
+
+  <h3>台灣烏龍的「氧化光譜」</h3>
+  <p>同樣是台灣烏龍，氧化從輕到重排一排：</p>
+  <div class="flowrow">
+    <span class="p" style="background:#dfe6a6">文山包種<br><small>約 10%</small></span><span class="arrow">→</span>
+    <span class="p" style="background:#e9d57d">高山烏龍<br><small>約 15–25%</small></span><span class="arrow">→</span>
+    <span class="p" style="background:#e0b24c">凍頂烏龍<br><small>約 20–30%＋焙火</small></span><span class="arrow">→</span>
+    <span class="p" style="background:#c97a35;color:#fff">東方美人<br><small>約 50–70%</small></span>
+  </div>
+  <small>百分比只是大約範圍，每位製茶師的做法會不同。</small>
+
+  <div class="box recap"><div class="bt"></div>
+    包種（紙包得名）、凍頂（凍腳尖）、高山茶（1000 公尺以上）、東方美人（小綠葉蟬、膨風茶）、紅玉（台茶 18 號）。
+  </div>
+  <div class="quiz" data-quiz="L9"></div>
+  <div class="lnav" data-nav="L9"></div>
+</section>
+
+<!-- ============ L10 ============ -->
+<section class="page" id="L10">
+  <span class="tag l3">第三階段・進階　第 10 課</span>
+  <h2>世界之茶——從印度到英國的一杯茶</h2>
+  <p class="lead">茶離開中國後，在世界各地長出了新的面貌：印度、斯里蘭卡的紅茶，日本的抹茶，英國的奶茶，香港的絲襪奶茶……</p>
+
+  <h3>🇮🇳 印度・🇱🇰 斯里蘭卡</h3>
+  <div class="grid">
+    <div class="tc"><span class="k r">紅茶</span><h4>大吉嶺 Darjeeling</h4><p>📍印度喜馬拉雅山腳<br>👀 湯色較淺（金橙色），香氣細緻，有「紅茶中的香檳」之稱。</p>
+      <details><summary>名字與產季</summary>名字來自藏語，意思是「霹靂（雷電）之地」。春天第一批採的叫「<b>春摘</b>」（First Flush），清新；夏天的「<b>夏摘</b>」（Second Flush）有像麝香葡萄的熟果香。</details></div>
+    <div class="tc"><span class="k r">紅茶</span><h4>阿薩姆 Assam</h4><p>📍印度東北部阿薩姆邦<br>👀 大葉種，湯色深紅濃郁，有麥芽香，很適合加牛奶做奶茶。</p>
+      <details><summary>小知識</summary>這裡有原生的大葉種茶樹，大葉種的另一個名字「阿薩姆種」就是從這裡來的。</details></div>
+    <div class="tc"><span class="k r">紅茶</span><h4>錫蘭紅茶 Ceylon</h4><p>📍斯里蘭卡<br>👀 依海拔分高地、中地、低地茶，風味各不同；烏瓦（Uva）是有名產區。</p>
+      <details><summary>名字由來</summary>「錫蘭」是斯里蘭卡以前的國名，1972 年才改名，但「錫蘭紅茶」這個名字一直用到今天。1860 年代島上的咖啡樹得了病害大量死亡，農民才改種茶，結果成了紅茶大國。</details></div>
+  </div>
+
+  <h3>🇯🇵 日本</h3>
+  <div class="grid">
+    <div class="tc"><span class="k g">綠茶</span><h4>煎茶</h4><p>日本最常喝的綠茶。用<b>蒸</b>的方式殺青（蒸青），所以顏色特別翠綠、帶海苔般的鮮味。</p></div>
+    <div class="tc"><span class="k g">綠茶</span><h4>玉露</h4><p>採收前約 20 天把茶樹<b>遮起來</b>不曬太陽，茶胺酸多，鮮甜得像高湯。名字形容它甘甜如露珠。</p></div>
+    <div class="tc"><span class="k g">綠茶</span><h4>抹茶</h4><p>遮陰種植的茶葉蒸過、乾燥後去掉葉脈（叫「碾茶」），再用石臼<b>磨成細粉</b>。喝的時候把整片葉子的粉都喝下去。源自宋朝的點茶。</p></div>
+    <div class="tc"><span class="k g">綠茶加工</span><h4>焙茶・玄米茶</h4><p><b>焙茶</b>：把綠茶烘焙到褐色，有烤香，苦澀和咖啡因都較少。<b>玄米茶</b>：綠茶加炒過的糙米（玄米），米香濃。</p></div>
+  </div>
+
+  <h3>🇬🇧 英國與各地的茶飲</h3>
+  <div class="grid">
+    <div class="tc"><span class="k x">調味茶</span><h4>伯爵茶 Earl Grey</h4><p>紅茶加上<b>佛手柑</b>（一種柑橘）的香氣。名字紀念 1830 年代的英國首相格雷伯爵，但它真正的起源眾說紛紜。</p></div>
+    <div class="tc"><span class="k r">拼配茶</span><h4>英式早餐茶</h4><p>把幾種濃烈的紅茶（例如阿薩姆、錫蘭）<b>拼配</b>在一起，味道濃，適合配早餐、加奶。</p></div>
+    <div class="tc"><span class="k r">茶飲</span><h4>港式絲襪奶茶</h4><p>濃紅茶用細布袋反覆沖撞過濾，再加淡奶。<b>名字由來</b>：那個布袋用久了被茶染成褐色，看起來像絲襪。</p></div>
+    <div class="tc"><span class="k g">茶飲</span><h4>摩洛哥薄荷茶</h4><p>用中國的綠茶（珠茶）加新鮮薄荷葉和大量的糖，是北非待客的重要飲料。</p></div>
+    <div class="tc"><span class="k r">茶飲</span><h4>土耳其茶 Çay</h4><p>用上下兩層的茶壺煮濃紅茶，倒在鬱金香形狀的小玻璃杯，不加奶。</p></div>
+    <div class="tc"><span class="k r">茶飲</span><h4>印度香料奶茶 Masala Chai</h4><p>紅茶和牛奶、糖、薑、肉桂、小荳蔻一起煮。「Masala」是「綜合香料」的意思。</p></div>
+  </div>
+
+  <div class="box origin"><div class="bt">茶包與 CTC</div>
+    ・<b>茶包</b>：常見的說法是，1900 年代初美國茶商用小布袋裝茶樣品寄給客人，客人以為要整包泡，結果發現很方便，就流行起來了。<br>
+    ・<b>CTC</b>：是 Crush（壓碎）、Tear（撕裂）、Curl（捲曲）三個英文字的縮寫，用機器把茶葉切碎捲成小顆粒，泡得又快又濃，大部分茶包裡的紅茶就是用這種方法做的。肯亞是 CTC 紅茶的出口大國。
+  </div>
+
+  <div class="box recap"><div class="bt"></div>
+    印度大吉嶺（香檳）、阿薩姆（奶茶）、錫蘭（舊國名）；日本蒸青綠茶、玉露（遮陰）、抹茶（磨粉）；伯爵茶（佛手柑）、CTC（切碎捲曲）。
+  </div>
+  <div class="quiz" data-quiz="L10"></div>
+  <div class="lnav" data-nav="L10"></div>
+</section>
+
+<!-- ============ L11 ============ -->
+<section class="page" id="L11">
+  <span class="tag l3">第三階段・進階　第 11 課</span>
+  <h2>再加工茶與「不是茶的茶」</h2>
+  <p class="lead">菊花茶、麥茶、洛神花茶……名字裡有「茶」，但它們真的是茶嗎？學會這課，你就不會被名字騙了。</p>
+
+  <h3>再加工茶：以六大茶類為「底」</h3>
+  <p>把做好的茶（叫「<b>茶坯</b>」或「茶底」）再加工一次，就是再加工茶：</p>
+  <div class="grid">
+    <div class="tc"><h4>🌸 花茶</h4><p>茶葉和鮮花一起處理，讓茶吸收花香，例如茉莉花茶、桂花烏龍、玫瑰紅茶。</p>
+      <details><summary>名詞：窨（音 xūn，同「熏」）</summary>茉莉花茶的傳統做法叫「<b>窨制</b>」：把茶葉和快要開的茉莉花一層一層堆在一起，花開時放出的香氣被茶葉吸收，過幾小時再把花篩掉，好茶要反覆好幾次（叫幾窨）。「窨」字本來是地窖的意思，引申為「密閉著薰香」。所以好的茉莉花茶裡，通常看不太到花瓣！</details></div>
+    <div class="tc"><h4>🧱 緊壓茶</h4><p>把茶葉蒸軟後壓成餅、磚、碗形（沱茶）等，例如普洱茶餅、磚茶。</p>
+      <details><summary>為什麼要壓？</summary>古代要用馬背、駱駝長途運茶，壓緊後體積小、不容易碎，也比較耐放。</details></div>
+    <div class="tc"><h4>🍑 調味茶</h4><p>在茶裡加入香料、果乾、精油等，例如伯爵茶、水蜜桃烏龍、印度香料茶。</p></div>
+    <div class="tc"><h4>🥤 茶飲料</h4><p>罐裝茶、速溶茶粉、手搖飲的茶底，都是用茶葉萃取後再加工的產品。</p></div>
+  </div>
+
+  <h3>「不是茶的茶」：花草茶（代茶飲）</h3>
+  <p>只要<b>原料裡沒有茶樹的葉子</b>，就不是真正的茶，只是借用「茶」的名字，專業上叫<b>代茶飲</b>或<b>花草茶</b>（英文叫 Herbal tea 或 Tisane）。</p>
+  <div class="box tip"><div class="bt">判斷口訣</div><b style="font-family:var(--serif);font-size:1.1em">有沒有茶樹葉？有＝茶，沒有＝不是茶。</b></div>
+
+  <h3>小遊戲：它是真正的茶嗎？</h3>
+  <p>點一下每個飲料，猜猜看：</p>
+  <div class="istea" id="istea"></div>
+  <div class="pdesc" id="isteaMsg">👆 點選上面的飲料。</div>
+
+  <div class="box think"><div class="bt"></div>咖啡因多半來自茶葉，所以大部分花草茶不含咖啡因。但有例外：南美洲的<b>瑪黛茶</b>雖然不是茶樹做的，卻含有咖啡因！</div>
+
+  <div class="box recap"><div class="bt"></div>
+    再加工茶＝茶底＋再加工（花茶、緊壓茶、調味茶）。<br>
+    沒有茶樹葉的「茶」＝花草茶／代茶飲，不算真正的茶。
+  </div>
+  <div class="quiz" data-quiz="L11"></div>
+  <div class="lnav" data-nav="L11"></div>
+</section>
+
+<!-- ============ L12 ============ -->
+<section class="page" id="L12">
+  <span class="tag l4">第四階段・專業　第 12 課</span>
+  <h2>分辨茶的五個步驟——當一個茶偵探</h2>
+  <p class="lead">前面學的所有知識，現在要拿來用了！拿到一款不知道名字的茶，照著五個步驟觀察，就能推理出它是哪一類茶。</p>
+
+  <div class="flowrow">
+    <span class="p">① 看乾茶</span><span class="arrow">→</span><span class="p">② 聞香氣</span><span class="arrow">→</span><span class="p">③ 觀湯色</span><span class="arrow">→</span><span class="p">④ 嚐滋味</span><span class="arrow">→</span><span class="p">⑤ 看葉底</span>
+  </div>
+
+  <h3>① 看乾茶：形狀、顏色、嫩度</h3>
+  <div class="tw"><table>
+    <tr><th>外形</th><th>常見的茶</th></tr>
+    <tr><td>扁平如劍</td><td>西湖龍井</td></tr>
+    <tr><td>細針狀、全是芽</td><td>白毫銀針、君山銀針</td></tr>
+    <tr><td>捲曲如螺</td><td>碧螺春</td></tr>
+    <tr><td>條索（長條）</td><td>岩茶、紅茶、包種、鳳凰單叢</td></tr>
+    <tr><td>球形、半球形</td><td>鐵觀音、凍頂、高山烏龍</td></tr>
+    <tr><td>壓成餅、磚</td><td>普洱、黑茶</td></tr>
+    <tr><td>細粉末</td><td>抹茶</td></tr>
+  </table></div>
+  <p><b>顏色</b>：翠綠 → 綠茶；銀白 → 白茶；金黃芽 → 黃茶；墨綠、青褐 → 烏龍；烏黑 → 紅茶；褐色 → 黑茶。<br>
+  <b>嫩度</b>：芽多、白毫多 → 原料嫩。<b>整碎</b>：好茶通常完整、大小均勻；碎末多、有雜質（茶梗、黃片）品質較差。</p>
+
+  <h3>② 聞香氣</h3>
+  <p>可以先聞乾茶，再用熱水溫過的杯子聞（叫「溫杯聞香」），泡好後再聞杯蓋或杯底。</p>
+  <div class="tw"><table>
+    <tr><th>茶類</th><th>常見香氣</th></tr>
+    <tr><td>綠茶</td><td>豆香、栗子香、青草香、海苔香（蒸青）</td></tr>
+    <tr><td>白茶</td><td>毫香（嫩芽特有的清香）、淡淡花香、放久有棗香、藥香</td></tr>
+    <tr><td>烏龍茶</td><td>花香、果香、蜜香、焙火香、堅果香</td></tr>
+    <tr><td>紅茶</td><td>甜香、蜜糖香、果香、麥芽香、松煙香</td></tr>
+    <tr><td>黑茶</td><td>陳香、木香、棗香、菌香</td></tr>
+  </table></div>
+
+  <h3>③ 觀湯色</h3>
+  <div class="soups">
+    <div class="soup"><div class="c" style="background:#dfe29a"></div>綠茶<br><small>淺黃綠</small></div>
+    <div class="soup"><div class="c" style="background:#efe3b0"></div>白茶<br><small>淺杏黃</small></div>
+    <div class="soup"><div class="c" style="background:#e8d36a"></div>黃茶<br><small>杏黃明亮</small></div>
+    <div class="soup"><div class="c" style="background:#e0a940"></div>烏龍<br><small>金黃～橙黃</small></div>
+    <div class="soup"><div class="c" style="background:#b5402a"></div>紅茶<br><small>紅亮</small></div>
+    <div class="soup"><div class="c" style="background:#6b2e16"></div>黑茶<br><small>深紅褐</small></div>
+  </div>
+  <p>除了顏色，也看「<b>亮不亮、清不清</b>」。好的茶湯通常清澈明亮。但白毫多的茶，毫毛浮在湯裡會讓湯稍微霧霧的，這不是壞事。</p>
+
+  <h3>④ 嚐滋味</h3>
+  <p>小口含在嘴裡，讓茶湯在舌頭上轉一圈再吞下，感受：鮮、甜、苦、澀、濃淡、厚薄，以及喝完後的<b>回甘</b>。</p>
+  <div class="box tip"><div class="bt">「味覺地圖」是錯的！</div>以前課本常畫：舌尖嚐甜、兩側嚐酸、舌根嚐苦。其實這是誤解，<b>整個舌頭都能嚐到各種味道</b>。所以品茶時要讓茶湯布滿整個口腔。</div>
+
+  <h3>⑤ 看葉底——茶的身分證</h3>
+  <div class="box origin"><div class="bt">葉底</div>泡開後留在杯底的茶葉叫「<b>葉底</b>」。乾茶的外形可以修飾、香氣可以加，但葉底很難造假，所以專業人士說葉底是「茶的身分證」。</div>
+  <ul>
+    <li>綠茶：嫩綠、鮮亮</li>
+    <li>烏龍茶：葉片中間綠、邊緣紅，<b>綠葉紅鑲邊</b>（氧化重的整片偏紅褐）</li>
+    <li>紅茶：均勻的紅銅色</li>
+    <li>黑茶（熟普）：深褐色</li>
+    <li>白茶：芽葉完整，灰綠或淺褐，沒有揉捻的痕跡</li>
+  </ul>
+
+  <h3>🕵️ 茶偵探挑戰</h3>
+  <p>根據線索，判斷這是哪一類茶：</p>
+  <div class="game">
+    <span class="score" id="gScore">0 / 0</span>
+    <b id="gTitle">第 1 題</b>
+    <div id="gClues"></div>
+    <div class="gopts" id="gOpts"></div>
+    <div class="gmsg" id="gMsg"></div>
+    <div class="center"><button class="btn sm ghost" id="gNext" style="display:none">下一題 →</button></div>
+  </div>
+
+  <div class="box recap"><div class="bt"></div>
+    五步驟：<b>看乾茶 → 聞香 → 觀湯色 → 嚐滋味 → 看葉底</b>。<br>
+    單一線索可能騙人，<b>多個線索一起看</b>才準；最可靠的是葉底。
+  </div>
+  <div class="quiz" data-quiz="L12"></div>
+  <div class="lnav" data-nav="L12"></div>
+</section>
+
+<!-- ============ L13 ============ -->
+<section class="page" id="L13">
+  <span class="tag l4">第四階段・專業　第 13 課</span>
+  <h2>好茶怎麼看？茶葉怎麼保存？</h2>
+  <p class="lead">會分辨茶類之後，下一步是分辨「好不好」。貴的不一定好，包裝漂亮也不代表品質高。</p>
+
+  <h3>好茶的五個特徵</h3>
+  <div class="tw"><table>
+    <tr><th>項目</th><th>好的表現</th><th>不好的表現</th></tr>
+    <tr><td>外形</td><td>大小均勻、乾淨、色澤自然有光澤</td><td>碎末多、夾雜茶梗黃片、顏色暗沉</td></tr>
+    <tr><td>香氣</td><td>純正、清楚、能持續</td><td>有怪味、香氣很快就沒了、香得很假</td></tr>
+    <tr><td>湯色</td><td>清澈明亮</td><td>混濁、暗沉</td></tr>
+    <tr><td>滋味</td><td>協調順口，喝完回甘、口中生津</td><td>苦澀卡喉嚨、淡如水、有雜味</td></tr>
+    <tr><td>葉底</td><td>柔軟、勻整、有光澤</td><td>硬、焦黑、碎爛、顏色不均</td></tr>
+  </table></div>
+
+  <h3>常見的茶「毛病」</h3>
+  <div class="grid">
+    <div class="tc"><h4>🔥 焦味</h4><p>殺青或烘焙時溫度太高，像燒焦的飯。</p></div>
+    <div class="tc"><h4>🌿 菁味（青味）</h4><p>殺青不夠，殘留生青草味，喝了可能刮胃。「菁」指茶的生葉。</p></div>
+    <div class="tc"><h4>😶 悶味</h4><p>製作時葉子堆太久、太熱，像悶在塑膠袋裡的青菜味。</p></div>
+    <div class="tc"><h4>🦠 霉味</h4><p>受潮發霉，不能喝。<b>要分清楚</b>：黑茶的「陳香」是好的，「霉味」是壞的。</p></div>
+    <div class="tc"><h4>🫙 陳舊味・油耗味</h4><p>綠茶等放太久或保存不好，香氣變成像舊油的味道。</p></div>
+    <div class="tc"><h4>🧅 異味</h4><p>茶葉很會「吸味道」，和香皂、咖哩、樟腦放一起就會染上。</p></div>
+  </div>
+
+  <h3>保存茶葉：四怕一忌</h3>
+  <div class="flowrow">
+    <span class="p">☀️ 怕光</span><span class="p">🌡️ 怕熱</span><span class="p">💧 怕潮濕</span><span class="p">💨 怕氧氣</span><span class="p">🧄 忌異味</span>
+  </div>
+  <ul>
+    <li><b>密封、避光</b>：用不透光的罐子或夾鏈袋，擠出空氣。</li>
+    <li><b>綠茶、輕氧化烏龍</b>：最好冷藏。<b>從冰箱拿出來要先放到回溫再打開</b>，不然冷冷的茶葉會吸附空氣中的水氣（像冰飲料杯外會冒水珠），容易受潮。</li>
+    <li><b>白茶、普洱、黑茶</b>：可以長期存放，但要<b>通風、乾燥、沒有異味</b>，不要放冰箱。</li>
+  </ul>
+
+  <div class="box tip"><div class="bt">新茶好，還是老茶好？</div>
+    看茶類：<b>綠茶喝新</b>，越新鮮越好；<b>白茶、普洱</b>則可能隨著時間慢慢「轉化」，滋味變得更醇。民間說白茶「一年茶、三年藥、七年寶」，這是形容它放久價值變高，但<b>茶不是藥</b>，不能拿來治病。而且「放久會變好」的前提是保存得當，存壞了只會變成霉茶。
+  </div>
+  <div class="box warn"><div class="bt">買茶小提醒</div>不要只看包裝、價格或「幾十年老茶」的說法。可以要求試喝，用前面學的五步驟自己判斷。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    好茶：外形勻淨、香氣純正、湯色清亮、滋味回甘、葉底柔軟。<br>
+    保存：怕光、熱、潮、氧，忌異味。綠茶冷藏（回溫再開），普洱白茶通風乾燥。
+  </div>
+  <div class="quiz" data-quiz="L13"></div>
+  <div class="lnav" data-nav="L13"></div>
+</section>
+
+<!-- ============ L14 ============ -->
+<section class="page" id="L14">
+  <span class="tag l4">第四階段・專業　第 14 課</span>
+  <h2>泡一杯好茶——器具、水溫與時間</h2>
+  <p class="lead">同一包茶，泡得好是好茶，泡不好就變苦水。泡茶有四個要素：<b>茶量、水溫、時間、水質</b>。</p>
+
+  <h3>為什麼每種茶的水溫不一樣？</h3>
+  <div class="box eg"><div class="bt">煮青菜和燉肉</div>
+    嫩嫩的青菜要快炒，久煮就黃掉、爛掉；牛筋要燉很久才會軟。<br>
+    <b>嫩芽做的綠茶、白茶</b>就像青菜，用 80～85°C 的水，太燙會把茶「燙熟」，變黃、變苦澀。<br>
+    <b>捲成球的烏龍、壓成餅的普洱</b>就像牛筋，要用接近 100°C 的水，茶葉才能舒展開，味道才出得來。
+  </div>
+
+  <h3>🫖 泡茶計算機＋計時器</h3>
+  <div class="card brew">
+    <div>
+      <label>選擇茶類：<br><select id="bTea"></select></label>
+      <p style="margin:10px 0 4px">杯子／壺的容量：<b id="bMlTxt">150</b> 毫升</p>
+      <input type="range" id="bMl" min="100" max="500" step="10" value="150">
+      <div class="bstat" style="margin-top:8px">
+        <div>茶葉<b id="bG">3</b><small>公克</small></div>
+        <div>水溫<b id="bT">80</b><small>°C</small></div>
+        <div>浸泡<b id="bS">2:30</b><small>分:秒</small></div>
+      </div>
+      <p id="bNote" style="font-size:.9em;margin-top:8px"></p>
+    </div>
+    <div class="center">
+      <svg width="170" height="150" viewBox="0 0 170 150">
+        <g class="steam"><path d="M65 30 q-8 -10 0 -20 q8 -10 0 -20"/><path d="M85 30 q-8 -10 0 -20 q8 -10 0 -20"/><path d="M105 30 q-8 -10 0 -20 q8 -10 0 -20"/></g>
+        <defs><clipPath id="cupClip"><path d="M28 42 h114 q-2 80 -57 88 q-55 -8 -57 -88z"/></clipPath></defs>
+        <path d="M22 36 h126 q0 92 -63 100 q-63 -8 -63 -100z" fill="#fff" stroke="#b9a684" stroke-width="3"/>
+        <path d="M148 55 q22 0 18 25 q-4 20 -26 22" fill="none" stroke="#b9a684" stroke-width="5"/>
+        <g clip-path="url(#cupClip)"><rect id="bFill" x="20" y="42" width="130" height="100" fill="#eef0d8"/></g>
+      </svg>
+      <div class="timer" id="bTimer">2:30</div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button class="btn sm" id="bStart">▶ 開始計時</button>
+        <button class="btn sm ghost" id="bFast">⏩ 快轉示範</button>
+        <button class="btn sm ghost" id="bReset">↺</button>
+      </div>
+      <small>看杯子裡的茶湯慢慢變色</small>
+    </div>
+  </div>
+  <small>以上是一般杯泡的參考值。用小壺、蓋碗泡「工夫茶」時，茶葉放多一點、時間縮短成幾十秒，可以泡很多次。</small>
+
+  <h3>泡茶器具與名稱由來</h3>
+  <div class="grid">
+    <div class="tc"><h4>蓋碗</h4><p>有蓋、碗、托三件。<b>由來</b>：又叫「三才碗」，蓋代表天、托代表地、碗代表人，合起來是「天地人」三才。好清洗、不吸味，適合泡各種茶。</p></div>
+    <div class="tc"><h4>紫砂壺</h4><p>用江蘇<b>宜興</b>特有的紫砂泥做成，透氣、保溫，明朝開始流行。據說用久了壺會「養」出光澤。一把壺最好固定泡同一類茶。</p></div>
+    <div class="tc"><h4>公道杯（茶海）</h4><p>把壺裡泡好的茶先全部倒進這個杯子，再分給大家。<b>由來</b>：這樣每個人杯裡的茶濃淡都一樣，很「公道」。</p></div>
+    <div class="tc"><h4>聞香杯</h4><p>細長的高杯，專門用來聞茶香，喝的時候再倒進矮的品茗杯。這種喝法在台灣流行起來。</p></div>
+    <div class="tc"><h4>茶則・茶匙・茶夾</h4><p><b>茶則</b>：量取茶葉的器具（「則」有標準、規則的意思）。<b>茶匙</b>：把茶葉撥進壺裡。<b>茶夾</b>：夾杯子，避免手碰到杯口，衛生又不燙手。</p></div>
+    <div class="tc"><h4>茶盤・茶巾</h4><p><b>茶盤</b>：放茶具、接住倒掉的水。<b>茶巾</b>：擦乾壺底和桌上的水。</p></div>
+  </div>
+
+  <div class="box origin"><div class="bt">工夫茶</div>「工夫」是指花時間、講究技巧。用小壺小杯、一泡接一泡慢慢喝的泡法就叫「工夫茶」（也寫成「功夫茶」），在廣東潮汕、福建和台灣很流行。</div>
+  <div class="box origin"><div class="bt">溫潤泡（洗茶）</div>第一次沖水後很快倒掉，目的是讓緊結的茶葉先<b>溫熱、舒展</b>，並沖掉表面灰塵，常用在烏龍茶、普洱茶。嫩的綠茶通常不需要，因為會把最鮮的味道倒掉。</div>
+  <div class="box tip"><div class="bt">冷泡茶</div>用冷水泡茶，放冰箱 4～8 小時。低溫時苦澀物質和咖啡因溶出比較少，所以喝起來甘甜順口。</div>
+  <div class="box tip"><div class="bt">喝茶禮儀小故事</div>
+    ・<b>茶倒七分滿</b>：老話說「茶滿欺客，酒滿敬人」，茶倒太滿客人不好拿，也容易燙到。<br>
+    ・<b>叩指禮</b>：別人幫你倒茶時，用手指在桌上輕敲兩三下表示感謝。傳說清朝乾隆皇帝微服出巡時親自幫隨從倒茶，隨從不能當街下跪，就用手指彎曲在桌上叩，代替叩頭。
+  </div>
+  <div class="box recap"><div class="bt"></div>
+    四要素：茶量、水溫、時間、水質。<b>嫩的茶低溫、緊結的茶高溫</b>。<br>
+    蓋碗＝三才碗；公道杯讓濃淡一致；工夫茶＝花時間講究的泡法。
+  </div>
+  <div class="quiz" data-quiz="L14"></div>
+  <div class="lnav" data-nav="L14"></div>
+</section>
+
+<!-- ============ L15 ============ -->
+<section class="page" id="L15">
+  <span class="tag l4">第四階段・專業　第 15 課</span>
+  <h2>專業評茶——像評茶師一樣品茶</h2>
+  <p class="lead">茶葉公司、比賽、檢驗單位都有專業的「<b>評茶員</b>」。他們用一套標準方法，讓不同的人評同一款茶時，結果盡量一致。</p>
+
+  <h3>評茶的標準做法</h3>
+  <div class="tw"><table>
+    <tr><th>項目</th><th>專業做法</th><th>為什麼</th></tr>
+    <tr><td>環境</td><td>白色桌面、光線柔和均勻（通常朝北的自然光）、沒有異味</td><td>顏色和香氣才看得準、聞得準</td></tr>
+    <tr><td>器具</td><td>統一的白瓷審評杯和審評碗</td><td>每款茶條件相同才能比較</td></tr>
+    <tr><td>用量</td><td>常見是 <b>3 公克茶配 150 毫升沸水</b></td><td>故意泡得比平常濃，把優點和缺點都「放大」</td></tr>
+    <tr><td>時間</td><td>依茶類約 4～6 分鐘</td><td>讓茶的味道充分出來</td></tr>
+    <tr><td>嚐法</td><td>用湯匙「吸啜」，發出嘶嘶聲</td><td>讓茶湯和空氣混合、噴灑到整個口腔，香氣更容易感受</td></tr>
+  </table></div>
+  <small>不同國家、不同標準的細節略有差異，例如國際標準 ISO 3103 是每 100 毫升用 2 公克、泡 6 分鐘。</small>
+
+  <h3>五項因子與評分</h3>
+  <p>專業評茶通常看五個項目，叫「<b>五項因子</b>」：<b>外形、湯色、香氣、滋味、葉底</b>（就是第 12 課的五步驟！）。每項給分，再依權重加總。例如：</p>
+  <div class="tw"><table>
+    <tr><th>茶類（舉例）</th><th>外形</th><th>湯色</th><th>香氣</th><th>滋味</th><th>葉底</th></tr>
+    <tr><td>綠茶</td><td>25%</td><td>10%</td><td>25%</td><td>30%</td><td>10%</td></tr>
+    <tr><td>烏龍茶</td><td>20%</td><td>5%</td><td>30%</td><td>35%</td><td>10%</td></tr>
+  </table></div>
+  <div class="box think"><div class="bt"></div>為什麼烏龍茶的「香氣」和「滋味」佔分特別高？——因為烏龍茶最迷人、最考驗功夫的地方，就是它千變萬化的香氣與韻味。</div>
+
+  <h3>專業術語小辭典</h3>
+  <div class="tw"><table>
+    <tr><th>術語</th><th>意思</th></tr>
+    <tr><td><b>回甘</b></td><td>茶喝下去後，喉嚨和舌根慢慢回來一股甜味</td></tr>
+    <tr><td><b>生津</b></td><td>喝完口中自然分泌唾液，嘴巴濕潤舒服。「津」是口水的古稱</td></tr>
+    <tr><td><b>喉韻</b></td><td>茶湯吞下後，在喉嚨留下的舒服感與餘味</td></tr>
+    <tr><td><b>鮮爽</b></td><td>新鮮、爽口，常形容好綠茶</td></tr>
+    <tr><td><b>醇厚</b></td><td>味道飽滿、有厚度但不刺激</td></tr>
+    <tr><td><b>湯感／水路</b></td><td>茶湯在嘴裡的觸感：細膩滑順或粗糙</td></tr>
+    <tr><td><b>岩韻</b></td><td>武夷岩茶特有的韻味，形容成「岩骨花香」</td></tr>
+    <tr><td><b>音韻</b></td><td>鐵觀音特有的韻味（觀音韻）</td></tr>
+    <tr><td><b>山頭氣</b></td><td>不同山頭產的茶特有的風味差異（常用在普洱）</td></tr>
+    <tr><td><b>掛杯香</b></td><td>喝完後空杯子裡還留著的香氣</td></tr>
+    <tr><td><b>毫香</b></td><td>白毫多的嫩芽茶特有的清香</td></tr>
+  </table></div>
+
+  <h3>影響茶品質的六大因素</h3>
+  <div class="flowrow">
+    <span class="p">🌱 品種</span><span class="p">⛰️ 風土</span><span class="p">🗓️ 季節</span><span class="p">✂️ 採摘</span><span class="p">🔥 製作</span><span class="p">📦 保存</span>
+  </div>
+  <div class="box origin"><div class="bt">風土 Terroir</div>原本是法國葡萄酒的用語（法文 terroir，來自「土地」），指<b>海拔、緯度、土壤、氣候、日照、雨量</b>等自然條件的總和。同一品種種在不同地方，味道就不同，這就是為什麼大家會說「這是阿里山的味道」。</div>
+
+  <h3>從入門到專業：自我練習法</h3>
+  <ol>
+    <li><b>對比杯</b>：兩三款同類茶並排泡，用一樣的量和時間，差異最容易看出來。</li>
+    <li><b>寫品茶筆記</b>：每次記下 茶名／產地／五項因子／自己的形容詞／分數。</li>
+    <li><b>建立香氣資料庫</b>：多聞真實的花、水果、堅果、蜂蜜，才知道「蘭花香」是什麼味道。</li>
+    <li><b>從一類茶深入</b>：先把一種茶類喝透，再慢慢擴展。</li>
+  </ol>
+  <div class="card">
+    <b style="font-family:var(--serif)">📝 品茶筆記範本</b>
+    <div class="tw"><table>
+      <tr><th>茶名／產地／年份</th><td>例：凍頂烏龍／南投鹿谷／2026 春</td></tr>
+      <tr><th>外形</th><td>半球形、墨綠帶褐、勻整</td></tr>
+      <tr><th>湯色</th><td>金黃明亮</td></tr>
+      <tr><th>香氣</th><td>焙火香、熟果香、淡淡桂花香</td></tr>
+      <tr><th>滋味</th><td>醇厚、微苦後回甘、喉韻明顯</td></tr>
+      <tr><th>葉底</th><td>柔軟、綠葉紅鑲邊</td></tr>
+      <tr><th>總評</th><td>★★★★☆　適合飯後、冬天</td></tr>
+    </table></div>
+  </div>
+
+  <div class="box recap"><div class="bt"></div>
+    專業評茶：3 公克／150 毫升沸水／4～6 分鐘，吸啜品嚐。<br>
+    五項因子＝外形、湯色、香氣、滋味、葉底。風土＝自然條件的總和。
+  </div>
+  <div class="quiz" data-quiz="L15"></div>
+  <div class="lnav" data-nav="L15"></div>
+</section>
+
+<!-- ============ L16 ============ -->
+<section class="page" id="L16">
+  <span class="tag l4">第四階段・專業　第 16 課</span>
+  <h2>茶與健康——聰明喝、適量喝</h2>
+  <p class="lead">茶是好東西，但任何東西喝太多、喝錯時間都可能不舒服。最後一課，學會健康地享受茶。</p>
+
+  <h3>咖啡因：要注意的量</h3>
+  <div class="card bars" id="bars2">
+    <b style="font-family:var(--serif)">一杯（約 240 毫升）大約含多少咖啡因？</b>
+    <div class="r"><span>☕ 一般咖啡</span><div class="t"><i data-w="80" style="background:#5a3422"></i></div><em>約 80–120mg</em></div>
+    <div class="r"><span>🔴 紅茶</span><div class="t"><i data-w="40" style="background:#a8402a"></i></div><em>約 40–70mg</em></div>
+    <div class="r"><span>🟢 綠茶</span><div class="t"><i data-w="28" style="background:#5e8a3c"></i></div><em>約 20–45mg</em></div>
+    <div class="r"><span>🍵 抹茶</span><div class="t"><i data-w="55" style="background:#3f7a2c"></i></div><em>約 60mg 起</em></div>
+    <div class="r"><span>🌼 花草茶</span><div class="t"><i data-w="1" style="background:#c9a42a"></i></div><em>大多 0</em></div>
+    <small>實際含量會因茶葉、份量、水溫、浸泡時間有很大差異，這裡只是大約比較。</small>
+  </div>
+  <div class="box warn"><div class="bt">青少年的建議量</div>
+    加拿大衛生部等機構建議，青少年每天咖啡因<b>每公斤體重不要超過約 2.5 毫克</b>。例如 50 公斤的國中生，一天大約不要超過 125 毫克，差不多是 2～3 杯一般濃度的茶。要記得：手搖飲、可樂、能量飲料、巧克力也有咖啡因，要一起算！
+  </div>
+
+  <h3>健康喝茶的五個提醒</h3>
+  <div class="grid">
+    <div class="tc"><h4>🌙 晚上少喝</h4><p>咖啡因會讓人睡不著。正在長大的國中生，睡眠特別重要，下午以後盡量不喝濃茶。</p></div>
+    <div class="tc"><h4>🍙 不要空腹喝濃茶</h4><p>空腹喝濃茶可能會胃不舒服，甚至心慌、手抖、頭暈，這叫「<b>茶醉</b>」。如果發生，吃點東西（如甜點）休息一下。</p></div>
+    <div class="tc"><h4>🥩 飯後隔一下再喝</h4><p>茶多酚會影響身體吸收食物中的鐵質。容易貧血的人，飯後隔一段時間再喝茶比較好。</p></div>
+    <div class="tc"><h4>🌡️ 不要喝太燙</h4><p>長期喝非常燙（超過 65°C）的飲料，對食道不好。稍微放涼再喝。</p></div>
+    <div class="tc"><h4>🧋 小心手搖飲的糖</h4><p>茶本身幾乎沒有熱量，真正讓手搖飲熱量高的是<b>糖、奶精和配料</b>。點「無糖」或「微糖」更健康。</p></div>
+  </div>
+
+  <div class="box tip"><div class="bt">茶對身體好嗎？</div>研究發現，適量喝茶的人有些健康指標比較好，這可能和茶多酚等成分有關。但「有關」不代表「喝茶就能治病」。<b>茶是飲料，不是藥</b>；生病還是要看醫生。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    青少年咖啡因：每公斤體重每天約 2.5 毫克以內。<br>
+    晚上少喝、不空腹喝濃茶、飯後隔一下、別太燙、少糖。茶是飲料不是藥。
+  </div>
+  <div class="quiz" data-quiz="L16"></div>
+  <div class="lnav" data-nav="L16"></div>
+</section>
+
+<!-- ============ 期末 ============ -->
+<section class="page" id="final">
+  <span class="tag l4">結業</span>
+  <h2>🎓 結業測驗</h2>
+  <p class="lead">恭喜你走完 16 課！最後從全部課程中隨機出 15 題，答對 12 題以上就能拿到結業證書。</p>
+  <div class="quiz" id="finalQuiz"></div>
+  <div class="center noprint" style="margin-top:12px"><button class="btn am" id="finalNew">🔄 重新出題</button></div>
+  <div id="certWrap" style="display:none">
+    <div class="card noprint center">
+      <p>輸入你的名字，產生證書：</p>
+      <input class="txt" id="certName" placeholder="你的名字">
+      <button class="btn sm" onclick="makeCert()">產生證書</button>
+    </div>
+    <div class="cert" id="cert" style="display:none">
+      <div style="font-size:2.4em">🍵</div>
+      <h2>結 業 證 書</h2>
+      <div class="nm" id="certNm"></div>
+      <p>完成「一杯茶的學問」全部 16 課，<br>從茶樹、歷史、製茶、六大茶類、名茶，到分辨、沖泡與專業評茶，<br>結業測驗成績 <b id="certScore"></b>，特頒此證。</p>
+      <p id="certDate" style="color:var(--muted)"></p>
+    </div>
+    <div class="center noprint" style="margin-top:10px"><button class="btn ghost sm" onclick="window.print()">🖨️ 列印／存成 PDF</button></div>
+  </div>
+  <div class="lnav" data-nav="final"></div>
+</section>
+
+<!-- ============ 辭典 ============ -->
+<section class="page" id="gloss">
+  <span class="tag">附錄</span>
+  <h2>📖 名詞辭典</h2>
+  <p>課程裡出現的專有名詞都在這裡，可以搜尋。後面的標籤表示在第幾課學到。</p>
+  <div class="gl card"><input id="gq" placeholder="🔍 輸入關鍵字，例如：殺青、回甘、普洱"></div>
+  <div class="card" id="glist"></div>
+  <div class="center"><button class="btn ghost" onclick="go('home')">← 回首頁</button></div>
+</section>
+
+</main>
+
+<script>
+/* ================= 課程結構 ================= */
+const LESSONS=[
+ {id:'L1',lv:1,t:'茶是什麼？一棵樹的故事'},
+ {id:'L2',lv:1,t:'茶從哪裡來？喝茶的歷史'},
+ {id:'L3',lv:1,t:'茶走向世界：Tea 和 Chá'},
+ {id:'L4',lv:2,t:'茶葉裡有什麼？'},
+ {id:'L5',lv:2,t:'「發酵」其實是氧化'},
+ {id:'L6',lv:2,t:'製茶的八個動作'},
+ {id:'L7',lv:2,t:'六大茶類'},
+ {id:'L8',lv:3,t:'中國名茶巡禮'},
+ {id:'L9',lv:3,t:'台灣好茶'},
+ {id:'L10',lv:3,t:'世界之茶'},
+ {id:'L11',lv:3,t:'再加工茶與不是茶的茶'},
+ {id:'L12',lv:4,t:'分辨茶的五個步驟'},
+ {id:'L13',lv:4,t:'好茶怎麼看、怎麼保存'},
+ {id:'L14',lv:4,t:'泡一杯好茶'},
+ {id:'L15',lv:4,t:'專業評茶'},
+ {id:'L16',lv:4,t:'茶與健康'},
+ {id:'final',lv:5,t:'結業測驗與證書'}
+];
+const LV=['','第一階段・入門：認識茶','第二階段・基礎：茶怎麼做出來','第三階段・進階：認識名茶','第四階段・專業：分辨與品鑑','結業'];
+const LVDESC=['','茶樹、歷史、茶如何走向世界','成分、氧化、製茶動作、六大茶類','中國、台灣、世界名茶與再加工茶','五步分辨、品質、沖泡、評茶、健康'];
+
+/* ================= 進度保存 ================= */
+const KEY='saintdou_tea_course_v1';
+let S={done:{},last:'home'};
+try{const x=JSON.parse(localStorage.getItem(KEY)||'null');if(x&&x.done)S=x;}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function nextUndone(){const l=LESSONS.find(l=>!S.done[l.id]);return l?l.id:'final'}
+
+function progress(){
+  const n=LESSONS.filter(l=>l.id!=='final'&&S.done[l.id]).length, tot=LESSONS.length-1;
+  const p=Math.round(n/tot*100);
+  document.getElementById('pbar').style.width=p+'%';
+  document.getElementById('ptxt').textContent=p+'%';
+  const sb=document.getElementById('startBtn');
+  if(sb) sb.textContent = n===0?'▶ 開始上課':(n>=tot?'🎓 前往結業測驗':'▶ 繼續上課（第 '+(n+1)+' 課）');
+}
+
+function buildMenus(){
+  let h='',m='';
+  for(let lv=1;lv<=5;lv++){
+    const ls=LESSONS.filter(l=>l.lv===lv);
+    h+='<div class="lv-h">'+LV[lv]+'</div>';
+    ls.forEach(l=>{const i=LESSONS.indexOf(l);
+      h+='<div class="li '+(S.done[l.id]?'done ':'')+(S.last===l.id?'cur':'')+'" onclick="go(\''+l.id+'\')"><span class="n">'+(S.done[l.id]?'✓':(l.id==='final'?'🎓':i+1))+'</span>'+l.t+'</div>';});
+    if(lv<5){
+      m+='<div class="lvcard"><span class="tag '+(lv>1?'l'+lv:'')+'">'+LV[lv].split('：')[0]+'</span><h3>'+LV[lv].split('：')[1]+'</h3><p style="margin:.2em 0 .6em;color:var(--muted);font-size:.92em">'+LVDESC[lv]+'</p><div class="chips">';
+      ls.forEach(l=>{const i=LESSONS.indexOf(l);m+='<span class="chip '+(S.done[l.id]?'done':'')+'" onclick="go(\''+l.id+'\')">'+(i+1)+'. '+l.t+'</span>'});
+      m+='</div></div>';
+    }
+  }
+  h+='<div class="lv-h">附錄</div><div class="li" onclick="go(\'gloss\')"><span class="n">📖</span>名詞辭典</div><div class="li" onclick="go(\'home\')"><span class="n">🏠</span>回首頁</div>';
+  h+='<div style="margin-top:20px"><button class="mbtn" onclick="if(confirm(\'確定要清除學習進度嗎？\')){S={done:{},last:\'home\'};save();location.reload()}">清除進度</button></div>';
+  document.getElementById('dlist').innerHTML=h;
+  document.getElementById('lvmap').innerHTML=m+'<div class="lvcard"><h3 style="margin:0 0 6px">🎓 結業</h3><div class="chips"><span class="chip" onclick="go(\'final\')">結業測驗與證書</span><span class="chip" onclick="go(\'gloss\')">📖 名詞辭典</span></div></div>';
+}
+function drawer(on){document.getElementById('drawer').classList.toggle('on',on)}
+
+function go(id){
+  if(!document.getElementById(id))id='home';
+  window.AC_COURSE_GO=function(v){go(v)};window.AC_COURSE_POSITION=id;
+  document.querySelectorAll('section.page').forEach(s=>s.classList.toggle('on',s.id===id));
+  S.last=id;save();drawer(false);buildMenus();progress();
+  window.scrollTo({top:0,behavior:'instant'in window?'instant':'auto'});
+  if(id==='L4')animBars('bars');
+  if(id==='L16')animBars('bars2');
+  if(id==='final'&&!finalBuilt)newFinal();
+}
+function buildNav(){
+  document.querySelectorAll('[data-nav]').forEach(d=>{
+    const id=d.dataset.nav,i=LESSONS.findIndex(l=>l.id===id);
+    const prev=LESSONS[i-1],next=LESSONS[i+1];
+    let h=prev?'<button class="btn ghost" onclick="go(\''+prev.id+'\')">← 上一課</button>':'<button class="btn ghost" onclick="go(\'home\')">← 首頁</button>';
+    if(next)h+='<button class="btn" onclick="finish(\''+id+'\',\''+next.id+'\')">完成，下一課：'+next.t+' →</button>';
+    else h+='<button class="btn" onclick="go(\'gloss\')">📖 名詞辭典 →</button>';
+    d.innerHTML=h;
+  });
+}
+function finish(id,next){S.done[id]=true;save();go(next)}
+function animBars(id){const b=document.getElementById(id);if(!b)return;b.querySelectorAll('.t i').forEach(i=>{i.style.width='0';setTimeout(()=>i.style.width=i.dataset.w+'%',80)})}
+
+/* ================= 測驗 ================= */
+const Q={
+L1:[
+ {q:'綠茶、紅茶、烏龍茶是從哪裡來的？',o:['三種不同的植物','同一種植物（茶樹），做法不同','綠茶來自茶樹，紅茶來自紅色的樹'],a:1,e:'所有真正的茶都來自茶樹 Camellia sinensis，差別在加工方法。'},
+ {q:'茶樹學名中的 sinensis 是什麼意思？',o:['來自中國的','山茶花','綠色的葉子'],a:0,e:'sinensis 是拉丁文「來自中國的」。'},
+ {q:'「一心二葉」的「心」指的是什麼？',o:['茶樹的根','最頂端還沒打開的嫩芽','茶葉中間的葉脈'],a:1,e:'在正中心、捲成小根的嫩芽叫「心」。'}],
+L2:[
+ {q:'世界上第一本專門講茶的書是？',o:['《本草綱目》','《茶經》','《大觀茶論》'],a:1,e:'唐朝陸羽寫的《茶經》，陸羽因此被稱為茶聖。'},
+ {q:'「茶」字是從哪個字減一橫來的？',o:['荼','苓','葉'],a:0,e:'古代用「荼」（tú），唐代以後統一寫成「茶」。'},
+ {q:'哪個朝代開始流行把茶粉在碗裡「打出泡沫」的點茶？',o:['唐朝','宋朝','明朝'],a:1,e:'宋朝點茶、鬥茶，比泡沫白、持久。'},
+ {q:'我們現在用熱水直接沖泡茶葉的方式，從哪個朝代開始普及？',o:['漢朝','唐朝','明朝'],a:2,e:'明朝朱元璋廢團茶、改散茶，沖泡法從此普及。'}],
+L3:[
+ {q:'英文 tea 的念法來自哪裡的方言？',o:['北京話','福建閩南話','廣東話'],a:1,e:'荷蘭商人在福建一帶買茶，閩南話念 tê，傳成 tea。'},
+ {q:'「茶馬古道」名字的意思是？',o:['用茶換馬，並靠馬幫運茶的山路','種滿茶樹的馬路','馬喜歡吃茶葉的地方'],a:0,e:'中原用茶換高原的馬，運茶的路就叫茶馬古道。'},
+ {q:'英國「下午茶」最早是因為什麼而開始的？',o:['國王規定','午餐和晚餐隔太久，下午肚子餓','為了慶祝節日'],a:1,e:'1840 年代貝德福公爵夫人安娜下午肚子餓，配茶吃點心。'}],
+L4:[
+ {q:'茶湯苦澀的「骨架」主要來自哪個成分？',o:['茶多酚','醣類','維生素'],a:0,e:'茶多酚（主要是兒茶素）帶來苦澀感。'},
+ {q:'哪個成分讓茶喝起來「鮮甜」，嫩芽裡特別多？',o:['咖啡因','胺基酸（茶胺酸）','礦物質'],a:1,e:'茶胺酸帶來鮮味，陽光會讓它轉成茶多酚。'},
+ {q:'嘴巴乾乾、緊緊，像咬到沒熟柿子的感覺叫做？',o:['苦','澀','鹹'],a:1,e:'澀是收斂感，和舌頭嚐到的苦不一樣。'}],
+L5:[
+ {q:'大部分茶的「發酵」，科學上其實是什麼？',o:['微生物發酵','酵素氧化','加糖'],a:1,e:'茶葉自己的酵素讓茶多酚與氧氣作用，跟蘋果切開變色同一個道理。'},
+ {q:'製茶時要讓氧化「停下來」，用什麼方法？',o:['冰凍','高溫（殺青）','泡水'],a:1,e:'酵素怕熱，高溫處理（殺青）就能停止氧化。'},
+ {q:'六大茶類中，唯一真正有微生物參與的是？',o:['紅茶','烏龍茶','黑茶'],a:2,e:'黑茶的渥堆靠微生物，所以叫「後發酵茶」。'}],
+L6:[
+ {q:'「殺青」這個詞最早是從哪裡來的？',o:['古人烤竹簡逼出水分','殺死青蟲','把青菜炒熟'],a:0,e:'古人寫竹簡前先烤青竹逼出水分，叫殺青；製茶借用指高溫處理青葉。'},
+ {q:'哪一個步驟是「烏龍茶專屬」？',o:['渥堆','做青（搖青）','悶黃'],a:1,e:'搖青讓葉緣碰撞氧化，形成綠葉紅鑲邊。'},
+ {q:'「明前茶」是指什麼時候採的茶？',o:['清明節前','中秋節前','過年前'],a:0,e:'清明前的春芽最嫩、量最少，特別珍貴。'},
+ {q:'「萎凋」的目的是什麼？',o:['讓葉子失水變軟、開始產生香氣','讓茶葉變成粉末','讓茶葉發霉'],a:0,e:'萎＝枯萎、凋＝凋謝，葉子攤開慢慢失水變軟。'}],
+L7:[
+ {q:'六大茶類是依照什麼來分類的？',o:['產地','製作方法與氧化程度','價格'],a:1,e:'陳椽教授依製法與氧化程度分類，並用顏色命名。'},
+ {q:'紅茶的英文是？',o:['Red tea','Black tea','Dark tea'],a:1,e:'西方人看乾茶黑，所以叫 Black tea；黑茶才叫 Dark tea。'},
+ {q:'哪一類茶只有「萎凋＋乾燥」，不炒也不揉？',o:['白茶','綠茶','紅茶'],a:0,e:'白茶做法最簡單，但萎凋的拿捏最難。'},
+ {q:'烏龍茶屬於六大茶類的哪一類？',o:['黃茶','青茶','黑茶'],a:1,e:'烏龍茶＝青茶，半氧化。'}],
+L8:[
+ {q:'外形扁平光滑、像一片片小劍的名茶是？',o:['碧螺春','西湖龍井','鐵觀音'],a:1,e:'龍井扁平挺直，有豆香、栗香。'},
+ {q:'被認為是世界上最早的紅茶是？',o:['正山小種','祁門紅茶','滇紅'],a:0,e:'產於福建武夷山桐木關，有松煙香。'},
+ {q:'「普洱」這個名字的由來是？',o:['一種茶樹品種','古代雲南的地名（茶葉集散地）','發明人的名字'],a:1,e:'普洱府是茶葉集散地，這裡賣出的茶就叫普洱茶。'},
+ {q:'「鳳凰單叢」的「單叢」是什麼意思？',o:['只有一片葉子','一棵茶樹單獨採、單獨做','只在一個月採'],a:1,e:'單株採摘、單株製作，每棵樹香氣不同。'}],
+L9:[
+ {q:'東方美人茶的蜂蜜香，是因為什麼？',o:['加了蜂蜜','小綠葉蟬叮咬嫩芽','用蜂蜜水澆灌'],a:1,e:'茶樹被小綠葉蟬叮咬後產生特殊物質，做成茶有蜜香。'},
+ {q:'東方美人又叫「膨風茶」，「膨風」在台語是什麼意思？',o:['吹牛','颱風','膨脹'],a:0,e:'傳說茶農賣得好價錢，鄰居以為他在吹牛（膨風）。'},
+ {q:'「包種茶」名字的由來是？',o:['用紙把茶葉包起來販售','茶葉形狀像包子','產在包種村'],a:0,e:'早年用方形紙包茶，一包四兩，蓋上茶行印章。'},
+ {q:'台灣一般把海拔多少以上茶園產的茶叫高山茶？',o:['300 公尺','1000 公尺','3000 公尺'],a:1,e:'海拔 1000 公尺以上，雲霧多、溫差大，茶特別甘甜。'}],
+L10:[
+ {q:'有「紅茶中的香檳」之稱的是？',o:['阿薩姆','大吉嶺','錫蘭'],a:1,e:'印度喜馬拉雅山腳的大吉嶺，香氣細緻。'},
+ {q:'「錫蘭紅茶」的錫蘭是什麼？',o:['斯里蘭卡以前的國名','一種金屬','一位茶商'],a:0,e:'斯里蘭卡 1972 年改名，但錫蘭紅茶的名字沿用至今。'},
+ {q:'日本綠茶大多用什麼方式殺青？',o:['炒','蒸','曬'],a:1,e:'蒸青，所以顏色翠綠、帶海苔般鮮味。'},
+ {q:'伯爵茶的特殊香氣來自？',o:['佛手柑','茉莉花','肉桂'],a:0,e:'紅茶加上佛手柑（一種柑橘）的香氣。'}],
+L11:[
+ {q:'下面哪一個是「真正的茶」？',o:['菊花茶','麥茶','茉莉花茶'],a:2,e:'茉莉花茶以綠茶為底，有茶樹葉；菊花茶、麥茶沒有。'},
+ {q:'茉莉花茶傳統的做法叫什麼？',o:['窨制','渥堆','悶黃'],a:0,e:'茶葉和茉莉花層層堆放，讓茶吸收花香，再把花篩掉。'},
+ {q:'判斷「是不是茶」最簡單的方法是？',o:['看名字有沒有「茶」字','看原料有沒有茶樹的葉子','看顏色'],a:1,e:'有茶樹葉＝茶；沒有＝花草茶／代茶飲。'}],
+L12:[
+ {q:'分辨茶的五步驟，正確順序是？',o:['看乾茶→聞香→觀湯色→嚐滋味→看葉底','嚐滋味→看乾茶→看葉底→聞香→觀湯色','觀湯色→嚐滋味→看乾茶→聞香→看葉底'],a:0,e:'從還沒泡的乾茶，到泡開後的葉底。'},
+ {q:'被稱為「茶的身分證」、最難造假的是？',o:['包裝','乾茶外形','葉底'],a:2,e:'泡開後的葉底最能看出茶的真實做法與品質。'},
+ {q:'葉底呈現「綠葉紅鑲邊」，最可能是哪一類茶？',o:['綠茶','烏龍茶','黑茶'],a:1,e:'做青時葉緣先氧化變紅，是烏龍茶的特徵。'}],
+L13:[
+ {q:'茶葉保存的「四怕」是？',o:['光、熱、潮濕、氧氣','冷、風、紙、木頭','鹽、糖、水、火'],a:0,e:'四怕：光、熱、潮、氧；一忌：異味。'},
+ {q:'冷藏的綠茶從冰箱拿出來，應該怎麼做？',o:['馬上打開','先放到回溫再打開','用熱水沖袋子'],a:1,e:'冷茶葉會吸附空氣中的水氣，回溫再開才不會受潮。'},
+ {q:'茶喝起來有「生青草味」，可能是哪個步驟沒做好？',o:['殺青不足','焙火太重','保存太久'],a:0,e:'殺青不夠會留下菁味（青味）。'}],
+L14:[
+ {q:'泡嫩芽做的綠茶，水溫最適合大約幾度？',o:['約 80～85°C','100°C 滾水','40°C 溫水'],a:0,e:'嫩芽怕燙，太燙會變黃、變苦澀。'},
+ {q:'「公道杯」的作用是？',o:['讓每杯茶濃淡一致','讓茶變涼','量茶葉的重量'],a:0,e:'先倒進公道杯再分，每個人喝到的濃淡都一樣，很公道。'},
+ {q:'蓋碗又叫「三才碗」，三才是指？',o:['天、地、人','金、木、水','茶、水、火'],a:0,e:'蓋為天、托為地、碗為人。'}],
+L15:[
+ {q:'專業評茶常見的用量是？',o:['3 公克茶配 150 毫升沸水','1 公克茶配 1 公升冷水','10 公克茶配 50 毫升溫水'],a:0,e:'故意泡濃，把優點和缺點都放大。'},
+ {q:'喝完茶後，喉嚨和舌根慢慢回來一股甜味，叫做？',o:['回甘','生津','掛杯香'],a:0,e:'生津是口中分泌唾液；掛杯香是空杯留香。'},
+ {q:'「風土」（terroir）是指？',o:['海拔、土壤、氣候等自然條件的總和','茶葉的包裝','泡茶的地方'],a:0,e:'原是法國葡萄酒用語，同品種種在不同地方味道就不同。'}],
+L16:[
+ {q:'青少年每天咖啡因建議大約不超過？',o:['每公斤體重約 2.5 毫克','完全沒有限制','每公斤體重 20 毫克'],a:0,e:'50 公斤約 125 毫克，大約 2～3 杯茶；手搖飲、可樂也要算進去。'},
+ {q:'空腹喝濃茶可能出現心慌、手抖、頭暈，叫做？',o:['茶醉','茶病','茶氣'],a:0,e:'吃點東西、休息一下就會改善。'},
+ {q:'手搖飲熱量高，主要是因為？',o:['茶葉本身','糖、奶精和配料','冰塊'],a:1,e:'茶本身幾乎沒有熱量。'}]
+};
+const QEXTRA=[
+ {q:'下列哪一款茶屬於「黃茶」？',o:['君山銀針','白毫銀針','西湖龍井'],a:0,e:'君山銀針經過悶黃，沖泡時「三起三落」。'},
+ {q:'台茶 18 號「紅玉」有什麼特別的香氣？',o:['肉桂、薄荷香','煙燻香','海苔香'],a:0,e:'紅玉被稱為「台灣香」。'},
+ {q:'CTC 製法做成的紅茶，最常出現在哪裡？',o:['茶包','茶餅','聞香杯'],a:0,e:'切碎捲曲的小顆粒，泡得快又濃。'},
+ {q:'抹茶和一般泡的綠茶最大的不同是？',o:['抹茶是磨成粉，整片葉子都喝下去','抹茶是紅茶做的','抹茶不含咖啡因'],a:0,e:'碾茶磨成細粉，源自宋朝點茶。'}
+];
+function shuf(q){const idx=q.o.map((_,i)=>i).sort(()=>Math.random()-.5);return{q:q.q,o:idx.map(i=>q.o[i]),a:idx.indexOf(q.a),e:q.e}}
+function renderQuiz(box,list,onDone){
+  list=list.map(shuf);
+  let h='<h3>📝 小測驗</h3>',ans=0,ok=0;
+  list.forEach((x,i)=>{
+    h+='<div class="qq">'+(i+1)+'. '+x.q+'</div><div class="opts">';
+    x.o.forEach((o,j)=>h+='<button class="opt" data-i="'+i+'" data-j="'+j+'">'+String.fromCharCode(65+j)+'. '+o+'</button>');
+    h+='</div><div class="exp" id="'+box.id+'e'+i+'"></div>';
+  });
+  h+='<div class="qres"></div>';
+  box.innerHTML=h;
+  box.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i,j=+b.dataset.j,x=list[i];
+    const sib=box.querySelectorAll('.opt[data-i="'+i+'"]');
+    sib.forEach(s=>{s.disabled=true;if(+s.dataset.j===x.a)s.classList.add('ok')});
+    if(j!==x.a)b.classList.add('no');else ok++;
+    const e=document.getElementById(box.id+'e'+i);
+    e.innerHTML=(j===x.a?'✅ 答對了！':'❌ 正確答案是 '+String.fromCharCode(65+x.a)+'。')+' '+x.e;e.classList.add('on');
+    ans++;
+    if(ans===list.length){
+      box.querySelector('.qres').innerHTML='答對 '+ok+' / '+list.length+' 題。'+(ok===list.length?' 🎉 全對，太厲害了！':' 可以回頭再看一下課文喔。')+(onDone?'':'<button class="btn sm ghost" style="margin-left:8px" onclick="redoQuiz(this)">再做一次</button>');
+      if(onDone)onDone(ok,list.length);
+    }
+  });
+}
+function redoQuiz(btn){const box=btn.closest('.quiz');renderQuiz(box,Q[box.dataset.quiz])}
+document.querySelectorAll('[data-quiz]').forEach((b,k)=>{b.id='qz'+k;renderQuiz(b,Q[b.dataset.quiz])});
+
+let finalBuilt=false;
+function newFinal(){
+  finalBuilt=true;
+  const pool=[].concat(...Object.values(Q),QEXTRA).map(x=>x);
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}
+  const box=document.getElementById('finalQuiz');
+  renderQuiz(box,pool.slice(0,15),(ok,n)=>{
+    const r=box.querySelector('.qres');
+    if(ok>=12){r.innerHTML+='<br>🎓 恭喜通過！請在下方產生你的證書。';document.getElementById('certWrap').style.display='block';S.final=ok;S.done.final=true;save();progress();buildMenus()}
+    else r.innerHTML+='<br>還差一點點（需要 12 題）。按「重新出題」再挑戰一次！';
+  });
+  document.getElementById('certWrap').style.display='none';
+}
+document.getElementById('finalNew').onclick=newFinal;
+function makeCert(){
+  const n=document.getElementById('certName').value.trim()||'茶學小達人';
+  document.getElementById('certNm').textContent=n;
+  document.getElementById('certScore').textContent=(S.final||12)+' / 15';
+  const d=new Date();document.getElementById('certDate').textContent=d.getFullYear()+' 年 '+(d.getMonth()+1)+' 月 '+d.getDate()+' 日';
+  document.getElementById('cert').style.display='block';
+}
+
+/* ================= L1 茶樹 ================= */
+const PLANT={bud:'<b>① 芽（心）</b>：最嫩的部分，捲成一小根，表面有白毫。胺基酸最多、最鮮甜。全用芽做的茶叫「銀針」類。',
+ l1:'<b>② 第一葉</b>：剛打開的嫩葉，和芽一起採就是「一芽一葉」。',
+ l2:'<b>③ 第二葉</b>：「一心二葉」就採到這裡。嫩度和香氣、滋味平衡得最好，是做好茶最常見的標準。',
+ l3:'<b>④ 第三葉</b>：比較老、比較厚。老葉茶多酚和纖維多、比較粗澀，但也有適合用老葉做的茶（例如壽眉、部分黑茶）。',
+ stem:'<b>⑤ 莖（茶梗）</b>：好的綠茶會挑掉梗，但烏龍茶常帶一點梗，梗裡的水分和香氣在製作時也有幫助。'};
+document.querySelectorAll('.leafsvg .part').forEach(p=>p.addEventListener('click',()=>{document.getElementById('plantInfo').innerHTML=PLANT[p.dataset.p]}));
+
+/* ================= L2 時間軸 ================= */
+const TL=[
+ {n:'漢以前',i:'🌿',h:'當藥、當菜',t:'最早的人可能直接嚼茶葉，或把茶葉和其他食材一起煮成羹湯來吃，主要當作藥材或食物，還不是日常飲料。'},
+ {n:'唐朝・煎茶',i:'🍲',h:'把茶「煮」來喝',t:'茶葉蒸過、搗碎、壓成<b>茶餅</b>。喝的時候把茶餅烤一烤、碾成粉末，放進鍋子裡煮，還會加一點<b>鹽</b>。陸羽的《茶經》就在這個時代寫成。'},
+ {n:'宋朝・點茶',i:'🍵',h:'把茶「打」成泡沫',t:'茶粉放在碗裡，一邊注入熱水，一邊用竹製的<b>茶筅</b>快速攪打，打出綿密的白色泡沫。大家還會比賽誰的泡沫最白、最久，叫做「<b>鬥茶</b>」。宋徽宗皇帝還寫了《大觀茶論》。日本的抹茶就是從這裡學去的。'},
+ {n:'明朝・泡茶',i:'🫖',h:'把葉子「泡」來喝',t:'1391 年，明太祖朱元璋覺得做茶餅太費人力，下令改進貢「<b>散茶</b>」（一片片的茶葉）。從此人們用熱水直接沖泡茶葉，紫砂壺也跟著流行，這就是我們今天的泡茶方式。'},
+ {n:'清朝',i:'🚢',h:'六大茶類齊全、走向世界',t:'綠、白、黃、青（烏龍）、紅、黑各種茶類都已經發展出來，茶葉大量出口到歐洲，成為重要的國際商品。'},
+ {n:'現代',i:'🧋',h:'茶包、罐裝茶、手搖飲',t:'茶包、冷泡茶、罐裝茶、珍珠奶茶出現，喝茶變得更方便。但傳統的好茶與品茶文化也一直被保留下來。'}];
+(function(){const b=document.getElementById('tlBtns');TL.forEach((x,i)=>{const e=document.createElement('button');e.textContent=x.n;e.onclick=()=>tl(i);b.appendChild(e)});tl(0)})();
+function tl(i){document.querySelectorAll('#tlBtns button').forEach((e,k)=>e.classList.toggle('on',k===i));
+ const x=TL[i],p=document.getElementById('tlPanel');p.style.animation='none';p.offsetHeight;p.style.animation='';
+ p.innerHTML='<span class="big">'+x.i+'</span><b style="font-family:var(--serif);font-size:1.15em">'+x.n+'：'+x.h+'</b><p>'+x.t+'</p>'}
+
+/* ================= L5 氧化 ================= */
+function lerp(a,b,t){return a+(b-a)*t}
+function hex(c){return [1,3,5].map(i=>parseInt(c.substr(i,2),16))}
+function mix(stops,v){for(let i=0;i<stops.length-1;i++){const[a,ca]=stops[i],[b,cb]=stops[i+1];if(v<=b){const t=(v-a)/(b-a),x=hex(ca),y=hex(cb);return'rgb('+x.map((n,k)=>Math.round(lerp(n,y[k],t))).join(',')+')'}}return stops[stops.length-1][1]}
+const LEAF=[[0,'#6a9a3a'],[15,'#7f9a3c'],[35,'#8f8a3a'],[60,'#9a6a30'],[85,'#7a3a1e'],[100,'#5a2a14']];
+const CUP=[[0,'#d9dc8a'],[10,'#ece2a8'],[20,'#e8d36a'],[40,'#e2b448'],[65,'#d48a34'],[85,'#b5402a'],[100,'#9a3222']];
+function oxUpd(){const v=+document.getElementById('oxR').value;
+ document.getElementById('oxLeaf').setAttribute('fill',mix(LEAF,v));
+ document.getElementById('oxCup').setAttribute('fill',mix(CUP,v));
+ let t,d;
+ if(v<=5){t='綠茶（不氧化）';d='一採下就殺青，酵素馬上停止作用，葉子和茶湯都保持綠色、黃綠色。'}
+ else if(v<=15){t='白茶・黃茶（微氧化、輕微變化）';d='白茶只萎凋、不揉捻，細胞破得少，只有一點點氧化；黃茶是悶黃讓顏色變黃。'}
+ else if(v<=30){t='輕氧化烏龍（包種、高山茶）';d='氧化一小部分，湯色金黃偏綠，香氣以清新花香為主。'}
+ else if(v<=70){t='中～重氧化烏龍（鐵觀音、東方美人）';d='氧化程度更高，湯色金黃到橙紅，香氣變成熟果香、蜜香。'}
+ else{t='紅茶（完全氧化）';d='讓茶多酚充分氧化成茶黃素、茶紅素，湯色紅亮，滋味甜醇。'}
+ document.getElementById('oxLbl').textContent=t;document.getElementById('oxLbl').style.color=mix(LEAF,v);
+ document.getElementById('oxDesc').innerHTML='目前氧化程度：<b>'+v+'%</b>　'+d+'<br><small>※ 黑茶不在這條線上，它是做完綠茶般的步驟後再「渥堆」靠微生物變化。</small>'}
+document.getElementById('oxR').addEventListener('input',oxUpd);oxUpd();
+
+/* ================= L7 製程 ================= */
+const PROC={
+ '綠茶':{c:'#5e8a3c',s:[['✂️','採摘','採下一心一二葉的嫩芽。'],['🔥','殺青','馬上用鍋炒（或蒸）讓酵素停止作用，所以保持綠色。'],['🤲','揉捻','揉成條、捲、扁等形狀（龍井是壓扁、碧螺春是搓成螺）。'],['♨️','乾燥','烘乾或炒乾，鎖住香氣。']]},
+ '白茶':{c:'#b9a46a',s:[['✂️','採摘','採嫩芽或芽葉。'],['🌬️','萎凋','攤開讓它慢慢失去水分，可能要一兩天，非常考驗天氣和經驗。'],['♨️','乾燥','低溫烘乾。不炒、不揉，所以葉子保持自然的樣子。']]},
+ '黃茶':{c:'#c9a42a',s:[['✂️','採摘','多用嫩芽。'],['🔥','殺青','先像綠茶一樣殺青。'],['🤲','揉捻','輕揉或不揉（芽茶通常不揉）。'],['🧺','悶黃','溫濕的茶葉包起來悶，讓葉和湯變黃，這是黃茶的關鍵。'],['♨️','乾燥','烘乾。']]},
+ '青茶':{c:'#c07a28',s:[['✂️','採摘','常採較成熟的一心二三葉。'],['☀️','萎凋','日光萎凋＋室內萎凋，讓葉子變軟。'],['🌀','做青','搖青、靜置反覆多次，葉緣碰撞氧化，形成綠葉紅鑲邊，香氣產生。'],['🔥','殺青','氧化到想要的程度時用高溫停止。'],['🤲','揉捻','條形或用布包著團揉成球形。'],['♨️','乾燥・焙火','烘乾，有的再用炭火慢慢焙。']]},
+ '紅茶':{c:'#a8402a',s:[['✂️','採摘','採芽葉。'],['🌬️','萎凋','讓葉子失水變軟，方便揉捻。'],['🤲','揉捻','用力揉，讓細胞大量破裂、汁液流出。'],['🟠','發酵（氧化）','在溫暖潮濕的地方放幾小時，葉子從綠變成紅銅色。注意：紅茶沒有殺青！'],['♨️','乾燥','高溫烘乾，停止氧化。']]},
+ '黑茶':{c:'#5a3422',s:[['✂️','採摘','常用較成熟的葉子。'],['🔥','殺青','先殺青（普洱生茶原料是曬青）。'],['🤲','揉捻','揉成條。'],['🍂','渥堆','灑水堆起、蓋布，微生物作用幾十天，茶葉轉為褐色——後發酵。'],['♨️','乾燥','乾燥，很多會再蒸軟壓成磚或餅。']]}};
+let curP='綠茶',pTimer=null;
+(function(){const t=document.getElementById('ptabs');Object.keys(PROC).forEach(k=>{const b=document.createElement('button');b.textContent=k;b.onclick=()=>selP(k);t.appendChild(b)});selP('綠茶')})();
+function selP(k){curP=k;clearInterval(pTimer);
+ document.querySelectorAll('#ptabs button').forEach(b=>{const on=b.textContent===k;b.classList.toggle('on',on);b.style.background=on?PROC[k].c:'#fff'});
+ const s=PROC[k].s;document.getElementById('psteps').innerHTML=s.map((x,i)=>(i?'<span class="arrow">→</span>':'')+'<div class="step" data-i="'+i+'" onclick="showStep('+i+')"><span class="ic">'+x[0]+'</span>'+x[1]+'</div>').join('');
+ document.getElementById('pdesc').innerHTML='<b>'+k+'</b>共 '+s.length+' 個步驟。按「播放」或點各步驟看說明。'}
+function showStep(i){const s=PROC[curP].s;document.querySelectorAll('#psteps .step').forEach((e,k)=>e.classList.toggle('on',k===i));document.getElementById('pdesc').innerHTML='<b>'+s[i][0]+' 第 '+(i+1)+' 步：'+s[i][1]+'</b><br>'+s[i][2]}
+document.getElementById('pplay').onclick=()=>{clearInterval(pTimer);let i=0;showStep(0);pTimer=setInterval(()=>{i++;if(i>=PROC[curP].s.length){clearInterval(pTimer);return}showStep(i)},2200)};
+
+/* ================= L11 是茶嗎 ================= */
+const ISTEA=[['茉莉花茶',1,'以綠茶為底，用茉莉花窨香，是茶。'],['菊花茶',0,'只有菊花，沒有茶樹葉，是花草茶。'],['麥茶',0,'用烘焙過的大麥泡的，不是茶。'],['玄米茶',1,'綠茶＋炒糙米，有茶葉，是茶。'],['洛神花茶',0,'洛神花萼做的，不是茶。'],['伯爵茶',1,'紅茶加佛手柑香，是茶。'],['路易波士茶',0,'南非的一種灌木，不是茶樹，沒有咖啡因。'],['瑪黛茶',0,'南美冬青科植物，不是茶樹，但含咖啡因！'],['珍珠奶茶',1,'茶底通常是紅茶，是茶飲料。'],['薑母茶',0,'薑和糖煮的，沒有茶葉。'],['焙茶',1,'把綠茶烘焙到褐色，是茶。'],['薄荷茶（只有薄荷）',0,'只有薄荷葉就不是茶；摩洛哥薄荷茶加了綠茶才算。']];
+(function(){const b=document.getElementById('istea');ISTEA.forEach(x=>{const e=document.createElement('button');e.innerHTML=x[0]+'<small>點我猜</small>';e.onclick=()=>{e.classList.add(x[1]?'ok':'no');e.innerHTML=x[0]+'<small>'+(x[1]?'✅ 是茶':'❌ 不是茶')+'</small>';document.getElementById('isteaMsg').innerHTML='<b>'+x[0]+'</b>：'+x[2]};b.appendChild(e)})})();
+
+/* ================= L12 偵探遊戲 ================= */
+const TYPES=[['綠茶','#5e8a3c'],['白茶','#b9a46a'],['黃茶','#c9a42a'],['青茶','#c07a28'],['紅茶','#a8402a'],['黑茶','#5a3422']];
+const GAME=[
+ {a:'綠茶',leaf:'#7aa24a',soup:'#dfe29a',c:['乾茶扁平光滑、挺直，像小劍','香氣：豆香、栗子香','葉底嫩綠鮮亮'],e:'這是西湖龍井。扁平＋嫩綠葉底＝綠茶。'},
+ {a:'白茶',leaf:'#dcdcc8',soup:'#efe3b0',c:['全部是芽，直直的針狀，滿身銀白色絨毛','香氣：清清的毫香','葉底：芽葉完整，沒有揉過的痕跡'],e:'這是白毫銀針。全芽＋白毫＋沒揉捻＝白茶。'},
+ {a:'青茶',leaf:'#4f6a3a',soup:'#e0a940',c:['乾茶捲成緊實的半球形，墨綠色','香氣：花香，很持久','葉底：中間綠、邊緣紅'],e:'綠葉紅鑲邊是烏龍（青茶）的招牌，這可能是高山茶或鐵觀音。'},
+ {a:'紅茶',leaf:'#2e221c',soup:'#b5402a',c:['乾茶細長條、烏黑油亮','香氣：甜甜的蜜糖香','葉底：均勻的紅銅色'],e:'烏黑乾茶＋紅湯＋紅銅葉底＝紅茶（例如祁門紅茶）。'},
+ {a:'黑茶',leaf:'#5a3a24',soup:'#6b2e16',c:['壓成圓餅，褐色','香氣：陳香、木頭香','湯色深紅得像紅酒，葉底深褐色'],e:'這是普洱熟茶，經過渥堆的黑茶。'},
+ {a:'黃茶',leaf:'#cfb24a',soup:'#e8d36a',c:['芽頭金黃飽滿，像金色的針','泡在玻璃杯裡芽會豎起來上下浮沉','湯色杏黃明亮'],e:'這是君山銀針，「三起三落」的黃茶。'},
+ {a:'青茶',leaf:'#3a2a20',soup:'#c8742e',c:['條索粗壯、烏褐色','香氣：明顯的炭焙香，喝起來有「岩韻」','葉底：邊緣紅、有些偏褐'],e:'這是武夷岩茶（如大紅袍）。雖然湯色偏橙紅，但葉底有紅邊、又有岩韻，是青茶不是紅茶！'},
+ {a:'青茶',leaf:'#a68a5a',soup:'#d08a3c',c:['葉片有白、綠、黃、紅、褐五種顏色，白毫多','香氣：天然蜂蜜香、熟果香','是夏天被小蟲叮咬過的茶'],e:'東方美人！重氧化的台灣烏龍。'},
+ {a:'綠茶',leaf:'#4e8f2e',soup:'#b9cf6a',c:['鮮綠色的細粉末','用茶筅打出泡沫來喝','有海苔般的鮮味'],e:'這是抹茶，用遮陰的綠茶磨成粉。'},
+ {a:'綠茶',leaf:'#6e8a40',soup:'#e3e0a0',c:['條索細緊，帶有濃濃的茉莉花香','湯色黃綠明亮','葉底嫩綠，但看不太到花瓣'],e:'茉莉花茶是再加工茶，但它的「茶底」大多是綠茶。好的花茶花會篩掉，所以看不太到花瓣。'}];
+let gi=0,gok=0,gans=0,gOrder=[];
+function gStart(){gOrder=GAME.map((_,i)=>i).sort(()=>Math.random()-.5);gi=0;gok=0;gans=0;gShow()}
+function gShow(){
+ if(gi>=gOrder.length){document.getElementById('gTitle').textContent='挑戰結束！';document.getElementById('gClues').innerHTML='<p style="font-size:1.1em">你答對了 <b>'+gok+' / '+gOrder.length+'</b> 題。'+(gok>=8?'🕵️ 你是合格的茶偵探！':'多看幾次第 7、12 課，再挑戰一次吧！')+'</p>';document.getElementById('gOpts').innerHTML='';document.getElementById('gMsg').innerHTML='';const n=document.getElementById('gNext');n.textContent='🔄 再玩一次';n.style.display='inline-flex';n.onclick=gStart;return}
+ const x=GAME[gOrder[gi]];
+ document.getElementById('gTitle').textContent='第 '+(gi+1)+' 題 / 共 '+gOrder.length+' 題';
+ document.getElementById('gClues').innerHTML='<div class="clue"><span class="sw" style="background:'+x.leaf+'"></span>乾茶顏色</div><div class="clue"><span class="sw" style="background:'+x.soup+'"></span>湯色</div>'+x.c.map(c=>'<div class="clue">🔎 '+c+'</div>').join('');
+ document.getElementById('gOpts').innerHTML=TYPES.map(t=>'<button style="background:'+t[1]+'" data-t="'+t[0]+'">'+t[0]+'</button>').join('');
+ document.getElementById('gMsg').innerHTML='';document.getElementById('gNext').style.display='none';
+ document.querySelectorAll('#gOpts button').forEach(b=>b.onclick=()=>{
+   document.querySelectorAll('#gOpts button').forEach(z=>{z.disabled=true;z.style.opacity=z.dataset.t===x.a?1:.35});
+   gans++;const ok=b.dataset.t===x.a;if(ok)gok++;
+   document.getElementById('gMsg').innerHTML=(ok?'✅ 答對！':'❌ 答案是 <b>'+x.a+'</b>。')+' '+x.e;
+   document.getElementById('gScore').textContent=gok+' / '+gans;
+   const n=document.getElementById('gNext');n.textContent='下一題 →';n.style.display='inline-flex';n.onclick=()=>{gi++;gShow()};
+ });
+}
+gStart();
+
+/* ================= L14 泡茶 ================= */
+const BREW={
+ '綠茶（龍井、碧螺春）':{g:2,t:80,s:150,c:'#dfe29a',n:'嫩芽怕燙，水溫 75～85°C。可以用玻璃杯，欣賞茶葉在水中舒展。'},
+ '白茶（白毫銀針）':{g:2.5,t:85,s:240,c:'#efe3b0',n:'銀針等全芽白茶用 85～90°C；老一點的壽眉可以用 95～100°C，甚至拿來煮。'},
+ '黃茶（君山銀針）':{g:2,t:80,s:180,c:'#e8d36a',n:'用玻璃杯泡，看芽頭「三起三落」。'},
+ '輕氧化烏龍（包種、高山茶）':{g:3,t:95,s:90,c:'#e9d57d',n:'球形烏龍要高溫才能打開。用小壺泡時茶葉放多一點（約佔壺底 1/4～1/3），每泡 40～60 秒，可泡 5 次以上。'},
+ '重焙火烏龍（凍頂、岩茶）':{g:3,t:100,s:90,c:'#d08a3c',n:'用滾水，第一泡可做溫潤泡。岩茶用蓋碗，十幾秒就出湯。'},
+ '紅茶':{g:2.5,t:92,s:180,c:'#b5402a',n:'90～95°C。想加牛奶做奶茶，可以茶葉多一點、時間長一點。'},
+ '普洱熟茶・黑茶':{g:3,t:100,s:60,c:'#6b2e16',n:'一定用滾水，先快速沖一次溫潤泡（洗茶）再正式泡，可以泡很多次。'},
+ '冷泡茶（綠茶、烏龍皆可）':{g:3,t:5,s:6*3600,c:'#e3dc96',n:'冷水（或冰水）加茶葉放冰箱 4～8 小時。這裡計時器會設為 6 小時，可用「快轉示範」看效果。'}};
+let bt=null,bLeft=0,bTotal=0,bFastOn=false;
+(function(){const s=document.getElementById('bTea');Object.keys(BREW).forEach(k=>s.add(new Option(k,k)));s.onchange=bUpd;document.getElementById('bMl').oninput=bUpd;bUpd()})();
+function fmt(sec){sec=Math.max(0,Math.round(sec));const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return(h?h+':'+String(m).padStart(2,'0'):m)+':'+String(s).padStart(2,'0')}
+function bUpd(){bStop();const x=BREW[document.getElementById('bTea').value],ml=+document.getElementById('bMl').value;
+ document.getElementById('bMlTxt').textContent=ml;
+ document.getElementById('bG').textContent=(Math.round(x.g*ml/100*2)/2).toFixed(1).replace('.0','');
+ document.getElementById('bT').textContent=x.t===5?'冷水':x.t;
+ document.getElementById('bS').textContent=fmt(x.s);document.getElementById('bNote').innerHTML='💡 '+x.n;
+ bTotal=bLeft=x.s;document.getElementById('bTimer').textContent=fmt(bLeft);fillCup(0)}
+function fillCup(p){const x=BREW[document.getElementById('bTea').value];document.getElementById('bFill').setAttribute('fill',mix([[0,'#f2f1e4'],[1,x.c]],p))}
+function bStop(){clearInterval(bt);bt=null;document.getElementById('bStart').textContent='▶ 開始計時'}
+function bRun(step){
+ bt=setInterval(()=>{bLeft-=step;if(bLeft<=0){bLeft=0;bStop();document.getElementById('bTimer').textContent='✅ 可以喝了！';fillCup(1);return}
+ document.getElementById('bTimer').textContent=fmt(bLeft);fillCup(1-bLeft/bTotal)},bFastOn?50:1000)}
+document.getElementById('bStart').onclick=()=>{if(bt){bStop();return}if(bLeft<=0){bLeft=bTotal}bFastOn=false;document.getElementById('bStart').textContent='⏸ 暫停';bRun(1)};
+document.getElementById('bFast').onclick=()=>{bStop();bLeft=bTotal;bFastOn=true;document.getElementById('bStart').textContent='⏸ 暫停';bRun(bTotal/60)};
+document.getElementById('bReset').onclick=bUpd;
+
+/* ================= 辭典 ================= */
+const GL=[
+['茶樹','chá shù','L1','山茶科山茶屬的常綠植物，學名 Camellia sinensis。所有真正的茶都來自它。'],
+['學名','','L1','科學家給生物的全球通用名字，用拉丁文，「屬名＋種小名」兩個字，由林奈建立。'],
+['小葉種／大葉種','','L1','茶樹兩大家族。小葉種耐寒、適合綠茶烏龍；大葉種（阿薩姆種）喜熱、適合紅茶普洱。'],
+['一心二葉','','L1','一個嫩芽（心）加兩片嫩葉，是好茶常見的採摘標準。'],
+['白毫','bái háo','L1','嫩芽表面的細白絨毛。「毫」是細毛的意思。白毫多代表原料嫩。'],
+['茶經','','L2','唐代陸羽所寫，世界第一部茶的專書，約西元 760～780 年完成。'],
+['荼','tú','L2','古代稱茶的字，本指苦菜。唐代以後減一橫寫成「茶」。'],
+['煎茶（唐）','','L2','唐代喝法：茶餅烤過碾成末，放鍋中煮，加鹽。（日本的「煎茶」是另一種蒸青綠茶）'],
+['點茶・鬥茶','','L2','宋代喝法：茶粉在碗中注水、用茶筅打出泡沫；比賽泡沫好壞叫鬥茶。'],
+['茶筅','chá xiǎn','L2','竹子劈成細絲做成的刷子，用來打茶湯泡沫。'],
+['散茶','','L2','一片片的茶葉（相對於壓成餅的團茶）。明朝起成為主流。'],
+['茶馬古道','','L3','古代用茶換高原的馬、以馬幫運茶的山路。'],
+['酥油茶','','L3','藏族飲料，茶湯加酥油和鹽攪打而成。'],
+['茶多酚','','L4','茶中最多的成分，帶來苦澀，製茶時氧化成茶黃素、茶紅素。'],
+['兒茶素','','L4','茶多酚的主角。因最早從「兒茶」這種植物萃取物中發現而得名。'],
+['茶胺酸','','L4','茶特有的胺基酸，帶來鮮甜，1949 年在日本玉露中發現。'],
+['澀（收斂感）','','L4','嘴巴乾乾、緊緊的感覺，主要來自茶多酚。'],
+['發酵','','L5','茶界慣用詞，大多其實是酵素造成的氧化；只有黑茶的渥堆是真正微生物發酵。'],
+['氧化','','L5','茶多酚在酵素幫助下和氧氣作用，顏色從綠變黃、紅、褐。和蘋果切開變色同理。'],
+['茶黃素・茶紅素','','L5','茶多酚氧化後的產物，分別帶來橙黃色和紅色，是紅茶湯色的來源。'],
+['後發酵','','L5','黑茶在殺青、揉捻後才經微生物作用的發酵，所以叫「後」發酵。'],
+['萎凋','wěi diāo','L6','鮮葉攤開失去水分、變軟、產生香氣。萎＝枯萎，凋＝凋謝。'],
+['做青・搖青','','L6','烏龍茶專屬，搖動葉子讓葉緣碰撞氧化，再靜置，反覆進行。'],
+['綠葉紅鑲邊','','L6','做青後葉片中間綠、邊緣紅，是烏龍茶的特徵。'],
+['殺青','','L6','用高溫停止酵素作用。源自古人烤竹簡逼出水分（汗青）。分炒青、蒸青、烘青、曬青。'],
+['揉捻','róu niǎn','L6','揉壓搓轉茶葉成形，並使細胞破裂。揉＝手掌推壓，捻＝手指搓轉。'],
+['團揉','','L6','用布把茶葉包成球反覆揉，做出球形烏龍。'],
+['悶黃','','L6','黃茶專屬，溫濕茶葉悶堆，讓葉與湯變黃。'],
+['渥堆','wò duī','L6','黑茶專屬，灑水堆積保溫保濕，讓微生物作用。渥＝潮濕。'],
+['焙火','bèi huǒ','L6','用炭火或烘焙機慢烘，焙輕清香、焙重熟香。'],
+['明前茶・雨前茶','','L6','清明前、穀雨前採的春茶，嫩而珍貴。'],
+['六大茶類','','L7','陳椽教授 1979 年提出：綠、白、黃、青、紅、黑，依製法與氧化程度分類。'],
+['青茶（烏龍茶）','','L7','半氧化茶。「青」古義含青褐、墨綠。'],
+['Black tea／Dark tea','','L7','Black tea 是紅茶（看乾茶顏色），Dark tea 才是黑茶。'],
+['觀音韻','','L8','鐵觀音特有的韻味，也叫音韻。'],
+['岩茶・岩韻','','L8','武夷山岩縫中生長的烏龍茶；特有韻味叫岩韻，「岩骨花香」。'],
+['單叢','','L8','單株採摘、單株製作的鳳凰茶。'],
+['生普・熟普','','L8','普洱生茶靠時間自然陳化；熟茶經渥堆，湯色深紅。'],
+['滇','diān','L8','雲南的簡稱，滇紅＝雲南紅茶。'],
+['包種茶','','L9','早年用方紙包成四兩一包販售而得名，台灣輕氧化烏龍。'],
+['高山茶','','L9','台灣一般指海拔 1000 公尺以上茶園產的茶。'],
+['小綠葉蟬','','L9','叮咬茶芽的小蟲，讓東方美人、蜜香紅茶產生蜜香。'],
+['膨風茶','','L9','東方美人的別名，「膨風」是台語吹牛。'],
+['台茶 18 號（紅玉）','','L9','緬甸大葉種與台灣野生山茶育成的紅茶品種，有肉桂薄荷香。'],
+['春摘・夏摘','','L10','大吉嶺紅茶的產季，First Flush／Second Flush。'],
+['蒸青','','L10','用蒸氣殺青，日本綠茶多用，色澤翠綠。'],
+['碾茶','niǎn chá','L10','遮陰種植、蒸過乾燥並去葉脈的茶，用來磨成抹茶。'],
+['CTC','','L10','Crush、Tear、Curl，切碎捲曲的紅茶製法，多用於茶包。'],
+['拼配','','L10','把不同茶葉混合以得到穩定風味，例如英式早餐茶。'],
+['再加工茶','','L11','以六大茶類為茶底再加工，如花茶、緊壓茶、調味茶。'],
+['窨制','xūn zhì','L11','花茶做法，茶與鮮花層層堆放吸香，再篩去花。窨本義地窖。'],
+['緊壓茶','','L11','壓成餅、磚、沱的茶，便於運輸與保存。'],
+['代茶飲・花草茶','','L11','沒有茶樹葉、只借用「茶」名的飲料，如菊花茶、麥茶。英文 Tisane。'],
+['葉底','','L12','泡開後的茶葉渣，被稱為茶的身分證。'],
+['溫杯聞香','','L12','先用熱水溫杯，放入茶葉搖一搖後聞香。'],
+['菁味','jīng wèi','L13','殺青不足留下的生青草味。菁指茶的生葉。'],
+['茶病','','L13','茶葉的品質缺點，如焦、悶、菁、霉、異味。'],
+['三才碗（蓋碗）','','L14','蓋為天、托為地、碗為人。'],
+['公道杯','','L14','先倒入再分茶，使每杯濃淡一致。'],
+['聞香杯','','L14','細長高杯，用來聞茶香，在台灣流行起來。'],
+['茶則','','L14','量取茶葉的器具。'],
+['工夫茶','','L14','小壺小杯、多次沖泡、講究技巧的泡法。工夫＝花時間與技巧。'],
+['溫潤泡（洗茶）','','L14','第一次沖水快速倒掉，讓茶葉舒展、沖去灰塵。'],
+['評茶員','','L15','以標準方法評定茶葉品質的專業人員。'],
+['五項因子','','L15','外形、湯色、香氣、滋味、葉底。'],
+['吸啜','xī chuò','L15','用湯匙吸茶湯並發出聲音，讓茶湯布滿口腔。'],
+['回甘','','L15','喝完後喉嚨、舌根回來的甜味。'],
+['生津','','L15','口中自然分泌唾液。津＝口水。'],
+['喉韻','','L15','吞下後喉嚨的舒服感與餘味。'],
+['風土 Terroir','','L15','海拔、緯度、土壤、氣候等自然條件的總和。'],
+['茶醉','','L16','空腹或喝太多濃茶後心慌、手抖、頭暈。']];
+function glRender(q){q=(q||'').trim();const l=GL.filter(x=>!q||x.join(' ').includes(q));
+ document.getElementById('glist').innerHTML=l.length?l.map(x=>{const i=LESSONS.findIndex(z=>z.id===x[2]);return'<div class="gi"><b>'+x[0]+'</b>'+(x[1]?'<span class="py">'+x[1]+'</span>':'')+'<a href="#" class="tag lvx" onclick="go(\''+x[2]+'\');return false">第 '+(i+1)+' 課</a><br>'+x[3]+'</div>'}).join(''):'<p>找不到「'+q+'」，換個關鍵字試試。</p>'}
+document.getElementById('gq').oninput=e=>glRender(e.target.value);glRender();
+
+/* ================= 啟動 ================= */
+buildNav();buildMenus();progress();
+if(S.last&&S.last!=='home'&&document.getElementById(S.last))go(S.last);
+</script>
+<script src="../../shared/module-shell.js?v=1.4.0" data-group="learning"></script><script src="../../shared/reading-store.js?v=1.4.0"></script><script src="../../shared/reading-progress.js?v=1.4.0" data-course="course-680ef10404" data-category="drinks"></script></body>
+</html>

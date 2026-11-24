@@ -404,5 +404,26 @@
     "category": "personal",
     "nativeAdapter": null,
     "sourceSha256": "1b70b86c0eabcde9655518c9e409c97cad12c71e6e7bab9e913dfae2b47d26b1"
+  },
+  {
+    "source": "tea_course_v1.html",
+    "output": "apps/courses/course-680ef10404.html",
+    "category": "drinks",
+    "nativeAdapter": "go",
+    "sourceSha256": "11b175038fed1039de0c710a7768cca47598b9acf5e0bc798daae41d209e5429"
+  },
+  {
+    "source": "coffee_course_v1.html",
+    "output": "apps/courses/course-aeb5fb7152.html",
+    "category": "drinks",
+    "nativeAdapter": "go",
+    "sourceSha256": "3ac30edbc8e965a200f188fbfe6c8a412ba126f568e29b30f9641f20d8f57a13"
+  },
+  {
+    "source": "wine_course_v1.html",
+    "output": "apps/courses/course-f249d9435f.html",
+    "category": "drinks",
+    "nativeAdapter": "go",
+    "sourceSha256": "a01db41b8e5d9afa427789e24f7c75c988e77d05870c7bb51f99a5707a2356cc"
   }
 ]

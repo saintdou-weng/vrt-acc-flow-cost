@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>一杯酒的學問｜從入門到專業的酒類知識課程</title>
+<style>
+:root{
+  --paper:#f6f0e4; --card:#fffdf8; --ink:#2d2a24; --muted:#6f685c; --line:#e4d9c5;
+  --green:#4f7a35; --green2:#e6efd9; --amber:#b9852c; --amber2:#f6ead2; --red:#9a3a24; --red2:#f6e0d8;
+  --dark:#4a2e1c; --blue:#2f5d7c; --blue2:#e0ebf2;
+  --serif:"Noto Serif TC","Songti TC","PMingLiU","MingLiU",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;
+  background-image:radial-gradient(#d9ccb2 1px,transparent 1px);background-size:22px 22px;z-index:-1}
+h1,h2,h3{font-family:var(--serif);line-height:1.4;margin:.2em 0 .5em}
+h2{font-size:1.6em}
+h3{font-size:1.2em;margin-top:1.4em;color:var(--dark)}
+p{margin:.5em 0 .9em}
+b,strong{color:var(--dark)}
+small{color:var(--muted)}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:30;background:rgba(246,240,228,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.top-in{max-width:860px;margin:auto;display:flex;align-items:center;gap:10px;padding:8px 14px}
+.brand{font-family:var(--serif);font-weight:700;font-size:1.05em;cursor:pointer;white-space:nowrap}
+.bar{flex:1;height:8px;background:#e8dfcd;border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--amber),var(--red));transition:width .6s}
+.pct{font-size:.8em;color:var(--muted);min-width:3em;text-align:right}
+.mbtn{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:4px 12px;font-size:.9em;cursor:pointer;color:var(--ink)}
+
+/* drawer */
+.drawer{position:fixed;inset:0;z-index:40;display:none}
+.drawer.on{display:block}
+.drawer .mask{position:absolute;inset:0;background:rgba(40,30,20,.35)}
+.drawer .panel{position:absolute;right:0;top:0;bottom:0;width:min(340px,88vw);background:var(--card);overflow:auto;padding:16px;box-shadow:-6px 0 30px rgba(0,0,0,.15);animation:slin .25s}
+@keyframes slin{from{transform:translateX(40px);opacity:0}}
+.lv-h{font-family:var(--serif);font-weight:700;margin:14px 0 4px;color:var(--muted);font-size:.9em}
+.li{display:flex;gap:8px;align-items:center;padding:7px 8px;border-radius:9px;cursor:pointer;font-size:.95em}
+.li:hover{background:var(--amber2)}
+.li .n{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:.75em;background:#eee5d3;flex:none}
+.li.done .n{background:var(--green);color:#fff}
+.li.cur{background:var(--green2)}
+
+main{max-width:860px;margin:auto;padding:16px 14px 80px}
+section.page{display:none;animation:fade .45s ease}
+section.page.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin:14px 0;box-shadow:0 2px 0 #eadfca}
+.tag{display:inline-block;font-size:.75em;padding:2px 10px;border-radius:20px;background:var(--green2);color:var(--green);font-weight:700;letter-spacing:.05em}
+.tag.l2{background:var(--amber2);color:var(--amber)}
+.tag.l3{background:var(--red2);color:var(--red)}
+.tag.l4{background:var(--blue2);color:var(--blue)}
+.lead{font-size:1.05em;color:#4b463c}
+
+/* boxes */
+.box{border-radius:14px;padding:12px 14px;margin:14px 0;border-left:5px solid}
+.box .bt{font-weight:700;font-size:.9em;margin-bottom:2px}
+.origin{background:#fbf4e4;border-color:var(--amber)}
+.origin .bt::before{content:"📜 名詞由來　"}
+.tip{background:var(--green2);border-color:var(--green)}
+.tip .bt::before{content:"💡 小知識　"}
+.think{background:var(--blue2);border-color:var(--blue)}
+.think .bt::before{content:"🤔 想一想　"}
+.warn{background:var(--red2);border-color:var(--red)}
+.warn .bt::before{content:"⚠️ 注意　"}
+.eg{background:#f3efe7;border-color:#9c8f78}
+.eg .bt::before{content:"🍎 生活比喻　"}
+.recap{background:#fff;border:2px dashed var(--line);border-left:5px solid var(--green)}
+.recap .bt::before{content:"✅ 本課重點　"}
+details{background:#fbf6ec;border-radius:10px;padding:6px 12px;margin:8px 0;border:1px solid var(--line)}
+details summary{cursor:pointer;font-weight:700;color:var(--amber)}
+
+/* tables */
+.tw{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:.9em;background:#fff;border-radius:12px;overflow:hidden}
+th,td{border-bottom:1px solid var(--line);padding:8px 9px;text-align:left;vertical-align:top}
+th{background:#efe6d4;font-family:var(--serif);white-space:nowrap}
+.dot{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:4px;border:1px solid rgba(0,0,0,.15)}
+
+/* grid cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.tc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;position:relative}
+.tc h4{margin:0 0 4px;font-family:var(--serif);font-size:1.1em}
+.tc .k{font-size:.75em;font-weight:700;padding:1px 8px;border-radius:10px;color:#fff;display:inline-block}
+.tc p{font-size:.92em;margin:.4em 0}
+.k.g{background:#5e8a3c}.k.w{background:#b9a46a}.k.y{background:#c9a42a}.k.o{background:#c07a28}.k.r{background:#a8402a}.k.b{background:#5a3422}.k.x{background:#6b6b8c}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:12px;padding:10px 18px;font-size:1em;cursor:pointer;font-family:var(--sans);background:var(--green);color:#fff;font-weight:700;transition:transform .1s,filter .2s}
+.btn:active{transform:scale(.96)}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.am{background:var(--amber)}
+.btn.sm{padding:6px 12px;font-size:.9em}
+.lnav{display:flex;justify-content:space-between;gap:10px;margin-top:26px;flex-wrap:wrap}
+
+/* quiz */
+.quiz{background:#fff;border:2px solid var(--line);border-radius:16px;padding:14px 16px;margin-top:22px}
+.quiz>h3{margin-top:0}
+.qq{margin:14px 0 6px;font-weight:700}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;border:1.5px solid var(--line);background:#fdfaf4;border-radius:11px;padding:9px 12px;font-size:.95em;cursor:pointer;font-family:var(--sans);color:var(--ink)}
+.opt:hover{border-color:var(--amber)}
+.opt.ok{background:#e3f1d6;border-color:var(--green)}
+.opt.no{background:#f9dfd7;border-color:var(--red)}
+.opt[disabled]{cursor:default}
+.exp{font-size:.9em;margin-top:6px;padding:8px 10px;border-radius:9px;background:#f4efe4;display:none}
+.exp.on{display:block;animation:fade .3s}
+.qres{margin-top:12px;font-weight:700}
+
+/* hero */
+.hero{text-align:center;padding:20px 6px 8px}
+.hero h1{font-size:2em;margin-bottom:.2em}
+.hero .sub{color:var(--muted)}
+.steam path{stroke:#c9b99b;stroke-width:3;fill:none;stroke-linecap:round;opacity:0;animation:steam 3.2s infinite}
+.steam path:nth-child(2){animation-delay:1s}
+.steam path:nth-child(3){animation-delay:2s}
+@keyframes steam{0%{opacity:0;transform:translateY(10px)}40%{opacity:.8}100%{opacity:0;transform:translateY(-22px)}}
+.map{display:grid;gap:12px;margin-top:10px}
+.lvcard{border-radius:16px;padding:14px;border:1px solid var(--line);background:#fff}
+.lvcard h3{margin:0 0 6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:.85em;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:#fbf6ec;cursor:pointer}
+.chip.done{background:var(--green);color:#fff;border-color:var(--green)}
+
+/* plant */
+.leafsvg .part{cursor:pointer;transition:filter .2s}
+.leafsvg .part:hover{filter:brightness(1.15)}
+.sway{transform-origin:150px 300px;animation:sway 5s ease-in-out infinite}
+@keyframes sway{50%{transform:rotate(1.6deg)}}
+.lbl{font-size:13px;font-family:var(--sans);fill:var(--ink)}
+
+/* timeline */
+.tl{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}
+.tl button{flex:none;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;cursor:pointer;font-family:var(--sans);font-size:.92em;color:var(--ink)}
+.tl button.on{background:var(--amber);color:#fff;border-color:var(--amber)}
+.tlp{background:#fff;border-radius:14px;border:1px solid var(--line);padding:14px;margin-top:8px;min-height:150px;animation:fade .3s}
+.tlp .big{font-size:2.4em;float:right;margin-left:10px}
+
+/* oxidation */
+.ox{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:center}
+input[type=range]{width:100%;accent-color:var(--amber)}
+.oxlbl{font-family:var(--serif);font-size:1.4em;font-weight:700;text-align:center;transition:color .3s}
+.scale{display:flex;justify-content:space-between;font-size:.75em;color:var(--muted)}
+
+/* process */
+.ptabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.ptabs button{border:1.5px solid var(--line);background:#fff;border-radius:20px;padding:5px 12px;cursor:pointer;font-family:var(--sans);font-size:.9em;color:var(--ink)}
+.ptabs button.on{color:#fff;border-color:transparent}
+.steps{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.step{background:#fff;border:2px solid var(--line);border-radius:12px;padding:6px 10px;text-align:center;font-size:.85em;min-width:64px;transition:all .3s}
+.step .ic{font-size:1.5em;display:block}
+.step.on{transform:translateY(-4px) scale(1.06);border-color:var(--amber);box-shadow:0 6px 14px rgba(185,133,44,.25);background:var(--amber2)}
+.arrow{color:#bba987;font-size:1.1em}
+.pdesc{margin-top:10px;background:#fbf6ec;border-radius:12px;padding:10px 12px;min-height:60px;font-size:.95em}
+
+/* soup colors */
+.soups{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.soup{text-align:center;font-size:.85em}
+.soup .c{width:78px;height:78px;border-radius:50%;margin:0 auto 4px;border:6px solid #fff;box-shadow:0 0 0 1px var(--line),inset 0 -8px 16px rgba(0,0,0,.12)}
+
+/* game */
+.game{background:#fff;border:2px solid var(--amber);border-radius:16px;padding:14px}
+.clue{display:flex;gap:10px;align-items:center;margin:6px 0;font-size:.95em}
+.clue .sw{width:34px;height:34px;border-radius:50%;flex:none;border:3px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.gopts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.gopts button{padding:10px 4px;border-radius:12px;border:none;color:#fff;font-weight:700;font-size:1em;cursor:pointer;font-family:var(--sans)}
+.gmsg{margin-top:10px;font-size:.95em;min-height:2em}
+.score{float:right;font-weight:700;color:var(--amber)}
+
+/* is-tea */
+.istea{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.istea button{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px;cursor:pointer;font-family:var(--sans);font-size:.95em;color:var(--ink)}
+.istea button.ok{background:#e3f1d6;border-color:var(--green)}
+.istea button.no{background:#f9dfd7;border-color:var(--red)}
+.istea small{display:block;font-size:.78em}
+
+/* brew */
+.brew{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:640px){.brew{grid-template-columns:1.2fr 1fr}}
+.bstat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.bstat div{background:#fbf6ec;border-radius:12px;padding:8px 4px}
+.bstat b{display:block;font-size:1.4em;font-family:var(--serif)}
+select{font-size:1em;padding:6px 10px;border-radius:10px;border:1px solid var(--line);background:#fff;font-family:var(--sans);color:var(--ink);max-width:100%}
+.timer{font-family:var(--serif);font-size:2em;text-align:center;font-weight:700}
+
+/* glossary */
+.gl input{width:100%;padding:10px 14px;border-radius:12px;border:1.5px solid var(--line);font-size:1em;font-family:var(--sans);background:#fff}
+.gi{padding:10px 0;border-bottom:1px dashed var(--line)}
+.gi b{font-family:var(--serif);font-size:1.05em}
+.gi .py{color:var(--muted);font-size:.85em;margin-left:6px}
+.gi .lvx{font-size:.7em;margin-left:6px}
+
+/* cert */
+.cert{border:6px double var(--amber);border-radius:12px;background:#fffaf0;padding:26px 18px;text-align:center;margin-top:14px}
+.cert h2{letter-spacing:.3em;color:var(--dark)}
+.cert .nm{font-family:var(--serif);font-size:1.8em;border-bottom:1.5px solid var(--amber);display:inline-block;min-width:60%;margin:10px 0}
+input.txt{padding:9px 12px;border-radius:10px;border:1.5px solid var(--line);font-size:1em;font-family:var(--sans);width:min(260px,100%)}
+
+.fl{float:right;margin:0 0 8px 12px}
+@media(max-width:520px){.fl{float:none;display:block;margin:8px auto}}
+.center{text-align:center}
+.flowrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;margin:8px 0}
+.flowrow span.p{background:#fff;border:1px solid var(--line);border-radius:10px;padding:3px 9px;font-size:.9em}
+.route{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:620px){.route{grid-template-columns:1fr 1fr}}
+.rt{border-radius:14px;padding:12px;color:#fff}
+.rt h4{margin:0 0 6px;font-family:var(--serif);font-size:1.15em}
+.rt .w{display:inline-block;background:rgba(255,255,255,.2);border-radius:8px;padding:1px 8px;margin:2px;font-size:.9em}
+.pill{display:inline-block;background:#efe6d4;border-radius:8px;padding:0 7px;font-size:.88em;margin:1px}
+.bars .r{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:.9em}
+.bars .r span:first-child{width:6.5em;flex:none}
+.bars .t{flex:1;background:#efe6d4;border-radius:8px;height:18px;overflow:hidden}
+.bars .t i{display:block;height:100%;border-radius:8px;width:0;transition:width 1.2s ease}
+.bars .r em{font-style:normal;font-size:.85em;color:var(--muted);width:4.5em;text-align:right}
+@media print{.top,.lnav,.drawer,.noprint{display:none!important} section.page{display:none!important} #final{display:block!important} #final>*:not(.cert){display:none!important} body::before{display:none}}
+
+.ki{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:.92em}
+.ki button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:#fbf6ec;font-size:1.1em;cursor:pointer}
+.ki b{min-width:1.4em;text-align:center;display:inline-block}
+.bub{fill:#fff;opacity:.8;animation:bub 2.4s infinite ease-in}
+@keyframes bub{0%{transform:translateY(0);opacity:0}15%{opacity:.85}100%{transform:translateY(-70px);opacity:0}}
+.vap{fill:#cfd8de;opacity:0}
+.still-on .vap{animation:vap 2.2s infinite}
+@keyframes vap{0%{opacity:0;transform:translate(0,0)}30%{opacity:.9}100%{opacity:0;transform:translate(0,-40px)}}
+.drop{fill:#e8c95a;opacity:0}
+.still-on .drop{animation:drop 1.4s infinite}
+@keyframes drop{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(34px)}}
+.flame{opacity:0;transform-origin:center bottom}
+.still-on .flame{opacity:1;animation:flk .3s infinite alternate}
+@keyframes flk{to{transform:scaleY(1.15)}}
+</style>
+</head>
+<body>
+<div class="top"><div class="top-in">
+  <span class="brand" onclick="go('home')">🍷 一杯酒的學問</span>
+  <div class="bar"><i id="pbar"></i></div><span class="pct" id="ptxt">0%</span>
+  <button class="mbtn" onclick="drawer(true)">☰ 課程</button>
+</div></div>
+<div class="drawer" id="drawer"><div class="mask" onclick="drawer(false)"></div><div class="panel">
+  <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-family:var(--serif);font-size:1.1em">課程目錄</b><button class="mbtn" onclick="drawer(false)">✕</button></div>
+  <div id="dlist"></div></div></div>
+<main>
+<section class="page on" id="home">
+  <div class="hero"><svg width="150" height="130" viewBox="0 0 150 130" aria-hidden="true">
+  <path d="M48 14 h54 q4 46 -27 58 q-31 -12 -27 -58z" fill="#fff" stroke="#b9a684" stroke-width="3"/>
+  <path d="M51 38 h48 q-2 26 -24 32 q-22 -6 -24 -32z" fill="#7a1f2b"/>
+  <line x1="75" y1="72" x2="75" y2="108" stroke="#b9a684" stroke-width="4"/>
+  <ellipse cx="75" cy="112" rx="24" ry="5" fill="#fff" stroke="#b9a684" stroke-width="3"/>
+  <circle cx="118" cy="40" r="6" fill="#7a3a8a"/><circle cx="126" cy="50" r="6" fill="#7a3a8a"/><circle cx="114" cy="52" r="6" fill="#7a3a8a"/><circle cx="122" cy="62" r="6" fill="#7a3a8a"/>
+  <path d="M120 34 q4 -10 12 -10" stroke="#5e8a3c" stroke-width="3" fill="none"/>
+</svg>
+
+    <h1>一杯酒的學問</h1><p class="sub">從酵母吃糖開始，認識酒的由來、釀造與蒸餾，<br>學會分辨葡萄酒、啤酒、清酒、威士忌……一路從入門走到專業。</p></div>
+  <div class="box warn"><div class="bt">先說清楚</div>這是一門<b>知識課</b>：學的是酒怎麼做、怎麼分辨、背後的科學與文化。<b>未成年禁止飲酒</b>，課程中所有品飲方法，都是讓你了解專業人士怎麼做，等成年後才適用。第 15 課會說明為什麼。</div>
+  <div class="card">
+    <h3 style="margin-top:0">這門課怎麼上？</h3>
+    <p>課程共 <b>15 課</b>，分成 <b>4 個階段</b>，每一課都建立在前一課的基礎上，<b>請照順序上</b>。每課最後有小測驗，答完按「下一課」就算完成，進度會自動記在這台裝置上。</p>
+    <p>遇到看不懂的專有名詞，課文裡都有「📜 名詞由來」說明；也可以隨時到最後的 <a href="#" onclick="go('gloss');return false">名詞辭典</a> 查。</p>
+    <div class="center" style="margin-top:10px"><button class="btn" id="startBtn" onclick="go(nextUndone())">▶ 開始上課</button></div>
+  </div>
+  <div class="map" id="lvmap"></div>
+</section>
+<!-- ============ W1 ============ -->
+<section class="page" id="W1">
+  <span class="tag">第一階段・入門　第 1 課</span>
+  <h2>酒是什麼？——酵母吃糖的魔法</h2>
+  <p class="lead">葡萄酒、啤酒、清酒、威士忌……全世界的酒，都來自同一個小小的生物在做同一件事：<b>酵母把糖變成酒精</b>。</p>
+
+  <div class="box eg"><div class="bt">做麵包的好朋友</div>
+    做麵包時加的酵母，會吃掉麵團裡的糖，放出二氧化碳，讓麵包膨起來。其實它同時也產生了一點點酒精，只是烤的時候跑掉了。釀酒用的酵母做的是同一件事，只是我們要的是<b>酒精</b>。
+  </div>
+
+  <h3>發酵的公式</h3>
+  <div class="flowrow" style="font-size:1.05em">
+    <span class="p">🍬 糖</span><span class="arrow">＋ 🦠 酵母 →</span><span class="p">🍶 酒精（乙醇）</span><span class="arrow">＋</span><span class="p">🫧 二氧化碳</span>
+  </div>
+
+  <h3>動手試試：發酵觀察瓶</h3>
+  <div class="card">
+    <div class="ox">
+      <svg width="140" height="160" viewBox="0 0 140 160">
+        <rect x="30" y="20" width="80" height="125" rx="14" fill="#fff" stroke="#b9a684" stroke-width="3"/>
+        <rect id="fLiquid" x="33" y="50" width="74" height="92" rx="10" fill="#c45a6a"/>
+        <g id="fBubbles"></g>
+        <rect x="52" y="8" width="36" height="14" rx="4" fill="#b9a684"/>
+      </svg>
+      <div style="min-width:170px" class="bars">
+        <div class="r"><span>🍬 糖</span><div class="t"><i id="fSugar" style="background:#c9a42a;width:100%"></i></div></div>
+        <div class="r"><span>🍶 酒精</span><div class="t"><i id="fAlc" style="background:#7a1f2b;width:0"></i></div></div>
+        <div class="r"><span>🦠 酵母活力</span><div class="t"><i id="fYeast" style="background:#5e8a3c;width:30%"></i></div></div>
+      </div>
+    </div>
+    <label>發酵第 <b id="fDay">0</b> 天</label>
+    <input type="range" id="fR" min="0" max="20" value="0">
+    <div class="pdesc" id="fDesc"></div>
+  </div>
+
+  <div class="box origin"><div class="bt">「酒」字和 alcohol 的由來</div>
+    ・<b>酒</b>：右邊的「<b>酉</b>」是一個尖底酒罈的象形字，甲骨文裡「酉」本身就代表酒；加上「氵」表示液體。所以很多和酒有關的字都有「酉」：醉、醺、釀、醇、酵、醋。<br>
+    ・<b>alcohol</b>：來自阿拉伯語 <b>al-kuḥl</b>，原本指磨得極細的眼影粉，後來引申為「提煉出來的精華」，歐洲煉金術士就用它稱呼從酒裡提煉出的精華——酒精。
+  </div>
+
+  <h3>酒精濃度怎麼看？</h3>
+  <p>酒瓶上寫的「<b>酒精濃度 5%</b>」或「5% vol」，意思是 100 毫升的酒裡有 5 毫升是酒精。中文常說「幾度」，例如 40 度的威士忌，就是酒精佔 40%。</p>
+  <div class="box origin"><div class="bt">Proof（酒精標準度）</div>美國酒標上的 proof 是酒精濃度的兩倍（80 proof＝40%）。傳說以前英國人用火藥「驗證」（prove）烈酒：把酒倒在火藥上，火藥還點得著，就證明酒夠烈、沒有被摻水。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    ① 所有的酒都靠<b>酵母把糖變成酒精和二氧化碳</b>。<br>
+    ② 「酉」是酒罈的象形；alcohol 來自阿拉伯語「精華」。<br>
+    ③ 酒精濃度 % ＝ 100 毫升裡有幾毫升酒精。
+  </div>
+  <div class="quiz" data-quiz="W1"></div>
+  <div class="lnav" data-nav="W1"></div>
+</section>
+
+<!-- ============ W2 ============ -->
+<section class="page" id="W2">
+  <span class="tag">第一階段・入門　第 2 課</span>
+  <h2>酒的歷史——比文字還古老的飲料</h2>
+  <p class="lead">水果放久了會自然發酵，所以人類很早就發現了酒。考古學家甚至在九千年前的陶器裡找到酒的痕跡。</p>
+  <div class="tl" id="tlBtns"></div>
+  <div class="tlp" id="tlPanel"></div>
+
+  <div class="box tip"><div class="bt">為什麼古人那麼常喝酒？</div>在古代，很多地方的水不乾淨，喝了容易生病。酒和啤酒經過煮或發酵，比生水安全一些，熱量也高，所以曾是日常飲料，甚至當作工資的一部分。今天我們有乾淨的自來水，這個理由已經不存在了。</div>
+  <div class="box origin"><div class="bt">杜康</div>中國傳說中造酒的人有「儀狄」和「杜康」。曹操的詩寫「何以解憂？唯有杜康」，「杜康」後來就成了酒的代稱。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    ① 已知最早的酒：中國河南賈湖約九千年前的混合發酵飲料。<br>
+    ② 喬治亞約八千年前就釀葡萄酒；蘇美、埃及人喝啤酒。<br>
+    ③ 中世紀出現蒸餾技術，烈酒誕生；美國曾經禁酒 13 年。
+  </div>
+  <div class="quiz" data-quiz="W2"></div>
+  <div class="lnav" data-nav="W2"></div>
+</section>
+
+<!-- ============ W3 ============ -->
+<section class="page" id="W3">
+  <span class="tag">第一階段・入門　第 3 課</span>
+  <h2>三種造酒方法——釀造、蒸餾、配製</h2>
+  <p class="lead">全世界的酒，依照做法可以分成三大類。學會這個分類，就能把所有的酒放進正確的抽屜。</p>
+
+  <div class="tw"><table>
+    <tr><th>類別</th><th>怎麼做</th><th>酒精濃度</th><th>例子</th></tr>
+    <tr><td><b>釀造酒</b></td><td>只靠發酵，發酵完過濾就喝</td><td>低，大約 3～15%</td><td>葡萄酒、啤酒、清酒、紹興酒</td></tr>
+    <tr><td><b>蒸餾酒</b>（烈酒）</td><td>把釀造酒再<b>蒸餾</b>，濃縮酒精</td><td>高，通常 35～60%</td><td>威士忌、白蘭地、伏特加、琴酒、蘭姆酒、龍舌蘭、高粱酒</td></tr>
+    <tr><td><b>配製酒</b>（再製酒）</td><td>用酒去<b>浸泡或調和</b>水果、香草、糖等</td><td>不一定</td><td>利口酒、梅酒、藥酒</td></tr>
+  </table></div>
+
+  <div class="box think"><div class="bt">為什麼釀造酒最多只到 15% 左右？</div>因為酒精對酵母來說也是有毒的！發酵到酒精大約 15% 時，酵母就被自己做出來的酒精「毒」到停工了。想要更濃，就只能靠蒸餾。</div>
+
+  <h3>蒸餾的祕密：酒精比水先「飛」</h3>
+  <p>水要 <b>100°C</b> 才沸騰，酒精大約 <b>78°C</b> 就沸騰了。把酒加熱到兩者之間，酒精會比水更多變成蒸氣跑出來，再把蒸氣冷卻成液體，就得到更濃的酒。按下按鈕看動畫：</p>
+  <div class="card center" id="still">
+    <svg viewBox="0 0 320 200" width="320" style="max-width:100%">
+      <path class="flame" d="M70 190 q-12 -18 0 -30 q12 12 0 30z M90 190 q-10 -16 0 -26 q10 10 0 26z M110 190 q-12 -18 0 -30 q12 12 0 30z" fill="#e8742a"/>
+      <path d="M50 160 q-10 -60 40 -70 q50 10 40 70z" fill="#c98a4a" stroke="#8a5a2a" stroke-width="3"/>
+      <path d="M58 150 q0 -30 32 -36 q32 6 32 36z" fill="#d8c27a" opacity=".9"/>
+      <path d="M90 90 v-40 q0 -14 14 -14 h110" stroke="#8a5a2a" stroke-width="10" fill="none" stroke-linecap="round"/>
+      <circle class="vap" cx="90" cy="80" r="6"/><circle class="vap" cx="96" cy="70" r="5" style="animation-delay:.7s"/><circle class="vap" cx="86" cy="66" r="4" style="animation-delay:1.4s"/>
+      <rect x="200" y="30" width="60" height="110" rx="8" fill="#dbe9f2" stroke="#9cb4c4" stroke-width="2"/>
+      <path d="M214 36 q30 10 0 20 q-30 10 0 20 q30 10 0 20 q-30 10 0 20 v20" stroke="#8a5a2a" stroke-width="5" fill="none"/>
+      <circle class="drop" cx="214" cy="150" r="4"/>
+      <path d="M196 160 h36 l-6 34 h-24z" fill="#fff" stroke="#b9a684" stroke-width="2"/>
+      <rect x="201" y="180" width="26" height="12" fill="#e8c95a"/>
+      <text class="lbl" x="40" y="22">① 加熱發酵好的酒</text>
+      <text class="lbl" x="120" y="62">② 酒精蒸氣上升</text>
+      <text class="lbl" x="232" y="20">③ 冷卻管</text>
+      <text class="lbl" x="236" y="186">④ 烈酒滴下</text>
+    </svg>
+    <div><button class="btn sm am" id="stillBtn">🔥 開始蒸餾</button></div>
+    <div class="pdesc" id="stillDesc" style="text-align:left">蒸餾器的形狀有很多種，傳統的叫「壺式蒸餾器」，形狀像一個大銅壺；工業上常用高高的「柱式蒸餾器」，可以連續生產。</div>
+  </div>
+
+  <div class="box origin"><div class="bt">生命之水</div>中世紀歐洲的煉金術士把蒸餾出來的烈酒叫做拉丁文 <b>aqua vitae</b>，意思是「<b>生命之水</b>」，以為它是能讓人長生的藥。後來很多烈酒的名字都是「生命之水」的翻譯：法文 eau-de-vie（白蘭地類）、北歐的 akvavit，以及蓋爾語的 uisge beatha——就是 <b>whisky（威士忌）</b>的由來！</div>
+
+  <div class="box recap"><div class="bt"></div>
+    釀造酒（只發酵，低度）→ 蒸餾酒（再蒸餾，高度）→ 配製酒（浸泡調和）。<br>
+    酒精 78°C 沸騰、水 100°C，所以能用蒸餾濃縮酒精。
+  </div>
+  <div class="quiz" data-quiz="W3"></div>
+  <div class="lnav" data-nav="W3"></div>
+</section>
+
+<!-- ============ W4 ============ -->
+<section class="page" id="W4">
+  <span class="tag l2">第二階段・基礎　第 4 課</span>
+  <h2>糖從哪裡來？——麥芽與麴</h2>
+  <p class="lead">酵母只會吃「糖」。葡萄本身甜甜的，有很多糖，可以直接發酵。但米、麥、高粱裡面是「澱粉」，酵母吃不了，怎麼辦？</p>
+
+  <div class="box eg"><div class="bt">饅頭越嚼越甜</div>白飯、饅頭含很多澱粉，嚼久了會變甜，是因為口水裡的<b>酵素</b>把澱粉切成了糖。釀酒也要先把澱粉變成糖，這一步叫做「<b>糖化</b>」。</div>
+
+  <div class="route">
+    <div class="rt" style="background:#9a6a2a">
+      <h4>🌾 西方：用麥芽</h4>
+      <p style="font-size:.92em;margin:0">把大麥泡水讓它<b>發芽</b>，種子發芽時會自己產生酵素，把澱粉變成糖（種子要用糖長大）。再把發芽的麥烘乾，就是<b>麥芽</b>。啤酒、威士忌都用麥芽糖化。</p>
+    </div>
+    <div class="rt" style="background:#4f6a3a">
+      <h4>🍚 東方：用麴</h4>
+      <p style="font-size:.92em;margin:0">在蒸熟的米、麥上培養一種<b>黴菌</b>（例如麴菌），黴菌長出來會分泌酵素，把澱粉變成糖。這種長滿黴菌的穀物就叫<b>麴</b>。清酒、紹興酒、白酒、米酒都靠麴。</p>
+    </div>
+  </div>
+
+  <div class="box origin"><div class="bt">麴</div>音同「曲」，簡體字就寫作「曲」。日本的釀酒師傅把麴菌（米麴菌）當成國寶，日本釀造學會還把它選為「國菌」。醬油、味噌、米醋也都靠麴，所以麴是東亞飲食的大功臣。</div>
+
+  <h3>三種發酵方式</h3>
+  <div class="tw"><table>
+    <tr><th>方式</th><th>過程</th><th>例子</th></tr>
+    <tr><td><b>單發酵</b></td><td>原料本來就有糖，直接發酵</td><td>葡萄酒、蘋果酒</td></tr>
+    <tr><td><b>單行複發酵</b></td><td>先糖化完成，<b>再</b>發酵（兩步分開做）</td><td>啤酒、威士忌原酒</td></tr>
+    <tr><td><b>並行複發酵</b></td><td>糖化和發酵<b>同時</b>在同一個槽裡進行</td><td>清酒、紹興酒</td></tr>
+  </table></div>
+  <div class="box tip"><div class="bt">清酒為什麼特別濃？</div>並行複發酵時，糖一點一點產生、酵母一點一點吃，酵母不會一下子被大量的糖和酒精嚇到，所以能發酵到大約 18～20%，是釀造酒裡最高的。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    水果有糖可直接發酵；穀物的澱粉要先<b>糖化</b>。<br>
+    西方用<b>麥芽</b>，東方用<b>麴</b>（黴菌）。清酒是並行複發酵。
+  </div>
+  <div class="quiz" data-quiz="W4"></div>
+  <div class="lnav" data-nav="W4"></div>
+</section>
+
+<!-- ============ W5 ============ -->
+<section class="page" id="W5">
+  <span class="tag l2">第二階段・基礎　第 5 課</span>
+  <h2>葡萄酒基礎——紅、白、粉紅、氣泡</h2>
+  <p class="lead">葡萄酒就是葡萄汁發酵成的酒。但為什麼有紅有白？關鍵在<b>葡萄皮</b>。</p>
+
+  <div class="box eg"><div class="bt">葡萄的果肉其實是透明的</div>把一顆紫葡萄剝皮，裡面的果肉幾乎是透明、淡綠色的！紅酒的紅色，全部來自<b>葡萄皮</b>裡的色素。所以：
+    <br>・汁和皮一起泡著發酵 → <b>紅酒</b>
+    <br>・只用汁、不泡皮 → <b>白酒</b>（甚至可以用紅葡萄做白酒！）
+    <br>・只泡一下下皮 → <b>粉紅酒</b>
+  </div>
+
+  <h3>看動畫：五種葡萄酒怎麼做</h3>
+  <div class="card">
+    <div class="ptabs" id="ptabs"></div>
+    <div class="steps" id="psteps"></div>
+    <div style="margin-top:10px"><button class="btn sm am" id="pplay">▶ 播放製程</button></div>
+    <div class="pdesc" id="pdesc"></div>
+  </div>
+
+  <h3>單寧：茶和紅酒的共同點</h3>
+  <p>喝紅酒時嘴巴乾乾、緊緊的感覺，來自<b>單寧</b>。單寧在葡萄皮、籽和橡木桶裡，屬於<b>多酚</b>家族——和茶裡讓人覺得澀的茶多酚是親戚！白酒很少泡皮，所以幾乎沒有單寧。</p>
+  <div class="box origin"><div class="bt">白中白、黑中白</div>法文 <b>Blanc de Blancs</b>（白中白）：用白葡萄做的白色氣泡酒；<b>Blanc de Noirs</b>（黑中白）：用黑（紅）葡萄做的白色氣泡酒——證明紅葡萄也能做白酒。</div>
+  <div class="box origin"><div class="bt">香檳不是所有氣泡酒的名字</div>只有法國<b>香檳區</b>、照規定方法做的氣泡酒才能叫「香檳」（Champagne）。其他地方的叫氣泡酒，例如義大利的 Prosecco、西班牙的 Cava。這是用<b>地名</b>保護產品的制度（法國 1935 年建立原產地命名制度）。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    紅色來自葡萄皮：泡皮＝紅、不泡＝白、泡一下＝粉紅。<br>
+    單寧來自皮籽和橡木桶，和茶多酚是親戚。只有香檳區的才叫香檳。
+  </div>
+  <div class="quiz" data-quiz="W5"></div>
+  <div class="lnav" data-nav="W5"></div>
+</section>
+
+<!-- ============ W6 ============ -->
+<section class="page" id="W6">
+  <span class="tag l2">第二階段・基礎　第 6 課</span>
+  <h2>葡萄品種與產區——舊世界和新世界</h2>
+  <p class="lead">釀酒葡萄和吃的葡萄不一樣，皮比較厚、籽比較多、比較甜也比較酸。不同品種，做出的酒風味完全不同。</p>
+
+  <h3>🍇 紅葡萄品種</h3>
+  <div class="grid">
+    <div class="tc"><span class="k r">紅</span><h4>卡本內蘇維濃</h4><p>Cabernet Sauvignon。皮厚、單寧強、黑醋栗和青椒香，能陳放很久。法國波爾多的代表。</p>
+      <details><summary>有趣的身世</summary>1990 年代科學家驗 DNA 才發現，它是「卡本內弗朗」（紅）和「白蘇維濃」（白）自然雜交生出來的孩子。</details></div>
+    <div class="tc"><span class="k r">紅</span><h4>梅洛</h4><p>Merlot。柔順、李子和櫻桃香，單寧比較溫和。名字可能來自法文 merle（黑鳥），因為黑鳥愛吃這種葡萄。</p></div>
+    <div class="tc"><span class="k r">紅</span><h4>黑皮諾</h4><p>Pinot Noir。皮薄、顏色淺、紅莓和花香，很難種，被稱為「心碎葡萄」。法國布根地的代表。</p>
+      <details><summary>名字由來</summary>pinot 來自法文「松果」（葡萄串緊密，形狀像松果），noir 是「黑」。</details></div>
+    <div class="tc"><span class="k r">紅</span><h4>希哈／希拉茲</h4><p>Syrah / Shiraz。黑色水果、黑胡椒香。法國叫 Syrah，澳洲叫 Shiraz，是同一個品種。</p></div>
+  </div>
+  <h3>🍏 白葡萄品種</h3>
+  <div class="grid">
+    <div class="tc"><span class="k w">白</span><h4>夏多內</h4><p>Chardonnay。可清爽（青蘋果、檸檬），也可飽滿（橡木桶帶來奶油、香草香）。名字來自法國布根地的一個村莊。</p></div>
+    <div class="tc"><span class="k w">白</span><h4>白蘇維濃</h4><p>Sauvignon Blanc。青草、百香果、葡萄柚香，清新爽口。法文 sauvage（野生）＋ blanc（白）。紐西蘭的很有名。</p></div>
+    <div class="tc"><span class="k w">白</span><h4>麗絲玲</h4><p>Riesling。酸度高、花香和蜂蜜香，可以從不甜做到很甜。德國的代表。</p></div>
+  </div>
+
+  <h3>舊世界 vs. 新世界</h3>
+  <div class="tw"><table>
+    <tr><th></th><th>舊世界</th><th>新世界</th></tr>
+    <tr><td>指哪裡</td><td>歐洲傳統產國：法國、義大利、西班牙、德國、葡萄牙</td><td>後來發展的產國：美國、澳洲、紐西蘭、智利、阿根廷、南非</td></tr>
+    <tr><td>酒標重點</td><td>常寫<b>產區</b>（例如「波爾多」），不一定寫品種</td><td>常直接寫<b>品種</b>（例如「Cabernet Sauvignon」）</td></tr>
+    <tr><td>風格傾向</td><td>重視傳統與風土，較內斂</td><td>陽光充足，常果香濃、酒體飽滿</td></tr>
+  </table></div>
+
+  <h3>認識幾個重要產區</h3>
+  <div class="grid">
+    <div class="tc"><h4>🇫🇷 波爾多</h4><p>多種葡萄<b>混釀</b>的紅酒，以卡本內蘇維濃、梅洛為主。有很多城堡式酒莊（Château）。</p></div>
+    <div class="tc"><h4>🇫🇷 布根地</h4><p>單一品種：紅酒用黑皮諾、白酒用夏多內。非常講究每一小塊葡萄園的風土。</p></div>
+    <div class="tc"><h4>🇫🇷 香檳區</h4><p>世界最有名的氣泡酒產區，天氣冷，葡萄酸度高，適合做氣泡酒。</p></div>
+    <div class="tc"><h4>🇮🇹 義大利・🇪🇸 西班牙</h4><p>義大利有幾百種本土品種，如托斯卡尼的山吉歐維榭；西班牙的田帕尼優是代表紅葡萄。</p></div>
+  </div>
+  <div class="box origin"><div class="bt">風土 Terroir</div>和茶、咖啡課學過的一樣：氣候、土壤、坡度、日照等條件的總和。在葡萄酒世界，風土特別被重視，這也是舊世界酒標寫產區的原因。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    紅：卡本內（單寧強）、梅洛（柔順）、黑皮諾（皮薄優雅）、希哈（胡椒）。白：夏多內、白蘇維濃、麗絲玲。<br>
+    舊世界寫產區、新世界寫品種。
+  </div>
+  <div class="quiz" data-quiz="W6"></div>
+  <div class="lnav" data-nav="W6"></div>
+</section>
+
+<!-- ============ W7 ============ -->
+<section class="page" id="W7">
+  <span class="tag l2">第二階段・基礎　第 7 課</span>
+  <h2>啤酒——麥芽、啤酒花、水、酵母</h2>
+  <p class="lead">啤酒是全世界最常被喝的酒。它的原料很簡單，卻能變化出上百種風格。</p>
+
+  <div class="grid">
+    <div class="tc"><h4>🌾 麥芽</h4><p>提供糖（和顏色）。烘得越深，啤酒顏色越深，從金黃到全黑。</p></div>
+    <div class="tc"><h4>🌿 啤酒花</h4><p>一種植物的雌花，帶來<b>苦味和香氣</b>，還能幫助啤酒不容易壞。</p></div>
+    <div class="tc"><h4>💧 水</h4><p>啤酒九成以上是水，各地水質不同，也影響了各地啤酒的風格。</p></div>
+    <div class="tc"><h4>🦠 酵母</h4><p>把糖變成酒精和氣泡。不同酵母決定了啤酒的兩大家族。</p></div>
+  </div>
+  <div class="box origin"><div class="bt">啤酒純釀法</div>1516 年德國巴伐利亞規定：啤酒只能用<b>大麥、啤酒花和水</b>製作。這是世界上最古老的食品法規之一。當時的人還不知道有酵母存在，後來才把酵母加進去。</div>
+
+  <h3>兩大家族：艾爾和拉格</h3>
+  <div class="tw"><table>
+    <tr><th></th><th>艾爾 Ale</th><th>拉格 Lager</th></tr>
+    <tr><td>酵母</td><td>上層發酵（酵母浮在上面）</td><td>下層發酵（酵母沉在下面）</td></tr>
+    <tr><td>溫度</td><td>較溫暖（約 15～24°C）</td><td>較冷（約 7～13°C），之後低溫儲存</td></tr>
+    <tr><td>風味</td><td>水果香多、口味豐富</td><td>乾淨、清爽</td></tr>
+    <tr><td>例子</td><td>IPA、小麥啤酒、世濤</td><td>皮爾森、大部分市售罐裝啤酒</td></tr>
+  </table></div>
+  <div class="box origin"><div class="bt">名字由來</div>
+    ・<b>Lager</b>：德文 lagern 是「<b>儲存</b>」，因為以前在冷冷的山洞裡低溫儲存好幾個月。<br>
+    ・<b>Pilsner 皮爾森</b>：1842 年在捷克的<b>比爾森</b>市誕生的金黃色拉格，是今天最多人喝的啤酒風格。<br>
+    ・<b>IPA</b>（印度淡色艾爾）：傳說英國要把啤酒用船運到印度，航程很長，就多加啤酒花讓它不容易壞，結果苦香味道大受歡迎。
+  </div>
+  <div class="grid">
+    <div class="tc"><h4>🌾 小麥啤酒</h4><p>用很多小麥麥芽，霧霧的，帶香蕉、丁香香氣。</p></div>
+    <div class="tc"><h4>⚫ 世濤 Stout</h4><p>用烘得很深的麥，顏色黑、帶咖啡巧克力味。愛爾蘭的健力士最有名。stout 是「強壯」的意思。</p></div>
+    <div class="tc"><h4>⛪ 修道院啤酒</h4><p>比利時的修道院至今仍有修士釀啤酒，風味濃郁複雜。</p></div>
+  </div>
+
+  <div class="box recap"><div class="bt"></div>
+    四原料：麥芽、啤酒花、水、酵母。1516 年德國純釀法。<br>
+    艾爾＝上層溫暖發酵、果香；拉格＝下層低溫、清爽（lagern＝儲存）。
+  </div>
+  <div class="quiz" data-quiz="W7"></div>
+  <div class="lnav" data-nav="W7"></div>
+</section>
+
+<!-- ============ W8 ============ -->
+<section class="page" id="W8">
+  <span class="tag l3">第三階段・進階　第 8 課</span>
+  <h2>東方的酒——白酒、黃酒、清酒、燒酒</h2>
+  <p class="lead">東亞的酒最大的特色就是用「麴」，釀出和西方完全不同的風味。</p>
+
+  <h3>🇨🇳 中國：白酒與黃酒</h3>
+  <div class="grid">
+    <div class="tc"><span class="k x">蒸餾</span><h4>白酒</h4><p>多用<b>高粱</b>等穀物，配上麴，在泥土挖成的<b>窖池</b>裡固態發酵（原料是濕的固體，不是液體），再蒸餾。酒色透明，所以叫白酒。</p>
+      <details><summary>香型</summary>依香氣分成：<b>醬香</b>（像醬油的香，貴州茅台鎮一帶）、<b>濃香</b>（濃郁果香，四川）、<b>清香</b>（清爽乾淨，山西汾酒）、<b>米香</b>（米做的，廣西桂林）。用了越久的老窖池，裡面的微生物越豐富，香氣越好。</details></div>
+    <div class="tc"><span class="k o">釀造</span><h4>黃酒・紹興酒</h4><p>用<b>糯米</b>和麥麴釀造，顏色黃褐，所以叫黃酒，浙江紹興最有名。也常用來做菜（例如紹興醉雞）。</p>
+      <details><summary>女兒紅、花雕</summary>傳說紹興人家生了女兒，就把一罈酒埋在地下，等女兒出嫁時再挖出來請客，叫「<b>女兒紅</b>」。裝在雕花酒罈裡的叫「<b>花雕</b>」。</details></div>
+  </div>
+
+  <h3>🇹🇼 台灣</h3>
+  <div class="grid">
+    <div class="tc"><span class="k x">蒸餾</span><h4>金門高粱酒</h4><p>1950 年代在金門開始生產，用高粱釀造蒸餾的清香型白酒，常見 38 度和 58 度。</p></div>
+    <div class="tc"><span class="k x">料理</span><h4>米酒</h4><p>台灣家家戶戶廚房常見的料理米酒，用來去腥提味，燒酒雞、麻油雞都會用到。</p></div>
+  </div>
+
+  <h3>🇯🇵 日本：清酒與燒酎</h3>
+  <div class="grid">
+    <div class="tc"><span class="k g">釀造</span><h4>清酒</h4><p>用米、米麴和水，並行複發酵釀成。釀酒的總師傅叫「<b>杜氏</b>」。</p>
+      <details><summary>精米步合（重要！）</summary>米粒外層有比較多蛋白質和油脂，會帶來雜味，所以要把米「磨小」。<b>精米步合</b>是磨完剩下的比例：<br>・吟釀：剩 60% 以下<br>・大吟釀：剩 50% 以下（磨掉一半以上！）<br>磨得越多，香氣越華麗乾淨，價格也越高。<br>・<b>純米</b>：只用米、米麴、水；沒寫純米的，可能加了少量釀造酒精。</details></div>
+    <div class="tc"><span class="k x">蒸餾</span><h4>燒酎</h4><p>日本的蒸餾酒，用番薯、大麥、米、黑糖等做，九州最多。</p></div>
+  </div>
+
+  <h3>🇰🇷 韓國・東南亞</h3>
+  <div class="grid">
+    <div class="tc"><h4>燒酒 Soju</h4><p>韓國最普遍的酒，透明，常見 15～20% 左右，綠色瓶子很有名。</p></div>
+    <div class="tc"><h4>馬格利 Makgeolli</h4><p>韓國米酒，乳白色、帶微微氣泡，酒精約 6～8%。</p></div>
+    <div class="tc"><h4>東南亞</h4><p>各地也有傳統米酒和棕櫚酒（用棕櫚樹汁發酵），常在節慶、祭祀時使用。</p></div>
+  </div>
+
+  <div class="box recap"><div class="bt"></div>
+    白酒＝高粱＋麴＋窖池固態發酵＋蒸餾（醬、濃、清、米香）；黃酒＝糯米釀造（女兒紅）。<br>
+    清酒看<b>精米步合</b>：吟釀 ≤60%、大吟釀 ≤50%。
+  </div>
+  <div class="quiz" data-quiz="W8"></div>
+  <div class="lnav" data-nav="W8"></div>
+</section>
+
+<!-- ============ W9 ============ -->
+<section class="page" id="W9">
+  <span class="tag l3">第三階段・進階　第 9 課</span>
+  <h2>蒸餾酒的世界——六大烈酒</h2>
+  <p class="lead">記住一個規則：<b>烈酒＝某種釀造酒拿去蒸餾</b>。原料不同，就是不同的烈酒。</p>
+
+  <div class="tw"><table>
+    <tr><th>烈酒</th><th>原料</th><th>名字由來</th><th>特色</th></tr>
+    <tr><td><b>威士忌</b></td><td>大麥麥芽、玉米等穀物</td><td>蓋爾語「生命之水」</td><td>放在橡木桶熟成，琥珀色</td></tr>
+    <tr><td><b>白蘭地</b></td><td>葡萄（葡萄酒蒸餾）</td><td>荷蘭語 brandewijn「燒過的酒」</td><td>法國干邑最有名，橡木桶熟成</td></tr>
+    <tr><td><b>伏特加</b></td><td>穀物、馬鈴薯</td><td>俄語「水」的暱稱，像「小水」</td><td>透明、味道很淡很純</td></tr>
+    <tr><td><b>琴酒</b></td><td>穀物烈酒＋<b>杜松子</b>等香料</td><td>來自荷蘭語的杜松子 genever</td><td>透明、帶松針、柑橘香</td></tr>
+    <tr><td><b>蘭姆酒</b></td><td><b>甘蔗</b>（糖蜜或甘蔗汁）</td><td>說法不一</td><td>加勒比海一帶，有白色和深色</td></tr>
+    <tr><td><b>龍舌蘭</b></td><td>藍色<b>龍舌蘭</b>植物的心</td><td>墨西哥的特基拉鎮</td><td>龍舌蘭不是仙人掌喔！</td></tr>
+  </table></div>
+
+  <h3>威士忌的家族</h3>
+  <div class="grid">
+    <div class="tc"><h4>🏴 蘇格蘭威士忌</h4><p>必須在蘇格蘭的橡木桶中熟成至少 3 年。<b>單一麥芽</b>＝同一家酒廠、只用大麥麥芽；<b>調和</b>＝混合多家或多種威士忌。艾雷島的威士忌用<b>泥煤</b>烘麥芽，帶有煙燻、海風味。</p></div>
+    <div class="tc"><h4>🇺🇸 波本威士忌</h4><p>美國，至少 51% 玉米，而且必須用<b>全新、內部燒烤過</b>的橡木桶，所以香草、焦糖味明顯。</p></div>
+    <div class="tc"><h4>🇮🇪 愛爾蘭・🇯🇵 日本・🇹🇼 台灣</h4><p>愛爾蘭常蒸餾三次、口感柔順；日本威士忌 1920 年代起步；台灣的威士忌近年也在國際比賽中屢獲大獎，因為天氣熱，熟成速度比蘇格蘭快。</p></div>
+  </div>
+  <div class="box origin"><div class="bt">天使的分享</div>威士忌在木桶裡熟成時，每年都會蒸發掉一點點（在蘇格蘭大約每年 2%），酒廠浪漫地說這是被「天使喝掉了」，叫 Angels' Share。天氣越熱，天使喝得越多。</div>
+  <div class="box origin"><div class="bt">干邑上的 VS、VSOP、XO</div>這些是熟成年份的等級：<b>VS</b> 至少 2 年、<b>VSOP</b>（Very Superior Old Pale）至少 4 年、<b>XO</b>（Extra Old）至少 10 年。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    穀物 → 威士忌、伏特加、琴酒；葡萄 → 白蘭地；甘蔗 → 蘭姆酒；龍舌蘭 → 龍舌蘭酒；高粱 → 白酒。<br>
+    whisky＝生命之水；brandy＝燒過的酒；vodka＝小水。
+  </div>
+  <div class="quiz" data-quiz="W9"></div>
+  <div class="lnav" data-nav="W9"></div>
+</section>
+
+<!-- ============ W10 ============ -->
+<section class="page" id="W10">
+  <span class="tag l3">第三階段・進階　第 10 課</span>
+  <h2>橡木桶與熟成——時間的味道</h2>
+  <p class="lead">剛蒸餾出來的威士忌其實是透明的！它的琥珀色和香草、焦糖香，大部分是在<b>橡木桶</b>裡慢慢得到的。</p>
+
+  <h3>橡木桶給了酒什麼？</h3>
+  <div class="grid">
+    <div class="tc"><h4>🎨 顏色</h4><p>木頭裡的物質慢慢溶進酒裡，透明的烈酒變成金黃、琥珀色。</p></div>
+    <div class="tc"><h4>🍦 香氣</h4><p>香草（香草醛）、椰子、焦糖、烤麵包、丁香等香氣。桶子內部烤過或燒過，香氣更濃。</p></div>
+    <div class="tc"><h4>🫁 呼吸</h4><p>木頭有細小的縫隙，讓極少量空氣慢慢進入，酒變得更圓潤柔和。</p></div>
+    <div class="tc"><h4>🍵 單寧</h4><p>木頭也有單寧，讓酒的結構更扎實。</p></div>
+  </div>
+  <div class="box tip"><div class="bt">一個桶子用好幾次</div>美國波本威士忌規定只能用全新的桶子，用過一次就不能再用，所以很多用過的波本桶被賣到蘇格蘭裝威士忌。西班牙裝過雪莉酒的「雪莉桶」，也很受威士忌酒廠歡迎，會帶來果乾、堅果香。</div>
+
+  <h3>年份與陳年</h3>
+  <div class="box warn"><div class="bt">烈酒裝瓶後就不會再變老</div>威士忌上寫「12 年」，指的是在<b>木桶</b>裡熟成了 12 年（如果是混合的，以最年輕的那一桶計算）。裝進玻璃瓶後就幾乎不再變化，放在家裡 10 年，它還是 12 年的威士忌。</div>
+  <p>但有些<b>葡萄酒</b>在瓶子裡還會繼續慢慢變化，叫「瓶中陳年」。顏色也會跟著改變，拖動看看：</p>
+  <div class="card">
+    <div class="ox">
+      <svg width="110" height="120" viewBox="0 0 110 120"><path d="M25 10 h60 q4 50 -30 62 q-34 -12 -30 -62z" fill="#fff" stroke="#b9a684" stroke-width="3"/><path id="agW" d="M28 36 h54 q-2 30 -27 36 q-25 -6 -27 -36z" fill="#efe7a0"/><line x1="55" y1="72" x2="55" y2="105" stroke="#b9a684" stroke-width="4"/><ellipse cx="55" cy="108" rx="20" ry="4" fill="#fff" stroke="#b9a684" stroke-width="3"/><text class="lbl" x="34" y="118">白酒</text></svg>
+      <svg width="110" height="120" viewBox="0 0 110 120"><path d="M25 10 h60 q4 50 -30 62 q-34 -12 -30 -62z" fill="#fff" stroke="#b9a684" stroke-width="3"/><path id="agR" d="M28 36 h54 q-2 30 -27 36 q-25 -6 -27 -36z" fill="#5a1a4a"/><line x1="55" y1="72" x2="55" y2="105" stroke="#b9a684" stroke-width="4"/><ellipse cx="55" cy="108" rx="20" ry="4" fill="#fff" stroke="#b9a684" stroke-width="3"/><text class="lbl" x="34" y="118">紅酒</text></svg>
+    </div>
+    <label>酒齡：大約 <b id="agY">1</b> 年</label>
+    <input type="range" id="agR2" min="0" max="30" value="1">
+    <div class="pdesc" id="agD"></div>
+  </div>
+
+  <div class="box origin"><div class="bt">年份 Vintage</div>葡萄酒標上的年份是<b>葡萄採收的那一年</b>，不是裝瓶的年份。每年天氣不同，葡萄品質不同，所以同一家酒莊不同年份的酒，味道和價格也可能差很多。</div>
+  <div class="box origin"><div class="bt">軟木塞</div>軟木塞是用一種橡樹（栓皮櫟）的<b>樹皮</b>做的，剝皮不用砍樹，樹皮大約九年後會再長回來。葡萄牙生產全世界大約一半的軟木。少數軟木塞受到污染，會讓酒聞起來像濕紙箱，叫做「<b>木塞味</b>」（corked），是葡萄酒的缺陷。現在也有很多酒改用旋轉蓋。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    橡木桶帶來顏色、香氣、呼吸、單寧。烈酒的年份只算桶中時間。<br>
+    葡萄酒年份＝採收年；白酒越老越金黃，紅酒越老越偏磚紅。
+  </div>
+  <div class="quiz" data-quiz="W10"></div>
+  <div class="lnav" data-nav="W10"></div>
+</section>
+
+<!-- ============ W11 ============ -->
+<section class="page" id="W11">
+  <span class="tag l3">第三階段・進階　第 11 課</span>
+  <h2>利口酒、調酒與無酒精調酒</h2>
+  <p class="lead">把酒和其他材料混合，就打開了另一個世界：調酒。而不加酒的「無酒精調酒」，是任何年齡都能動手做的飲料藝術。</p>
+
+  <h3>利口酒</h3>
+  <p>在烈酒裡加入糖和水果、香草、堅果、咖啡等風味，就是<b>利口酒</b>，通常甜甜的、顏色多彩，常用來調酒或做甜點。</p>
+  <div class="box origin"><div class="bt">Liqueur</div>來自拉丁文 liquefacere，意思是「<b>溶解</b>」，因為是把各種香草、水果的味道溶進酒裡。中世紀的修道院常用這種方法做「藥酒」。</div>
+
+  <h3>調酒的基本結構</h3>
+  <div class="flowrow"><span class="p">🥃 基酒（烈酒）</span><span class="arrow">＋</span><span class="p">🍋 酸（檸檬、萊姆）</span><span class="arrow">＋</span><span class="p">🍯 甜（糖漿、利口酒）</span><span class="arrow">＋</span><span class="p">🧊 冰／氣泡水</span></div>
+  <p>很多經典調酒都是「烈酒＋酸＋甜」的平衡。調酒師用搖、攪拌、直接注入等手法，讓材料混合並降溫。</p>
+  <div class="box origin"><div class="bt">Cocktail 雞尾酒</div>英文 cocktail 直譯是「公雞尾巴」，名字的由來說法很多、沒有定論，其中一種說法是以前用公雞尾巴的羽毛裝飾或攪拌飲料。中文就直接翻譯成「雞尾酒」。</div>
+
+  <h3>🍹 無酒精調酒 Mocktail</h3>
+  <p>Mocktail＝mock（模仿）＋ cocktail，意思是「模仿雞尾酒的飲料」。<b>它用的就是同樣的平衡原理，只是不加酒</b>，在派對上一樣漂亮好喝：</p>
+  <div class="grid">
+    <div class="tc"><h4>🌿 無酒精莫希托</h4><p>薄荷葉、萊姆角、一點糖，輕輕搗出香氣，加冰塊和氣泡水。酸＋甜＋香草＋氣泡。</p></div>
+    <div class="tc"><h4>🍓 漸層水果氣泡飲</h4><p>杯底倒紅石榴或草莓糖漿（比較重），再慢慢加冰塊、柳橙汁，最後加氣泡水，就會出現漂亮的漸層。</p></div>
+    <div class="tc"><h4>🍵 茶基底調飲</h4><p>用冷泡烏龍或紅茶當「基酒」，加柑橘、蜂蜜和氣泡水——把茶課學到的知識用上！</p></div>
+  </div>
+  <div class="box think"><div class="bt">為什麼漸層飲料不會混在一起？</div>因為含糖多的液體比較重（密度比較大），會沉在下面；含糖少的比較輕，會浮在上面。慢慢倒，它們就會分層。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    利口酒＝烈酒＋糖＋風味（liqueur＝溶解）。調酒＝基酒＋酸＋甜的平衡。<br>
+    Mocktail＝不加酒的調飲，同樣講究平衡，人人都能做。
+  </div>
+  <div class="quiz" data-quiz="W11"></div>
+  <div class="lnav" data-nav="W11"></div>
+</section>
+
+<!-- ============ W12 ============ -->
+<section class="page" id="W12">
+  <span class="tag l4">第四階段・專業　第 12 課</span>
+  <h2>專業品飲——看、聞、嚐</h2>
+  <p class="lead">專業的品酒師怎麼評一杯酒？方法和茶、咖啡很像，也是用感官一步一步觀察。</p>
+  <div class="box warn"><div class="bt">提醒</div>這一課是讓你了解專業人士的方法。<b>未成年不能喝酒</b>；但「看」和「聞」的觀察力，也可以用在品茶、品咖啡和欣賞果汁上。</div>
+
+  <div class="box origin"><div class="bt">侍酒師 Sommelier</div>在餐廳負責選酒、介紹與服務的專業人員。這個法文字原本指中世紀負責<b>管理馱運物資的牲口</b>的人，後來演變成負責管理宮廷裡的酒和餐具的人。</div>
+
+  <h3>① 看</h3>
+  <ul>
+    <li><b>清澈度</b>：清澈還是混濁。</li>
+    <li><b>顏色深淺與色調</b>：白酒從檸檬黃到金黃、琥珀；紅酒從紫紅到寶石紅、石榴紅、磚紅（第 10 課的滑桿）。</li>
+    <li><b>酒淚（酒腿）</b>：搖杯後杯壁流下的一條條液體痕跡。</li>
+  </ul>
+  <div class="box tip"><div class="bt">酒淚代表品質好？錯！</div>酒淚是因為酒精比水蒸發得快，杯壁上液體的表面張力不同而形成的物理現象。酒淚多只代表<b>酒精或糖分比較高</b>，和品質好壞無關。</div>
+
+  <h3>② 聞：三層香氣</h3>
+  <div class="tw"><table>
+    <tr><th>層次</th><th>來源</th><th>常見香氣</th></tr>
+    <tr><td><b>第一層</b></td><td>葡萄本身</td><td>水果（檸檬、蘋果、莓果、黑醋栗）、花香、青草</td></tr>
+    <tr><td><b>第二層</b></td><td>發酵和釀造過程</td><td>麵包、奶油、優格；橡木桶帶來的香草、烤麵包</td></tr>
+    <tr><td><b>第三層</b></td><td>長時間熟成</td><td>皮革、菸草、蘑菇、泥土、果乾、蜂蜜、堅果</td></tr>
+  </table></div>
+  <p>先靜止聞一次，再輕輕<b>搖杯</b>讓酒接觸空氣、香氣散開後再聞一次。</p>
+
+  <h3>③ 嚐</h3>
+  <div class="tw"><table>
+    <tr><th>項目</th><th>意思</th></tr>
+    <tr><td>甜度</td><td>從不甜（干型）到甜</td></tr>
+    <tr><td>酸度</td><td>讓口水分泌、清爽的感覺</td></tr>
+    <tr><td>單寧</td><td>嘴巴乾、緊的感覺（主要在紅酒）</td></tr>
+    <tr><td>酒精</td><td>喉嚨的溫熱感</td></tr>
+    <tr><td>酒體</td><td>在嘴裡的厚薄重量，像水、牛奶到鮮奶油的差別</td></tr>
+    <tr><td>餘韻</td><td>吞下後味道停留多久</td></tr>
+  </table></div>
+  <div class="box origin"><div class="bt">「干」是什麼意思？</div>酒標上的「干型」（法文 sec、英文 dry）指的是<b>不甜</b>，不是「乾」。「干白」就是不甜的白葡萄酒。</div>
+
+  <h3>杯子和溫度</h3>
+  <div class="tw"><table>
+    <tr><th>酒</th><th>常用杯</th><th>適飲溫度</th></tr>
+    <tr><td>氣泡酒</td><td>細長的笛型杯（氣泡能保持久）</td><td>約 6～10°C</td></tr>
+    <tr><td>白酒、粉紅酒</td><td>中型杯</td><td>約 7～12°C</td></tr>
+    <tr><td>輕盈紅酒（黑皮諾）</td><td>大肚的布根地杯（聚集香氣）</td><td>約 12～14°C</td></tr>
+    <tr><td>飽滿紅酒（卡本內）</td><td>高身的波爾多杯</td><td>約 15～18°C</td></tr>
+    <tr><td>威士忌</td><td>鬱金香形聞香杯</td><td>室溫，或加少許水</td></tr>
+  </table></div>
+  <div class="box think"><div class="bt">紅酒「室溫喝」的陷阱</div>紅酒要「室溫喝」這句話來自歐洲，指的是以前歐洲石頭房子裡大約 16～18°C 的溫度。在台灣、柬埔寨這種熱帶、亞熱帶地方，室溫常超過 30°C，紅酒太熱會讓酒精味很重，反而要稍微冰一下。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    看（清澈、顏色、酒淚≠品質）→ 聞（三層香氣，搖杯）→ 嚐（甜、酸、單寧、酒精、酒體、餘韻）。<br>
+    干＝不甜；「室溫」是指歐洲的 16～18°C。
+  </div>
+  <div class="quiz" data-quiz="W12"></div>
+  <div class="lnav" data-nav="W12"></div>
+</section>
+
+<!-- ============ W13 ============ -->
+<section class="page" id="W13">
+  <span class="tag l4">第四階段・專業　第 13 課</span>
+  <h2>分辨酒——當一個酒類偵探</h2>
+  <p class="lead">把前面學的全部用上：<b>原料</b>是什麼？是<b>釀造還是蒸餾</b>？有沒有<b>橡木桶</b>？酒精<b>幾度</b>？四個問題，就能分辨大部分的酒。</p>
+
+  <h3>分辨四問</h3>
+  <div class="flowrow">
+    <span class="p">① 原料：水果？穀物？甘蔗？植物？</span><span class="arrow">→</span>
+    <span class="p">② 只發酵（低度）還是蒸餾（高度）？</span><span class="arrow">→</span>
+    <span class="p">③ 有沒有木桶（顏色、香草香）？</span><span class="arrow">→</span>
+    <span class="p">④ 有沒有加糖和風味？</span>
+  </div>
+
+  <h3>🕵️ 酒類偵探挑戰</h3>
+  <div class="game">
+    <span class="score" id="gScore">0 / 0</span>
+    <b id="gTitle">第 1 題</b>
+    <div id="gClues"></div>
+    <div class="gopts" id="gOpts"></div>
+    <div class="gmsg" id="gMsg"></div>
+    <div class="center"><button class="btn sm ghost" id="gNext" style="display:none">下一題 →</button></div>
+  </div>
+
+  <h3>讀懂一張葡萄酒標</h3>
+  <div class="tw"><table>
+    <tr><th>標上寫的</th><th>告訴你什麼</th></tr>
+    <tr><td>酒莊名稱（Château ×× / ×× Estate）</td><td>誰做的</td></tr>
+    <tr><td>產區（例如 Bordeaux、Napa Valley）</td><td>在哪裡種、在哪裡做（舊世界的重點）</td></tr>
+    <tr><td>品種（例如 Pinot Noir）</td><td>用什麼葡萄（新世界常寫）</td></tr>
+    <tr><td>年份（例如 2020）</td><td>葡萄採收的年份</td></tr>
+    <tr><td>酒精濃度（例如 13.5%）</td><td>越高通常代表葡萄越熟、產地越溫暖</td></tr>
+    <tr><td>等級（例如法國 AOC、義大利 DOCG）</td><td>符合當地原產地規範的等級</td></tr>
+  </table></div>
+
+  <div class="box recap"><div class="bt"></div>
+    分辨四問：原料、釀造或蒸餾、木桶、加糖風味。<br>
+    酒標看：酒莊、產區、品種、年份、酒精濃度、等級。
+  </div>
+  <div class="quiz" data-quiz="W13"></div>
+  <div class="lnav" data-nav="W13"></div>
+</section>
+
+<!-- ============ W14 ============ -->
+<section class="page" id="W14">
+  <span class="tag l4">第四階段・專業　第 14 課</span>
+  <h2>餐酒搭配與保存</h2>
+  <p class="lead">專業侍酒師常被問：「這道菜配什麼酒？」搭配的原則其實和料理一樣，講究<b>平衡</b>。這些原則也能用在配茶、配飲料上。</p>
+
+  <h3>五個搭配原則</h3>
+  <div class="grid">
+    <div class="tc"><h4>⚖️ 重配重、輕配輕</h4><p>清淡的魚配清爽的白酒；濃郁的燉肉配飽滿的紅酒，誰也不會蓋過誰。</p></div>
+    <div class="tc"><h4>🍋 酸解膩</h4><p>酸度高的酒能「切開」油膩，像炸物擠檸檬一樣。</p></div>
+    <div class="tc"><h4>🥩 單寧配蛋白質和油脂</h4><p>單寧碰到肉裡的蛋白質和油脂，澀感會變柔和，所以紅酒配牛排是經典。</p></div>
+    <div class="tc"><h4>🍰 酒要比甜點甜</h4><p>甜點太甜，配不甜的酒會讓酒變得又酸又苦。</p></div>
+    <div class="tc"><h4>🌶️ 辣菜避開高酒精、高單寧</h4><p>酒精和單寧會讓辣味更刺激；微甜、低酒精、酸度高的白酒比較合適。</p></div>
+    <div class="tc"><h4>🗺️ 同一個地方的最合拍</h4><p>當地的菜配當地的酒，常常最自然，例如義大利麵配義大利紅酒。</p></div>
+  </div>
+
+  <h3>小遊戲：這樣搭配合適嗎？</h3>
+  <div class="istea" id="pairBox"></div>
+  <div class="pdesc" id="pairMsg">👆 點選每個組合猜猜看。</div>
+
+  <h3>保存</h3>
+  <div class="tw"><table>
+    <tr><th></th><th>葡萄酒</th><th>烈酒</th></tr>
+    <tr><td>擺放</td><td><b>橫放</b>，讓軟木塞保持濕潤、不乾縮漏氣</td><td><b>直立</b>，高酒精會侵蝕軟木塞</td></tr>
+    <tr><td>溫度</td><td>穩定、涼爽，大約 12～14°C；避免忽冷忽熱</td><td>室溫陰涼即可</td></tr>
+    <tr><td>其他</td><td>避光、避免震動、不要有異味</td><td>避光、密封</td></tr>
+    <tr><td>開瓶後</td><td>塞回瓶塞冷藏，大多 2～5 天內喝完</td><td>可保存很久，但香氣會慢慢變淡</td></tr>
+  </table></div>
+
+  <div class="box recap"><div class="bt"></div>
+    搭配：重配重、酸解膩、單寧配肉、酒比甜點甜、辣菜避高酒精。<br>
+    葡萄酒橫放、恆溫避光；烈酒直立。
+  </div>
+  <div class="quiz" data-quiz="W14"></div>
+  <div class="lnav" data-nav="W14"></div>
+</section>
+
+<!-- ============ W15 ============ -->
+<section class="page" id="W15">
+  <span class="tag l4">第四階段・專業　第 15 課</span>
+  <h2>酒精與健康、法律——最重要的一課</h2>
+  <p class="lead">懂酒的人，最先要懂的是：酒精對身體做了什麼，以及什麼時候絕對不能喝。</p>
+
+  <h3>酒精在身體裡的旅程</h3>
+  <div class="flowrow">
+    <span class="p">🍶 酒精（乙醇）</span><span class="arrow">→ 肝臟 →</span><span class="p" style="background:#f9dfd7">☠️ 乙醛（有毒）</span><span class="arrow">→ 肝臟 →</span><span class="p">乙酸（醋酸）</span><span class="arrow">→</span><span class="p">水＋二氧化碳</span>
+  </div>
+  <p>酒精主要由<b>肝臟</b>分解。中間產物<b>乙醛</b>是有毒、會致癌的物質，會讓人臉紅、心跳快、頭痛、想吐。</p>
+  <div class="box tip"><div class="bt">喝酒臉紅的人</div>有些人身體裡分解乙醛的酵素天生比較弱，乙醛會累積，所以一喝就臉紅。這在東亞人特別常見，台灣約有近一半的人有這種情況。<b>臉紅不是「酒量好」，而是身體在發出警告</b>，這些人喝酒，罹患食道癌等疾病的風險更高。</div>
+
+  <div class="box warn"><div class="bt">科學界的結論</div>
+    ・國際癌症研究機構把酒精列為<b>第一級致癌物</b>（和菸草同一級）。<br>
+    ・世界衛生組織在 2023 年表示：就健康而言，<b>沒有安全的飲酒量</b>，喝越少越好。<br>
+    ・所以「每天一杯紅酒有益健康」的說法，目前並沒有被證實。
+  </div>
+
+  <h3>為什麼未成年不能喝酒？</h3>
+  <div class="grid">
+    <div class="tc"><h4>🧠 大腦還在發育</h4><p>人的大腦要到 25 歲左右才發育完全，酒精會影響記憶、學習和判斷能力的發展。</p></div>
+    <div class="tc"><h4>🧪 身體分解能力較弱</h4><p>青少年體重較輕、肝臟代謝酒精的經驗少，更容易醉、更容易酒精中毒。</p></div>
+    <div class="tc"><h4>🔁 越早喝越容易成癮</h4><p>研究顯示，越早開始喝酒的人，長大後越容易有飲酒問題。</p></div>
+    <div class="tc"><h4>⚖️ 法律禁止</h4><p>台灣法律規定未滿 18 歲不得飲酒，也不能賣酒給未滿 18 歲的人；各國都有類似的規定。</p></div>
+  </div>
+  <div class="box eg"><div class="bt">有人勸你喝酒時，可以這樣說</div>
+    「我還未成年，不能喝。」「我等一下要騎車／運動，不喝。」「我喝果汁就好，謝謝！」<br>
+    真正的朋友會尊重你的決定。拒絕不需要理由，也不需要覺得不好意思。
+  </div>
+
+  <h3>🧮 一杯酒裡有多少酒精？</h3>
+  <p>酒精克數＝容量（毫升）× 酒精濃度 × 0.8（酒精比水輕）。許多國家用「<b>一個標準杯＝10 公克純酒精</b>」來計算。加加看：</p>
+  <div class="card">
+    <div class="grid" id="aItems"></div>
+    <div class="pdesc" id="aOut"></div>
+    <small>這個工具只是讓你理解「不同的酒，酒精量差很多」，不是喝酒的建議。</small>
+  </div>
+
+  <h3>一定要知道的安全知識</h3>
+  <div class="grid">
+    <div class="tc"><h4>🚗 喝酒不開車</h4><p>酒精會讓反應變慢、判斷變差。台灣規定呼氣酒精濃度達每公升 0.15 毫克就違法。<b>喝了酒就不開車、不騎車</b>，也不要坐喝了酒的人開的車。</p></div>
+    <div class="tc"><h4>🚨 急性酒精中毒</h4><p>如果有人<b>叫不醒、呼吸很慢或不規律、皮膚冰冷發紫、抽搐或一直嘔吐</b>，這是危險狀況，要<b>馬上打急救電話</b>，讓他側躺（避免嘔吐物噎住），不要讓他一個人待著。不要給他喝咖啡或沖冷水，那沒有用。</p></div>
+    <div class="tc"><h4>🤝 不勸酒、不拚酒</h4><p>在很短時間內喝很多酒最危險。尊重別人不喝的決定，也是一種修養。</p></div>
+  </div>
+
+  <div class="box recap"><div class="bt"></div>
+    酒精 → 乙醛（有毒）→ 乙酸；臉紅是警訊。酒精是一級致癌物，WHO：沒有安全飲酒量。<br>
+    未成年禁止飲酒；喝酒不開車；有人酒精中毒，立刻打急救電話並讓他側躺。
+  </div>
+  <div class="quiz" data-quiz="W15"></div>
+  <div class="lnav" data-nav="W15"></div>
+</section>
+
+<section class="page" id="final">
+  <span class="tag l4">結業</span>
+  <h2>🎓 結業測驗</h2>
+  <p class="lead">恭喜你走完 15 課！最後從全部課程中隨機出 15 題，答對 12 題以上就能拿到結業證書。</p>
+  <div class="quiz" id="finalQuiz"></div>
+  <div class="center noprint" style="margin-top:12px"><button class="btn am" id="finalNew">🔄 重新出題</button></div>
+  <div id="certWrap" style="display:none">
+    <div class="card noprint center"><p>輸入你的名字，產生證書：</p>
+      <input class="txt" id="certName" placeholder="你的名字"> <button class="btn sm" onclick="makeCert()">產生證書</button></div>
+    <div class="cert" id="cert" style="display:none">
+      <div style="font-size:2.4em">🍷</div><h2>結 業 證 書</h2><div class="nm" id="certNm"></div>
+      <p>完成「一杯酒的學問」全部 15 課，<br>從發酵、歷史、釀造與蒸餾、葡萄酒、啤酒、東方的酒、烈酒，<br>到熟成、品飲、分辨、搭配，以及酒精與健康，<br>結業測驗成績 <b id="certScore"></b>，特頒此證。</p>
+      <p id="certDate" style="color:var(--muted)"></p></div>
+    <div class="center noprint" style="margin-top:10px"><button class="btn ghost sm" onclick="window.print()">🖨️ 列印／存成 PDF</button></div>
+  </div>
+  <div class="lnav" data-nav="final"></div>
+</section>
+<section class="page" id="gloss">
+  <span class="tag">附錄</span><h2>📖 名詞辭典</h2>
+  <p>課程裡出現的專有名詞都在這裡，可以搜尋。後面的標籤表示在第幾課學到。</p>
+  <div class="gl card"><input id="gq" placeholder="🔍 輸入關鍵字"></div>
+  <div class="card" id="glist"></div>
+  <div class="center"><button class="btn ghost" onclick="go('home')">← 回首頁</button></div>
+</section>
+</main>
+<script>
+const COURSE={key:'saintdou_wine_course_v1',defaultName:'酒類知識小達人'};
+const LESSONS=[
+ {id:'W1',lv:1,t:'酒是什麼？酵母吃糖的魔法'},
+ {id:'W2',lv:1,t:'酒的歷史'},
+ {id:'W3',lv:1,t:'三種造酒方法'},
+ {id:'W4',lv:2,t:'糖從哪裡來？麥芽與麴'},
+ {id:'W5',lv:2,t:'葡萄酒基礎'},
+ {id:'W6',lv:2,t:'葡萄品種與產區'},
+ {id:'W7',lv:2,t:'啤酒'},
+ {id:'W8',lv:3,t:'東方的酒'},
+ {id:'W9',lv:3,t:'蒸餾酒的世界'},
+ {id:'W10',lv:3,t:'橡木桶與熟成'},
+ {id:'W11',lv:3,t:'利口酒、調酒與無酒精調酒'},
+ {id:'W12',lv:4,t:'專業品飲'},
+ {id:'W13',lv:4,t:'分辨酒'},
+ {id:'W14',lv:4,t:'餐酒搭配與保存'},
+ {id:'W15',lv:4,t:'酒精與健康、法律'},
+ {id:'final',lv:5,t:'結業測驗與證書'}
+];
+const LV=['','第一階段・入門：認識酒','第二階段・基礎：酒怎麼做出來','第三階段・進階：東西方的酒','第四階段・專業：品飲、分辨與健康','結業'];
+const LVDESC=['','發酵、歷史、釀造／蒸餾／配製','糖化、葡萄酒、品種產區、啤酒','白酒黃酒清酒、六大烈酒、熟成、調酒','品飲方法、分辨、搭配保存、健康法律'];
+const Q={
+W1:[{q:'酒精是怎麼產生的？',o:['酵母把糖變成酒精和二氧化碳','把水煮沸','加入化學藥劑'],a:0,e:'所有的酒都靠酵母發酵。'},
+ {q:'「酒」字右邊的「酉」原本是什麼？',o:['酒罈的象形','太陽','一種鳥'],a:0,e:'甲骨文的酉就是尖底酒罈；醉、釀、醇都有酉。'},
+ {q:'酒標上「酒精濃度 5%」是什麼意思？',o:['100 毫升裡有 5 毫升酒精','含 5 公克糖','可以放 5 年'],a:0,e:'中文常說 5 度。'}],
+W2:[{q:'目前已知最早的酒的痕跡在哪裡發現？',o:['中國河南賈湖','美國紐約','澳洲雪梨'],a:0,e:'約九千年前的陶器裡有米、蜂蜜、水果混合發酵飲料的痕跡。'},
+ {q:'古代很多人每天喝酒或啤酒的原因之一是？',o:['當時很多水不乾淨','酒比較便宜','法律規定'],a:0,e:'今天有乾淨飲用水，這個理由已不存在。'},
+ {q:'美國禁酒令大約持續了多久？',o:['13 年（1920–1933）','100 年','1 個月'],a:0,e:'結果私酒和犯罪大增，最後廢除。'}],
+W3:[{q:'威士忌屬於哪一類酒？',o:['蒸餾酒','釀造酒','配製酒'],a:0,e:'把麥芽釀的酒再蒸餾而成。'},
+ {q:'為什麼能用蒸餾提高酒精濃度？',o:['酒精約 78°C 沸騰，比水的 100°C 低','酒精比較重','酒精會結冰'],a:0,e:'酒精比水先變成蒸氣。'},
+ {q:'釀造酒為什麼最高只到 15% 左右？',o:['酒精太多酵母就被毒到停工','糖會用完一半','法律限制'],a:0,e:'想更濃只能靠蒸餾。'},
+ {q:'whisky 一字來自蓋爾語，原意是？',o:['生命之水','燒過的酒','小水'],a:0,e:'uisge beatha＝water of life。'}],
+W4:[{q:'米、麥要釀酒，為什麼要先「糖化」？',o:['酵母只吃糖，不吃澱粉','讓顏色變漂亮','讓它變冷'],a:0,e:'先用酵素把澱粉切成糖。'},
+ {q:'東方釀酒常用來糖化的是？',o:['麴（黴菌）','啤酒花','橡木'],a:0,e:'西方用麥芽，東方用麴。'},
+ {q:'清酒、紹興酒的「並行複發酵」是指？',o:['糖化和發酵同時進行','只發酵一天','蒸餾兩次'],a:0,e:'所以能發酵到約 18～20%。'}],
+W5:[{q:'紅酒的紅色來自哪裡？',o:['葡萄皮','葡萄果肉','加了色素'],a:0,e:'紫葡萄的果肉幾乎是透明的。'},
+ {q:'紅葡萄可以做成白酒嗎？',o:['可以，只用汁不泡皮','不行','要加漂白劑'],a:0,e:'法文 Blanc de Noirs（黑中白）。'},
+ {q:'哪裡的氣泡酒才能叫「香檳」？',o:['法國香檳區','任何國家','只要有氣泡'],a:0,e:'以地名保護產品。'},
+ {q:'紅酒的澀感來自單寧，它和什麼是親戚？',o:['茶的多酚','糖','鹽'],a:0,e:'都屬於多酚家族。'}],
+W6:[{q:'舊世界酒標通常強調什麼？',o:['產區','品種','卡通圖案'],a:0,e:'新世界常直接寫品種。'},
+ {q:'皮薄、顏色淺、被稱為「心碎葡萄」的是？',o:['黑皮諾','卡本內蘇維濃','希哈'],a:0,e:'很難種，布根地代表。'},
+ {q:'Syrah 和 Shiraz 是？',o:['同一個品種，不同地方的叫法','兩種完全不同的葡萄','一種啤酒'],a:0,e:'法國叫 Syrah，澳洲叫 Shiraz。'}],
+W7:[{q:'啤酒的苦味和香氣主要來自？',o:['啤酒花','麥芽','水'],a:0,e:'啤酒花也有助於保存。'},
+ {q:'Lager 這個字在德文的意思是？',o:['儲存','苦的','金色'],a:0,e:'以前在冷山洞中低溫儲存。'},
+ {q:'IPA 傳說為什麼要加很多啤酒花？',o:['讓啤酒經得起運到印度的長途航程','讓顏色變黑','讓它變甜'],a:0,e:'苦香味道因此流行。'},
+ {q:'1516 年德國啤酒純釀法規定的原料是？',o:['大麥、啤酒花、水','米、糖、水','葡萄、水、酵母'],a:0,e:'當時還不知道有酵母。'}],
+W8:[{q:'中國白酒常用的主要原料是？',o:['高粱','葡萄','甘蔗'],a:0,e:'在窖池固態發酵後蒸餾。'},
+ {q:'清酒的「精米步合 50%」是什麼意思？',o:['米磨掉一半，剩 50%','酒精 50%','米和水各一半'],a:0,e:'大吟釀要 50% 以下。'},
+ {q:'「女兒紅」屬於哪一種酒？',o:['紹興黃酒','威士忌','啤酒'],a:0,e:'傳說女兒出生時埋酒，出嫁時挖出。'}],
+W9:[{q:'白蘭地是用什麼蒸餾的？',o:['葡萄酒','啤酒','甘蔗汁'],a:0,e:'brandewijn＝燒過的酒。'},
+ {q:'蘭姆酒的原料是？',o:['甘蔗（糖蜜或甘蔗汁）','馬鈴薯','龍舌蘭'],a:0,e:'加勒比海一帶最有名。'},
+ {q:'琴酒特有的松針香來自？',o:['杜松子','橡木桶','咖啡豆'],a:0,e:'genever 是荷蘭語杜松子。'},
+ {q:'威士忌熟成時被蒸發掉的部分，被稱為？',o:['天使的分享','魔鬼的稅','精靈的禮物'],a:0,e:'蘇格蘭大約每年 2%。'}],
+W10:[{q:'剛蒸餾出來的威士忌是什麼顏色？',o:['透明','琥珀色','紅色'],a:0,e:'顏色主要來自橡木桶。'},
+ {q:'一瓶「12 年」威士忌放在家裡 10 年，它變成？',o:['還是 12 年','22 年','2 年'],a:0,e:'烈酒年份只算木桶中的時間。'},
+ {q:'葡萄酒標上的年份是指？',o:['葡萄採收的年份','裝瓶的年份','酒莊成立年份'],a:0,e:'每年天氣不同，品質也不同。'},
+ {q:'軟木塞是用什麼做的？',o:['栓皮櫟的樹皮','塑膠','竹子'],a:0,e:'剝皮不用砍樹，約九年長回來。'}],
+W11:[{q:'Liqueur（利口酒）的拉丁文原意是？',o:['溶解','冰冷','甜'],a:0,e:'把香草水果的味道溶進酒裡。'},
+ {q:'Mocktail 是什麼？',o:['不加酒的調飲','很烈的調酒','一種啤酒'],a:0,e:'mock（模仿）＋ cocktail。'},
+ {q:'漸層飲料為什麼能分層？',o:['含糖多的比較重會沉在下面','顏色不同會互相排斥','冰塊擋住'],a:0,e:'密度不同，慢慢倒就會分層。'}],
+W12:[{q:'酒淚（酒腿）多代表什麼？',o:['酒精或糖分比較高','品質一定比較好','酒壞了'],a:0,e:'是物理現象，和品質無關。'},
+ {q:'酒標上「干型」是什麼意思？',o:['不甜','很乾燥','很烈'],a:0,e:'法文 sec、英文 dry。'},
+ {q:'皮革、蘑菇、果乾的香氣屬於第幾層香氣？',o:['第三層（熟成）','第一層（葡萄）','第二層（發酵）'],a:0,e:'長時間熟成才出現。'},
+ {q:'「紅酒室溫喝」的室溫原本是指？',o:['歐洲約 16～18°C','熱帶的 32°C','冰箱的 4°C'],a:0,e:'熱帶地區反而要稍微冰一下。'}],
+W13:[{q:'無色透明、味道很淡、用穀物或馬鈴薯蒸餾的是？',o:['伏特加','白蘭地','紹興酒'],a:0,e:'vodka＝小水。'},
+ {q:'分辨酒的第一個問題通常是？',o:['原料是什麼','瓶子漂不漂亮','價格多少'],a:0,e:'原料、釀造或蒸餾、木桶、加糖風味。'},
+ {q:'金黃色、有泡沫、酒精約 5%、用麥芽和啤酒花，是？',o:['啤酒','威士忌','清酒'],a:0,e:'低度釀造酒＋啤酒花＝啤酒。'}],
+W14:[{q:'紅酒配牛排是經典，主要因為？',o:['單寧和蛋白質、油脂相互柔化','顏色一樣','溫度一樣'],a:0,e:'澀感會變柔和。'},
+ {q:'葡萄酒為什麼要橫放？',o:['讓軟木塞保持濕潤不乾縮','比較好看','比較快熟成'],a:0,e:'烈酒則要直立。'},
+ {q:'配甜點時，酒應該？',o:['比甜點更甜','完全不甜','越酸越好'],a:0,e:'不然酒會變得又酸又苦。'}],
+W15:[{q:'酒精在肝臟分解時產生的有毒物質是？',o:['乙醛','維生素','蛋白質'],a:0,e:'會讓人臉紅、頭痛，也會致癌。'},
+ {q:'喝酒會臉紅代表？',o:['分解乙醛的能力較弱，是身體的警訊','酒量很好','身體很健康'],a:0,e:'這類人喝酒罹癌風險更高。'},
+ {q:'世界衛生組織 2023 年對飲酒量的說法是？',o:['沒有安全的飲酒量','每天一杯最健康','越多越好'],a:0,e:'喝越少越好。'},
+ {q:'發現有人喝酒後叫不醒、呼吸很慢，應該？',o:['立刻打急救電話並讓他側躺','讓他自己睡','給他喝咖啡'],a:0,e:'這是急性酒精中毒的危險徵兆。'}]
+};
+const QEXTRA=[
+ {q:'龍舌蘭酒的原料龍舌蘭是仙人掌嗎？',o:['不是','是','是一種樹'],a:0,e:'龍舌蘭是另一類多肉植物。'},
+ {q:'波本威士忌規定至少要用多少玉米？',o:['51%','10%','100%'],a:0,e:'還必須用全新燒烤橡木桶。'},
+ {q:'干邑等級 XO 至少熟成幾年？',o:['10 年','1 年','50 年'],a:0,e:'VS 2 年、VSOP 4 年、XO 10 年。'},
+ {q:'一個「標準杯」通常是指多少純酒精？',o:['10 公克','1 公克','100 公克'],a:0,e:'容量 × 酒精濃度 × 0.8。'}
+];
+const GL=[
+['發酵','','W1','酵母把糖變成酒精和二氧化碳的過程。'],
+['酵母','','W1','一種單細胞真菌，釀酒、做麵包都靠它。'],
+['乙醇','','W1','酒裡的酒精學名。'],
+['酉','yǒu','W1','尖底酒罈的象形字，和酒有關的字多帶酉。'],
+['酒精濃度（度）','% vol','W1','100 毫升酒中所含酒精的毫升數。'],
+['Proof','','W1','美國酒精標準度，是酒精濃度的兩倍；傳說源自火藥驗酒。'],
+['賈湖遺址','','W2','中國河南新石器時代遺址，發現約九千年前的發酵飲料痕跡。'],
+['禁酒令','','W2','美國 1920–1933 年禁止製造販賣酒類的法律。'],
+['杜康','','W2','傳說中造酒的人，後來成為酒的代稱。'],
+['釀造酒','','W3','只經發酵的酒，約 3～15%，如葡萄酒、啤酒、清酒。'],
+['蒸餾酒','','W3','把釀造酒蒸餾濃縮的烈酒。'],
+['配製酒','','W3','用酒浸泡或調和其他材料，如利口酒、梅酒。'],
+['生命之水','aqua vitae','W3','中世紀對蒸餾烈酒的稱呼，whisky、eau-de-vie 等都源自它。'],
+['糖化','','W4','用酵素把澱粉分解成糖。'],
+['麥芽','malt','W4','發芽後烘乾的大麥，能把澱粉變成糖。'],
+['麴','qū','W4','培養了黴菌的穀物，東方釀酒糖化用；簡體作「曲」。'],
+['並行複發酵','','W4','糖化與發酵同時進行，清酒、黃酒的方式。'],
+['單寧','tannin','W5','葡萄皮籽與橡木中的多酚，帶來澀感。'],
+['粉紅酒','rosé','W5','紅葡萄只短暫浸皮釀成的酒。'],
+['白中白／黑中白','Blanc de Blancs / Noirs','W5','白葡萄或紅葡萄釀的白色氣泡酒。'],
+['香檳','Champagne','W5','只有法國香檳區依規定釀的氣泡酒才能用此名。'],
+['加烈酒','fortified wine','W5','發酵中或後加入烈酒的葡萄酒，如波特、雪莉。'],
+['舊世界／新世界','','W6','歐洲傳統產國／美澳紐智阿南非等後起產國。'],
+['混釀','blend','W6','把不同品種葡萄的酒調配在一起，如波爾多。'],
+['風土','terroir','W6','氣候、土壤、坡度、日照等自然條件的總和。'],
+['啤酒花','hops','W7','啤酒的苦味與香氣來源，也有助保存。'],
+['純釀法','Reinheitsgebot','W7','1516 年德國規定啤酒只能用大麥、啤酒花和水。'],
+['艾爾','Ale','W7','上層發酵、溫度較高的啤酒，果香較多。'],
+['拉格','Lager','W7','下層低溫發酵並低溫儲存的啤酒，德文 lagern＝儲存。'],
+['皮爾森','Pilsner','W7','1842 年捷克比爾森誕生的金黃拉格。'],
+['IPA','','W7','印度淡色艾爾，啤酒花多、苦香。'],
+['世濤','Stout','W7','用深烘麥芽、黑色、咖啡巧克力味的啤酒。'],
+['白酒（中國）','','W8','以高粱等穀物加麴、窖池固態發酵後蒸餾的烈酒。'],
+['香型','','W8','白酒依香氣分類：醬香、濃香、清香、米香等。'],
+['窖池','','W8','白酒發酵用的泥窖，越老微生物越豐富。'],
+['黃酒','','W8','糯米與麥麴釀造的酒，紹興酒最有名。'],
+['精米步合','','W8','清酒用米磨完後剩下的比例；吟釀 ≤60%、大吟釀 ≤50%。'],
+['杜氏','tōji','W8','日本清酒釀造的總師傅。'],
+['燒酎／燒酒','shochu / soju','W8','日本／韓國的蒸餾酒。'],
+['單一麥芽','single malt','W9','同一家酒廠、只用大麥麥芽的威士忌。'],
+['泥煤','peat','W9','烘麥芽時燃燒的泥炭，帶來煙燻味。'],
+['波本','Bourbon','W9','美國威士忌，至少 51% 玉米、全新燒烤橡木桶。'],
+['天使的分享','Angels\' share','W9','熟成時從桶中蒸發掉的酒。'],
+['干邑','Cognac','W9','法國干邑區的白蘭地；VS／VSOP／XO 表示熟成年份。'],
+['杜松子','juniper','W9','琴酒的主要香料。'],
+['龍舌蘭','agave','W9','墨西哥多肉植物，不是仙人掌；Tequila 的原料。'],
+['熟成','','W10','酒在木桶或瓶中隨時間慢慢變化。'],
+['年份','Vintage','W10','葡萄採收的年份。'],
+['雪莉桶','sherry cask','W10','裝過西班牙雪莉酒的橡木桶，常用來熟成威士忌。'],
+['木塞味','corked','W10','軟木塞污染造成的濕紙箱味，是缺陷。'],
+['利口酒','liqueur','W11','烈酒加糖與風味，拉丁文「溶解」。'],
+['雞尾酒','cocktail','W11','以基酒調配酸甜等材料的飲品，名字由來眾說紛紜。'],
+['無酒精調酒','Mocktail','W11','模仿雞尾酒、但不加酒的調飲。'],
+['侍酒師','Sommelier','W12','餐廳中負責選酒與服務的專業人員。'],
+['酒淚／酒腿','legs','W12','搖杯後杯壁流下的痕跡，與酒精糖分有關，非品質指標。'],
+['三層香氣','','W12','葡萄本身、發酵釀造、熟成三種來源的香氣。'],
+['干型','dry / sec','W12','不甜的意思。'],
+['酒體','body','W12','酒在嘴裡的厚薄重量感。'],
+['醒酒','decanting','W12','把酒倒入醒酒器，讓它接觸空氣或分離沉澱。'],
+['AOC／DOCG','','W13','法國／義大利的原產地命名等級制度。'],
+['餐酒搭配','pairing','W14','依重量、酸、單寧、甜度等原則搭配食物與酒。'],
+['乙醛','','W15','酒精分解的有毒中間產物，會致癌、使人臉紅。'],
+['一級致癌物','','W15','國際癌症研究機構確認對人類致癌的物質，酒精屬之。'],
+['標準杯','standard drink','W15','常以 10 公克純酒精計算。'],
+['急性酒精中毒','','W15','短時間大量飲酒造成的危險狀態，需立即就醫。']
+];
+
+/* ===== 共用引擎（茶・咖啡・酒課程通用）===== */
+function lerp(a,b,t){return a+(b-a)*t}
+function hex(c){return [1,3,5].map(i=>parseInt(c.substr(i,2),16))}
+function mix(stops,v){for(let i=0;i<stops.length-1;i++){const[a,ca]=stops[i],[b,cb]=stops[i+1];if(v<=b){const t=(v-a)/(b-a),x=hex(ca),y=hex(cb);return'rgb('+x.map((n,k)=>Math.round(lerp(n,y[k],t))).join(',')+')'}}return stops[stops.length-1][1]}
+function $(id){return document.getElementById(id)}
+
+let S={done:{},last:'home'};
+try{const x=JSON.parse(localStorage.getItem(COURSE.key)||'null');if(x&&x.done)S=x;}catch(e){}
+function save(){try{localStorage.setItem(COURSE.key,JSON.stringify(S))}catch(e){}}
+function nextUndone(){const l=LESSONS.find(l=>!S.done[l.id]);return l?l.id:'final'}
+function lessonNo(id){return LESSONS.findIndex(l=>l.id===id)+1}
+
+function progress(){
+  const n=LESSONS.filter(l=>l.id!=='final'&&S.done[l.id]).length, tot=LESSONS.length-1;
+  const p=Math.round(n/tot*100);
+  $('pbar').style.width=p+'%';$('ptxt').textContent=p+'%';
+  const sb=$('startBtn');
+  if(sb) sb.textContent = n===0?'▶ 開始上課':(n>=tot?'🎓 前往結業測驗':'▶ 繼續上課（第 '+(n+1)+' 課）');
+}
+function buildMenus(){
+  let h='',m='';
+  for(let lv=1;lv<=5;lv++){
+    const ls=LESSONS.filter(l=>l.lv===lv);
+    h+='<div class="lv-h">'+LV[lv]+'</div>';
+    ls.forEach(l=>{const i=LESSONS.indexOf(l);
+      h+='<div class="li '+(S.done[l.id]?'done ':'')+(S.last===l.id?'cur':'')+'" onclick="go(\''+l.id+'\')"><span class="n">'+(S.done[l.id]?'✓':(l.id==='final'?'🎓':i+1))+'</span>'+l.t+'</div>';});
+    if(lv<5){
+      m+='<div class="lvcard"><span class="tag '+(lv>1?'l'+lv:'')+'">'+LV[lv].split('：')[0]+'</span><h3>'+LV[lv].split('：')[1]+'</h3><p style="margin:.2em 0 .6em;color:var(--muted);font-size:.92em">'+LVDESC[lv]+'</p><div class="chips">';
+      ls.forEach(l=>{const i=LESSONS.indexOf(l);m+='<span class="chip '+(S.done[l.id]?'done':'')+'" onclick="go(\''+l.id+'\')">'+(i+1)+'. '+l.t+'</span>'});
+      m+='</div></div>';
+    }
+  }
+  h+='<div class="lv-h">附錄</div><div class="li" onclick="go(\'gloss\')"><span class="n">📖</span>名詞辭典</div><div class="li" onclick="go(\'home\')"><span class="n">🏠</span>回首頁</div>';
+  h+='<div style="margin-top:20px"><button class="mbtn" onclick="if(confirm(\'確定要清除學習進度嗎？\')){S={done:{},last:\'home\'};save();location.reload()}">清除進度</button></div>';
+  $('dlist').innerHTML=h;
+  $('lvmap').innerHTML=m+'<div class="lvcard"><h3 style="margin:0 0 6px">🎓 結業</h3><div class="chips"><span class="chip" onclick="go(\'final\')">結業測驗與證書</span><span class="chip" onclick="go(\'gloss\')">📖 名詞辭典</span></div></div>';
+}
+function drawer(on){$('drawer').classList.toggle('on',on)}
+function go(id){
+  if(!$(id))id='home';
+  window.AC_COURSE_GO=function(v){go(v)};window.AC_COURSE_POSITION=id;
+  document.querySelectorAll('section.page').forEach(s=>s.classList.toggle('on',s.id===id));
+  S.last=id;save();drawer(false);buildMenus();progress();
+  window.scrollTo(0,0);
+  document.querySelectorAll('#'+id+' .bars').forEach(b=>animBars(b));
+  if(id==='final'&&!finalBuilt)newFinal();
+  if(COURSE.onShow)COURSE.onShow(id);
+}
+function buildNav(){
+  document.querySelectorAll('[data-nav]').forEach(d=>{
+    const id=d.dataset.nav,i=LESSONS.findIndex(l=>l.id===id);
+    const prev=LESSONS[i-1],next=LESSONS[i+1];
+    let h=prev?'<button class="btn ghost" onclick="go(\''+prev.id+'\')">← 上一課</button>':'<button class="btn ghost" onclick="go(\'home\')">← 首頁</button>';
+    if(next)h+='<button class="btn" onclick="finish(\''+id+'\',\''+next.id+'\')">完成，下一課：'+next.t+' →</button>';
+    else h+='<button class="btn" onclick="go(\'gloss\')">📖 名詞辭典 →</button>';
+    d.innerHTML=h;
+  });
+}
+function finish(id,next){S.done[id]=true;save();go(next)}
+function animBars(b){b.querySelectorAll('.t i[data-w]').forEach(i=>{i.style.width='0';setTimeout(()=>i.style.width=i.dataset.w+'%',80)})}
+
+/* 測驗 */
+function shuf(q){const idx=q.o.map((_,i)=>i).sort(()=>Math.random()-.5);return{q:q.q,o:idx.map(i=>q.o[i]),a:idx.indexOf(q.a),e:q.e}}
+function renderQuiz(box,list,onDone){
+  list=list.map(shuf);
+  let h='<h3>📝 小測驗</h3>',ans=0,ok=0;
+  list.forEach((x,i)=>{
+    h+='<div class="qq">'+(i+1)+'. '+x.q+'</div><div class="opts">';
+    x.o.forEach((o,j)=>h+='<button class="opt" data-i="'+i+'" data-j="'+j+'">'+String.fromCharCode(65+j)+'. '+o+'</button>');
+    h+='</div><div class="exp" id="'+box.id+'e'+i+'"></div>';
+  });
+  h+='<div class="qres"></div>';
+  box.innerHTML=h;
+  box.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i,j=+b.dataset.j,x=list[i];
+    box.querySelectorAll('.opt[data-i="'+i+'"]').forEach(s=>{s.disabled=true;if(+s.dataset.j===x.a)s.classList.add('ok')});
+    if(j!==x.a)b.classList.add('no');else ok++;
+    const e=$(box.id+'e'+i);
+    e.innerHTML=(j===x.a?'✅ 答對了！':'❌ 正確答案是 '+String.fromCharCode(65+x.a)+'。')+' '+x.e;e.classList.add('on');
+    ans++;
+    if(ans===list.length){
+      box.querySelector('.qres').innerHTML='答對 '+ok+' / '+list.length+' 題。'+(ok===list.length?' 🎉 全對，太厲害了！':' 可以回頭再看一下課文喔。')+(onDone?'':'<button class="btn sm ghost" style="margin-left:8px" onclick="redoQuiz(this)">再做一次</button>');
+      if(onDone)onDone(ok,list.length);
+    }
+  });
+}
+function redoQuiz(btn){const box=btn.closest('.quiz');renderQuiz(box,Q[box.dataset.quiz])}
+let finalBuilt=false;
+function newFinal(){
+  finalBuilt=true;
+  const pool=[].concat(...Object.values(Q),QEXTRA);
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}
+  const box=$('finalQuiz');
+  renderQuiz(box,pool.slice(0,15),(ok)=>{
+    const r=box.querySelector('.qres');
+    if(ok>=12){r.innerHTML+='<br>🎓 恭喜通過！請在下方產生你的證書。';$('certWrap').style.display='block';S.final=ok;S.done.final=true;save();progress();buildMenus()}
+    else r.innerHTML+='<br>還差一點點（需要 12 題）。按「重新出題」再挑戰一次！';
+  });
+  $('certWrap').style.display='none';
+}
+function makeCert(){
+  const n=$('certName').value.trim()||COURSE.defaultName;
+  $('certNm').textContent=n;
+  $('certScore').textContent=(S.final||12)+' / 15';
+  const d=new Date();$('certDate').textContent=d.getFullYear()+' 年 '+(d.getMonth()+1)+' 月 '+d.getDate()+' 日';
+  $('cert').style.display='block';
+}
+
+/* 通用：製程動畫 */
+function makeStepper(pfx,PROC){
+  let cur=Object.keys(PROC)[0],tm=null;
+  const tabs=$(pfx+'tabs'),steps=$(pfx+'steps'),desc=$(pfx+'desc');
+  function sel(k){cur=k;clearInterval(tm);
+    tabs.querySelectorAll('button').forEach(b=>{const on=b.dataset.k===k;b.classList.toggle('on',on);b.style.background=on?PROC[k].c:'#fff'});
+    const s=PROC[k].s;steps.innerHTML=s.map((x,i)=>(i?'<span class="arrow">→</span>':'')+'<div class="step" data-i="'+i+'"><span class="ic">'+x[0]+'</span>'+x[1]+'</div>').join('');
+    steps.querySelectorAll('.step').forEach(e=>e.onclick=()=>show(+e.dataset.i));
+    desc.innerHTML='<b>'+k+'</b>共 '+s.length+' 個步驟。按「播放」或點各步驟看說明。'+(PROC[k].n?'<br>'+PROC[k].n:'')}
+  function show(i){const s=PROC[cur].s;steps.querySelectorAll('.step').forEach((e,k)=>e.classList.toggle('on',k===i));desc.innerHTML='<b>'+s[i][0]+' 第 '+(i+1)+' 步：'+s[i][1]+'</b><br>'+s[i][2]}
+  Object.keys(PROC).forEach(k=>{const b=document.createElement('button');b.textContent=k;b.dataset.k=k;b.onclick=()=>sel(k);tabs.appendChild(b)});
+  $(pfx+'play').onclick=()=>{clearInterval(tm);let i=0;show(0);tm=setInterval(()=>{i++;if(i>=PROC[cur].s.length){clearInterval(tm);return}show(i)},2200)};
+  sel(cur);
+}
+
+/* 通用：偵探遊戲 */
+function makeGame(TYPES,GAME,goodAt,failTip){
+  let gi=0,gok=0,gans=0,ord=[];
+  function start(){ord=GAME.map((_,i)=>i).sort(()=>Math.random()-.5);gi=0;gok=0;gans=0;$('gScore').textContent='0 / 0';show()}
+  function show(){
+    const n=$('gNext');
+    if(gi>=ord.length){$('gTitle').textContent='挑戰結束！';$('gClues').innerHTML='<p style="font-size:1.1em">你答對了 <b>'+gok+' / '+ord.length+'</b> 題。'+(gok>=goodAt?'🕵️ 你是合格的偵探！':failTip)+'</p>';$('gOpts').innerHTML='';$('gMsg').innerHTML='';n.textContent='🔄 再玩一次';n.style.display='inline-flex';n.onclick=start;return}
+    const x=GAME[ord[gi]];
+    $('gTitle').textContent='第 '+(gi+1)+' 題 / 共 '+ord.length+' 題';
+    $('gClues').innerHTML=(x.sw||[]).map(s=>'<div class="clue"><span class="sw" style="background:'+s[0]+'"></span>'+s[1]+'</div>').join('')+x.c.map(c=>'<div class="clue">🔎 '+c+'</div>').join('');
+    $('gOpts').innerHTML=TYPES.map(t=>'<button style="background:'+t[1]+'" data-t="'+t[0]+'">'+t[0]+'</button>').join('');
+    $('gMsg').innerHTML='';n.style.display='none';
+    $('gOpts').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+      $('gOpts').querySelectorAll('button').forEach(z=>{z.disabled=true;z.style.opacity=z.dataset.t===x.a?1:.35});
+      gans++;const ok=b.dataset.t===x.a;if(ok)gok++;
+      $('gMsg').innerHTML=(ok?'✅ 答對！':'❌ 答案是 <b>'+x.a+'</b>。')+' '+x.e;
+      $('gScore').textContent=gok+' / '+gans;
+      n.textContent='下一題 →';n.style.display='inline-flex';n.onclick=()=>{gi++;show()};
+    });
+  }
+  start();
+}
+
+/* 通用：點選說明圖 */
+function bindParts(sel,info,out){document.querySelectorAll(sel).forEach(p=>p.addEventListener('click',()=>{$(out).innerHTML=info[p.dataset.p]}))}
+
+/* 通用：時間軸 */
+function makeTimeline(btnId,panelId,TL){
+  const b=$(btnId);
+  function tl(i){b.querySelectorAll('button').forEach((e,k)=>e.classList.toggle('on',k===i));
+    const x=TL[i],p=$(panelId);p.style.animation='none';p.offsetHeight;p.style.animation='';
+    p.innerHTML='<span class="big">'+x.i+'</span><b style="font-family:var(--serif);font-size:1.15em">'+x.n+'：'+x.h+'</b><p>'+x.t+'</p>'}
+  TL.forEach((x,i)=>{const e=document.createElement('button');e.textContent=x.n;e.onclick=()=>tl(i);b.appendChild(e)});tl(0);
+}
+
+/* 通用：是不是 X 小遊戲 */
+function makeSort(boxId,msgId,ITEMS,yes,no){
+  const b=$(boxId);ITEMS.forEach(x=>{const e=document.createElement('button');e.innerHTML=x[0]+'<small>點我猜</small>';e.onclick=()=>{e.classList.add(x[1]?'ok':'no');e.innerHTML=x[0]+'<small>'+(x[1]?'✅ '+yes:'❌ '+no)+'</small>';$(msgId).innerHTML='<b>'+x[0]+'</b>：'+x[2]};b.appendChild(e)});
+}
+
+function glRender(q){q=(q||'').trim();const l=GL.filter(x=>!q||x.join(' ').includes(q));
+ $('glist').innerHTML=l.length?l.map(x=>'<div class="gi"><b>'+x[0]+'</b>'+(x[1]?'<span class="py">'+x[1]+'</span>':'')+'<a href="#" class="tag lvx" onclick="go(\''+x[2]+'\');return false">第 '+lessonNo(x[2])+' 課</a><br>'+x[3]+'</div>').join(''):'<p>找不到「'+q+'」，換個關鍵字試試。</p>'}
+
+function boot(){
+  document.querySelectorAll('[data-quiz]').forEach((b,k)=>{b.id='qz'+k;renderQuiz(b,Q[b.dataset.quiz])});
+  $('finalNew').onclick=newFinal;
+  $('gq').oninput=e=>glRender(e.target.value);glRender();
+  buildNav();buildMenus();progress();
+  if(S.last&&S.last!=='home'&&$(S.last))go(S.last);
+}
+
+/* W1 發酵觀察瓶 */
+(function(){const r=$('fR');let bt='';for(let i=0;i<12;i++){bt+='<circle class="bub" cx="'+(40+Math.random()*60)+'" cy="'+(130+Math.random()*10)+'" r="'+(2+Math.random()*3)+'" style="animation-delay:'+(Math.random()*2.4).toFixed(2)+'s"/>'}$('fBubbles').innerHTML=bt;
+function upd(){const d=+r.value;$('fDay').textContent=d;
+ const sugar=Math.max(0,100-d*7),alc=Math.min(100,d*7),yeast=d===0?20:d<=8?Math.min(100,30+d*10):Math.max(10,100-(d-8)*8);
+ $('fSugar').style.width=sugar+'%';$('fAlc').style.width=alc+'%';$('fYeast').style.width=yeast+'%';
+ const act=d===0?0:yeast/100;document.querySelectorAll('#fBubbles .bub').forEach((b,i)=>b.style.display=i<Math.round(act*12)?'':'none');
+ $('fLiquid').setAttribute('fill',mix([[0,'#c45a6a'],[14,'#7a1f2b'],[20,'#6a1a26']],d));
+ const pct=(Math.min(14,d)*0.95).toFixed(1);let t;
+ if(d===0)t='剛把葡萄壓碎放進瓶子。酵母剛開始工作，汁還很甜。';
+ else if(d<=4)t='酵母快速繁殖，開始大量吃糖，冒出很多二氧化碳泡泡。';
+ else if(d<=10)t='發酵最旺盛！糖越來越少，酒精越來越多，酒精濃度大約 '+pct+'%。';
+ else if(d<=14)t='糖快被吃完了，酒精也多到讓酵母越來越沒力，泡泡變少。酒精約 '+pct+'%。';
+ else t='發酵結束：糖幾乎吃光，酒精大約 13%，酵母停工、沉到瓶底。這就是一瓶「不甜」的葡萄酒。';
+ $('fDesc').innerHTML=t}
+r.addEventListener('input',upd);upd()})();
+
+/* W2 時間軸 */
+makeTimeline('tlBtns','tlPanel',[
+ {n:'約 9000 年前',i:'🏺',h:'中國賈湖',t:'考古學家在中國河南<b>賈湖遺址</b>的陶器碎片裡，找到米、蜂蜜和水果混合發酵的飲料痕跡，是目前已知最早的酒。'},
+ {n:'約 8000 年前',i:'🍇',h:'喬治亞的葡萄酒',t:'在高加索地區的<b>喬治亞</b>，人們用埋在地下的大陶罐釀葡萄酒，這種陶罐釀法今天還在使用。'},
+ {n:'古代文明',i:'🍺',h:'蘇美與埃及的啤酒',t:'兩河流域的蘇美人有讚美啤酒女神的詩歌，裡面還藏著釀啤酒的方法；古埃及建金字塔的工人，每天都有啤酒配給。'},
+ {n:'古希臘羅馬',i:'🏛️',h:'酒神',t:'希臘人崇拜酒神<b>戴奧尼索斯</b>，羅馬人叫祂巴克斯。羅馬帝國把葡萄種植帶到法國、德國等地，奠定了歐洲葡萄酒的基礎。'},
+ {n:'中世紀',i:'⚗️',h:'蒸餾與修道院',t:'阿拉伯和歐洲的煉金術士發展出<b>蒸餾</b>技術，烈酒誕生，被叫做「生命之水」。歐洲修道院的修士們則細心種葡萄、釀酒、釀啤酒，保存了許多技術。'},
+ {n:'1920–1933',i:'🚫',h:'美國禁酒令',t:'美國全國禁止製造、販賣酒，結果私酒和黑幫犯罪大增，13 年後廢除。這段歷史常被拿來討論「法律與社會」的關係。'},
+ {n:'現代',i:'🔬',h:'科學與健康意識',t:'1800 年代法國科學家<b>巴斯德</b>證明是酵母造成發酵，釀酒進入科學時代。今天醫學研究也越來越清楚酒精對健康的影響（第 15 課）。'}]);
+
+/* W3 蒸餾 */
+(function(){let on=false;$('stillBtn').onclick=()=>{on=!on;$('still').classList.toggle('still-on',on);$('stillBtn').textContent=on?'⏸ 停止加熱':'🔥 開始蒸餾';
+ $('stillDesc').innerHTML=on?'🔥 加熱到大約 78～100°C 之間：<b>酒精比水更容易變成蒸氣</b>往上跑 → 經過冷水包圍的冷卻管，蒸氣變回液體 → 滴下來的就是濃度更高的烈酒。有些酒會蒸餾兩、三次，讓酒精更濃、味道更純淨。':'蒸餾器的形狀有很多種，傳統的叫「壺式蒸餾器」，形狀像一個大銅壺；工業上常用高高的「柱式蒸餾器」，可以連續生產。'}})();
+
+/* W5 葡萄酒製程 */
+makeStepper('p',{
+ '紅酒':{c:'#7a1f2b',s:[['🍇','採收','採下成熟的紅（黑）葡萄。'],['⚙️','去梗破皮','把葡萄梗去掉，輕輕壓破果皮。'],['🫙','帶皮發酵','汁、皮、籽一起發酵，皮裡的色素和單寧溶進酒裡，酒變紅。'],['🗜️','壓榨','把酒液和皮渣分開。'],['🛢️','熟成','放在不鏽鋼槽或橡木桶裡熟成幾個月到幾年。'],['🍾','裝瓶','過濾、裝瓶。']]},
+ '白酒':{c:'#c9a42a',s:[['🍏','採收','採下白葡萄（也可以用紅葡萄）。'],['🗜️','先壓榨','馬上壓榨取汁，把皮丟掉，所以沒有顏色和單寧。'],['🫙','低溫發酵','只用果汁在較低溫度發酵，保留清新果香。'],['🛢️','熟成','多數在不鏽鋼槽，少數（如夏多內）放橡木桶增加奶油香。'],['🍾','裝瓶','過濾、裝瓶。']]},
+ '粉紅酒':{c:'#d87a8a',s:[['🍇','採收','採下紅葡萄。'],['⏱️','短暫泡皮','汁和皮只泡幾小時到一兩天，染上淡淡粉紅色。'],['🗜️','壓榨','把皮撈掉。'],['🫙','發酵','只用粉紅色的汁繼續發酵。'],['🍾','裝瓶','通常趁年輕新鮮時喝。']]},
+ '氣泡酒':{c:'#d8c27a',s:[['🍾','先釀成基酒','先做出不甜的白葡萄酒（基酒）。'],['🍬','加糖和酵母','裝瓶時加入一點糖和酵母，蓋緊瓶蓋。'],['🫧','瓶中二次發酵','酵母在瓶子裡再發酵一次，產生的二氧化碳跑不出去，溶進酒裡變成氣泡。'],['🔄','轉瓶除渣','把瓶子慢慢倒立轉動，讓酵母沉澱集中到瓶口，再冷凍瓶口把沉澱取出。'],['🔒','補液封瓶','補一點酒液，用軟木塞和鐵絲封好。這就是香檳的傳統做法。']]},
+ '加烈酒':{c:'#6a3a2a',s:[['🍇','採收發酵','像一般葡萄酒一樣開始發酵。'],['🥃','加入烈酒','在發酵中或發酵後加入葡萄蒸餾的烈酒，酵母被高酒精殺死而停止。'],['🍯','保留甜味','如果在發酵中途加，糖還沒被吃完，酒就會甜甜的（例如葡萄牙的波特酒）。'],['🛢️','熟成','西班牙的雪莉酒還有特殊的分層熟成方法。']],n:'加烈酒酒精約 15～22%，因為加了烈酒。'}});
+
+/* W10 陳年顏色 */
+(function(){const r=$('agR2');const WH=[[0,'#efeaa8'],[5,'#efd77a'],[15,'#e2a948'],[30,'#b8782e']],RD=[[0,'#5a1a4a'],[4,'#8a1a2e'],[12,'#922c26'],[30,'#8a4a2a']];
+function upd(){const y=+r.value;$('agY').textContent=y;$('agW').setAttribute('fill',mix(WH,y));$('agR').setAttribute('fill',mix(RD,y));
+ let t;if(y<=2)t='<b>年輕的酒</b>：白酒是淡淡的檸檬黃、帶綠光；紅酒是帶紫色的深紅。香氣以新鮮水果為主。';
+ else if(y<=8)t='<b>熟成中</b>：白酒轉為金黃；紅酒紫色退去，成為寶石紅、石榴紅。開始出現熟成的香氣。';
+ else t='<b>老酒</b>：白酒變成深金、琥珀色；紅酒邊緣變成磚紅、褐色。香氣出現果乾、皮革、蘑菇、蜂蜜等第三層香氣。<br><small>※ 並不是每一瓶酒都適合久放，大部分的葡萄酒做出來就是要在幾年內喝的。</small>';
+ $('agD').innerHTML=t}
+r.addEventListener('input',upd);upd()})();
+
+/* W13 偵探遊戲 */
+makeGame([['啤酒','#c9a42a'],['葡萄酒','#7a1f2b'],['清酒・黃酒','#7a8a5a'],['威士忌・白蘭地','#a0602a'],['透明烈酒','#6a8aa8'],['利口酒','#9a4a8a']],[
+ {a:'啤酒',sw:[['#e0b84a','顏色：金黃，有白色泡沫']],c:['原料：大麥麥芽、啤酒花','只發酵、沒有蒸餾','酒精約 5%，帶苦味'],e:'麥芽＋啤酒花＋低度＝啤酒（多半是拉格）。'},
+ {a:'葡萄酒',sw:[['#7a1f2b','顏色：深紅、帶紫光']],c:['原料：葡萄','帶皮發酵','酒精約 13.5%，嘴巴有澀感'],e:'葡萄＋帶皮發酵＋單寧＝紅葡萄酒。'},
+ {a:'清酒・黃酒',sw:[['#f3f0dc','顏色：幾乎透明、微微淡黃']],c:['原料：米、米麴、水','並行複發酵，沒有蒸餾','酒精約 15～16%，有水果般的吟釀香'],e:'米＋麴＋釀造＝清酒（吟釀香來自磨得很多的米）。'},
+ {a:'威士忌・白蘭地',sw:[['#b8782e','顏色：琥珀色']],c:['原料：大麥麥芽','蒸餾後放橡木桶多年','酒精 40% 以上，帶香草、煙燻味'],e:'穀物＋蒸餾＋木桶＝威士忌。煙燻味可能來自泥煤。'},
+ {a:'透明烈酒',sw:[['#f4f8fb','顏色：完全透明']],c:['原料：穀物或馬鈴薯','蒸餾很多次並用活性碳過濾','幾乎沒有味道，酒精 40%'],e:'這是伏特加，透明烈酒的代表。'},
+ {a:'利口酒',sw:[['#5a2a1a','顏色：深褐色、濃稠']],c:['以烈酒為底','加了很多糖和咖啡','甜甜的，常用來做提拉米蘇或加牛奶'],e:'烈酒＋糖＋風味＝利口酒（咖啡利口酒）。'},
+ {a:'清酒・黃酒',sw:[['#a0602a','顏色：黃褐、琥珀']],c:['原料：糯米、麥麴','釀造，沒有蒸餾','常用來做醉雞，酒精約 15%'],e:'糯米＋麥麴＋釀造＝紹興黃酒。顏色像琥珀，但沒有蒸餾，所以不是白蘭地！'},
+ {a:'威士忌・白蘭地',sw:[['#a8682a','顏色：深琥珀']],c:['原料：葡萄','葡萄酒蒸餾後放橡木桶','瓶上寫著 VSOP'],e:'葡萄＋蒸餾＋木桶＝白蘭地（干邑）。'},
+ {a:'透明烈酒',sw:[['#f4f8fb','顏色：透明']],c:['原料：高粱和麴','窖池固態發酵後蒸餾','酒精 58%，清香'],e:'金門高粱這類中國白酒，也是透明烈酒。'},
+ {a:'葡萄酒',sw:[['#efe0a0','顏色：淡金黃，有細緻氣泡']],c:['原料：葡萄','在瓶子裡二次發酵','酒精約 12%'],e:'瓶中二次發酵的氣泡葡萄酒（香檳法）。'},
+ {a:'透明烈酒',sw:[['#f4f8fb','顏色：透明']],c:['穀物烈酒加入杜松子等香料再蒸餾','帶松針、柑橘香'],e:'杜松子＝琴酒。'},
+ {a:'啤酒',sw:[['#1a120c','顏色：接近黑色，泡沫是米色']],c:['原料：烘得很深的大麥','只發酵，酒精約 4～7%','有咖啡、巧克力味'],e:'深烘麥芽的黑啤酒＝世濤。'}],9,'多看幾次第 3、9、13 課，再挑戰一次吧！');
+
+/* W14 搭配遊戲 */
+makeSort('pairBox','pairMsg',[
+ ['牛排＋飽滿紅酒',1,'單寧和牛肉的蛋白質、油脂互相柔化，經典搭配。'],
+ ['炸物＋高酸氣泡酒',1,'酸和氣泡能解膩，就像炸物擠檸檬。'],
+ ['很甜的蛋糕＋不甜紅酒',0,'甜點比酒甜，會讓酒變得又酸又苦。要配更甜的甜酒。'],
+ ['清蒸魚＋清爽白酒',1,'輕配輕，彼此不蓋過對方。'],
+ ['麻辣火鍋＋高酒精濃烈紅酒',0,'酒精和單寧會讓辣更刺激。微甜低酒精的白酒比較合適。'],
+ ['生蠔＋清爽白酒',1,'清爽帶礦物感的白酒和海味很合拍。'],
+ ['濃郁燉牛肉＋很淡的白酒',0,'菜太濃，淡的酒會被完全蓋過。'],
+ ['義大利番茄麵＋義大利紅酒',1,'番茄酸度高，配酸度好的義大利紅酒，而且同一個地方的最合拍。']],'合適','不太合適');
+
+/* W15 酒精計算 */
+(function(){const IT=[['🍺 啤酒（一罐 330ml・5%）',330,5],['🍷 葡萄酒（一杯 150ml・13%）',150,13],['🍶 清酒（一杯 180ml・15%）',180,15],['🥃 威士忌（一小杯 30ml・40%）',30,40],['🥃 高粱酒（一小杯 30ml・58%）',30,58],['🍹 罐裝調酒（330ml・4%）',330,4]];
+const cnt=IT.map(()=>0),box=$('aItems');
+IT.forEach((x,i)=>{const g=(x[1]*x[2]/100*0.8).toFixed(1);const d=document.createElement('div');d.className='ki';d.innerHTML='<span>'+x[0]+'<br><small>約 '+g+' 公克酒精</small></span><span><button data-i="'+i+'" data-d="-1">−</button> <b id="ac'+i+'">0</b> <button data-i="'+i+'" data-d="1">＋</button></span>';box.appendChild(d)});
+box.querySelectorAll('button').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;cnt[i]=Math.max(0,cnt[i]+ +b.dataset.d);$('ac'+i).textContent=cnt[i];upd()});
+function upd(){const g=IT.reduce((a,x,i)=>a+x[1]*x[2]/100*0.8*cnt[i],0),sd=g/10;
+ $('aOut').innerHTML=g===0?'按 ＋ 比較看看：一罐啤酒和一小杯高粱，酒精差多少？':'合計約 <b>'+g.toFixed(1)+' 公克</b>純酒精，等於 <b>'+sd.toFixed(1)+' 個標準杯</b>。<br>💡 注意看：一小杯 58 度高粱（約 13.9 公克）的酒精，比一整罐啤酒（約 13.2 公克）還多！酒的「杯子大小」會騙人。<br>肝臟分解酒精的速度大約每小時只有 7 公克上下，而且因人而異，沒有任何方法能讓它變快——咖啡、冷水、流汗都沒用。'}
+upd()})();
+
+boot();
+</script>
+<script src="../../shared/module-shell.js?v=1.4.0" data-group="learning"></script><script src="../../shared/reading-store.js?v=1.4.0"></script><script src="../../shared/reading-progress.js?v=1.4.0" data-course="course-f249d9435f" data-category="drinks"></script></body>
+</html>

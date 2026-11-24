@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>一杯咖啡的學問｜從入門到專業的咖啡課程</title>
+<style>
+:root{
+  --paper:#f6f0e4; --card:#fffdf8; --ink:#2d2a24; --muted:#6f685c; --line:#e4d9c5;
+  --green:#4f7a35; --green2:#e6efd9; --amber:#b9852c; --amber2:#f6ead2; --red:#9a3a24; --red2:#f6e0d8;
+  --dark:#4a2e1c; --blue:#2f5d7c; --blue2:#e0ebf2;
+  --serif:"Noto Serif TC","Songti TC","PMingLiU","MingLiU",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;
+  background-image:radial-gradient(#d9ccb2 1px,transparent 1px);background-size:22px 22px;z-index:-1}
+h1,h2,h3{font-family:var(--serif);line-height:1.4;margin:.2em 0 .5em}
+h2{font-size:1.6em}
+h3{font-size:1.2em;margin-top:1.4em;color:var(--dark)}
+p{margin:.5em 0 .9em}
+b,strong{color:var(--dark)}
+small{color:var(--muted)}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:30;background:rgba(246,240,228,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.top-in{max-width:860px;margin:auto;display:flex;align-items:center;gap:10px;padding:8px 14px}
+.brand{font-family:var(--serif);font-weight:700;font-size:1.05em;cursor:pointer;white-space:nowrap}
+.bar{flex:1;height:8px;background:#e8dfcd;border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--amber),var(--red));transition:width .6s}
+.pct{font-size:.8em;color:var(--muted);min-width:3em;text-align:right}
+.mbtn{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:4px 12px;font-size:.9em;cursor:pointer;color:var(--ink)}
+
+/* drawer */
+.drawer{position:fixed;inset:0;z-index:40;display:none}
+.drawer.on{display:block}
+.drawer .mask{position:absolute;inset:0;background:rgba(40,30,20,.35)}
+.drawer .panel{position:absolute;right:0;top:0;bottom:0;width:min(340px,88vw);background:var(--card);overflow:auto;padding:16px;box-shadow:-6px 0 30px rgba(0,0,0,.15);animation:slin .25s}
+@keyframes slin{from{transform:translateX(40px);opacity:0}}
+.lv-h{font-family:var(--serif);font-weight:700;margin:14px 0 4px;color:var(--muted);font-size:.9em}
+.li{display:flex;gap:8px;align-items:center;padding:7px 8px;border-radius:9px;cursor:pointer;font-size:.95em}
+.li:hover{background:var(--amber2)}
+.li .n{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:.75em;background:#eee5d3;flex:none}
+.li.done .n{background:var(--green);color:#fff}
+.li.cur{background:var(--green2)}
+
+main{max-width:860px;margin:auto;padding:16px 14px 80px}
+section.page{display:none;animation:fade .45s ease}
+section.page.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin:14px 0;box-shadow:0 2px 0 #eadfca}
+.tag{display:inline-block;font-size:.75em;padding:2px 10px;border-radius:20px;background:var(--green2);color:var(--green);font-weight:700;letter-spacing:.05em}
+.tag.l2{background:var(--amber2);color:var(--amber)}
+.tag.l3{background:var(--red2);color:var(--red)}
+.tag.l4{background:var(--blue2);color:var(--blue)}
+.lead{font-size:1.05em;color:#4b463c}
+
+/* boxes */
+.box{border-radius:14px;padding:12px 14px;margin:14px 0;border-left:5px solid}
+.box .bt{font-weight:700;font-size:.9em;margin-bottom:2px}
+.origin{background:#fbf4e4;border-color:var(--amber)}
+.origin .bt::before{content:"📜 名詞由來　"}
+.tip{background:var(--green2);border-color:var(--green)}
+.tip .bt::before{content:"💡 小知識　"}
+.think{background:var(--blue2);border-color:var(--blue)}
+.think .bt::before{content:"🤔 想一想　"}
+.warn{background:var(--red2);border-color:var(--red)}
+.warn .bt::before{content:"⚠️ 注意　"}
+.eg{background:#f3efe7;border-color:#9c8f78}
+.eg .bt::before{content:"🍎 生活比喻　"}
+.recap{background:#fff;border:2px dashed var(--line);border-left:5px solid var(--green)}
+.recap .bt::before{content:"✅ 本課重點　"}
+details{background:#fbf6ec;border-radius:10px;padding:6px 12px;margin:8px 0;border:1px solid var(--line)}
+details summary{cursor:pointer;font-weight:700;color:var(--amber)}
+
+/* tables */
+.tw{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:.9em;background:#fff;border-radius:12px;overflow:hidden}
+th,td{border-bottom:1px solid var(--line);padding:8px 9px;text-align:left;vertical-align:top}
+th{background:#efe6d4;font-family:var(--serif);white-space:nowrap}
+.dot{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:4px;border:1px solid rgba(0,0,0,.15)}
+
+/* grid cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.tc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;position:relative}
+.tc h4{margin:0 0 4px;font-family:var(--serif);font-size:1.1em}
+.tc .k{font-size:.75em;font-weight:700;padding:1px 8px;border-radius:10px;color:#fff;display:inline-block}
+.tc p{font-size:.92em;margin:.4em 0}
+.k.g{background:#5e8a3c}.k.w{background:#b9a46a}.k.y{background:#c9a42a}.k.o{background:#c07a28}.k.r{background:#a8402a}.k.b{background:#5a3422}.k.x{background:#6b6b8c}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:12px;padding:10px 18px;font-size:1em;cursor:pointer;font-family:var(--sans);background:var(--green);color:#fff;font-weight:700;transition:transform .1s,filter .2s}
+.btn:active{transform:scale(.96)}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.am{background:var(--amber)}
+.btn.sm{padding:6px 12px;font-size:.9em}
+.lnav{display:flex;justify-content:space-between;gap:10px;margin-top:26px;flex-wrap:wrap}
+
+/* quiz */
+.quiz{background:#fff;border:2px solid var(--line);border-radius:16px;padding:14px 16px;margin-top:22px}
+.quiz>h3{margin-top:0}
+.qq{margin:14px 0 6px;font-weight:700}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;border:1.5px solid var(--line);background:#fdfaf4;border-radius:11px;padding:9px 12px;font-size:.95em;cursor:pointer;font-family:var(--sans);color:var(--ink)}
+.opt:hover{border-color:var(--amber)}
+.opt.ok{background:#e3f1d6;border-color:var(--green)}
+.opt.no{background:#f9dfd7;border-color:var(--red)}
+.opt[disabled]{cursor:default}
+.exp{font-size:.9em;margin-top:6px;padding:8px 10px;border-radius:9px;background:#f4efe4;display:none}
+.exp.on{display:block;animation:fade .3s}
+.qres{margin-top:12px;font-weight:700}
+
+/* hero */
+.hero{text-align:center;padding:20px 6px 8px}
+.hero h1{font-size:2em;margin-bottom:.2em}
+.hero .sub{color:var(--muted)}
+.steam path{stroke:#c9b99b;stroke-width:3;fill:none;stroke-linecap:round;opacity:0;animation:steam 3.2s infinite}
+.steam path:nth-child(2){animation-delay:1s}
+.steam path:nth-child(3){animation-delay:2s}
+@keyframes steam{0%{opacity:0;transform:translateY(10px)}40%{opacity:.8}100%{opacity:0;transform:translateY(-22px)}}
+.map{display:grid;gap:12px;margin-top:10px}
+.lvcard{border-radius:16px;padding:14px;border:1px solid var(--line);background:#fff}
+.lvcard h3{margin:0 0 6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:.85em;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:#fbf6ec;cursor:pointer}
+.chip.done{background:var(--green);color:#fff;border-color:var(--green)}
+
+/* plant */
+.leafsvg .part{cursor:pointer;transition:filter .2s}
+.leafsvg .part:hover{filter:brightness(1.15)}
+.sway{transform-origin:150px 300px;animation:sway 5s ease-in-out infinite}
+@keyframes sway{50%{transform:rotate(1.6deg)}}
+.lbl{font-size:13px;font-family:var(--sans);fill:var(--ink)}
+
+/* timeline */
+.tl{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}
+.tl button{flex:none;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;cursor:pointer;font-family:var(--sans);font-size:.92em;color:var(--ink)}
+.tl button.on{background:var(--amber);color:#fff;border-color:var(--amber)}
+.tlp{background:#fff;border-radius:14px;border:1px solid var(--line);padding:14px;margin-top:8px;min-height:150px;animation:fade .3s}
+.tlp .big{font-size:2.4em;float:right;margin-left:10px}
+
+/* oxidation */
+.ox{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:center}
+input[type=range]{width:100%;accent-color:var(--amber)}
+.oxlbl{font-family:var(--serif);font-size:1.4em;font-weight:700;text-align:center;transition:color .3s}
+.scale{display:flex;justify-content:space-between;font-size:.75em;color:var(--muted)}
+
+/* process */
+.ptabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.ptabs button{border:1.5px solid var(--line);background:#fff;border-radius:20px;padding:5px 12px;cursor:pointer;font-family:var(--sans);font-size:.9em;color:var(--ink)}
+.ptabs button.on{color:#fff;border-color:transparent}
+.steps{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.step{background:#fff;border:2px solid var(--line);border-radius:12px;padding:6px 10px;text-align:center;font-size:.85em;min-width:64px;transition:all .3s}
+.step .ic{font-size:1.5em;display:block}
+.step.on{transform:translateY(-4px) scale(1.06);border-color:var(--amber);box-shadow:0 6px 14px rgba(185,133,44,.25);background:var(--amber2)}
+.arrow{color:#bba987;font-size:1.1em}
+.pdesc{margin-top:10px;background:#fbf6ec;border-radius:12px;padding:10px 12px;min-height:60px;font-size:.95em}
+
+/* soup colors */
+.soups{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.soup{text-align:center;font-size:.85em}
+.soup .c{width:78px;height:78px;border-radius:50%;margin:0 auto 4px;border:6px solid #fff;box-shadow:0 0 0 1px var(--line),inset 0 -8px 16px rgba(0,0,0,.12)}
+
+/* game */
+.game{background:#fff;border:2px solid var(--amber);border-radius:16px;padding:14px}
+.clue{display:flex;gap:10px;align-items:center;margin:6px 0;font-size:.95em}
+.clue .sw{width:34px;height:34px;border-radius:50%;flex:none;border:3px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.gopts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.gopts button{padding:10px 4px;border-radius:12px;border:none;color:#fff;font-weight:700;font-size:1em;cursor:pointer;font-family:var(--sans)}
+.gmsg{margin-top:10px;font-size:.95em;min-height:2em}
+.score{float:right;font-weight:700;color:var(--amber)}
+
+/* is-tea */
+.istea{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.istea button{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px;cursor:pointer;font-family:var(--sans);font-size:.95em;color:var(--ink)}
+.istea button.ok{background:#e3f1d6;border-color:var(--green)}
+.istea button.no{background:#f9dfd7;border-color:var(--red)}
+.istea small{display:block;font-size:.78em}
+
+/* brew */
+.brew{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:640px){.brew{grid-template-columns:1.2fr 1fr}}
+.bstat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.bstat div{background:#fbf6ec;border-radius:12px;padding:8px 4px}
+.bstat b{display:block;font-size:1.4em;font-family:var(--serif)}
+select{font-size:1em;padding:6px 10px;border-radius:10px;border:1px solid var(--line);background:#fff;font-family:var(--sans);color:var(--ink);max-width:100%}
+.timer{font-family:var(--serif);font-size:2em;text-align:center;font-weight:700}
+
+/* glossary */
+.gl input{width:100%;padding:10px 14px;border-radius:12px;border:1.5px solid var(--line);font-size:1em;font-family:var(--sans);background:#fff}
+.gi{padding:10px 0;border-bottom:1px dashed var(--line)}
+.gi b{font-family:var(--serif);font-size:1.05em}
+.gi .py{color:var(--muted);font-size:.85em;margin-left:6px}
+.gi .lvx{font-size:.7em;margin-left:6px}
+
+/* cert */
+.cert{border:6px double var(--amber);border-radius:12px;background:#fffaf0;padding:26px 18px;text-align:center;margin-top:14px}
+.cert h2{letter-spacing:.3em;color:var(--dark)}
+.cert .nm{font-family:var(--serif);font-size:1.8em;border-bottom:1.5px solid var(--amber);display:inline-block;min-width:60%;margin:10px 0}
+input.txt{padding:9px 12px;border-radius:10px;border:1.5px solid var(--line);font-size:1em;font-family:var(--sans);width:min(260px,100%)}
+
+.fl{float:right;margin:0 0 8px 12px}
+@media(max-width:520px){.fl{float:none;display:block;margin:8px auto}}
+.center{text-align:center}
+.flowrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;margin:8px 0}
+.flowrow span.p{background:#fff;border:1px solid var(--line);border-radius:10px;padding:3px 9px;font-size:.9em}
+.route{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:620px){.route{grid-template-columns:1fr 1fr}}
+.rt{border-radius:14px;padding:12px;color:#fff}
+.rt h4{margin:0 0 6px;font-family:var(--serif);font-size:1.15em}
+.rt .w{display:inline-block;background:rgba(255,255,255,.2);border-radius:8px;padding:1px 8px;margin:2px;font-size:.9em}
+.pill{display:inline-block;background:#efe6d4;border-radius:8px;padding:0 7px;font-size:.88em;margin:1px}
+.bars .r{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:.9em}
+.bars .r span:first-child{width:6.5em;flex:none}
+.bars .t{flex:1;background:#efe6d4;border-radius:8px;height:18px;overflow:hidden}
+.bars .t i{display:block;height:100%;border-radius:8px;width:0;transition:width 1.2s ease}
+.bars .r em{font-style:normal;font-size:.85em;color:var(--muted);width:4.5em;text-align:right}
+@media print{.top,.lnav,.drawer,.noprint{display:none!important} section.page{display:none!important} #final{display:block!important} #final>*:not(.cert){display:none!important} body::before{display:none}}
+
+.labelrow{padding:7px 10px;border-bottom:1px dashed var(--line);cursor:pointer;font-family:var(--sans);font-size:.95em}
+.labelrow:hover{background:var(--amber2)}
+.ki{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:.92em}
+.ki button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:#fbf6ec;font-size:1.1em;cursor:pointer}
+.ki b{min-width:1.4em;text-align:center;display:inline-block}
+</style>
+</head>
+<body>
+<div class="top"><div class="top-in">
+  <span class="brand" onclick="go('home')">☕ 一杯咖啡的學問</span>
+  <div class="bar"><i id="pbar"></i></div><span class="pct" id="ptxt">0%</span>
+  <button class="mbtn" onclick="drawer(true)">☰ 課程</button>
+</div></div>
+<div class="drawer" id="drawer"><div class="mask" onclick="drawer(false)"></div><div class="panel">
+  <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-family:var(--serif);font-size:1.1em">課程目錄</b><button class="mbtn" onclick="drawer(false)">✕</button></div>
+  <div id="dlist"></div></div></div>
+<main>
+<section class="page on" id="home">
+  <div class="hero"><svg width="150" height="130" viewBox="0 0 150 130" aria-hidden="true">
+  <g class="steam"><path d="M55 40 q-8 -10 0 -20 q8 -10 0 -20"/><path d="M75 40 q-8 -10 0 -20 q8 -10 0 -20"/><path d="M95 40 q-8 -10 0 -20 q8 -10 0 -20"/></g>
+  <path d="M30 48 h90 l-8 60 q-37 10 -74 0z" fill="#fff" stroke="#b9a684" stroke-width="3"/>
+  <path d="M120 60 q20 0 16 20 q-4 14 -20 14" fill="none" stroke="#b9a684" stroke-width="5"/>
+  <ellipse cx="75" cy="50" rx="44" ry="6" fill="#5a3422"/>
+  <path d="M62 50 q13 -8 26 0 q-13 6 -26 0z" fill="#e8c9a0"/>
+  <ellipse cx="75" cy="118" rx="46" ry="6" fill="#e3d6bd"/>
+</svg>
+
+    <h1>一杯咖啡的學問</h1><p class="sub">從一顆紅色的果實開始，認識咖啡的由來、產地、處理、烘焙與沖煮，<br>學會分辨咖啡，一路從入門走到專業。</p></div>
+  
+  <div class="card">
+    <h3 style="margin-top:0">這門課怎麼上？</h3>
+    <p>課程共 <b>14 課</b>，分成 <b>4 個階段</b>，每一課都建立在前一課的基礎上，<b>請照順序上</b>。每課最後有小測驗，答完按「下一課」就算完成，進度會自動記在這台裝置上。</p>
+    <p>遇到看不懂的專有名詞，課文裡都有「📜 名詞由來」說明；也可以隨時到最後的 <a href="#" onclick="go('gloss');return false">名詞辭典</a> 查。</p>
+    <div class="center" style="margin-top:10px"><button class="btn" id="startBtn" onclick="go(nextUndone())">▶ 開始上課</button></div>
+  </div>
+  <div class="map" id="lvmap"></div>
+</section>
+<!-- ============ C1 ============ -->
+<section class="page" id="C1">
+  <span class="tag">第一階段・入門　第 1 課</span>
+  <h2>咖啡是什麼？——一顆紅色果實裡的種子</h2>
+  <p class="lead">我們喝的咖啡是用「咖啡豆」做的。但咖啡豆其實不是豆子，而是一種紅色果實裡面的<b>種子</b>！</p>
+
+  <div class="box eg"><div class="bt">像櫻桃的果實</div>
+    咖啡樹結的果實成熟時是紅色（有些品種是黃色），大小和形狀很像櫻桃，所以英文叫 <b>coffee cherry（咖啡櫻桃）</b>。把果肉剝掉，裡面通常有兩顆面對面的種子，曬乾、去殼、烘焙之後，就是我們看到的咖啡豆。
+  </div>
+
+  <h3>認識咖啡樹</h3>
+  <p>咖啡樹是<b>茜草科</b>咖啡屬的常綠灌木或小喬木。它會開白色的小花，聞起來有點像茉莉花。從種下到開始結果大約要 3～4 年。野生的咖啡樹可以長到好幾公尺高，咖啡園通常修剪到 2 公尺左右，方便人採摘。</p>
+  <div class="box origin"><div class="bt">Coffee 這個字從哪裡來？</div>
+    咖啡最早在阿拉伯世界流行，阿拉伯語叫 <b>qahwa</b>（音近「卡瓦」）→ 傳到土耳其變成 <b>kahve</b> → 傳到歐洲：荷蘭語 koffie、義大利語 caffè、英語 <b>coffee</b>。中文的「咖啡」就是照外語的發音翻譯過來的，所以兩個字都有「口」字旁，表示是音譯詞。
+  </div>
+
+  <h3>剖開一顆咖啡櫻桃</h3>
+  <p>點下圖的每一層看看說明：</p>
+  <div class="card center">
+    <svg class="leafsvg" viewBox="0 0 300 250" width="300" style="max-width:100%">
+      <g class="part" data-p="skin"><ellipse cx="150" cy="125" rx="120" ry="105" fill="#b7282e"/></g>
+      <g class="part" data-p="pulp"><ellipse cx="150" cy="125" rx="104" ry="90" fill="#f0c6a8"/></g>
+      <g class="part" data-p="muc"><ellipse cx="150" cy="125" rx="92" ry="79" fill="#f6e6b8" opacity=".95"/></g>
+      <g class="part" data-p="parch"><ellipse cx="108" cy="125" rx="44" ry="66" fill="#efe2c4" stroke="#c9b48a" stroke-width="3"/><ellipse cx="192" cy="125" rx="44" ry="66" fill="#efe2c4" stroke="#c9b48a" stroke-width="3"/></g>
+      <g class="part" data-p="silver"><ellipse cx="108" cy="125" rx="37" ry="58" fill="#dfe6c8"/><ellipse cx="192" cy="125" rx="37" ry="58" fill="#dfe6c8"/></g>
+      <g class="part" data-p="bean"><ellipse cx="110" cy="125" rx="31" ry="52" fill="#9fb07a"/><ellipse cx="190" cy="125" rx="31" ry="52" fill="#9fb07a"/>
+        <path d="M128 80 q-10 45 0 90" stroke="#6e7f4a" stroke-width="3" fill="none"/><path d="M172 80 q10 45 0 90" stroke="#6e7f4a" stroke-width="3" fill="none"/></g>
+    </svg>
+    <div class="flowrow" style="font-size:.85em"><span class="pill">外：果皮</span><span class="pill">果肉</span><span class="pill">果膠</span><span class="pill">羊皮紙</span><span class="pill">銀皮</span><span class="pill">內：種子</span></div>
+    <div id="cherryInfo" class="pdesc" style="text-align:left">👆 點一點圖上每一層。</div>
+  </div>
+
+  <div class="box tip"><div class="bt">平豆和圓豆</div>
+    一般一顆果實裡有兩顆種子，面對面的那一面是平的，叫<b>平豆</b>；大約每 10～20 顆果實會有一顆只長了一粒種子，長得圓圓的，叫<b>圓豆</b>（英文 Peaberry）。
+  </div>
+
+  <div class="box recap"><div class="bt"></div>
+    ① 咖啡豆是咖啡櫻桃裡的<b>種子</b>，不是豆科植物的豆子。<br>
+    ② 果實由外到內：果皮 → 果肉 → 果膠 → 羊皮紙 → 銀皮 → 種子。<br>
+    ③ coffee 來自阿拉伯語 qahwa。
+  </div>
+  <div class="quiz" data-quiz="C1"></div>
+  <div class="lnav" data-nav="C1"></div>
+</section>
+
+<!-- ============ C2 ============ -->
+<section class="page" id="C2">
+  <span class="tag">第一階段・入門　第 2 課</span>
+  <h2>咖啡從哪裡來？——一千年的提神故事</h2>
+  <p class="lead">咖啡的故鄉在非洲的<b>衣索比亞</b>，後來經過阿拉伯半島，再傳到全世界。</p>
+
+  <h3>傳說：跳舞的山羊</h3>
+  <p>流傳最廣的故事是：很久以前，衣索比亞有個叫<b>卡爾迪</b>的牧羊人，發現他的山羊吃了一種紅色果子後興奮得又蹦又跳，晚上也不睡覺。他把果子帶去給修道院的僧侶，大家才發現它能提神。</p>
+  <div class="box warn"><div class="bt">這是傳說</div>這個故事要到 1600 多年才被寫下來，不是真實紀錄。但它說明了咖啡最早被注意到的原因：<b>提神</b>。</div>
+
+  <h3>咖啡的旅程</h3>
+  <div class="tl" id="tlBtns"></div>
+  <div class="tlp" id="tlPanel"></div>
+
+  <div class="box origin"><div class="bt">摩卡 Mocha</div>葉門有一個港口叫<b>摩卡</b>，以前是世界最重要的咖啡出口港，所以早期的咖啡常被叫做「摩卡咖啡」。今天咖啡店的「摩卡」（加巧克力的咖啡）名字也和這個港口有關。</div>
+  <div class="box origin"><div class="bt">咖啡館裡生出來的公司</div>1600 年代倫敦的咖啡館只要付一便士就能進去喝咖啡、看報、聽人討論，被稱為「<b>便士大學</b>」。有一家<b>勞埃德咖啡館</b>常聚集船主和商人談航運保險，後來發展成世界有名的保險市場「勞合社」（Lloyd's）。</div>
+
+  <h3>咖啡的三波浪潮</h3>
+  <div class="tw"><table>
+    <tr><th>浪潮</th><th>大約年代</th><th>特色</th></tr>
+    <tr><td>第一波</td><td>1900 年代～</td><td>即溶咖啡、罐裝咖啡普及，咖啡變成家家戶戶的日常飲料，重點是「方便」。</td></tr>
+    <tr><td>第二波</td><td>1970 年代～</td><td>連鎖咖啡店興起，拿鐵、卡布奇諾等義式咖啡流行，重點是「咖啡店體驗」。</td></tr>
+    <tr><td>第三波</td><td>2000 年代～</td><td>精品咖啡：重視產地、莊園、品種、處理法，多用淺焙展現風味，像品酒一樣品咖啡，重點是「風味與產地」。</td></tr>
+  </table></div>
+
+  <div class="box recap"><div class="bt"></div>
+    ① 咖啡源自<b>衣索比亞</b>，在<b>葉門</b>開始大量種植與飲用。<br>
+    ② 經鄂圖曼土耳其傳到歐洲，再由荷蘭、法國帶到亞洲和美洲種植。<br>
+    ③ 三波浪潮：方便 → 咖啡店 → 精品風味。
+  </div>
+  <div class="quiz" data-quiz="C2"></div>
+  <div class="lnav" data-nav="C2"></div>
+</section>
+
+<!-- ============ C3 ============ -->
+<section class="page" id="C3">
+  <span class="tag">第一階段・入門　第 3 課</span>
+  <h2>咖啡帶——咖啡長在哪裡？</h2>
+  <p class="lead">咖啡樹怕冷、怕霜，但也不喜歡太熱。所以全世界的咖啡幾乎都種在赤道附近的一條「帶子」上。</p>
+
+  <div class="card center">
+    <svg viewBox="0 0 340 220" width="340" style="max-width:100%">
+      <rect x="10" y="10" width="320" height="200" rx="14" fill="#dbe9f2"/>
+      <rect x="10" y="62" width="320" height="96" fill="#e9d7a8" opacity=".85"/>
+      <line x1="10" y1="62" x2="330" y2="62" stroke="#9c8f78" stroke-dasharray="5 4"/>
+      <line x1="10" y1="110" x2="330" y2="110" stroke="#b7282e" stroke-width="2"/>
+      <line x1="10" y1="158" x2="330" y2="158" stroke="#9c8f78" stroke-dasharray="5 4"/>
+      <text class="lbl" x="16" y="56">北回歸線（約北緯 23.5°）</text>
+      <text class="lbl" x="16" y="105" fill="#b7282e">赤道</text>
+      <text class="lbl" x="16" y="176">南回歸線（約南緯 23.5°）</text>
+      <text class="lbl" x="200" y="80">🇪🇹 衣索比亞</text>
+      <text class="lbl" x="250" y="96">🇻🇳 越南</text>
+      <text class="lbl" x="60" y="92">🇨🇴 哥倫比亞</text>
+      <text class="lbl" x="230" y="128">🇮🇩 印尼</text>
+      <text class="lbl" x="82" y="142">🇧🇷 巴西</text>
+      <text class="lbl" x="170" y="120">🇰🇪 肯亞</text>
+      <text class="lbl" x="22" y="78">🇬🇹 瓜地馬拉</text>
+      <text class="lbl" x="268" y="68">🇹🇼 台灣</text>
+      <text class="lbl" x="120" y="200" fill="#6f685c">（示意圖，非真實地圖比例）</text>
+    </svg>
+  </div>
+
+  <div class="box origin"><div class="bt">咖啡帶 Coffee Belt</div>指大約在<b>南、北回歸線之間</b>、圍繞地球一圈的熱帶與亞熱帶地區。這裡溫暖、雨量充足、沒有霜害，最適合咖啡生長。「回歸線」是太陽一年中直射地球最北和最南的界線。</div>
+
+  <h3>主要生產國</h3>
+  <div class="tw"><table>
+    <tr><th>國家</th><th>特色</th></tr>
+    <tr><td><b>巴西</b></td><td>世界第一大產國，產量約佔全球三分之一。風味常見堅果、巧克力、低酸。</td></tr>
+    <tr><td><b>越南</b></td><td>世界第二大，以<b>羅布斯塔</b>種為主，大量用在即溶咖啡。</td></tr>
+    <tr><td><b>哥倫比亞</b></td><td>以高品質阿拉比卡聞名，風味均衡、酸甜明亮。</td></tr>
+    <tr><td><b>印尼</b></td><td>蘇門答臘的「曼特寧」最有名，口感厚重、帶草本與泥土香。</td></tr>
+    <tr><td><b>衣索比亞</b></td><td>咖啡的故鄉，耶加雪菲等產區有明顯的花香、柑橘、莓果風味。</td></tr>
+    <tr><td><b>台灣</b></td><td>雲林古坑、嘉義阿里山、屏東、台東等地都有種植，產量小但品質越來越受注意。</td></tr>
+  </table></div>
+
+  <div class="box tip"><div class="bt">海拔越高越好喝？</div>高海拔的地方晚上比較冷，咖啡果實長得慢，種子比較硬、密度高，味道通常更複雜、酸質更明亮，所以精品咖啡常標示「海拔」。台灣、印尼等地區的咖啡也因產地高低而有不同風味。但高海拔不是唯一標準，品種、處理和烘焙一樣重要。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    ① 咖啡種在<b>南北回歸線之間</b>的「咖啡帶」。<br>
+    ② 巴西第一、越南第二（羅布斯塔），衣索比亞是故鄉。<br>
+    ③ 高海拔 → 果實長得慢 → 風味常更複雜。
+  </div>
+  <div class="quiz" data-quiz="C3"></div>
+  <div class="lnav" data-nav="C3"></div>
+</section>
+
+<!-- ============ C4 ============ -->
+<section class="page" id="C4">
+  <span class="tag l2">第二階段・基礎　第 4 課</span>
+  <h2>咖啡的兩大家族——阿拉比卡與羅布斯塔</h2>
+  <p class="lead">咖啡屬有一百多個物種，但我們喝的咖啡幾乎都來自其中兩種。</p>
+
+  <div class="card center">
+    <svg viewBox="0 0 300 130" width="300" style="max-width:100%">
+      <ellipse cx="80" cy="60" rx="34" ry="48" fill="#7a4a2a"/><path d="M80 14 q-12 46 0 92" stroke="#3a2214" stroke-width="4" fill="none"/>
+      <ellipse cx="220" cy="62" rx="40" ry="40" fill="#5a3422"/><line x1="220" y1="24" x2="220" y2="100" stroke="#2a180e" stroke-width="4"/>
+      <text class="lbl" x="40" y="125">阿拉比卡：橢圓、S 形中線</text>
+      <text class="lbl" x="170" y="125">羅布斯塔：較圓、直中線</text>
+    </svg>
+  </div>
+
+  <div class="tw"><table>
+    <tr><th></th><th>阿拉比卡 Arabica</th><th>羅布斯塔 Robusta</th></tr>
+    <tr><td>佔全球產量</td><td>約六成</td><td>約四成</td></tr>
+    <tr><td>種植海拔</td><td>較高（常見 600～2000 公尺以上）</td><td>較低、平地也能種</td></tr>
+    <tr><td>抵抗病蟲害</td><td>較弱、嬌貴</td><td><b>強壯</b>、好照顧、產量高</td></tr>
+    <tr><td>咖啡因</td><td>約 1.2～1.5%</td><td>約 2.2～2.7%（快兩倍）</td></tr>
+    <tr><td>風味</td><td>香氣多變、酸甜明亮</td><td>苦味重、厚實，帶木頭、穀物味</td></tr>
+    <tr><td>常見用途</td><td>精品咖啡、手沖、多數咖啡店</td><td>即溶咖啡、罐裝咖啡、義式配方增加油脂與厚度</td></tr>
+  </table></div>
+
+  <div class="box origin"><div class="bt">名字由來</div>
+    ・<b>Arabica</b>：1753 年林奈命名時，以為咖啡原產於阿拉伯（其實是從葉門傳出去的，真正故鄉在衣索比亞），所以叫「阿拉伯的咖啡」。<br>
+    ・<b>Robusta</b>：學名是 Coffea canephora，Robusta 是它最有名的品種名，意思是「<b>強壯的</b>」，因為它抗病、耐熱、產量大。
+  </div>
+  <div class="box tip"><div class="bt">咖啡因是咖啡樹的「防蟲劑」</div>咖啡因對昆蟲來說是有毒的，可以保護植物。羅布斯塔長在比較熱、蟲比較多的低海拔，咖啡因多，就像穿了比較厚的盔甲。</div>
+
+  <h3>阿拉比卡裡的知名品種</h3>
+  <div class="grid">
+    <div class="tc"><h4>鐵比卡 Typica</h4><p>最接近早期傳出葉門的原始品種之一，風味乾淨甜美，但產量低。</p></div>
+    <div class="tc"><h4>波旁 Bourbon</h4><p>在印度洋上的「波旁島」（今天的留尼旺島）發展出來，所以叫波旁。甜感好、口感圓潤。</p></div>
+    <div class="tc"><h4>藝伎 Geisha / Gesha</h4><p>名字來自衣索比亞的 Gesha 地區，和日本藝伎無關！2004 年巴拿馬一座莊園的藝伎在比賽中一鳴驚人，以茉莉花、柑橘香聞名，常是最貴的咖啡之一。</p></div>
+    <div class="tc"><h4>卡杜拉 Caturra</h4><p>波旁在巴西自然突變出的矮種，樹矮好採、產量高，中南美洲大量種植。</p></div>
+    <div class="tc"><h4>SL28</h4><p>1930 年代肯亞的史考特實驗室（Scott Laboratories）選育出來，SL 就是實驗室的縮寫。帶黑醋栗、莓果般的明亮酸質。</p></div>
+  </div>
+
+  <div class="box recap"><div class="bt"></div>
+    兩大家族：<b>阿拉比卡</b>（香、酸甜、嬌貴）與<b>羅布斯塔</b>（強壯、苦、咖啡因多）。<br>
+    品種名常帶故事：波旁＝島名、藝伎＝衣索比亞地名、SL＝實驗室。
+  </div>
+  <div class="quiz" data-quiz="C4"></div>
+  <div class="lnav" data-nav="C4"></div>
+</section>
+
+<!-- ============ C5 ============ -->
+<section class="page" id="C5">
+  <span class="tag l2">第二階段・基礎　第 5 課</span>
+  <h2>咖啡豆裡有什麼？——苦、酸、甜、香從哪來</h2>
+  <p class="lead">一杯好咖啡有酸、有甜、有苦、有香。這些味道有些是生豆本來就有的，有些是烘焙時才「變」出來的。</p>
+
+  <div class="card bars">
+    <b style="font-family:var(--serif)">阿拉比卡生豆的主要成分（大約比例）</b>
+    <div class="r"><span>🍬 醣類</span><div class="t"><i data-w="55" style="background:#c9a42a"></i></div><em>約50–55%</em></div>
+    <div class="r"><span>🧈 脂質</span><div class="t"><i data-w="16" style="background:#c07a28"></i></div><em>約15–17%</em></div>
+    <div class="r"><span>🥚 蛋白質</span><div class="t"><i data-w="11" style="background:#2f5d7c"></i></div><em>約10–12%</em></div>
+    <div class="r"><span>🍋 綠原酸等酸</span><div class="t"><i data-w="9" style="background:#5e8a3c"></i></div><em>約6–9%</em></div>
+    <div class="r"><span>⚡ 咖啡因</span><div class="t"><i data-w="1.5" style="background:#9a3a24"></i></div><em>約1.2–1.5%</em></div>
+    <small>比例會因品種、產地而不同，這裡只是讓你看出誰多誰少。</small>
+  </div>
+
+  <div class="tw"><table>
+    <tr><th>成分</th><th>帶來的味道</th><th>說明</th></tr>
+    <tr><td><b>咖啡因</b></td><td>苦、提神</td><td>只佔一點點，但負責「提神」；咖啡的苦味只有一部分來自它。</td></tr>
+    <tr><td><b>綠原酸</b></td><td>酸、澀；烘焙後變苦</td><td>生豆裡很多，烘焙時會分解，產生苦味物質。烘越深，剩越少。</td></tr>
+    <tr><td><b>有機酸</b></td><td>果酸</td><td>檸檬酸（像柑橘）、蘋果酸（像青蘋果）等，是淺焙咖啡「明亮酸質」的來源。</td></tr>
+    <tr><td><b>醣類</b></td><td>甜、焦糖香</td><td>烘焙時發生焦糖化，產生焦糖、糖漿般的甜香和褐色。</td></tr>
+    <tr><td><b>蛋白質＋醣</b></td><td>烤香、堅果、巧克力</td><td>兩者一起加熱發生「梅納反應」，產生數百種香氣物質（第 7 課詳細說）。</td></tr>
+    <tr><td><b>脂質（咖啡油）</b></td><td>口感、香氣</td><td>帶著香氣，讓口感滑順。深焙豆表面亮亮的油，就是它跑出來了。</td></tr>
+  </table></div>
+
+  <div class="box origin"><div class="bt">綠原酸</div>英文 chlorogenic acid，「chloro」是希臘文「<b>綠色</b>」的意思，因為這種物質在某些化學反應中會產生綠色而得名，和咖啡豆的顏色無關。</div>
+  <div class="box eg"><div class="bt">好的酸 vs. 壞的酸</div>好咖啡的酸像吃柳橙、蘋果、葡萄那種<b>清爽、帶甜的果酸</b>；壞的酸則是刺刺的、像醋或放太久的味道。第 12 課會學怎麼分辨。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    咖啡因 → 苦、提神；綠原酸 → 酸澀、烘後變苦；有機酸 → 果酸；醣 → 甜、焦糖；蛋白質＋醣 → 梅納反應烤香；脂質 → 口感。
+  </div>
+  <div class="quiz" data-quiz="C5"></div>
+  <div class="lnav" data-nav="C5"></div>
+</section>
+
+<!-- ============ C6 ============ -->
+<section class="page" id="C6">
+  <span class="tag l2">第二階段・基礎　第 6 課</span>
+  <h2>後製處理——從果實變成生豆</h2>
+  <p class="lead">採下來的咖啡櫻桃要去掉果皮、果肉，把種子曬乾，才能變成可以保存、運送的「生豆」。去掉果肉的方法不同，咖啡的味道就會大不相同。</p>
+
+  <div class="box origin"><div class="bt">後製處理 Processing</div>「後製」是指採收「之後」的「製作」處理，在產地完成。處理好的種子叫<b>生豆</b>，顏色是淡淡的青綠色，所以英文叫 green coffee。生豆要到消費國才烘焙。</div>
+
+  <h3>看動畫：四種處理法</h3>
+  <div class="card">
+    <div class="ptabs" id="ptabs"></div>
+    <div class="steps" id="psteps"></div>
+    <div style="margin-top:10px"><button class="btn sm am" id="pplay">▶ 播放處理過程</button></div>
+    <div class="pdesc" id="pdesc"></div>
+  </div>
+
+  <div class="tw"><table>
+    <tr><th>處理法</th><th>關鍵</th><th>風味傾向</th></tr>
+    <tr><td><b>日曬</b> Natural</td><td>整顆果實連皮帶肉一起曬乾</td><td>果香濃（莓果、熱帶水果、酒香）、甜、口感厚</td></tr>
+    <tr><td><b>水洗</b> Washed</td><td>先去果皮果肉，泡水發酵去掉果膠，洗乾淨再曬</td><td>乾淨、明亮的酸、能清楚喝出產地特色</td></tr>
+    <tr><td><b>蜜處理</b> Honey</td><td>去果皮果肉，但<b>保留果膠</b>一起曬</td><td>介於兩者之間，甜感好</td></tr>
+    <tr><td><b>濕剝</b>（印尼）</td><td>羊皮紙還沒乾就剝掉，再把生豆曬乾</td><td>厚重、低酸，帶草本、泥土、香料味（如曼特寧）</td></tr>
+  </table></div>
+
+  <div class="box origin"><div class="bt">蜜處理不是加蜂蜜！</div>去掉果肉後，種子外面那層<b>果膠</b>黏黏的、像蜂蜜一樣，所以叫「蜜處理」。保留的果膠越多、曬得越慢，顏色越深，分成<b>白蜜、黃蜜、紅蜜、黑蜜</b>，甜感和果香也越重。</div>
+  <div class="box think"><div class="bt"></div>為什麼日曬咖啡比較甜、果味重？——因為果肉一直包著種子曬好幾週，果肉的糖分和香氣在曬乾過程中有一部分被種子「吸收」了。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    日曬＝連果實曬（果香甜厚）；水洗＝洗掉果膠再曬（乾淨明亮）；蜜處理＝留果膠曬（甜）；濕剝＝早點剝殼（厚重土香）。
+  </div>
+  <div class="quiz" data-quiz="C6"></div>
+  <div class="lnav" data-nav="C6"></div>
+</section>
+
+<!-- ============ C7 ============ -->
+<section class="page" id="C7">
+  <span class="tag l2">第二階段・基礎　第 7 課</span>
+  <h2>烘焙——讓青綠的生豆變香</h2>
+  <p class="lead">生豆聞起來像青草、豆子，咬起來硬硬的，泡出來一點都不好喝。是<b>烘焙</b>讓它變成褐色、香噴噴的咖啡豆。</p>
+
+  <h3>動手試試：烘焙滑桿</h3>
+  <div class="card">
+    <div class="ox">
+      <svg width="140" height="110" viewBox="0 0 140 110"><ellipse id="rBean" cx="70" cy="55" rx="40" ry="50" fill="#a9b77d"/><path id="rLine" d="M70 8 q-14 47 0 94" stroke="#6e7f4a" stroke-width="5" fill="none"/><ellipse id="rOil" cx="56" cy="36" rx="9" ry="14" fill="#fff" opacity="0"/></svg>
+      <div style="min-width:150px">
+        <div style="font-size:.85em;color:var(--muted)">豆子溫度大約</div>
+        <div class="timer" id="rTemp">25°C</div>
+        <div id="rEvent" style="text-align:center;font-weight:700;min-height:1.6em"></div>
+      </div>
+    </div>
+    <div class="oxlbl" id="rName">生豆</div>
+    <input type="range" min="0" max="100" value="0" id="rR" aria-label="烘焙程度">
+    <div class="scale"><span>生豆</span><span>一爆</span><span>二爆</span><span>深焙</span></div>
+    <div class="pdesc" id="rDesc"></div>
+  </div>
+
+  <h3>烘焙時發生了什麼？</h3>
+  <div class="grid">
+    <div class="tc"><h4>💧 1. 脫水</h4><p>生豆含水約 10～12%，先把水分烘掉，顏色從青綠變成黃色，聞起來像烤麵包、稻草。</p></div>
+    <div class="tc"><h4>🍞 2. 梅納反應</h4><p>豆子裡的蛋白質（胺基酸）和醣一起加熱，產生褐色和幾百種香氣：烤堅果、麵包、巧克力香。</p>
+      <details><summary>名詞由來</summary>1912 年法國化學家<b>梅納</b>（Maillard）研究發現的反應，以他的名字命名。烤吐司、煎牛排變褐色變香，也是梅納反應！</details></div>
+    <div class="tc"><h4>🍯 3. 焦糖化</h4><p>醣類在高溫下分解，產生焦糖般的甜香和更深的褐色。烘太過頭，就會從焦糖變成焦苦。</p></div>
+    <div class="tc"><h4>💥 4. 一爆、二爆</h4><p>豆子裡的水氣和二氧化碳把豆子撐裂，發出「啪、啪」聲，像爆米花。第一次叫<b>一爆</b>（約 196°C 左右），繼續烘會有聲音較細碎的<b>二爆</b>（約 224°C 左右）。烘豆師靠這些聲音判斷進度。</p></div>
+  </div>
+
+  <h3>烘焙度與風味</h3>
+  <div class="tw"><table>
+    <tr><th>烘焙度</th><th>大約時機</th><th>顏色</th><th>風味</th></tr>
+    <tr><td><b>淺焙</b></td><td>一爆中～一爆結束</td><td>肉桂色、淺棕</td><td>酸明亮、花香、果香，最能喝出產地特色</td></tr>
+    <tr><td><b>中焙</b></td><td>一爆結束～二爆前</td><td>棕色</td><td>酸甜平衡、焦糖、堅果</td></tr>
+    <tr><td><b>深焙</b></td><td>二爆開始以後</td><td>深褐～黑、表面出油</td><td>苦、醇厚、巧克力、煙燻，酸很低</td></tr>
+  </table></div>
+  <div class="box origin"><div class="bt">烘焙度的名字</div>日本常用八個等級，名字很有畫面：<b>輕焙 → 肉桂焙</b>（顏色像肉桂）<b>→ 中焙 → 高度焙 → 城市焙</b>（City，據說是 1800 年代紐約這個「城市」流行的烘焙度）<b>→ 深城市焙 → 法式焙 → 義式焙</b>（法國和義大利人愛喝深焙）。</div>
+  <div class="box warn"><div class="bt">常見誤會：深焙咖啡因比較多？</div>不是喔！深焙喝起來比較苦，很多人以為比較「濃」、咖啡因比較多。其實烘焙對咖啡因影響很小，深淺焙的咖啡因差異不大。苦味主要來自烘焙產生的苦味物質。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    烘焙四階段：脫水 → 梅納反應 → 焦糖化 → 一爆、二爆。<br>
+    淺焙酸香、中焙平衡、深焙苦醇。深焙≠咖啡因多。
+  </div>
+  <div class="quiz" data-quiz="C7"></div>
+  <div class="lnav" data-nav="C7"></div>
+</section>
+
+<!-- ============ C8 ============ -->
+<section class="page" id="C8">
+  <span class="tag l3">第三階段・進階　第 8 課</span>
+  <h2>研磨與萃取——把味道「泡出來」的科學</h2>
+  <p class="lead">煮咖啡其實就是用水把咖啡粉裡的味道「溶」出來，這叫<b>萃取</b>。泡太少或泡太多，都不好喝。</p>
+
+  <div class="box origin"><div class="bt">萃取 Extraction</div>「萃」是聚集精華、「取」是拿出來。萃取就是<b>把精華拿出來</b>。咖啡粉大約只有三成能溶到水裡，好喝的咖啡大約溶出其中的 18～22%（這叫「萃取率」）。</div>
+
+  <div class="box eg"><div class="bt">泡茶包的經驗</div>茶包泡太短，茶淡淡的、沒味道；泡太久，又苦又澀。咖啡也一樣：<br>
+    ・<b>萃取不足</b>：酸、尖、淡、甚至有點鹹，喝完嘴巴空空的。<br>
+    ・<b>萃取過度</b>：苦、澀、嘴巴乾乾的，像嚼到木頭。<br>
+    ・<b>剛剛好</b>：酸甜苦平衡，有甜感和好的餘韻。
+  </div>
+
+  <h3>影響萃取的四個旋鈕</h3>
+  <ul>
+    <li><b>研磨粗細</b>：越細，表面積越大，味道出得越快。</li>
+    <li><b>時間</b>：越久，出得越多。</li>
+    <li><b>水溫</b>：越熱，出得越快（一般用 90～96°C）。</li>
+    <li><b>粉水比</b>：粉越多越濃。手沖常見 <b>1：15～1：17</b>（1 克粉配 15～17 克水）。</li>
+  </ul>
+
+  <h3>🎯 萃取模擬器</h3>
+  <div class="card">
+    <p style="margin-top:0">調整三個旋鈕，讓咖啡落在中間的「剛剛好」：</p>
+    <label>研磨：<b id="xG">中</b></label><input type="range" id="xGr" min="1" max="9" value="5">
+    <div class="scale"><span>很細（像麵粉）</span><span>很粗（像粗鹽）</span></div>
+    <label>時間：<b id="xT">3:00</b></label><input type="range" id="xTr" min="30" max="360" step="10" value="180">
+    <label>水溫：<b id="xW">92</b>°C</label><input type="range" id="xWr" min="80" max="100" value="92">
+    <svg viewBox="0 0 300 70" width="100%" style="margin-top:8px">
+      <rect x="0" y="20" width="100" height="30" fill="#e8d36a"/><rect x="100" y="20" width="100" height="30" fill="#9fc27a"/><rect x="200" y="20" width="100" height="30" fill="#c8573a"/>
+      <text class="lbl" x="18" y="40">萃取不足</text><text class="lbl" x="122" y="40">剛剛好</text><text class="lbl" x="220" y="40">萃取過度</text>
+      <path id="xPin" d="M150 18 l-8 -14 h16z" fill="#2d2a24"/>
+    </svg>
+    <div class="pdesc" id="xOut"></div>
+    <small>這是幫助理解的簡化模型，真實沖煮還要看豆子、器具和手法。</small>
+  </div>
+
+  <h3>研磨粗細對照表</h3>
+  <div class="tw"><table>
+    <tr><th>粗細</th><th>像什麼</th><th>適合</th></tr>
+    <tr><td>極細</td><td>麵粉</td><td>土耳其咖啡</td></tr>
+    <tr><td>細</td><td>細砂、細鹽</td><td>義式濃縮</td></tr>
+    <tr><td>中細</td><td>細砂糖</td><td>摩卡壺、手沖（較細）</td></tr>
+    <tr><td>中</td><td>砂糖</td><td>手沖、美式咖啡機</td></tr>
+    <tr><td>粗</td><td>粗鹽</td><td>法式濾壓壺</td></tr>
+    <tr><td>極粗</td><td>粗粒胡椒</td><td>冷萃</td></tr>
+  </table></div>
+  <div class="box tip"><div class="bt">規則很簡單</div><b>泡越久的方式，磨越粗；泡越快的方式，磨越細。</b>義式只泡 25～30 秒，所以要磨得很細；冷萃泡十幾小時，所以磨得很粗。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    萃取不足 → 酸淡；過度 → 苦澀。四個旋鈕：研磨、時間、水溫、粉水比。<br>
+    泡越久磨越粗，泡越快磨越細。
+  </div>
+  <div class="quiz" data-quiz="C8"></div>
+  <div class="lnav" data-nav="C8"></div>
+</section>
+
+<!-- ============ C9 ============ -->
+<section class="page" id="C9">
+  <span class="tag l3">第三階段・進階　第 9 課</span>
+  <h2>沖煮器具——同一包豆，十種喝法</h2>
+  <p class="lead">沖煮方法大致分三類：<b>滴濾</b>（水流過粉）、<b>浸泡</b>（粉泡在水裡）、<b>加壓</b>（用壓力把水壓過粉）。</p>
+
+  <div class="grid">
+    <div class="tc"><span class="k o">滴濾</span><h4>手沖（濾杯）</h4><p>熱水慢慢繞圈倒在咖啡粉上，經過濾紙滴下來。口感乾淨、風味清楚，最適合品嚐淺焙精品豆。</p>
+      <details><summary>濾紙的發明</summary>1908 年德國的一位家庭主婦<b>梅麗塔</b>受不了咖啡渣，用兒子作業簿的吸墨紙鋪在打了洞的銅杯裡過濾，發明了咖啡濾紙，還開了公司，品牌就用她的名字 Melitta。</details></div>
+    <div class="tc"><span class="k r">浸泡</span><h4>法式濾壓壺</h4><p>粗粉和熱水一起泡約 4 分鐘，再把金屬濾網壓下去。保留咖啡油，口感厚實，操作最簡單。</p></div>
+    <div class="tc"><span class="k b">加壓</span><h4>摩卡壺</h4><p>放在爐子上煮，下層的水煮沸產生蒸氣壓力，把熱水推過中間的咖啡粉，流到上層。味道濃烈。1933 年義大利人比亞樂提設計的八角形鋁壺，至今仍是經典。</p></div>
+    <div class="tc"><span class="k x">浸泡＋過濾</span><h4>虹吸壺（賽風）</h4><p>下球的水加熱，蒸氣把水推到上球和咖啡粉混合；關火後下球冷卻形成負壓，咖啡又被「吸」回下球。像實驗室一樣，很好看。</p>
+      <details><summary>名詞由來</summary>英文 Siphon（虹吸管），「賽風」是它的音譯。</details></div>
+    <div class="tc"><span class="k b">加壓</span><h4>愛樂壓 AeroPress</h4><p>2005 年發明，像一支大針筒，用手壓。輕巧耐摔、適合旅行，還有世界比賽。</p></div>
+    <div class="tc"><span class="k b">加壓</span><h4>義式咖啡機</h4><p>用約 9 大氣壓的壓力，在 25～30 秒內做出一小杯濃縮咖啡（下一課主角）。</p></div>
+    <div class="tc"><span class="k g">冷</span><h4>冷萃・冰滴</h4><p><b>冷萃</b>：粗粉泡冷水 12～24 小時。<b>冰滴</b>：冰水一滴一滴慢慢滴過咖啡粉，要好幾個小時。苦澀和酸都比較少，口感順滑。</p></div>
+    <div class="tc"><span class="k r">煮</span><h4>土耳其咖啡</h4><p>極細粉加水和糖在長柄小銅壺裡煮，不過濾，喝的時候讓粉沉在杯底。土耳其咖啡文化 2013 年被列入聯合國教科文組織的非物質文化遺產。</p></div>
+    <div class="tc"><span class="k o">滴濾</span><h4>越南滴漏壺</h4><p>小小的金屬滴漏壺放在杯子上慢慢滴，杯底先放<b>煉乳</b>，攪一攪加冰就是越南冰咖啡。東南亞街頭常見這種又甜又濃的冰咖啡。</p></div>
+  </div>
+
+  <div class="box tip"><div class="bt">怎麼選器具？</div>想喝出水果花香 → 手沖；想簡單又厚實 → 濾壓壺；喜歡濃烈 → 摩卡壺、義式；夏天想喝順口冰的 → 冷萃。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    三類：滴濾（手沖、越南壺）、浸泡（濾壓壺、冷萃）、加壓（摩卡壺、愛樂壓、義式機）。<br>
+    濾紙由梅麗塔發明；賽風＝Siphon 音譯。
+  </div>
+  <div class="quiz" data-quiz="C9"></div>
+  <div class="lnav" data-nav="C9"></div>
+</section>
+
+<!-- ============ C10 ============ -->
+<section class="page" id="C10">
+  <span class="tag l3">第三階段・進階　第 10 課</span>
+  <h2>義式咖啡家族——菜單上那些名字是什麼意思？</h2>
+  <p class="lead">咖啡店菜單上的拿鐵、卡布奇諾、瑪奇朵……其實大多是同一個基礎：<b>義式濃縮咖啡</b>，再加上不同比例的牛奶、奶泡或其他東西。</p>
+
+  <div class="box origin"><div class="bt">Espresso 義式濃縮</div>
+    義大利文 espresso 有「<b>壓出來的</b>」和「<b>快速的</b>」意思，因為它是用高壓、在很短時間內快速萃取出來的。一份大約 25～40 毫升，表面有一層金黃色的泡沫，叫 <b>crema</b>（義大利文「奶油」），是咖啡油和二氧化碳形成的。
+  </div>
+
+  <h3>☕ 咖啡杯組合圖</h3>
+  <p>點選飲品，看看杯子裡裝了什麼：</p>
+  <div class="card">
+    <div class="ptabs" id="dTabs"></div>
+    <div class="ox">
+      <svg width="150" height="170" viewBox="0 0 150 170"><defs><clipPath id="dClip"><path d="M25 20 h100 l-10 130 h-80z"/></clipPath></defs>
+        <g clip-path="url(#dClip)" id="dLayers"></g>
+        <path d="M25 20 h100 l-10 130 h-80z" fill="none" stroke="#b9a684" stroke-width="3"/></svg>
+      <div id="dLegend" style="min-width:150px;font-size:.92em"></div>
+    </div>
+    <div class="pdesc" id="dDesc"></div>
+  </div>
+
+  <div class="box tip"><div class="bt">拉花</div>用打得細緻的奶泡（微奶泡）倒進濃縮咖啡，靠倒的高度和晃動畫出愛心、葉子等圖案，英文叫 Latte Art。好的拉花代表奶泡打得細、咖啡油脂好。</div>
+  <div class="box think"><div class="bt"></div>美式咖啡和手沖咖啡都是黑咖啡，有什麼不一樣？——美式是「濃縮咖啡＋熱水」，手沖是「熱水直接滴濾咖啡粉」。萃取方式不同，口感也不同。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    基礎都是 espresso。拿鐵＝牛奶多；卡布奇諾＝奶泡厚；瑪奇朵＝一點奶泡「做記號」；摩卡＝加巧克力；美式＝加熱水。
+  </div>
+  <div class="quiz" data-quiz="C10"></div>
+  <div class="lnav" data-nav="C10"></div>
+</section>
+
+<!-- ============ C11 ============ -->
+<section class="page" id="C11">
+  <span class="tag l3">第三階段・進階　第 11 課</span>
+  <h2>世界咖啡文化——每個地方都有自己的喝法</h2>
+  <p class="lead">咖啡傳遍世界後，每個國家都發展出自己的喝法和習慣。</p>
+  <div class="grid">
+    <div class="tc"><h4>🇪🇹 衣索比亞：咖啡儀式</h4><p>當場烘豆、搗碎，用陶壺煮，一次要喝三輪，分別有名字，代表招待與祝福。是重要的待客禮儀。</p></div>
+    <div class="tc"><h4>🇹🇷 土耳其：不過濾的咖啡</h4><p>咖啡粉沉在杯底，喝完有人會把杯子倒扣，看殘渣的形狀「算命」當作娛樂。</p></div>
+    <div class="tc"><h4>🇮🇹 義大利：站著喝一口</h4><p>很多人在吧台站著，幾口喝完一杯 espresso 就走。傳統上卡布奇諾多在早上喝。</p></div>
+    <div class="tc"><h4>🇦🇹 奧地利：維也納咖啡館</h4><p>可以點一杯咖啡坐一整天看報、聊天，咖啡館文化被奧地利列為非物質文化遺產。</p></div>
+    <div class="tc"><h4>🇻🇳 越南：煉乳與蛋咖啡</h4><p>滴漏壺加煉乳的冰咖啡最有名；河內還有用蛋黃打成奶霜的「蛋咖啡」，據說是以前牛奶缺乏時想出來的。</p></div>
+    <div class="tc"><h4>🇲🇾 馬來西亞：白咖啡</h4><p>怡保白咖啡的「白」不是顏色白，而是豆子用較低溫度、加人造奶油烘焙，比傳統南洋咖啡烘得淺，口感比較溫和。</p></div>
+    <div class="tc"><h4>🇭🇰 香港：鴛鴦</h4><p>咖啡加港式奶茶混在一起。鴛鴦是成對的鳥，用來比喻兩種飲料配成一對。</p></div>
+    <div class="tc"><h4>🇯🇵 日本：喫茶店與罐裝咖啡</h4><p>老派喫茶店講究手沖和虹吸；日本也是罐裝咖啡和自動販賣機咖啡非常普及的國家。</p></div>
+    <div class="tc"><h4>🇸🇪 瑞典：Fika</h4><p>不只是喝咖啡，而是停下工作，和朋友同事一起喝咖啡、吃點心、聊天的休息時光。</p></div>
+    <div class="tc"><h4>🇮🇩 印尼：麝香貓咖啡</h4><p>麝香貓吃下咖啡果實，再從糞便中收集種子，因為稀少而非常昂貴。但很多是把麝香貓關在籠子裡強迫餵食，引起<b>動物福利</b>的爭議，許多人因此不再購買。</p></div>
+  </div>
+
+  <div class="box recap"><div class="bt"></div>衣索比亞儀式、土耳其不過濾、義大利站著喝、越南煉乳、馬來西亞白咖啡、香港鴛鴦、瑞典 Fika。喝咖啡不只是飲料，也是生活方式。</div>
+  <div class="quiz" data-quiz="C11"></div>
+  <div class="lnav" data-nav="C11"></div>
+</section>
+
+<!-- ============ C12 ============ -->
+<section class="page" id="C12">
+  <span class="tag l4">第四階段・專業　第 12 課</span>
+  <h2>品嚐與杯測——學會分辨一杯咖啡</h2>
+  <p class="lead">專業人員用一套標準方法來評咖啡，叫做<b>杯測</b>。學會杯測的觀察方法，你就能分辨不同產地、處理法和烘焙度的咖啡。</p>
+
+  <h3>品嚐咖啡的六個重點</h3>
+  <div class="tw"><table>
+    <tr><th>項目</th><th>意思</th><th>生活比喻</th></tr>
+    <tr><td><b>乾香／濕香</b></td><td>磨好的粉聞到的叫乾香；加水後聞到的叫濕香</td><td>花香、水果、堅果、巧克力、香料……</td></tr>
+    <tr><td><b>風味</b></td><td>喝進嘴巴後，味道和香氣一起的整體印象</td><td>「像柑橘加紅茶」「像黑巧克力」</td></tr>
+    <tr><td><b>酸質</b></td><td>好的、像水果的酸</td><td>檸檬、柳橙、蘋果、葡萄</td></tr>
+    <tr><td><b>甜感</b></td><td>自然的甜，不是加糖</td><td>蜂蜜、焦糖、紅糖</td></tr>
+    <tr><td><b>醇厚度</b></td><td>咖啡在嘴裡的重量、厚薄</td><td>像脫脂牛奶（薄）到全脂牛奶（厚）</td></tr>
+    <tr><td><b>餘韻</b></td><td>吞下後留在口中的味道和時間</td><td>好咖啡的甜香會停留很久</td></tr>
+  </table></div>
+
+  <h3>杯測的標準做法</h3>
+  <div class="flowrow"><span class="p">① 聞乾香</span><span class="arrow">→</span><span class="p">② 注熱水（約 93°C）</span><span class="arrow">→</span><span class="p">③ 約 4 分鐘「破渣」聞濕香</span><span class="arrow">→</span><span class="p">④ 撈掉浮渣</span><span class="arrow">→</span><span class="p">⑤ 用湯匙啜吸品嚐</span></div>
+  <ul>
+    <li>常用比例：每 150 毫升水用約 8.25 公克咖啡粉。</li>
+    <li><b>破渣</b>：咖啡粉浮在表面結成一層「殼」，用湯匙推開時香氣一下子衝出來，這時最好聞。</li>
+    <li><b>啜吸</b>：用湯匙快速「嘶～」地吸，讓咖啡變成霧狀噴滿整個口腔。</li>
+    <li>咖啡從熱到溫到涼，味道會變化，所以要喝好幾次。</li>
+  </ul>
+  <div class="box origin"><div class="bt">精品咖啡與 Q Grader</div>依照精品咖啡協會（SCA）的評分方式，滿分 100 分，<b>80 分以上</b>才算「精品咖啡」。通過國際考試、能用標準方法評分的專業杯測師叫 <b>Q Grader</b>。</div>
+  <div class="box origin"><div class="bt">咖啡風味輪</div>把咖啡可能出現的風味畫成一個圓輪：中心是大分類（花香、水果、甜、堅果可可、香料、烘焙……），越往外越細（例如 水果 → 莓果 → 藍莓）。2016 年由美國精品咖啡協會和世界咖啡研究組織發表新版，是全世界最常用的咖啡風味詞典。</div>
+
+  <h3>🕵️ 咖啡偵探挑戰</h3>
+  <p>根據線索，猜猜這杯咖啡最可能是哪一種：</p>
+  <div class="game">
+    <span class="score" id="gScore">0 / 0</span>
+    <b id="gTitle">第 1 題</b>
+    <div id="gClues"></div>
+    <div class="gopts" id="gOpts"></div>
+    <div class="gmsg" id="gMsg"></div>
+    <div class="center"><button class="btn sm ghost" id="gNext" style="display:none">下一題 →</button></div>
+  </div>
+
+  <div class="box recap"><div class="bt"></div>
+    六個重點：乾濕香、風味、酸質、甜感、醇厚度、餘韻。<br>
+    杯測：93°C、約 4 分鐘破渣、撈渣、啜吸。80 分以上＝精品咖啡。
+  </div>
+  <div class="quiz" data-quiz="C12"></div>
+  <div class="lnav" data-nav="C12"></div>
+</section>
+
+<!-- ============ C13 ============ -->
+<section class="page" id="C13">
+  <span class="tag l4">第四階段・專業　第 13 課</span>
+  <h2>選豆、看標示、保存——買到好咖啡的方法</h2>
+  <p class="lead">會分辨咖啡之後，下一步是學會挑豆子、看懂包裝上的資訊，並且保存好它的香氣。</p>
+
+  <h3>看懂一包精品咖啡的標示</h3>
+  <p>點標籤上每一行看說明：</p>
+  <div class="card" style="max-width:420px;margin:auto;font-family:var(--serif)">
+    <div style="text-align:center;font-weight:700;font-size:1.1em">☕ 衣索比亞 耶加雪菲</div>
+    <div class="lbls">
+      <div class="part labelrow" data-p="farm">產區／處理場：耶加雪菲 某某處理場</div>
+      <div class="part labelrow" data-p="alt">海拔：1,900–2,100 公尺</div>
+      <div class="part labelrow" data-p="var">品種：衣索比亞原生種</div>
+      <div class="part labelrow" data-p="proc">處理法：水洗</div>
+      <div class="part labelrow" data-p="roast">烘焙度：淺焙</div>
+      <div class="part labelrow" data-p="note">風味：茉莉花、檸檬、紅茶</div>
+      <div class="part labelrow" data-p="date">烘焙日期：2026.11.18</div>
+    </div>
+  </div>
+  <div class="pdesc" id="labelInfo">👆 點選標籤上的任一行。</div>
+
+  <h3>新鮮度：咖啡是「生鮮食品」</h3>
+  <ul>
+    <li>剛烘好的豆子會一直釋放二氧化碳，通常放<b>幾天到一週</b>再喝比較穩定（叫「養豆」）。</li>
+    <li>整顆豆子大約在烘焙後<b>二到四週內</b>風味最好。</li>
+    <li><b>磨成粉後香氣跑得非常快</b>，所以最好喝之前才磨。</li>
+  </ul>
+  <div class="box origin"><div class="bt">單向排氣閥</div>咖啡袋上那個小圓孔是「單向排氣閥」：讓袋子裡的二氧化碳<b>出去</b>，但外面的空氣<b>進不來</b>。如果沒有它，袋子會被氣體撐爆；如果讓空氣進來，豆子會氧化變味。</div>
+
+  <h3>保存四原則</h3>
+  <div class="flowrow"><span class="p">🔒 密封</span><span class="p">🌑 避光</span><span class="p">❄️ 陰涼（避免高溫）</span><span class="p">💧 防潮</span></div>
+  <div class="box warn"><div class="bt">要不要放冰箱？</div>常溫幾週內喝完的豆子，<b>不需要</b>放冰箱。冰箱進進出出會讓豆子表面結露受潮，還會吸收冰箱裡的食物味道。如果真的要長期保存，可以分成小包密封冷凍，要喝的那包拿出來回溫後再打開。</div>
+
+  <h3>壞豆子（瑕疵豆）</h3>
+  <div class="grid">
+    <div class="tc"><h4>⚫ 黑豆</h4><p>果實過熟或掉在地上發霉腐壞，會帶來腐敗、霉味。</p></div>
+    <div class="tc"><h4>🟤 發酵豆（酸豆）</h4><p>處理時發酵過頭，會有像醋、酒精發酸的怪味。</p></div>
+    <div class="tc"><h4>🐛 蟲蛀豆</h4><p>表面有小洞，是果小蠹等害蟲咬的，會帶來髒味。</p></div>
+    <div class="tc"><h4>⚪ 未熟豆</h4><p>採到沒熟的果實，烘焙時上不了色，喝起來有花生殼、青草般的澀味。</p></div>
+  </div>
+  <div class="box tip"><div class="bt">手挑</div>好的烘豆師會在烘焙前後把瑕疵豆一顆顆挑掉，叫「手挑」。一顆嚴重的瑕疵豆就可能讓整杯咖啡出現怪味。</div>
+
+  <div class="box recap"><div class="bt"></div>
+    看標示：產區、海拔、品種、處理法、烘焙度、風味、<b>烘焙日期</b>。<br>
+    整豆兩到四週內最好，喝前才磨；密封避光陰涼，不必放冰箱。
+  </div>
+  <div class="quiz" data-quiz="C13"></div>
+  <div class="lnav" data-nav="C13"></div>
+</section>
+
+<!-- ============ C14 ============ -->
+<section class="page" id="C14">
+  <span class="tag l4">第四階段・專業　第 14 課</span>
+  <h2>咖啡、健康與公平——聰明地喝一杯</h2>
+  <p class="lead">最後一課，學會健康地喝咖啡，也想一想：一杯咖啡背後，種咖啡的人過得好嗎？</p>
+
+  <h3>🧮 咖啡因計算機</h3>
+  <div class="card">
+    <label>你的體重：<b id="kW">50</b> 公斤</label><input type="range" id="kWr" min="25" max="90" value="50">
+    <div class="grid" style="margin-top:8px" id="kItems"></div>
+    <svg viewBox="0 0 300 40" width="100%" style="margin-top:8px"><rect x="0" y="12" width="300" height="16" rx="8" fill="#efe6d4"/><rect id="kBar" x="0" y="12" width="0" height="16" rx="8" fill="#5e8a3c"/><line id="kLim" x1="200" y1="4" x2="200" y2="36" stroke="#9a3a24" stroke-width="2"/></svg>
+    <div class="pdesc" id="kOut"></div>
+    <small>咖啡因含量是大約平均值，實際依豆子、份量和做法差很多。</small>
+  </div>
+
+  <div class="box warn"><div class="bt">青少年的建議量</div>加拿大衛生部等機構建議，青少年每天咖啡因<b>每公斤體重不要超過約 2.5 毫克</b>；成年人一般建議每天不超過約 400 毫克。國中生正在長大，<b>最好少喝咖啡</b>，尤其晚上不要喝。咖啡因在身體裡大約要 5 小時才代謝掉一半，下午喝的咖啡可能讓你晚上睡不著。</div>
+
+  <h3>健康喝咖啡</h3>
+  <div class="grid">
+    <div class="tc"><h4>🌙 下午後少喝</h4><p>會影響睡眠，睡不好比少喝一杯咖啡更傷身。</p></div>
+    <div class="tc"><h4>🍩 小心糖和奶油</h4><p>黑咖啡幾乎沒有熱量，加糖、奶精、鮮奶油、糖漿的花式咖啡熱量可能和一碗飯差不多。</p></div>
+    <div class="tc"><h4>💓 不舒服就停</h4><p>心跳很快、手抖、焦慮、胃痛，可能是咖啡因太多了，要停下來。</p></div>
+    <div class="tc"><h4>🚫 低咖啡因咖啡</h4><p>用水、二氧化碳等方法把大部分咖啡因去掉，大約去除 97% 以上，但不是完全零。</p></div>
+  </div>
+
+  <h3>一杯咖啡背後的人</h3>
+  <p>全世界有上千萬戶咖啡農，大多是只有小塊土地的小農。咖啡價格大起大落時，咖啡農常常賺不到足夠的錢生活。</p>
+  <div class="grid">
+    <div class="tc"><h4>⚖️ 公平貿易</h4><p>保證收購時有<b>最低價格</b>，再加上一筆給社區的發展基金，讓農民生活比較有保障。</p></div>
+    <div class="tc"><h4>🐸 雨林聯盟</h4><p>認證種植過程有保護森林、野生動物和工人的權益。標誌是一隻綠色青蛙。</p></div>
+    <div class="tc"><h4>🤝 直接貿易</h4><p>烘豆商直接向莊園買豆，付比較高的價格換取更好的品質，也讓錢更多回到農民手上。</p></div>
+    <div class="tc"><h4>♻️ 咖啡渣再利用</h4><p>咖啡渣可以除臭、做堆肥，減少浪費。</p></div>
+  </div>
+
+  <div class="box recap"><div class="bt"></div>
+    青少年咖啡因：每公斤體重每天約 2.5 毫克以內；下午後少喝。<br>
+    公平貿易、雨林聯盟、直接貿易，讓種咖啡的人也能過得好。
+  </div>
+  <div class="quiz" data-quiz="C14"></div>
+  <div class="lnav" data-nav="C14"></div>
+</section>
+
+<section class="page" id="final">
+  <span class="tag l4">結業</span>
+  <h2>🎓 結業測驗</h2>
+  <p class="lead">恭喜你走完 14 課！最後從全部課程中隨機出 15 題，答對 12 題以上就能拿到結業證書。</p>
+  <div class="quiz" id="finalQuiz"></div>
+  <div class="center noprint" style="margin-top:12px"><button class="btn am" id="finalNew">🔄 重新出題</button></div>
+  <div id="certWrap" style="display:none">
+    <div class="card noprint center"><p>輸入你的名字，產生證書：</p>
+      <input class="txt" id="certName" placeholder="你的名字"> <button class="btn sm" onclick="makeCert()">產生證書</button></div>
+    <div class="cert" id="cert" style="display:none">
+      <div style="font-size:2.4em">☕</div><h2>結 業 證 書</h2><div class="nm" id="certNm"></div>
+      <p>完成「一杯咖啡的學問」全部 14 課，<br>從咖啡果實、歷史、產地、品種、處理法、烘焙，<br>到萃取、沖煮、義式咖啡與專業杯測，<br>結業測驗成績 <b id="certScore"></b>，特頒此證。</p>
+      <p id="certDate" style="color:var(--muted)"></p></div>
+    <div class="center noprint" style="margin-top:10px"><button class="btn ghost sm" onclick="window.print()">🖨️ 列印／存成 PDF</button></div>
+  </div>
+  <div class="lnav" data-nav="final"></div>
+</section>
+<section class="page" id="gloss">
+  <span class="tag">附錄</span><h2>📖 名詞辭典</h2>
+  <p>課程裡出現的專有名詞都在這裡，可以搜尋。後面的標籤表示在第幾課學到。</p>
+  <div class="gl card"><input id="gq" placeholder="🔍 輸入關鍵字"></div>
+  <div class="card" id="glist"></div>
+  <div class="center"><button class="btn ghost" onclick="go('home')">← 回首頁</button></div>
+</section>
+</main>
+<script>
+const COURSE={key:'saintdou_coffee_course_v1',defaultName:'咖啡小達人'};
+const LESSONS=[
+ {id:'C1',lv:1,t:'咖啡是什麼？果實裡的種子'},
+ {id:'C2',lv:1,t:'咖啡從哪裡來？'},
+ {id:'C3',lv:1,t:'咖啡帶與產地'},
+ {id:'C4',lv:2,t:'阿拉比卡與羅布斯塔'},
+ {id:'C5',lv:2,t:'咖啡豆裡有什麼？'},
+ {id:'C6',lv:2,t:'後製處理'},
+ {id:'C7',lv:2,t:'烘焙'},
+ {id:'C8',lv:3,t:'研磨與萃取'},
+ {id:'C9',lv:3,t:'沖煮器具'},
+ {id:'C10',lv:3,t:'義式咖啡家族'},
+ {id:'C11',lv:3,t:'世界咖啡文化'},
+ {id:'C12',lv:4,t:'品嚐與杯測'},
+ {id:'C13',lv:4,t:'選豆、看標示、保存'},
+ {id:'C14',lv:4,t:'咖啡、健康與公平'},
+ {id:'final',lv:5,t:'結業測驗與證書'}
+];
+const LV=['','第一階段・入門：認識咖啡','第二階段・基礎：咖啡怎麼做出來','第三階段・進階：沖煮與文化','第四階段・專業：分辨與品鑑','結業'];
+const LVDESC=['','果實構造、歷史、咖啡帶','品種、成分、處理法、烘焙','萃取原理、器具、義式菜單、世界文化','杯測、選豆保存、健康與公平貿易'];
+const Q={
+C1:[{q:'咖啡豆其實是什麼？',o:['咖啡櫻桃裡的種子','一種豆科植物的豆子','咖啡樹的根'],a:0,e:'咖啡豆是果實裡的種子，不是豆科的豆子。'},
+ {q:'英文 coffee 最早來自哪一種語言？',o:['阿拉伯語 qahwa','拉丁文','中文'],a:0,e:'阿拉伯語 qahwa → 土耳其 kahve → 歐洲各語言。'},
+ {q:'一顆果實裡只長一粒、圓圓的種子叫什麼？',o:['圓豆','平豆','銀豆'],a:0,e:'圓豆（Peaberry）；一般兩顆面對面的叫平豆。'}],
+C2:[{q:'咖啡的故鄉在哪裡？',o:['衣索比亞','巴西','義大利'],a:0,e:'咖啡源自衣索比亞，再從葉門傳出去。'},
+ {q:'「摩卡」這個名字原本是什麼？',o:['葉門的咖啡出口港','一種巧克力','一位國王'],a:0,e:'摩卡港是早期最重要的咖啡出口港。'},
+ {q:'重視產地、品種、處理法，多用淺焙的是第幾波咖啡浪潮？',o:['第一波','第二波','第三波'],a:2,e:'第三波精品咖啡重視風味與產地。'}],
+C3:[{q:'「咖啡帶」大致在哪裡？',o:['南北回歸線之間','南北極附近','只有赤道上一條線'],a:0,e:'溫暖、雨量充足、沒有霜害的熱帶亞熱帶。'},
+ {q:'世界第一大咖啡生產國是？',o:['巴西','越南','哥倫比亞'],a:0,e:'巴西產量約佔全球三分之一。'},
+ {q:'越南主要種植哪一種咖啡？',o:['羅布斯塔','藝伎','波旁'],a:0,e:'越南是羅布斯塔大國，多用於即溶咖啡。'}],
+C4:[{q:'哪一種咖啡的咖啡因比較多？',o:['羅布斯塔','阿拉比卡','兩者一樣'],a:0,e:'羅布斯塔約 2.2～2.7%，阿拉比卡約 1.2～1.5%。'},
+ {q:'Robusta 這個名字的意思是？',o:['強壯的','香甜的','阿拉伯的'],a:0,e:'因為抗病、耐熱、產量大。'},
+ {q:'「藝伎」咖啡的名字來自？',o:['衣索比亞的 Gesha 地區','日本藝伎','巴拿馬的城市'],a:0,e:'和日本藝伎無關，是衣索比亞地名。'},
+ {q:'「波旁」品種的名字來自？',o:['印度洋上的波旁島','美國的波本酒','一位咖啡農'],a:0,e:'波旁島就是今天的留尼旺島。'}],
+C5:[{q:'淺焙咖啡明亮的「果酸」主要來自？',o:['檸檬酸、蘋果酸等有機酸','咖啡因','脂質'],a:0,e:'有機酸帶來像柑橘、蘋果的酸。'},
+ {q:'蛋白質和醣一起加熱產生烤香的反應叫？',o:['梅納反應','光合作用','氧化反應'],a:0,e:'梅納反應產生堅果、麵包、巧克力香。'},
+ {q:'好咖啡的「酸」應該像什麼？',o:['清爽帶甜的水果酸','醋的刺鼻酸','放壞的酸臭'],a:0,e:'好的酸像柳橙、蘋果；刺刺的醋酸是缺點。'}],
+C6:[{q:'整顆果實連皮帶肉一起曬乾的處理法是？',o:['日曬','水洗','蜜處理'],a:0,e:'日曬果香濃、甜、口感厚。'},
+ {q:'「蜜處理」為什麼叫蜜處理？',o:['保留的果膠黏黏的像蜂蜜','加了蜂蜜','蜜蜂幫忙授粉'],a:0,e:'不是加蜂蜜！依果膠多寡分白、黃、紅、黑蜜。'},
+ {q:'風味最乾淨、酸質明亮，最能喝出產地特色的處理法通常是？',o:['水洗','日曬','濕剝'],a:0,e:'水洗把果膠洗掉，味道乾淨。'},
+ {q:'印尼曼特寧常用的濕剝法，風味傾向是？',o:['厚重、低酸、帶草本泥土味','花香、高酸','像檸檬汁'],a:0,e:'羊皮紙未乾就剝殼，風味厚重。'}],
+C7:[{q:'烘焙時豆子裂開發出「啪」聲，第一次叫什麼？',o:['一爆','一裂','一響'],a:0,e:'約 196°C 左右一爆，再烘有二爆。'},
+ {q:'想喝到明亮果酸和花香，應該選？',o:['淺焙','深焙','義式焙'],a:0,e:'淺焙最能喝出產地特色。'},
+ {q:'深焙咖啡的咖啡因比淺焙多很多，對嗎？',o:['不對，差異很小','對，多兩倍','對，深焙才有咖啡因'],a:0,e:'苦味來自烘焙產生的物質，不是咖啡因變多。'},
+ {q:'「梅納反應」是以誰命名？',o:['法國化學家梅納','義大利咖啡師','衣索比亞牧羊人'],a:0,e:'1912 年梅納發現；烤吐司變褐也是它。'}],
+C8:[{q:'咖啡喝起來又酸又淡、嘴巴空空的，通常是？',o:['萃取不足','萃取過度','剛剛好'],a:0,e:'可以磨細一點、泡久一點或水溫高一點。'},
+ {q:'又苦又澀、像嚼木頭，通常是？',o:['萃取過度','萃取不足','豆子太新鮮'],a:0,e:'可以磨粗一點、時間短一點。'},
+ {q:'冷萃要泡十幾個小時，應該磨？',o:['很粗','很細','像麵粉'],a:0,e:'泡越久磨越粗。'},
+ {q:'手沖常見的粉水比大約是？',o:['1：15～1：17','1：2','1：100'],a:0,e:'1 克粉配 15～17 克水。1：2 是義式濃縮常見比例。'}],
+C9:[{q:'咖啡濾紙是誰發明的？',o:['德國主婦梅麗塔','義大利人比亞樂提','土耳其蘇丹'],a:0,e:'1908 年用兒子作業簿的吸墨紙發明。'},
+ {q:'「賽風」這個名字從哪裡來？',o:['英文 Siphon（虹吸）的音譯','發明人的名字','法文「美味」'],a:0,e:'利用加熱與冷卻的壓力差，把咖啡吸回下球。'},
+ {q:'越南冰咖啡的杯底通常先放什麼？',o:['煉乳','鹽','蜂蜜'],a:0,e:'滴漏壺＋煉乳＋冰塊。'}],
+C10:[{q:'義大利文 espresso 的意思是？',o:['壓出來的、快速的','很苦的','早上喝的'],a:0,e:'高壓、快速萃取。'},
+ {q:'「卡布奇諾」的名字和什麼有關？',o:['嘉布遣會修士的袍子顏色','一座義大利城市','一種牛奶品牌'],a:0,e:'修士的褐色連帽袍和咖啡加奶泡的顏色很像。'},
+ {q:'「瑪奇朵」在義大利文的意思是？',o:['做記號、染色','加很多牛奶','冰的'],a:0,e:'濃縮咖啡上點一點奶泡「做記號」。'},
+ {q:'美式咖啡是怎麼做的？',o:['濃縮咖啡加熱水','手沖咖啡加牛奶','咖啡加冰淇淋'],a:0,e:'相傳二戰美國大兵嫌濃縮太濃而加水。加冰淇淋的是阿芙佳朵。'}],
+C11:[{q:'馬來西亞怡保「白咖啡」的「白」是指？',o:['豆子用較低溫度、加人造奶油烘得較淺','咖啡是白色的','加了白糖'],a:0,e:'比傳統南洋深焙咖啡淺，口感溫和。'},
+ {q:'香港的「鴛鴦」是什麼？',o:['咖啡加港式奶茶','兩杯咖啡','咖啡加檸檬'],a:0,e:'鴛鴦成對，比喻兩種飲料配一對。'},
+ {q:'麝香貓咖啡受到批評，主要原因是？',o:['動物福利問題','咖啡因太多','顏色太淺'],a:0,e:'許多麝香貓被關籠強迫餵食。'}],
+C12:[{q:'精品咖啡在 SCA 評分中要幾分以上？',o:['80 分','50 分','99 分'],a:0,e:'滿分 100，80 分以上才算精品。'},
+ {q:'杯測時推開表面咖啡粉「殼」聞香，這個動作叫？',o:['破渣','拉花','悶蒸'],a:0,e:'約 4 分鐘時破渣，香氣最濃。'},
+ {q:'「醇厚度」是在描述什麼？',o:['咖啡在嘴裡的厚薄重量','咖啡的顏色','咖啡的溫度'],a:0,e:'像脫脂牛奶到全脂牛奶的差別。'}],
+C13:[{q:'咖啡袋上的單向排氣閥作用是？',o:['讓二氧化碳出去，空氣進不來','讓空氣進去保持新鮮','只是裝飾'],a:0,e:'防止袋子撐爆，也避免豆子氧化。'},
+ {q:'磨成粉的咖啡最好怎麼做？',o:['喝之前才磨','一次磨一個月的量','放冰箱慢慢用'],a:0,e:'粉的香氣跑得非常快。'},
+ {q:'買咖啡豆時，最該注意包裝上的哪個日期？',o:['烘焙日期','產地成立日期','品種發現日期'],a:0,e:'整豆通常烘焙後二到四週內最好。'}],
+C14:[{q:'咖啡因在身體裡大約多久代謝掉一半？',o:['約 5 小時','約 5 分鐘','約 5 天'],a:0,e:'所以下午喝咖啡可能影響晚上睡眠。'},
+ {q:'「公平貿易」主要是為了？',o:['保障咖啡農有最低收購價格','讓咖啡變便宜','讓咖啡更苦'],a:0,e:'加上社區發展基金，讓農民生活有保障。'},
+ {q:'低咖啡因咖啡完全沒有咖啡因嗎？',o:['不是，只是去掉大部分','是，完全零','咖啡因反而更多'],a:0,e:'大約去除 97% 以上，但不是零。'}]
+};
+const QEXTRA=[
+ {q:'咖啡樹屬於哪一科？',o:['茜草科','山茶科','豆科'],a:0,e:'茶樹才是山茶科。'},
+ {q:'義式濃縮表面那層金黃色泡沫叫？',o:['crema','latte','panna'],a:0,e:'crema 是義大利文「奶油」。'},
+ {q:'「阿芙佳朵」是什麼？',o:['冰淇淋淋上濃縮咖啡','咖啡加熱水','咖啡加煉乳'],a:0,e:'affogato 義大利文「淹沒」。'},
+ {q:'土耳其咖啡的特色是？',o:['極細粉煮好不過濾','用冰水滴一整晚','加巧克力'],a:0,e:'2013 年列入聯合國非物質文化遺產。'}
+];
+const GL=[
+['咖啡櫻桃','coffee cherry','C1','咖啡樹的果實，成熟多為紅色，裡面的種子就是咖啡豆。'],
+['羊皮紙','parchment','C1','包住種子的一層薄硬殼（內果皮），乾了像羊皮紙。'],
+['銀皮','silver skin','C1','緊貼種子的薄膜，烘焙時會脫落成碎屑。'],
+['平豆／圓豆','peaberry','C1','兩顆面對面的叫平豆；只長一粒、圓形的叫圓豆。'],
+['卡爾迪','Kaldi','C2','傳說中發現咖啡的衣索比亞牧羊人。'],
+['摩卡','Mocha','C2','葉門的古老咖啡出口港；今天也指加巧克力的咖啡。'],
+['便士大學','','C2','1600 年代倫敦咖啡館的別稱，付一便士就能聽人討論。'],
+['三波浪潮','','C2','方便普及 → 連鎖咖啡店 → 精品風味。'],
+['咖啡帶','Coffee Belt','C3','大約在南北回歸線之間、適合種咖啡的地帶。'],
+['曼特寧','Mandheling','C3','印尼蘇門答臘有名的咖啡，口感厚重。'],
+['阿拉比卡','Arabica','C4','全球約六成產量，香氣多變、酸甜明亮，林奈命名時以為來自阿拉伯。'],
+['羅布斯塔','Robusta','C4','Coffea canephora 的品種名，意為強壯，咖啡因多、苦、抗病。'],
+['藝伎','Geisha/Gesha','C4','源自衣索比亞 Gesha 地區的品種，以花香柑橘聞名。'],
+['波旁','Bourbon','C4','在波旁島（留尼旺島）發展的品種。'],
+['綠原酸','chlorogenic acid','C5','生豆中的酸，烘焙時分解產生苦味。chloro 是希臘文綠色。'],
+['酸質','acidity','C5','好咖啡中像水果的清爽酸味。'],
+['生豆','green coffee','C6','處理好、尚未烘焙的青綠色咖啡種子。'],
+['日曬','Natural','C6','整顆果實曬乾的處理法，果香濃、甜。'],
+['水洗','Washed','C6','去果肉、發酵去果膠、洗淨再曬，風味乾淨明亮。'],
+['蜜處理','Honey','C6','保留果膠一起曬乾；果膠像蜂蜜而得名。'],
+['濕剝','Wet-hulled','C6','印尼特有，羊皮紙未乾就剝除，風味厚重。'],
+['梅納反應','Maillard','C7','胺基酸與醣加熱產生褐色和香氣，1912 年梅納發現。'],
+['焦糖化','','C7','醣類高溫分解產生焦糖香和褐色。'],
+['一爆／二爆','first/second crack','C7','烘焙時豆子裂開的聲音，判斷烘焙度的依據。'],
+['城市焙','City roast','C7','中深烘焙度，據說源自 1800 年代紐約。'],
+['萃取','extraction','C8','用水把咖啡粉中的物質溶出來。'],
+['萃取率','extraction yield','C8','咖啡粉溶進水裡的比例，理想約 18～22%。'],
+['粉水比','brew ratio','C8','咖啡粉和水的重量比，手沖常見 1：15～1：17。'],
+['手沖','pour over','C9','熱水倒在濾杯中的咖啡粉上滴濾。'],
+['濾壓壺','French press','C9','粗粉浸泡後壓下濾網的器具。'],
+['摩卡壺','moka pot','C9','爐上加熱、蒸氣壓力推水過粉，1933 年比亞樂提設計。'],
+['賽風','Siphon','C9','虹吸壺，利用加熱冷卻的壓力差煮咖啡。'],
+['冷萃／冰滴','cold brew','C9','用冷水長時間萃取，順口低苦酸。'],
+['義式濃縮','Espresso','C10','約 9 大氣壓、25～30 秒萃取的小杯濃咖啡。'],
+['crema','','C10','濃縮咖啡表面的金黃泡沫，義大利文「奶油」。'],
+['拿鐵','Latte','C10','義大利文「牛奶」，濃縮加大量熱牛奶。'],
+['卡布奇諾','Cappuccino','C10','濃縮＋牛奶＋厚奶泡，名字來自嘉布遣會修士袍色。'],
+['瑪奇朵','Macchiato','C10','義大利文「做記號」，濃縮上點一點奶泡。'],
+['馥列白','Flat White','C10','源自澳紐，薄而細緻的奶泡，咖啡味較明顯。'],
+['阿芙佳朵','Affogato','C10','冰淇淋淋上濃縮，義大利文「淹沒」。'],
+['拉花','Latte Art','C10','用微奶泡在咖啡表面畫出圖案。'],
+['Fika','','C11','瑞典喝咖啡、吃點心、聊天的休息時光。'],
+['白咖啡','','C11','馬來西亞怡保，豆子低溫加人造奶油烘得較淺。'],
+['杯測','cupping','C12','用標準方法評鑑咖啡風味。'],
+['破渣','break','C12','杯測時推開表面粉殼聞香。'],
+['醇厚度','body','C12','咖啡在嘴裡的厚薄重量感。'],
+['Q Grader','','C12','通過國際考試的專業咖啡杯測師。'],
+['風味輪','flavor wheel','C12','把咖啡風味由大到小分類成圓輪的詞典。'],
+['養豆','degassing','C13','剛烘好的豆子放幾天讓二氧化碳排出。'],
+['單向排氣閥','','C13','讓氣體出去、空氣進不來的小閥。'],
+['瑕疵豆','defects','C13','黑豆、發酵豆、蟲蛀豆、未熟豆等會帶來怪味的豆子。'],
+['低咖啡因','decaf','C14','去除大部分咖啡因的咖啡，不是完全零。'],
+['公平貿易','Fair Trade','C14','保障農民最低收購價與社區基金的認證。']
+];
+
+/* ===== 共用引擎（茶・咖啡・酒課程通用）===== */
+function lerp(a,b,t){return a+(b-a)*t}
+function hex(c){return [1,3,5].map(i=>parseInt(c.substr(i,2),16))}
+function mix(stops,v){for(let i=0;i<stops.length-1;i++){const[a,ca]=stops[i],[b,cb]=stops[i+1];if(v<=b){const t=(v-a)/(b-a),x=hex(ca),y=hex(cb);return'rgb('+x.map((n,k)=>Math.round(lerp(n,y[k],t))).join(',')+')'}}return stops[stops.length-1][1]}
+function $(id){return document.getElementById(id)}
+
+let S={done:{},last:'home'};
+try{const x=JSON.parse(localStorage.getItem(COURSE.key)||'null');if(x&&x.done)S=x;}catch(e){}
+function save(){try{localStorage.setItem(COURSE.key,JSON.stringify(S))}catch(e){}}
+function nextUndone(){const l=LESSONS.find(l=>!S.done[l.id]);return l?l.id:'final'}
+function lessonNo(id){return LESSONS.findIndex(l=>l.id===id)+1}
+
+function progress(){
+  const n=LESSONS.filter(l=>l.id!=='final'&&S.done[l.id]).length, tot=LESSONS.length-1;
+  const p=Math.round(n/tot*100);
+  $('pbar').style.width=p+'%';$('ptxt').textContent=p+'%';
+  const sb=$('startBtn');
+  if(sb) sb.textContent = n===0?'▶ 開始上課':(n>=tot?'🎓 前往結業測驗':'▶ 繼續上課（第 '+(n+1)+' 課）');
+}
+function buildMenus(){
+  let h='',m='';
+  for(let lv=1;lv<=5;lv++){
+    const ls=LESSONS.filter(l=>l.lv===lv);
+    h+='<div class="lv-h">'+LV[lv]+'</div>';
+    ls.forEach(l=>{const i=LESSONS.indexOf(l);
+      h+='<div class="li '+(S.done[l.id]?'done ':'')+(S.last===l.id?'cur':'')+'" onclick="go(\''+l.id+'\')"><span class="n">'+(S.done[l.id]?'✓':(l.id==='final'?'🎓':i+1))+'</span>'+l.t+'</div>';});
+    if(lv<5){
+      m+='<div class="lvcard"><span class="tag '+(lv>1?'l'+lv:'')+'">'+LV[lv].split('：')[0]+'</span><h3>'+LV[lv].split('：')[1]+'</h3><p style="margin:.2em 0 .6em;color:var(--muted);font-size:.92em">'+LVDESC[lv]+'</p><div class="chips">';
+      ls.forEach(l=>{const i=LESSONS.indexOf(l);m+='<span class="chip '+(S.done[l.id]?'done':'')+'" onclick="go(\''+l.id+'\')">'+(i+1)+'. '+l.t+'</span>'});
+      m+='</div></div>';
+    }
+  }
+  h+='<div class="lv-h">附錄</div><div class="li" onclick="go(\'gloss\')"><span class="n">📖</span>名詞辭典</div><div class="li" onclick="go(\'home\')"><span class="n">🏠</span>回首頁</div>';
+  h+='<div style="margin-top:20px"><button class="mbtn" onclick="if(confirm(\'確定要清除學習進度嗎？\')){S={done:{},last:\'home\'};save();location.reload()}">清除進度</button></div>';
+  $('dlist').innerHTML=h;
+  $('lvmap').innerHTML=m+'<div class="lvcard"><h3 style="margin:0 0 6px">🎓 結業</h3><div class="chips"><span class="chip" onclick="go(\'final\')">結業測驗與證書</span><span class="chip" onclick="go(\'gloss\')">📖 名詞辭典</span></div></div>';
+}
+function drawer(on){$('drawer').classList.toggle('on',on)}
+function go(id){
+  if(!$(id))id='home';
+  window.AC_COURSE_GO=function(v){go(v)};window.AC_COURSE_POSITION=id;
+  document.querySelectorAll('section.page').forEach(s=>s.classList.toggle('on',s.id===id));
+  S.last=id;save();drawer(false);buildMenus();progress();
+  window.scrollTo(0,0);
+  document.querySelectorAll('#'+id+' .bars').forEach(b=>animBars(b));
+  if(id==='final'&&!finalBuilt)newFinal();
+  if(COURSE.onShow)COURSE.onShow(id);
+}
+function buildNav(){
+  document.querySelectorAll('[data-nav]').forEach(d=>{
+    const id=d.dataset.nav,i=LESSONS.findIndex(l=>l.id===id);
+    const prev=LESSONS[i-1],next=LESSONS[i+1];
+    let h=prev?'<button class="btn ghost" onclick="go(\''+prev.id+'\')">← 上一課</button>':'<button class="btn ghost" onclick="go(\'home\')">← 首頁</button>';
+    if(next)h+='<button class="btn" onclick="finish(\''+id+'\',\''+next.id+'\')">完成，下一課：'+next.t+' →</button>';
+    else h+='<button class="btn" onclick="go(\'gloss\')">📖 名詞辭典 →</button>';
+    d.innerHTML=h;
+  });
+}
+function finish(id,next){S.done[id]=true;save();go(next)}
+function animBars(b){b.querySelectorAll('.t i[data-w]').forEach(i=>{i.style.width='0';setTimeout(()=>i.style.width=i.dataset.w+'%',80)})}
+
+/* 測驗 */
+function shuf(q){const idx=q.o.map((_,i)=>i).sort(()=>Math.random()-.5);return{q:q.q,o:idx.map(i=>q.o[i]),a:idx.indexOf(q.a),e:q.e}}
+function renderQuiz(box,list,onDone){
+  list=list.map(shuf);
+  let h='<h3>📝 小測驗</h3>',ans=0,ok=0;
+  list.forEach((x,i)=>{
+    h+='<div class="qq">'+(i+1)+'. '+x.q+'</div><div class="opts">';
+    x.o.forEach((o,j)=>h+='<button class="opt" data-i="'+i+'" data-j="'+j+'">'+String.fromCharCode(65+j)+'. '+o+'</button>');
+    h+='</div><div class="exp" id="'+box.id+'e'+i+'"></div>';
+  });
+  h+='<div class="qres"></div>';
+  box.innerHTML=h;
+  box.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i,j=+b.dataset.j,x=list[i];
+    box.querySelectorAll('.opt[data-i="'+i+'"]').forEach(s=>{s.disabled=true;if(+s.dataset.j===x.a)s.classList.add('ok')});
+    if(j!==x.a)b.classList.add('no');else ok++;
+    const e=$(box.id+'e'+i);
+    e.innerHTML=(j===x.a?'✅ 答對了！':'❌ 正確答案是 '+String.fromCharCode(65+x.a)+'。')+' '+x.e;e.classList.add('on');
+    ans++;
+    if(ans===list.length){
+      box.querySelector('.qres').innerHTML='答對 '+ok+' / '+list.length+' 題。'+(ok===list.length?' 🎉 全對，太厲害了！':' 可以回頭再看一下課文喔。')+(onDone?'':'<button class="btn sm ghost" style="margin-left:8px" onclick="redoQuiz(this)">再做一次</button>');
+      if(onDone)onDone(ok,list.length);
+    }
+  });
+}
+function redoQuiz(btn){const box=btn.closest('.quiz');renderQuiz(box,Q[box.dataset.quiz])}
+let finalBuilt=false;
+function newFinal(){
+  finalBuilt=true;
+  const pool=[].concat(...Object.values(Q),QEXTRA);
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}
+  const box=$('finalQuiz');
+  renderQuiz(box,pool.slice(0,15),(ok)=>{
+    const r=box.querySelector('.qres');
+    if(ok>=12){r.innerHTML+='<br>🎓 恭喜通過！請在下方產生你的證書。';$('certWrap').style.display='block';S.final=ok;S.done.final=true;save();progress();buildMenus()}
+    else r.innerHTML+='<br>還差一點點（需要 12 題）。按「重新出題」再挑戰一次！';
+  });
+  $('certWrap').style.display='none';
+}
+function makeCert(){
+  const n=$('certName').value.trim()||COURSE.defaultName;
+  $('certNm').textContent=n;
+  $('certScore').textContent=(S.final||12)+' / 15';
+  const d=new Date();$('certDate').textContent=d.getFullYear()+' 年 '+(d.getMonth()+1)+' 月 '+d.getDate()+' 日';
+  $('cert').style.display='block';
+}
+
+/* 通用：製程動畫 */
+function makeStepper(pfx,PROC){
+  let cur=Object.keys(PROC)[0],tm=null;
+  const tabs=$(pfx+'tabs'),steps=$(pfx+'steps'),desc=$(pfx+'desc');
+  function sel(k){cur=k;clearInterval(tm);
+    tabs.querySelectorAll('button').forEach(b=>{const on=b.dataset.k===k;b.classList.toggle('on',on);b.style.background=on?PROC[k].c:'#fff'});
+    const s=PROC[k].s;steps.innerHTML=s.map((x,i)=>(i?'<span class="arrow">→</span>':'')+'<div class="step" data-i="'+i+'"><span class="ic">'+x[0]+'</span>'+x[1]+'</div>').join('');
+    steps.querySelectorAll('.step').forEach(e=>e.onclick=()=>show(+e.dataset.i));
+    desc.innerHTML='<b>'+k+'</b>共 '+s.length+' 個步驟。按「播放」或點各步驟看說明。'+(PROC[k].n?'<br>'+PROC[k].n:'')}
+  function show(i){const s=PROC[cur].s;steps.querySelectorAll('.step').forEach((e,k)=>e.classList.toggle('on',k===i));desc.innerHTML='<b>'+s[i][0]+' 第 '+(i+1)+' 步：'+s[i][1]+'</b><br>'+s[i][2]}
+  Object.keys(PROC).forEach(k=>{const b=document.createElement('button');b.textContent=k;b.dataset.k=k;b.onclick=()=>sel(k);tabs.appendChild(b)});
+  $(pfx+'play').onclick=()=>{clearInterval(tm);let i=0;show(0);tm=setInterval(()=>{i++;if(i>=PROC[cur].s.length){clearInterval(tm);return}show(i)},2200)};
+  sel(cur);
+}
+
+/* 通用：偵探遊戲 */
+function makeGame(TYPES,GAME,goodAt,failTip){
+  let gi=0,gok=0,gans=0,ord=[];
+  function start(){ord=GAME.map((_,i)=>i).sort(()=>Math.random()-.5);gi=0;gok=0;gans=0;$('gScore').textContent='0 / 0';show()}
+  function show(){
+    const n=$('gNext');
+    if(gi>=ord.length){$('gTitle').textContent='挑戰結束！';$('gClues').innerHTML='<p style="font-size:1.1em">你答對了 <b>'+gok+' / '+ord.length+'</b> 題。'+(gok>=goodAt?'🕵️ 你是合格的偵探！':failTip)+'</p>';$('gOpts').innerHTML='';$('gMsg').innerHTML='';n.textContent='🔄 再玩一次';n.style.display='inline-flex';n.onclick=start;return}
+    const x=GAME[ord[gi]];
+    $('gTitle').textContent='第 '+(gi+1)+' 題 / 共 '+ord.length+' 題';
+    $('gClues').innerHTML=(x.sw||[]).map(s=>'<div class="clue"><span class="sw" style="background:'+s[0]+'"></span>'+s[1]+'</div>').join('')+x.c.map(c=>'<div class="clue">🔎 '+c+'</div>').join('');
+    $('gOpts').innerHTML=TYPES.map(t=>'<button style="background:'+t[1]+'" data-t="'+t[0]+'">'+t[0]+'</button>').join('');
+    $('gMsg').innerHTML='';n.style.display='none';
+    $('gOpts').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+      $('gOpts').querySelectorAll('button').forEach(z=>{z.disabled=true;z.style.opacity=z.dataset.t===x.a?1:.35});
+      gans++;const ok=b.dataset.t===x.a;if(ok)gok++;
+      $('gMsg').innerHTML=(ok?'✅ 答對！':'❌ 答案是 <b>'+x.a+'</b>。')+' '+x.e;
+      $('gScore').textContent=gok+' / '+gans;
+      n.textContent='下一題 →';n.style.display='inline-flex';n.onclick=()=>{gi++;show()};
+    });
+  }
+  start();
+}
+
+/* 通用：點選說明圖 */
+function bindParts(sel,info,out){document.querySelectorAll(sel).forEach(p=>p.addEventListener('click',()=>{$(out).innerHTML=info[p.dataset.p]}))}
+
+/* 通用：時間軸 */
+function makeTimeline(btnId,panelId,TL){
+  const b=$(btnId);
+  function tl(i){b.querySelectorAll('button').forEach((e,k)=>e.classList.toggle('on',k===i));
+    const x=TL[i],p=$(panelId);p.style.animation='none';p.offsetHeight;p.style.animation='';
+    p.innerHTML='<span class="big">'+x.i+'</span><b style="font-family:var(--serif);font-size:1.15em">'+x.n+'：'+x.h+'</b><p>'+x.t+'</p>'}
+  TL.forEach((x,i)=>{const e=document.createElement('button');e.textContent=x.n;e.onclick=()=>tl(i);b.appendChild(e)});tl(0);
+}
+
+/* 通用：是不是 X 小遊戲 */
+function makeSort(boxId,msgId,ITEMS,yes,no){
+  const b=$(boxId);ITEMS.forEach(x=>{const e=document.createElement('button');e.innerHTML=x[0]+'<small>點我猜</small>';e.onclick=()=>{e.classList.add(x[1]?'ok':'no');e.innerHTML=x[0]+'<small>'+(x[1]?'✅ '+yes:'❌ '+no)+'</small>';$(msgId).innerHTML='<b>'+x[0]+'</b>：'+x[2]};b.appendChild(e)});
+}
+
+function glRender(q){q=(q||'').trim();const l=GL.filter(x=>!q||x.join(' ').includes(q));
+ $('glist').innerHTML=l.length?l.map(x=>'<div class="gi"><b>'+x[0]+'</b>'+(x[1]?'<span class="py">'+x[1]+'</span>':'')+'<a href="#" class="tag lvx" onclick="go(\''+x[2]+'\');return false">第 '+lessonNo(x[2])+' 課</a><br>'+x[3]+'</div>').join(''):'<p>找不到「'+q+'」，換個關鍵字試試。</p>'}
+
+function boot(){
+  document.querySelectorAll('[data-quiz]').forEach((b,k)=>{b.id='qz'+k;renderQuiz(b,Q[b.dataset.quiz])});
+  $('finalNew').onclick=newFinal;
+  $('gq').oninput=e=>glRender(e.target.value);glRender();
+  buildNav();buildMenus();progress();
+  if(S.last&&S.last!=='home'&&$(S.last))go(S.last);
+}
+
+/* C1 果實 */
+bindParts('#C1 .leafsvg .part',{
+ skin:'<b>外果皮</b>：成熟時紅色或黃色的薄皮，採收時看顏色判斷熟度。只採紅透的果實，咖啡才甜。',
+ pulp:'<b>果肉</b>：甜甜的，有些產地會把曬乾的果皮果肉拿來泡成「咖啡果皮茶」（Cascara）。',
+ muc:'<b>果膠層</b>：黏黏滑滑、含糖的一層。處理法的差別，就在於怎麼處理這一層（第 6 課）。',
+ parch:'<b>羊皮紙（內果皮）</b>：包住種子的薄硬殼，曬乾後像羊皮紙，出口前才把它脫掉。',
+ silver:'<b>銀皮</b>：緊貼在種子上、薄薄亮亮的膜，烘焙時會脫落成碎屑。',
+ bean:'<b>種子（生豆）</b>：青綠色、硬硬的，這就是還沒烘焙的咖啡豆。兩顆面對面，所以一面平、一面圓。'},'cherryInfo');
+
+/* C2 時間軸 */
+makeTimeline('tlBtns','tlPanel',[
+ {n:'9 世紀前後（傳說）',i:'🐐',h:'衣索比亞的發現',t:'衣索比亞高原上原本就有野生咖啡樹。當地人可能把果實和油脂混合當成提神的食物，或煮果皮、葉子來喝。牧羊人卡爾迪的故事就發生在這裡。'},
+ {n:'15 世紀・葉門',i:'🕌',h:'修士的提神飲料',t:'咖啡傳到對岸的<b>葉門</b>，當地蘇菲派修士用它在夜晚祈禱時保持清醒。葉門開始大量種植咖啡，從摩卡港出口。'},
+ {n:'16 世紀・鄂圖曼',i:'☕',h:'咖啡館誕生',t:'咖啡在伊斯坦堡等城市流行，出現了最早的一批<b>咖啡館</b>，人們在這裡喝咖啡、下棋、聽故事、談天下大事。'},
+ {n:'17 世紀・歐洲',i:'🏛️',h:'威尼斯、倫敦、巴黎',t:'咖啡經威尼斯傳入歐洲。有傳說一些教士認為咖啡是「異教徒的飲料」，教宗喝了以後卻很喜歡，決定讓大家都能喝。倫敦、巴黎咖啡館林立，成為交換資訊、做生意的地方。'},
+ {n:'17～18 世紀・殖民種植',i:'🚢',h:'走向亞洲與美洲',t:'荷蘭人把咖啡帶到印尼爪哇種植（所以美國俚語用 Java 代稱咖啡）；法國軍官狄克魯傳說在航海途中把自己的飲水分給一棵咖啡苗，把它帶到加勒比海；後來咖啡傳到巴西，巴西日後成為世界第一大產國。'},
+ {n:'1900 年代',i:'⚙️',h:'發明的世紀',t:'即溶咖啡、咖啡濾紙（1908）、義式咖啡機、摩卡壺（1933）陸續出現，喝咖啡變得又快又方便。'},
+ {n:'現代',i:'🌍',h:'精品咖啡時代',t:'連鎖咖啡店遍布全球，第三波精品咖啡重視產地、農民與風味；台灣、柬埔寨等亞洲地區的咖啡文化也越來越熱絡。'}]);
+
+/* C6 處理法 */
+makeStepper('p',{
+ '日曬':{c:'#a8402a',s:[['🍒','採收','採下成熟的紅色果實。'],['🧺','挑選','泡水把浮起來的壞果、未熟果挑掉。'],['☀️','整顆曬乾','果實連皮帶肉攤在高架棚或曬場上，翻動 2～4 週，直到乾得像葡萄乾。'],['🔨','脫殼','把乾掉的果皮、果肉和羊皮紙一起脫掉。'],['🫘','生豆','分級、挑瑕疵豆、裝袋出口。']]},
+ '水洗':{c:'#2f5d7c',s:[['🍒','採收','採下成熟果實。'],['⚙️','去果皮果肉','用機器把果皮果肉刮掉，留下帶黏黏果膠的種子。'],['🪣','發酵','泡在水槽裡 12～72 小時，讓微生物分解果膠。'],['💧','清洗','用清水把果膠洗乾淨。'],['☀️','曬乾','帶著羊皮紙曬乾或烘乾。'],['🫘','脫殼成生豆','脫掉羊皮紙，分級出口。']]},
+ '蜜處理':{c:'#c9a42a',s:[['🍒','採收','採下成熟果實。'],['⚙️','去果皮果肉','去掉果皮果肉，但不洗掉果膠。'],['🍯','帶果膠曬乾','黏黏的種子直接曬，要常翻動避免發霉。保留的果膠越多、曬越慢，就越接近黑蜜。'],['🫘','脫殼成生豆','曬乾後脫殼、分級。']]},
+ '濕剝':{c:'#5e8a3c',s:[['🍒','採收','採下果實。'],['⚙️','去果皮果肉','去皮後短暫發酵、清洗。'],['🌤️','半乾','帶羊皮紙曬到半乾（還有不少水分）。'],['🔨','提早脫殼','趁還濕軟時就把羊皮紙剝掉，豆子會變成深綠色。'],['☀️','再曬乾','裸豆繼續曬乾。印尼多雨，這樣比較快乾。']]}});
+
+/* C7 烘焙 */
+(function(){const r=$('rR');const B=[[0,'#a9b77d'],[18,'#d6c27a'],[35,'#c48a4a'],[50,'#9a5a2e'],[70,'#6a3a1e'],[85,'#3e2214'],[100,'#1e120c']];
+const TP=[[0,25],[8,100],[25,150],[45,190],[50,196],[58,205],[74,220],[76,224],[88,232],[100,245]];
+function temp(v){for(let i=0;i<TP.length-1;i++){const[a,x]=TP[i],[b,y]=TP[i+1];if(v<=b)return Math.round(lerp(x,y,(v-a)/(b-a)))}return 245}
+function upd(){const v=+r.value,t=temp(v);
+ $('rBean').setAttribute('fill',mix(B,v));$('rLine').setAttribute('stroke',mix([[0,'#6e7f4a'],[100,'#0e0806']],v));
+ $('rOil').setAttribute('opacity',v>78?((v-78)/22*.5).toFixed(2):0);$('rTemp').textContent=t+'°C';
+ let n,d,e='';
+ if(v<8){n='生豆';d='青綠色、硬硬的，聞起來像青草和豆子，還不能喝。'}
+ else if(v<25){n='脫水階段';d='水分被烘掉，顏色變成黃色，聞起來像烤麵包、稻草。'}
+ else if(v<45){n='梅納反應';d='顏色轉為淺褐，開始出現烤堅果、麵包香。'}
+ else if(v<50){n='梅納反應・接近一爆';d='顏色越來越深，香氣越來越濃，豆子裡的壓力正在累積。'}
+ else if(v<58){n='淺焙';d='一爆開始！酸明亮、花香果香明顯，最能喝出產地特色。';e='💥 啪！啪！一爆'}
+ else if(v<76){n='中焙';d='一爆結束，酸甜平衡，出現焦糖、堅果、可可。'}
+ else if(v<88){n='中深焙～深焙';d='二爆開始，苦味增加、醇厚，帶黑巧克力味，表面開始出油。';e='💥 劈哩劈哩…二爆'}
+ else{n='極深焙（法式、義式）';d='接近黑色、油亮，煙燻、焦苦，酸幾乎消失。再烘下去就燒焦了！'}
+ $('rName').textContent=n;$('rName').style.color=mix(B,Math.max(40,v));$('rEvent').textContent=e;$('rDesc').innerHTML=d}
+r.addEventListener('input',upd);upd()})();
+
+/* C8 萃取模擬 */
+(function(){const g=$('xGr'),t=$('xTr'),w=$('xWr');const GN=['','很細','細','中細','中細','中','中粗','粗','粗','很粗'];
+function upd(){const G=+g.value,T=+t.value,W=+w.value;
+ $('xG').textContent=GN[G];$('xT').textContent=Math.floor(T/60)+':'+String(T%60).padStart(2,'0');$('xW').textContent=W;
+ // 簡化模型：細度、時間、溫度越高越多
+ let s=(5-G)*0.9+Math.log2(T/180)*2.2+(W-92)*0.18;
+ const x=Math.max(5,Math.min(295,150+s*28));$('xPin').setAttribute('d','M'+x+' 18 l-8 -14 h16z');
+ let o;
+ if(s<-1.8)o='😖 <b>萃取不足</b>：酸、尖、淡，可能還有點鹹。試試<b>磨細一點、泡久一點或水溫高一點</b>。';
+ else if(s>1.8)o='😣 <b>萃取過度</b>：苦、澀、嘴巴乾乾的。試試<b>磨粗一點、時間短一點或水溫低一點</b>。';
+ else o='😋 <b>剛剛好！</b>酸甜苦平衡，有甜感和舒服的餘韻。';
+ $('xOut').innerHTML=o}
+[g,t,w].forEach(e=>e.addEventListener('input',upd));upd()})();
+
+/* C10 咖啡杯組合 */
+(function(){const C={esp:['#5a3422','濃縮咖啡'],water:['#cfe3ee','熱水'],milk:['#ead3ad','熱牛奶'],foam:['#f7ecd6','奶泡'],choc:['#3a2214','巧克力醬'],cream:['#fffdf5','鮮奶油'],ice:['#e8f3f8','香草冰淇淋']};
+const D={
+ '濃縮 Espresso':{l:[['esp',35]],d:'一小杯、濃縮的咖啡精華，表面有金黃 crema。'},
+ '美式 Americano':{l:[['esp',20],['water',75]],d:'濃縮＋熱水。相傳二戰時美國大兵覺得義大利濃縮太濃，加水稀釋，因此得名。'},
+ '拿鐵 Latte':{l:[['esp',18],['milk',62],['foam',12]],d:'latte 是義大利文「牛奶」。大量熱牛奶加一層薄奶泡，口感溫和。注意：在義大利只點「latte」會拿到一杯牛奶！'},
+ '卡布奇諾 Cappuccino':{l:[['esp',30],['milk',30],['foam',32]],d:'傳統比例約各三分之一：濃縮、牛奶、奶泡。名字來自<b>嘉布遣會</b>修士，咖啡加奶泡的顏色像他們褐色的連帽袍。'},
+ '瑪奇朵 Macchiato':{l:[['esp',30],['foam',10]],d:'macchiato 義大利文「做記號、染色」：在濃縮上點一小匙奶泡做記號。（某些連鎖店的「焦糖瑪奇朵」是另一種飲料。）'},
+ '摩卡 Mocha':{l:[['choc',14],['esp',20],['milk',45],['cream',14]],d:'濃縮＋巧克力醬＋牛奶，上面常加鮮奶油。名字和葉門摩卡港有關。'},
+ '馥列白 Flat White':{l:[['esp',30],['milk',55],['foam',5]],d:'源自澳洲、紐西蘭。奶泡薄而細緻（flat 是「平」），咖啡味比拿鐵明顯。'},
+ '阿芙佳朵 Affogato':{l:[['ice',45],['esp',25]],d:'affogato 義大利文「淹沒」：把一份熱濃縮淋在香草冰淇淋上，是甜點。'}};
+const tabs=$('dTabs');Object.keys(D).forEach((k,i)=>{const b=document.createElement('button');b.textContent=k.split(' ')[0];b.dataset.k=k;b.onclick=()=>sel(k);tabs.appendChild(b)});
+function sel(k){tabs.querySelectorAll('button').forEach(b=>{const on=b.dataset.k===k;b.classList.toggle('on',on);b.style.background=on?'#9a5a2e':'#fff'});
+ const L=D[k].l;let y=150,svg='',leg='';const tot=L.reduce((a,x)=>a+x[1],0),scale=Math.min(1,125/tot);
+ L.forEach((x,i)=>{const h=x[1]*scale*1.0;y-=h;svg+='<rect x="20" y="'+(y+h)+'" width="110" height="0" fill="'+C[x[0]][0]+'"><animate attributeName="y" from="'+(y+h)+'" to="'+y+'" dur=".5s" begin="'+(i*.35)+'s" fill="freeze"/><animate attributeName="height" from="0" to="'+h+'" dur=".5s" begin="'+(i*.35)+'s" fill="freeze"/></rect>';});
+ [...L].reverse().forEach(x=>leg+='<div style="margin:4px 0"><span class="dot" style="background:'+C[x[0]][0]+'"></span>'+C[x[0]][1]+'</div>');
+ $('dLayers').innerHTML=svg;$('dLegend').innerHTML='<b style="font-family:var(--serif)">'+k+'</b>'+leg;$('dDesc').innerHTML=D[k].d}
+sel(Object.keys(D)[0])})();
+
+/* C12 偵探遊戲 */
+makeGame([['水洗淺焙','#2f5d7c'],['日曬淺焙','#a8402a'],['蜜處理中焙','#c9a42a'],['深焙','#3e2214'],['印尼濕剝','#5e8a3c'],['羅布斯塔','#7a6a5a']],[
+ {a:'水洗淺焙',sw:[['#c48a4a','豆子顏色：淺褐']],c:['香氣：茉莉花、檸檬皮','酸質明亮，像檸檬紅茶','口感輕盈乾淨'],e:'花香＋明亮乾淨的酸，是水洗淺焙的典型，例如衣索比亞耶加雪菲水洗。'},
+ {a:'日曬淺焙',sw:[['#b97a40','豆子顏色：淺褐']],c:['香氣：草莓、藍莓、像紅酒','甜感明顯、口感較厚','酸是熟水果般的酸甜'],e:'濃郁莓果、酒香，是日曬處理的招牌。'},
+ {a:'深焙',sw:[['#2a1810','豆子顏色：深褐、表面油亮']],c:['香氣：黑巧克力、煙燻、焦糖','幾乎沒有酸，苦味明顯','口感醇厚'],e:'出油、煙燻、低酸 → 深焙。'},
+ {a:'印尼濕剝',sw:[['#5a3a24','豆子顏色：中深褐']],c:['香氣：草本、雪松木、香料、泥土','酸很低，口感非常厚重','產地：蘇門答臘'],e:'厚重＋草本泥土味，是曼特寧等濕剝咖啡的特徵。'},
+ {a:'蜜處理中焙',sw:[['#9a5a2e','豆子顏色：中褐']],c:['香氣：紅糖、蜂蜜、杏桃','甜感特別好，酸溫和','產地：哥斯大黎加'],e:'甜感突出、介於水洗日曬之間，常見於哥斯大黎加蜜處理。'},
+ {a:'羅布斯塔',sw:[['#4a2e1c','豆子形狀：圓圓的、直中線']],c:['苦味重、帶木頭和穀物味','咖啡因特別多','常用在即溶咖啡、越南咖啡'],e:'圓豆形、苦、咖啡因多 → 羅布斯塔。'},
+ {a:'水洗淺焙',sw:[['#c08a50','豆子顏色：淺褐']],c:['香氣：黑醋栗、葡萄柚','酸質明亮多汁','產地：肯亞'],e:'肯亞水洗以黑醋栗般的明亮酸質聞名（常見 SL28 品種）。'},
+ {a:'日曬淺焙',sw:[['#b07440','豆子顏色：淺褐']],c:['香氣：熱帶水果、芒果、發酵般的酒香','甜，口感圓潤'],e:'熱帶水果＋酒香 → 日曬。'},
+ {a:'深焙',sw:[['#22140c','豆子顏色：接近黑色']],c:['做成義式濃縮、加牛奶也壓得住','苦甜、可可、烤堅果','酸幾乎感覺不到'],e:'義式配方常用深焙，牛奶也蓋不住咖啡味。'},
+ {a:'蜜處理中焙',sw:[['#a0603a','豆子顏色：中褐']],c:['黏黏果膠一起曬乾','風味像焦糖蘋果','甜感比水洗多、比日曬乾淨'],e:'題目已經透露了：保留果膠曬乾＝蜜處理。'}],8,'多看幾次第 6、7、12 課，再挑戰一次吧！');
+
+/* C13 標示 */
+bindParts('#C13 .labelrow',{
+ farm:'<b>產區／處理場</b>：越詳細越好。只寫「衣索比亞」範圍很大，寫到產區、甚至處理場或莊園，代表可以追溯來源。',
+ alt:'<b>海拔</b>：高海拔果實長得慢、密度高，風味常更複雜、酸質更明亮（第 3 課）。',
+ var:'<b>品種</b>：例如藝伎、波旁、SL28。衣索比亞有許多野生原生種，常統稱「原生種」。',
+ proc:'<b>處理法</b>：水洗＝乾淨明亮；日曬＝果香甜；蜜處理＝甜（第 6 課）。',
+ roast:'<b>烘焙度</b>：淺焙酸香、中焙平衡、深焙苦醇（第 7 課）。',
+ note:'<b>風味描述</b>：是喝起來<b>像</b>什麼，不是真的加了茉莉花或檸檬！這些味道是咖啡本身的香氣物質。',
+ date:'<b>烘焙日期</b>：最重要的一行！整豆大約烘焙後二到四週內最好喝。沒寫烘焙日期、只寫「有效期限」的，很難判斷新鮮度。'},'labelInfo');
+
+/* C14 咖啡因計算 */
+(function(){const IT=[['☕ 美式／黑咖啡（大杯）',150],['🥛 拿鐵（中杯）',100],['⚡ 義式濃縮（1 份）',65],['🥫 罐裝咖啡',90],['🍵 一杯紅茶',50],['🥤 可樂（一罐）',35],['🧋 奶茶（中杯）',70],['🍫 巧克力（一片）',20]];
+const cnt=IT.map(()=>0);const box=$('kItems');
+IT.forEach((x,i)=>{const d=document.createElement('div');d.className='ki';d.innerHTML='<span>'+x[0]+'<br><small>約 '+x[1]+' mg</small></span><span><button data-i="'+i+'" data-d="-1">−</button> <b id="kc'+i+'">0</b> <button data-i="'+i+'" data-d="1">＋</button></span>';box.appendChild(d)});
+box.querySelectorAll('button').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;cnt[i]=Math.max(0,cnt[i]+ +b.dataset.d);$('kc'+i).textContent=cnt[i];upd()});
+$('kWr').oninput=upd;
+function upd(){const w=+$('kWr').value;$('kW').textContent=w;const lim=w*2.5,tot=IT.reduce((a,x,i)=>a+x[1]*cnt[i],0);
+ const max=Math.max(lim*1.6,tot,1);$('kBar').setAttribute('width',Math.min(300,tot/max*300));$('kLim').setAttribute('x1',lim/max*300);$('kLim').setAttribute('x2',lim/max*300);
+ const p=tot/lim;$('kBar').setAttribute('fill',p<=.7?'#5e8a3c':p<=1?'#c9a42a':'#9a3a24');
+ $('kOut').innerHTML='今天合計約 <b>'+tot+' mg</b>；以 '+w+' 公斤計算，青少年建議上限約 <b>'+Math.round(lim)+' mg</b>（紅線）。<br>'+(tot===0?'按 ＋ 把今天喝的東西加進來。':p<=.7?'🟢 在建議範圍內。':p<=1?'🟡 快到上限了，今天別再喝含咖啡因的飲料。':'🔴 超過建議量了！可能心悸、手抖、睡不著，要減少。')}
+upd()})();
+
+boot();
+</script>
+<script src="../../shared/module-shell.js?v=1.4.0" data-group="learning"></script><script src="../../shared/reading-store.js?v=1.4.0"></script><script src="../../shared/reading-progress.js?v=1.4.0" data-course="course-aeb5fb7152" data-category="drinks"></script></body>
+</html>

@@ -1,4 +1,4 @@
-window.AC_LEARNING_CATEGORIES={"garment": "成衣專業", "business": "經營管理", "science": "科技工程", "creative": "AI 與創作", "personal": "個人喜好", "classics": "古書與傳統文化", "general": "基礎學科"};
+window.AC_LEARNING_CATEGORIES={"garment": "成衣專業", "business": "經營管理", "science": "科技工程", "creative": "AI 與創作", "personal": "個人喜好", "classics": "古書與傳統文化", "general": "基礎學科", "drinks": "茶・咖啡・酒"};
 window.AC_CATALOG.push(...[
   {
     "id": "course-a8f22ec277",
@@ -1565,5 +1565,89 @@ window.AC_CATALOG.push(...[
       }
     ],
     "search": "魔術方塊_從零到一分鐘與單手.html 個人喜好"
+  }
+]);
+/* 茶・咖啡・酒課程（2026-11-24） */
+window.AC_CATALOG.push(...[
+  {
+    "id": "course-680ef10404",
+    "group": "learning",
+    "category": "drinks",
+    "icon": "🍵",
+    "title": {
+      "zh": "一杯茶的學問｜從入門到專業的茶學課程（16 課）",
+      "en": "一杯茶的學問｜從入門到專業的茶學課程（16 課）",
+      "km": "一杯茶的學問｜從入門到專業的茶學課程（16 課）"
+    },
+    "desc": {
+      "zh": "茶・咖啡・酒 · 茶樹、歷史、製茶、六大茶類、名茶、分辨、沖泡、評茶與健康 · 互動練習、測驗與結業證書。",
+      "en": "茶・咖啡・酒",
+      "km": "茶・咖啡・酒"
+    },
+    "links": [
+      {
+        "label": {
+          "zh": "開課／續讀",
+          "en": "Open / resume",
+          "km": "Open / resume"
+        },
+        "url": "apps/courses/course-680ef10404.html"
+      }
+    ],
+    "search": "tea_course_v1.html 茶・咖啡・酒 茶樹、歷史、製茶、六大茶類、名茶、分辨、沖泡、評茶與健康"
+  },
+  {
+    "id": "course-aeb5fb7152",
+    "group": "learning",
+    "category": "drinks",
+    "icon": "☕",
+    "title": {
+      "zh": "一杯咖啡的學問｜從入門到專業的咖啡課程（14 課）",
+      "en": "一杯咖啡的學問｜從入門到專業的咖啡課程（14 課）",
+      "km": "一杯咖啡的學問｜從入門到專業的咖啡課程（14 課）"
+    },
+    "desc": {
+      "zh": "茶・咖啡・酒 · 果實、歷史、產地、品種、處理法、烘焙、萃取、沖煮、義式、杯測 · 互動練習、測驗與結業證書。",
+      "en": "茶・咖啡・酒",
+      "km": "茶・咖啡・酒"
+    },
+    "links": [
+      {
+        "label": {
+          "zh": "開課／續讀",
+          "en": "Open / resume",
+          "km": "Open / resume"
+        },
+        "url": "apps/courses/course-aeb5fb7152.html"
+      }
+    ],
+    "search": "coffee_course_v1.html 茶・咖啡・酒 果實、歷史、產地、品種、處理法、烘焙、萃取、沖煮、義式、杯測"
+  },
+  {
+    "id": "course-f249d9435f",
+    "group": "learning",
+    "category": "drinks",
+    "icon": "🍷",
+    "title": {
+      "zh": "一杯酒的學問｜從入門到專業的酒類知識課程（15 課）",
+      "en": "一杯酒的學問｜從入門到專業的酒類知識課程（15 課）",
+      "km": "一杯酒的學問｜從入門到專業的酒類知識課程（15 課）"
+    },
+    "desc": {
+      "zh": "茶・咖啡・酒 · 發酵、釀造與蒸餾、葡萄酒、啤酒、東方的酒、烈酒、品飲、分辨與健康 · 互動練習、測驗與結業證書。",
+      "en": "茶・咖啡・酒",
+      "km": "茶・咖啡・酒"
+    },
+    "links": [
+      {
+        "label": {
+          "zh": "開課／續讀",
+          "en": "Open / resume",
+          "km": "Open / resume"
+        },
+        "url": "apps/courses/course-f249d9435f.html"
+      }
+    ],
+    "search": "wine_course_v1.html 茶・咖啡・酒 發酵、釀造與蒸餾、葡萄酒、啤酒、東方的酒、烈酒、品飲、分辨與健康"
   }
 ]);
