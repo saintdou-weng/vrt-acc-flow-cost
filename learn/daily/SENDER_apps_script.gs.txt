@@ -1,0 +1,38 @@
+/**
+ * 每日一課 Telegram 發送（裝在 ACC Flow 的 Apps Script 專案 VRT-ACC-Flow-Cost-Cloud）
+ * 專案時區要是 Asia/Phnom_Penh。
+ * 安裝：把這段加進專案 → 執行一次 installDailyLessonTriggers()（每 10 分鐘檢查一次，只在 10 點、13 點那一小時內發，所以會在 10:00～10:10 之間發出）。
+ * Bot token 與群組 chat id 沿用專案「已有」的設定；下面兩個函式要改成專案裡實際的取得方式。
+ * 不要把 token 寫進 GitHub。
+ */
+var DAILY_FEED_URL = 'https://saintdou-weng.github.io/vrt-acc-flow-cost/learn/daily/feed.json';
+
+function dailyToken_() { return PropertiesService.getScriptProperties().getProperty('BOT_TOKEN'); }   // ← 改成專案現有的
+function dailyChatId_() { return PropertiesService.getScriptProperties().getProperty('CHAT_ID'); }    // ← AI_acc_flow 群組
+
+function sendDailyLesson() {
+  var tz = 'Asia/Phnom_Penh', now = new Date();
+  if (Utilities.formatDate(now, tz, 'u') === '7') return;            // 週日不發
+  var hr = +Utilities.formatDate(now, tz, 'H');
+  if (hr !== 10 && hr !== 13) return;                                // 只在 10 點、13 點這兩個小時動作
+  var today = Utilities.formatDate(now, tz, 'yyyy-MM-dd');
+  var feed = JSON.parse(UrlFetchApp.fetch(DAILY_FEED_URL + '?t=' + now.getTime(), { muteHttpExceptions: true }).getContentText());
+  var props = PropertiesService.getScriptProperties();
+  var sent = JSON.parse(props.getProperty('DAILY_LESSON_SENT') || '[]');
+  feed.items.forEach(function (it) {
+    if (it.sendAt.slice(0, 10) !== today) return;
+    if (new Date(it.sendAt) > now) return;                             // 還沒到時間
+    if (sent.indexOf(it.id) >= 0) return;                              // 發過了，不重發
+    var res = UrlFetchApp.fetch('https://api.telegram.org/bot' + dailyToken_() + '/sendMessage', {
+      method: 'post', muteHttpExceptions: true,
+      payload: { chat_id: dailyChatId_(), text: it.tg, parse_mode: 'HTML', disable_web_page_preview: 'true' }
+    });
+    if (JSON.parse(res.getContentText()).ok) sent.push(it.id);
+  });
+  props.setProperty('DAILY_LESSON_SENT', JSON.stringify(sent.slice(-200)));
+}
+
+function installDailyLessonTriggers() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'sendDailyLesson') ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('sendDailyLesson').timeBased().everyMinutes(10).create();
+}

@@ -29,6 +29,7 @@
       ['🎬','AI 與創作','AI & Creation','../learn/index.html?view=learning&category=creative','既有創作課程'],
       ['📜','古書與傳統文化','Classics','../learn/index.html?view=learning&category=classics','既有文化教材'],
       ['📐','基礎學科','Fundamentals','../learn/index.html?view=learning&category=general','既有基礎學科'],
+      ['📅','每日一課','Daily Lesson','../learn/daily/index.html','企業・個人・高棉語・馬來語每日摘要'],
       ['🍵','茶・咖啡・酒','Tea · Coffee · Wine','../learn/index.html?view=learning&category=drinks','茶、咖啡、酒三門入門到專業課程']]},
     {id:'acc',icon:'👤',zh:'個人工具',en:'Personal Tools',color:'#9a713c',items:[
       ['👤','個人專用','Personal','../learn/index.html?view=personal','原有個人中心'],
