@@ -561,69 +561,22 @@ function saveDB() {
 function loadDB() {
   try {
     var s = localStorage.getItem('vrt3');
-    if (s) { DB = JSON.parse(s); return; }
+    if (s) DB = JSON.parse(s);
   } catch(e) {}
-  DB = { locals: seedLoc(), expats: seedExp(), imports: [] };
-  saveDB();
+  if (!DB || typeof DB !== 'object') DB = {};
+  DB.locals = DB.locals || []; DB.expats = DB.expats || []; DB.imports = DB.imports || [];
+  /* 2026-11-25 Paul：舊版程式內建的示範薪資（2025 年舊數字、已離職的 Sam 等）不是真資料，一律清掉。
+     示範資料的編號是「L_工號_年-月」「E_姓名_年-月」，手動新增的結尾是時間戳、匯入的結尾是 _imp，不會被誤刪。 */
+  var demo = /^[LE]_.+_\d{4}-\d{2}$/;
+  var n0 = DB.locals.length + DB.expats.length;
+  DB.locals = DB.locals.filter(function(r){ return !demo.test(r._id||''); });
+  DB.expats = DB.expats.filter(function(r){ return !demo.test(r._id||''); });
+  if (DB.locals.length + DB.expats.length !== n0 || !localStorage.getItem('vrt3')) saveDB();
 }
 
-/* ───────────────── SEED DATA ───────────────── */
+/* 不再內建任何示範薪資（薪資屬機密，程式碼是公開的）。 */
 function pp(m) { return curYear + '-' + pad(m); }
 function pad(n) { return String(n).padStart(2,'0'); }
-
-function seedLoc() {
-  var rows = [
-    {n:'OCH MALEN',    id:'002',  dept:'Production',   sect:'PC',       pos:'Supervisor', bas:770,  inc:760},
-    {n:'POTH THEARY',  id:'004',  dept:'Shipping',     sect:'Purchase', pos:'Officer',    bas:400,  inc:385},
-    {n:'PHARY YIN',    id:'2168', dept:'Administration',sect:'HR',      pos:'Supervisor', bas:470,  inc:463},
-    {n:'SOKUNTHEA TIM',id:'1012', dept:'Production',   sect:'Marker',   pos:'Leader',     bas:470,  inc:480},
-    {n:'EM SREYLEAK',  id:'0039', dept:'Production',   sect:'QC',       pos:'Supervisor', bas:530,  inc:515},
-    {n:'HENG SOKHA',   id:'3585', dept:'Accounting',   sect:'',         pos:'Officer',    bas:380,  inc:378},
-    {n:'KHEAV SOKUNTHEA',id:'5262',dept:'Administration',sect:'',       pos:'Assistant',  bas:330,  inc:330},
-    {n:'SON SORANNDA', id:'5085', dept:'IT',           sect:'',         pos:'Assistant',  bas:380,  inc:365},
-  ];
-  var out = [];
-  [10,9,8].forEach(function(m) {
-    rows.forEach(function(r) {
-      var tot = r.bas + r.inc;
-      out.push({
-        _id: 'L_' + r.id + '_' + pp(m),
-        name:r.n, empId:r.id, dept:r.dept, sect:r.sect, pos:r.pos,
-        period:pp(m), sched:26, leave:0, act:26,
-        bas:r.bas, inc:r.inc, tot:tot, adj:0, ded:0, net:tot,
-        payDate:pp(m)+'-28', status: m<10?'paid':'pending', rem:''
-      });
-    });
-  });
-  return out;
-}
-
-function seedExp() {
-  var rows = [
-    {n:'Dalisay Jetajobe',pos:'Manager/經理',   bas:1925, ovs:1925, twd:0},
-    {n:'Sam Lin',         pos:'Fly Manager/廠長',bas:2000, ovs:2000, twd:0},
-    {n:'Paul Weng',       pos:'Manager/經理',   bas:1750, ovs:1750, twd:3300},
-    {n:'Thi Thu',         pos:'Supervisor/指導員',bas:825, ovs:825,  twd:0},
-  ];
-  var out = [];
-  [10,9,8].forEach(function(m) {
-    rows.forEach(function(r) {
-      var tot = r.bas + r.ovs;
-      var act2 = tot;
-      var cam = act2 - r.twd;
-      out.push({
-        _id: 'E_' + r.n.replace(/\s/g,'_') + '_' + pp(m),
-        name:r.n, pos:r.pos, period:pp(m),
-        sched:26, al:0, pl:0, up:0, act:26,
-        bas:r.bas, ovs:r.ovs, othi:0, tot:tot,
-        comp:0, atd:0, othd:0, act2:act2,
-        twd:r.twd, othp:0, cam:cam,
-        payDate:pp(m)+'-28', status: m<10?'paid':'pending', rem:''
-      });
-    });
-  });
-  return out;
-}
 
 /* ───────────────── TRANSLATIONS ───────────────── */
 var TR = {
@@ -643,7 +596,7 @@ var TR = {
     mloc:'新增本地員工薪資', mexp:'新增外籍員工薪資',
     delt:'確認刪除', delw:'此操作無法復原，確定要刪除？',
     paid:'已發', pending:'待發', hold:'暫緩', imported:'已匯入',
-    total:'合計', noRec:'暫無記錄',
+    total:'合計', noRec:'暫無記錄，請按「匯入」放 2026 年每月薪資表',
   },
   en: {
     brand:'VRT Salary Management',
@@ -661,7 +614,7 @@ var TR = {
     mloc:'Add Local Staff Salary', mexp:'Add Expat Salary',
     delt:'Confirm Delete', delw:'This cannot be undone. Are you sure?',
     paid:'Paid', pending:'Pending', hold:'On Hold', imported:'Imported',
-    total:'Total', noRec:'No records',
+    total:'Total', noRec:'No records yet — use Import to add the 2026 monthly payroll',
   },
   km: {
     brand:'ប្រព័ន្ធគ្រប់គ្រងប្រាក់ខែ VRT',
