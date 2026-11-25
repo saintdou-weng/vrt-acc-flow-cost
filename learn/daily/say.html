@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer:wght@500;700&display=swap">
+<title>🔊 聽發音 · ACC Flow</title>
+<!-- 2026-11-25 Paul：每日一課的 🔊 連到 Google 翻譯，在 Telegram 裡打開看不到字也聽不到 → 改成這一頁：大字、拼音、中文，按 ▶ 直接播 Google 的語音（不用登入，也不用 App） -->
+<style>
+body{margin:0;font-family:system-ui,-apple-system,"Noto Sans TC","Noto Sans Khmer",sans-serif;background:#f6f3ec;color:#1f2937;display:flex;min-height:100vh;align-items:center;justify-content:center}
+.c{width:min(460px,92vw);background:#fff;border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.12);padding:26px 22px;text-align:center}
+.lg{font-size:13px;color:#64748b}.w{font-size:46px;font-weight:700;line-height:1.35;margin:10px 0 6px;word-break:break-word}
+.r{font-size:22px;color:#0f766e;font-family:ui-monospace,Menlo,monospace}.z{font-size:20px;margin-top:6px}
+.b{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+button,a.k{border:0;border-radius:999px;padding:14px 22px;font-size:18px;font-weight:700;cursor:pointer;text-decoration:none}
+.p{background:#0f766e;color:#fff;min-width:150px}.s{background:#e2e8f0;color:#1f2937}.k{background:#eef2ff;color:#3730a3;font-size:14px!important;padding:10px 16px!important}
+.m{font-size:12px;color:#94a3b8;margin-top:16px;line-height:1.6}
+</style></head><body><div class="c">
+<div class="lg" id="lg"></div><div class="w" id="w"></div><div class="r" id="r"></div><div class="z" id="z"></div>
+<div class="b"><button class="p" id="play">▶ 播放</button><button class="s" id="slow">🐢 慢速</button></div>
+<div class="b"><a class="k" id="gt" target="_blank" rel="noopener">在 Google 翻譯開啟</a></div>
+<div class="m">聽 3 次 → 跟著小聲唸 3 次<br>諧音只是幫忙記，發音以這裡播的為準</div>
+<audio id="au" preload="auto"></audio></div>
+<script>
+const q=new URLSearchParams(location.search),L=(q.get('l')||'km').toLowerCase(),T=q.get('t')||'',R=q.get('r')||'',Z=q.get('z')||'';
+const NM={km:'🇰🇭 高棉語 Khmer',ms:'🇲🇾 馬來語 Malay'};
+document.getElementById('lg').textContent=NM[L]||L;document.getElementById('w').textContent=T;document.getElementById('r').textContent=R;document.getElementById('z').textContent=Z;
+document.title='🔊 '+T;
+document.getElementById('gt').href='https://translate.google.com/?sl='+encodeURIComponent(L)+'&tl=zh-TW&text='+encodeURIComponent(T)+'&op=translate';
+const au=document.getElementById('au');
+function src(slow){return 'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl='+encodeURIComponent(L)+'&ttsspeed='+(slow?'0.3':'1')+'&q='+encodeURIComponent(T.slice(0,180))}
+function speak(slow){ /* 備用：手機本身有這個語言的語音就用它 */
+  try{const u=new SpeechSynthesisUtterance(T);u.lang=L==='km'?'km-KH':'ms-MY';u.rate=slow?0.6:0.9;speechSynthesis.cancel();speechSynthesis.speak(u);return true}catch(e){return false}}
+function play(slow){au.onerror=function(){speak(slow)};au.src=src(slow);au.playbackRate=1;const p=au.play();if(p&&p.catch)p.catch(function(){speak(slow)})}
+document.getElementById('play').onclick=function(){play(false)};document.getElementById('slow').onclick=function(){play(true)};
+if(T)setTimeout(function(){play(false)},300);
+</script></body></html>

@@ -1195,4 +1195,5 @@ const quizData=[{"ms": "makan", "zh": "吃", "lesson": "L00"}, {"ms": "minum", "
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
 function newQuestion(){current=quizData[Math.floor(Math.random()*quizData.length)];document.getElementById('quizMs').textContent=current.ms;let wrong=shuffle(quizData.filter(x=>x.zh!==current.zh)).slice(0,3).map(x=>x.zh);let opts=shuffle([current.zh,...wrong]);let box=document.getElementById('quizOptions');box.innerHTML='';opts.forEach(z=>{let b=document.createElement('button');b.textContent=z;b.onclick=()=>answer(b,z);box.appendChild(b)})}
 function answer(btn,z){if([...document.querySelectorAll('#quizOptions button')].some(b=>b.disabled))return;total++;document.querySelectorAll('#quizOptions button').forEach(b=>{b.disabled=true;if(b.textContent===current.zh)b.classList.add('correct')});if(z===current.zh)right++;else btn.classList.add('wrong');document.getElementById('score').textContent=right+' / '+total;}
-</script></body></html>
+</script><script src="https://saintdou-weng.github.io/PSJERP/music.js?v=2.21" defer></script><!-- 2026-11-25 Paul：ACC Flow 也套用 ♪ 音樂＋🎨 調色盤／背景／3D 等設定（每個平台各自記住） -->
+</body></html>
