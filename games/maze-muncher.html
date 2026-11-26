@@ -1,0 +1,94 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Maze Muncher 迷宮吃豆</title><link rel="stylesheet" href="game.css"></head><body><canvas id="cv"></canvas>
+<script src="engine.js"></script><script>
+/* 迷宮吃豆（原創，2026-11-26）：每關由關卡號產生一座左右對稱、有環路的迷宮（無限關）。吃完所有豆子過關；
+   四個角的大能量豆吃了以後鬼會變藍、可以反吃；越後面鬼越多、越快、變藍時間越短。搖桿推方向可「預先轉彎」，走到路口自動轉進去。 */
+const CW=15,CH=17,T=10,OX=5,OY=24,VW=160,VH=224;
+const HEROES=[{n:'SUNNY',a:'#fff27a',b:'#e0a800'},{n:'MINT',a:'#b6ffd8',b:'#1fae6a'},{n:'ROSE',a:'#ffc2e0',b:'#e0458f'}];
+const GH=[['#ff4d5e','#a3122a'],['#ffa3e0','#c0408a'],['#5ce1ff','#167fae'],['#ffae42','#c0640a']];
+let M,pl,ghosts,dots,fright,parts,tt,seed,home,lvl,eatN,startT;
+const R=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};
+function gen(lv){seed=lv*4241+99;M=Array.from({length:CH},()=>Array(CW).fill(1));
+  /* 左半邊用 DFS 挖迷宮（奇數格是房間），再鏡射到右邊 */const HW=Math.ceil(CW/2);const vis={};const st=[[1,1]];vis['1,1']=1;M[1][1]=0;
+  while(st.length){const[x,y]=st[st.length-1];const nb=[[2,0],[-2,0],[0,2],[0,-2]].map(([dx,dy])=>[x+dx,y+dy,x+dx/2,y+dy/2]).filter(([a,b])=>a>0&&b>0&&a<HW&&b<CH-1&&!vis[a+','+b]);
+    if(!nb.length){st.pop();continue}const[a,b,mx,my]=nb[Math.floor(R()*nb.length)];vis[a+','+b]=1;M[b][a]=0;M[my][mx]=0;st.push([a,b])}
+  /* 打通很多牆變成環路（吃豆遊戲需要繞圈） */for(let i=0;i<60;i++){const x=1+Math.floor(R()*(HW-1)),y=1+Math.floor(R()*(CH-2));if(M[y][x]===1&&((M[y][x-1]===0&&M[y][x+1]===0)||(M[y-1][x]===0&&M[y+1][x]===0)))M[y][x]=0}
+  for(let y=0;y<CH;y++)for(let x=0;x<HW;x++)M[y][CW-1-x]=M[y][x];
+  /* 中線打通連接左右 */for(let y=1;y<CH-1;y+=2)if(R()<.6||y===CH-2||y===1)M[y][HW-1]=0;
+  /* 鬼屋在正中間 */const cy=Math.floor(CH/2);for(let x=HW-3;x<=HW+1;x++){M[cy][x]=0;M[cy-1][x]=1;M[cy+1][x]=1}M[cy][HW-4]=1;M[cy][HW+2]=1;M[cy-1][HW-1]=0;M[cy-2][HW-1]=0;
+  M[cy-1][HW-3]=M[cy-1][HW+1]=1;home={x:HW-1,y:cy,door:{x:HW-1,y:cy-1}};
+  /* 去掉死路：一格只有一個出口就再打開一面牆 */for(let pass=0;pass<3;pass++)for(let y=1;y<CH-1;y++)for(let x=1;x<CW-1;x++){if(M[y][x])continue;if(y===cy&&Math.abs(x-home.x)<=2)continue;
+      const ex=[[1,0],[-1,0],[0,1],[0,-1]].filter(([dx,dy])=>!M[y+dy][x+dx]);if(ex.length===1){const op=[[1,0],[-1,0],[0,1],[0,-1]].filter(([dx,dy])=>M[y+dy][x+dx]&&x+dx*2>0&&x+dx*2<CW-1&&y+dy*2>0&&y+dy*2<CH-1&&!(y+dy===cy||y+dy===cy-1||y+dy===cy+1)&&!M[y+dy*2][x+dx*2]);
+        if(op.length){const[dx,dy]=op[Math.floor(R()*op.length)];M[y+dy][x+dx]=0;M[y+dy][CW-1-(x+dx)]=0}}}
+  /* 保證整座迷宮連通：找不到的區塊就打通一面牆接回來 */
+  for(let it=0;it<300;it++){const seen=new Set([home.door.x+','+home.door.y]),q=[[home.door.x,home.door.y]];while(q.length){const[x,y]=q.shift();for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const a=x+dx,b=y+dy;if(a>=0&&b>=0&&a<CW&&b<CH&&!M[b][a]&&!seen.has(a+','+b)){seen.add(a+','+b);q.push([a,b])}}}
+    let lost=false,fixed=false;for(let y=1;y<CH-1&&!fixed;y++)for(let x=1;x<CW-1&&!fixed;x++){if(!M[y][x]&&!seen.has(x+','+y))lost=true;
+      if(M[y][x]===1&&!(y>=cy-1&&y<=cy+1&&Math.abs(x-home.x)<=3)){const nb=[[1,0],[-1,0],[0,1],[0,-1]].map(([dx,dy])=>[x+dx,y+dy]).filter(([a,b])=>!M[b][a]);
+        if(nb.some(([a,b])=>seen.has(a+','+b))&&nb.some(([a,b])=>!seen.has(a+','+b))){M[y][x]=0;M[y][CW-1-x]=0;fixed=true}}}
+    if(!lost)break;if(!fixed){for(let y=0;y<CH;y++)for(let x=0;x<CW;x++)if(!M[y][x]&&!seen.has(x+','+y))M[y][x]=1;break}}
+  window._mazeOK=1;
+  dots=[];for(let y=0;y<CH;y++)for(let x=0;x<CW;x++)if(!M[y][x]&&!(y>=cy-1&&y<=cy&&Math.abs(x-home.x)<=2))dots.push({x,y,p:0});
+  /* 四顆大能量豆放在離角落最近的豆子 */[[1,1],[CW-2,1],[1,CH-2],[CW-2,CH-2]].forEach(([cx,cy2])=>{let b=null,bd=1e9;dots.forEach(d=>{const dd=Math.abs(d.x-cx)+Math.abs(d.y-cy2);if(dd<bd){bd=dd;b=d}});if(b)b.p=1})}
+const open=(x,y,isG)=>{if(x<0||x>=CW)return y===Math.floor(CH/2)?false:false;if(y<0||y>=CH)return false;return M[y][x]===0};
+const DIRS={L:[-1,0],R:[1,0],U:[0,-1],D:[0,1]},OPP={L:'R',R:'L',U:'D',D:'U'};
+function spawnPl(){/* 找最下面一排中間附近的空格 */for(let y=CH-2;y>0;y--)for(let d=0;d<CW;d++){for(const x of [home.x-d,home.x+d])if(x>0&&x<CW-1&&!M[y][x])return{x,y,px:x,py:y,dir:'L',want:'L',mo:0}}}
+function burst(x,y,n,c){for(let i=0;i<n;i++){const a=Math.random()*7,v=15+Math.random()*40;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,t:.5,c})}}
+/* 角色在格子之間平滑移動：px,py 是目前位置（格），到達格子中心才決定下一步 */
+function stepMover(o,sp,dt,choose){let rem=sp*dt;let guard=0;while(rem>0&&guard++<4){const tx=o.x+DIRS[o.dir][0]*(o.mo?1:0),ty=o.y+DIRS[o.dir][1]*(o.mo?1:0);
+    if(!o.mo){const nd=choose(o);if(nd)o.dir=nd;const[dx,dy]=DIRS[o.dir];if(open(o.x+dx,o.y+dy,o.g)||(o.g&&o.x+dx===home.door.x&&o.y+dy===home.door.y)){o.mo=1;o.t=0}else return}
+    const need=1-o.t;if(rem>=need){rem-=need;o.x+=DIRS[o.dir][0];o.y+=DIRS[o.dir][1];o.t=0;o.mo=0;o.px=o.x;o.py=o.y;if(o.arrive)o.arrive(o)}else{o.t+=rem;rem=0;o.px=o.x+DIRS[o.dir][0]*o.t;o.py=o.y+DIRS[o.dir][1]*o.t}}}
+function ghostChoose(G,gh){const opts=Object.keys(DIRS).filter(d=>d!==OPP[gh.dir]&&(open(gh.x+DIRS[d][0],gh.y+DIRS[d][1])||(gh.st==='out'||gh.st==='eyes')&&gh.x+DIRS[d][0]===home.door.x&&gh.y+DIRS[d][1]===home.door.y));
+  const all=opts.length?opts:[OPP[gh.dir]];let tx,ty;
+  if(gh.st==='eyes'){tx=home.x;ty=home.y}else if(gh.st==='out'){tx=home.door.x;ty=home.door.y-1}
+  else if(fright>0){return all[Math.floor(Math.random()*all.length)]}
+  else{const mode=gh.i%4;tx=pl.x;ty=pl.y;if(mode===1){tx=pl.x+DIRS[pl.dir][0]*4;ty=pl.y+DIRS[pl.dir][1]*4}else if(mode===2){tx=CW-1-pl.x;ty=pl.y}else if(mode===3&&Math.abs(gh.x-pl.x)+Math.abs(gh.y-pl.y)<6){tx=0;ty=CH}
+    if(Math.random()<Math.max(.05,.3-lvl*.006))return all[Math.floor(Math.random()*all.length)]}
+  let best=all[0],bd=1e9;all.forEach(d=>{const nx=gh.x+DIRS[d][0],ny=gh.y+DIRS[d][1],dd=(nx-tx)**2+(ny-ty)**2;if(dd<bd){bd=dd;best=d}});return best}
+GE.run({id:'mazemuncher',title:'MAZE MUNCHER',w:VW,h:VH,chars:HEROES.map(h=>h.n),lives:3,
+ start(G,lv){lvl=lv;gen(lv);parts=[];fright=0;tt=0;eatN=0;startT=1.2;pl=spawnPl();pl.t=0;
+   const n=Math.min(4,1+Math.ceil(lv/3));ghosts=[];for(let i=0;i<n;i++)ghosts.push({i,x:home.x-1+i%3,y:home.y,px:home.x-1+i%3,py:home.y,dir:'U',mo:0,t:0,g:1,st:'wait',wt:1+i*2.5});},
+ step(G,dt,k,p){tt+=dt;if(startT>0){startT-=dt;return}
+   /* 搖桿：選最明顯的方向當作想轉的方向（預先轉彎） */const ax=G.ax,ay=G.ay;if(Math.abs(ax)>.3||Math.abs(ay)>.3)pl.want=Math.abs(ax)>Math.abs(ay)?(ax<0?'L':'R'):(ay<0?'U':'D');
+   /* 可以直接回頭 */if(pl.mo&&pl.want===OPP[pl.dir]){pl.x+=DIRS[pl.dir][0];pl.y+=DIRS[pl.dir][1];pl.t=1-pl.t;pl.dir=pl.want}
+   const sp=5.2+Math.min(2,lvl*.04);
+   stepMover(pl,sp,dt,o=>{const[dx,dy]=DIRS[o.want];if(open(o.x+dx,o.y+dy))return o.want;return null});
+   if(!pl.mo)pl.px=pl.x,pl.py=pl.y;
+   /* 吃豆 */for(const d of dots){if(!d.e&&d.x===Math.round(pl.px)&&d.y===Math.round(pl.py)){d.e=1;if(d.p){fright=Math.max(2.5,8-lvl*.08);eatN=0;G.sfx.coin();G.add(50);ghosts.forEach(gh=>{if(gh.st==='chase'){gh.dir=OPP[gh.dir];if(gh.mo){gh.x+=DIRS[OPP[gh.dir]][0];gh.y+=DIRS[OPP[gh.dir]][1];gh.t=1-gh.t}}})}else{G.add(10);if(Math.floor(tt*12)%2)G.beep(520,.03,'triangle',.03);else G.beep(400,.03,'triangle',.03)}}}
+   if(fright>0)fright-=dt;
+   const gsp=4+Math.min(2.6,lvl*.05);
+   ghosts.forEach(gh=>{if(gh.st==='wait'){gh.wt-=dt;gh.py=home.y+Math.sin(tt*6+gh.i)*.15;if(gh.wt<=0){gh.st='out';gh.x=home.x;gh.y=home.y;gh.px=gh.x;gh.py=gh.y;gh.mo=0;gh.dir='U'}return}
+     const s=gh.st==='eyes'?11:fright>0&&gh.st==='chase'?gsp*.55:gh.st==='out'?3:gsp;
+     gh.arrive=o=>{if(o.st==='out'&&o.y<home.door.y)o.st='chase';if(o.st==='eyes'&&o.x===home.x&&o.y===home.y){o.st='out'}};
+     stepMover(gh,s,dt,o=>ghostChoose(G,o));
+     const d=Math.hypot(gh.px-pl.px,gh.py-pl.py);if(d<.6&&gh.st==='chase'){if(fright>0){gh.st='eyes';eatN++;const pts=200*Math.pow(2,Math.min(3,eatN-1));G.add(pts);G.sfx.boom();burst(OX+gh.px*T+5,OY+gh.py*T+5,16,'#9cf')}
+       else{G.lives--;G.sfx.lose();burst(OX+pl.px*T+5,OY+pl.py*T+5,30,HEROES[G.char].a);if(G.lives<=0){G.lose();return}
+         Object.assign(pl,spawnPl());pl.t=0;startT=1;ghosts.forEach((g2,i)=>{Object.assign(g2,{x:home.x-1+i%3,y:home.y,px:home.x-1+i%3,py:home.y,mo:0,t:0,st:'wait',wt:.5+i*1.2,dir:'U'})});fright=0}}});
+   parts.forEach(q=>{q.x+=q.vx*dt;q.y+=q.vy*dt;q.t-=dt});parts=parts.filter(q=>q.t>0);
+   if(dots.every(d=>d.e)){G.add(1000);G.win()}},
+ draw(G){const g=G.g;const bg=g.createLinearGradient(0,0,0,VH);bg.addColorStop(0,'#060816');bg.addColorStop(1,'#0d0a24');g.fillStyle=bg;g.fillRect(0,0,VW,VH);
+   g.save();g.translate(OX,OY);const hue=(lvl*47)%360,wc='hsl('+hue+',90%,60%)',wd='hsl('+hue+',80%,25%)';
+   /* 牆：深色填滿＋發光描邊（圓角） */for(let y=0;y<CH;y++)for(let x=0;x<CW;x++)if(M[y][x]){const X=x*T,Y=y*T;const gr=g.createLinearGradient(X,Y,X+T,Y+T);gr.addColorStop(0,wd);gr.addColorStop(1,'#05060f');g.fillStyle=gr;g.fillRect(X,Y,T,T)}
+   g.shadowColor=wc;g.shadowBlur=4;g.strokeStyle=wc;g.lineWidth=.9;g.beginPath();
+   for(let y=0;y<CH;y++)for(let x=0;x<CW;x++)if(M[y][x]){const X=x*T,Y=y*T,w=(a,b)=>a<0||b<0||a>=CW||b>=CH||M[b][a];
+     if(!w(x,y-1)){g.moveTo(X,Y+.5);g.lineTo(X+T,Y+.5)}if(!w(x,y+1)){g.moveTo(X,Y+T-.5);g.lineTo(X+T,Y+T-.5)}if(!w(x-1,y)){g.moveTo(X+.5,Y);g.lineTo(X+.5,Y+T)}if(!w(x+1,y)){g.moveTo(X+T-.5,Y);g.lineTo(X+T-.5,Y+T)}}
+   g.stroke();g.shadowBlur=0;g.fillStyle='#ffb3d9';g.fillRect(home.door.x*T+1,home.door.y*T+4,T-2,1.4);
+   dots.forEach(d=>{if(d.e)return;const X=d.x*T+5,Y=d.y*T+5;if(d.p){const r=2.6+Math.sin(tt*8)*.6;const gr=g.createRadialGradient(X-.6,Y-.6,.3,X,Y,r);gr.addColorStop(0,'#fff');gr.addColorStop(1,'#ffcf6b');g.fillStyle=gr;g.shadowColor='#ffcf6b';g.shadowBlur=5;g.beginPath();g.arc(X,Y,r,0,7);g.fill();g.shadowBlur=0}
+     else{g.fillStyle='#ffe9c2';g.beginPath();g.arc(X,Y,.95,0,7);g.fill()}});
+   ghosts.forEach(gh=>{const X=gh.px*T+5,Y=gh.py*T+5,fr=fright>0&&gh.st==='chase',blink=fr&&fright<1.5&&Math.floor(tt*8)%2;
+     if(gh.st!=='eyes'){const col=fr?(blink?['#ffffff','#9aa']:['#4f6bff','#1a2a90']):GH[gh.i%4];const gr=g.createLinearGradient(X-4,Y-5,X+4,Y+5);gr.addColorStop(0,col[0]);gr.addColorStop(1,col[1]);g.fillStyle=gr;
+       g.beginPath();g.arc(X,Y-.5,4.3,Math.PI,0);g.lineTo(X+4.3,Y+4.2);for(let k=0;k<4;k++){const sx=X+4.3-(k+.5)*2.15;g.lineTo(sx,Y+4.2-1.2*Math.abs(Math.sin(tt*10+k)));g.lineTo(sx-1.07,Y+4.2)}g.closePath();g.fill();
+       g.fillStyle='rgba(255,255,255,.3)';g.beginPath();g.ellipse(X-1.6,Y-3,1.4,.8,-.5,0,7);g.fill()}
+     if(fr){g.fillStyle='#ffd0d0';g.fillRect(X-2,Y-1.5,1,1);g.fillRect(X+1,Y-1.5,1,1);g.strokeStyle='#ffd0d0';g.lineWidth=.4;g.beginPath();for(let k=0;k<5;k++)g.lineTo(X-2.5+k*1.25,Y+1.6+(k%2?-.6:0));g.stroke()}
+     else{const[dx,dy]=DIRS[gh.dir];for(const ex of [-1.6,1.6]){g.fillStyle='#fff';g.beginPath();g.ellipse(X+ex,Y-1,1.2,1.5,0,0,7);g.fill();g.fillStyle='#1a3aff';g.beginPath();g.arc(X+ex+dx*.6,Y-1+dy*.7,.65,0,7);g.fill()}}});
+   /* 主角：會開合的嘴、漸層、朝前進方向 */const h=HEROES[G.char],X=pl.px*T+5,Y=pl.py*T+5,mo=(startT>0?.25:Math.abs(Math.sin(tt*14)))*.8,ang={R:0,D:Math.PI/2,L:Math.PI,U:-Math.PI/2}[pl.dir];
+   const gr=g.createRadialGradient(X-1.5,Y-1.5,.5,X,Y,4.8);gr.addColorStop(0,'#fff');gr.addColorStop(.3,h.a);gr.addColorStop(1,h.b);g.fillStyle=gr;g.beginPath();g.moveTo(X,Y);g.arc(X,Y,4.5,ang+mo,ang+Math.PI*2-mo);g.closePath();g.fill();
+   g.fillStyle='#222';const ea=ang-Math.PI/2.6;g.beginPath();g.arc(X+Math.cos(ea)*2.4,Y+Math.sin(ea)*2.4,.6,0,7);g.fill();
+   g.globalCompositeOperation='lighter';parts.forEach(q=>{g.globalAlpha=q.t*2;g.fillStyle=q.c;g.fillRect(q.x-OX-.6,q.y-OY-.6,1.2,1.2)});g.globalAlpha=1;g.globalCompositeOperation='source-over';g.restore();
+   for(let i=0;i<G.lives;i++){g.fillStyle=HEROES[G.char].a;g.beginPath();g.moveTo(10+i*9,15);g.arc(10+i*9,15,3,.5,Math.PI*2-.5);g.fill()}
+   const left=dots.filter(d=>!d.e).length;G.text(g,'DOTS '+left,VW-6,13,'#ffe9c2',1,'r');
+   if(startT>0)G.text(g,'READY!',VW/2,OY+home.y*T+18,'#ffd23f',1,'c');if(fright>0)G.text(g,'POWER '+Math.ceil(fright),VW/2,OY+CH*T+6,'#7cf',1,'c')},
+ titleArt(G,f){const g=G.g,x=((f*40)%220)-30;const h=HEROES[G.char];g.fillStyle=h.a;g.beginPath();g.moveTo(x,120);const m=Math.abs(Math.sin(f*10))*.7;g.arc(x,120,9,m,Math.PI*2-m);g.fill();
+   for(let i=0;i<3;i++){const c=GH[i];g.fillStyle=c[0];const gx=x-30-i*22;g.beginPath();g.arc(gx,118,8,Math.PI,0);g.lineTo(gx+8,128);g.lineTo(gx-8,128);g.fill();g.fillStyle='#fff';g.fillRect(gx-4,115,3,3);g.fillRect(gx+1,115,3,3)}
+   g.fillStyle='#ffe9c2';for(let i=0;i<10;i++){const dx=i*18;if(dx>x)g.fillRect(dx,119,2,2)}}
+});
+</script></body></html>

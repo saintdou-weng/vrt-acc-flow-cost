@@ -1,0 +1,107 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Gem Match 寶石三消</title><link rel="stylesheet" href="game.css"></head><body><canvas id="cv"></canvas>
+<script src="engine.js"></script><script>
+/* 寶石三消（原創，2026-11-26）：交換相鄰寶石，三個以上同色連成一線就消掉；在步數內達到目標分數過關（無限關，越後面顏色越多、目標越高、有冰塊格）。
+   操作：直接用手指點寶石再點旁邊的寶石交換；或用搖桿移動框框、按 A 選取、再往一個方向推交換。B 是提示。
+   四連消會變成「炸彈寶石」（消掉時炸 3x3），五連消變成「彩虹寶石」（消掉全部同色）。 */
+const N=8,S=19,OX=4,OY=46,VW=160,VH=226;
+const GEMS=[{a:'#ff6b6b',b:'#c0182b',l:'#ffd0d0'},{a:'#5cc8ff',b:'#1663c7',l:'#d6f1ff'},{a:'#6bea7d',b:'#13893a',l:'#dcffe1'},{a:'#ffe066',b:'#c98a00',l:'#fffbd6'},{a:'#c58bff',b:'#6a22c7',l:'#f0e0ff'},{a:'#ffa64d',b:'#c5530a',l:'#ffe6cc'},{a:'#f2f4f8',b:'#7d8698',l:'#ffffff'}];
+const SKINS=['JEWEL','CANDY','NEON'];
+let B,cur,selC,moves,target,nc,anim,parts,hintT,combo,ice,busy,tt,floatTxt,lvRef;
+const rndC=()=>Math.floor(Math.random()*nc);
+function mk(c){return{c,sp:0,y:0,pop:0}}
+function find(){const hit=[];const runs=[];
+  for(let y=0;y<N;y++){let x=0;while(x<N){const c=B[y][x]&&B[y][x].c;let e=x;if(c!=null&&c>=0)while(e+1<N&&B[y][e+1]&&B[y][e+1].c===c)e++;if(e-x>=2)runs.push({cells:[...Array(e-x+1)].map((_,i)=>[x+i,y]),c});x=e+1}}
+  for(let x=0;x<N;x++){let y=0;while(y<N){const c=B[y][x]&&B[y][x].c;let e=y;if(c!=null&&c>=0)while(e+1<N&&B[e+1][x]&&B[e+1][x].c===c)e++;if(e-y>=2)runs.push({cells:[...Array(e-y+1)].map((_,i)=>[x,y+i]),c});y=e+1}}
+  return runs}
+function anyMove(){for(let y=0;y<N;y++)for(let x=0;x<N;x++)for(const[dx,dy]of[[1,0],[0,1]]){const X=x+dx,Y=y+dy;if(X>=N||Y>=N)continue;if(B[y][x].sp===2||B[Y][X].sp===2)return[x,y,X,Y];swap(x,y,X,Y);const ok=find().length;swap(x,y,X,Y);if(ok)return[x,y,X,Y]}return null}
+function swap(a,b,c,d){const t=B[b][a];B[b][a]=B[d][c];B[d][c]=t}
+function fill(){B=Array.from({length:N},()=>Array(N).fill(null));for(let y=0;y<N;y++)for(let x=0;x<N;x++){let c;do c=rndC();while((x>1&&B[y][x-1].c===c&&B[y][x-2].c===c)||(y>1&&B[y-1][x].c===c&&B[y-2][x].c===c));B[y][x]=mk(c)}
+  if(!anyMove())fill()}
+function burst(x,y,col,n){for(let i=0;i<n;i++){const a=Math.random()*7,v=20+Math.random()*60;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-20,t:.5+Math.random()*.4,c:col})}}
+/* 一次消除：回傳是否有消 */
+function resolve(G,sx,sy){const runs=find();if(!runs.length)return false;const kill=new Set(),born=[];
+  runs.forEach(r=>{r.cells.forEach(([x,y])=>kill.add(x+','+y));if(r.cells.length>=4){const pick=r.cells.find(([x,y])=>x===sx&&y===sy)||r.cells[1];born.push({x:pick[0],y:pick[1],c:r.c,sp:r.cells.length>=5?2:1})}});
+  /* 特殊寶石連鎖 */let grow=true;while(grow){grow=false;[...kill].forEach(k=>{const[x,y]=k.split(',').map(Number),g=B[y][x];if(!g||g.used)return;g.used=1;
+     if(g.sp===1){for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++){const X=x+i,Y=y+j;if(X>=0&&Y>=0&&X<N&&Y<N&&!kill.has(X+','+Y)){kill.add(X+','+Y);grow=true}}G.sfx.boom()}
+     if(g.sp===2){for(let Y=0;Y<N;Y++)for(let X=0;X<N;X++)if(B[Y][X].c===g.c&&!kill.has(X+','+Y)){kill.add(X+','+Y);grow=true}G.sfx.boom()}})}
+  combo++;const pts=kill.size*10*combo;G.add(pts);floatTxt.push({x:OX+(sx==null?3.5:sx)*S+S/2,y:OY+(sy==null?3.5:sy)*S,t:1,s:'+'+pts+(combo>1?' X'+combo:'')});
+  kill.forEach(k=>{const[x,y]=k.split(',').map(Number);const gm=GEMS[B[y][x].c]||GEMS[6];burst(OX+x*S+S/2,OY+y*S+S/2,gm.a,6);if(ice[y][x]){ice[y][x]--;G.add(30)}B[y][x]=null});
+  born.forEach(b=>{B[b.y][b.x]=Object.assign(mk(b.c),{sp:b.sp})});
+  G.beep(400+combo*90,.09,'square',.05);
+  /* 往下掉 */for(let x=0;x<N;x++){let w=N-1;for(let y=N-1;y>=0;y--)if(B[y][x]){const g=B[y][x];if(w!==y){g.y=(w-y)*S+g.y;B[w][x]=g;B[y][x]=null}w--}
+    for(let y=w;y>=0;y--){const g=mk(rndC());g.y=(w+1)*S+6;B[y][x]=g}}
+  return true}
+function settle(G){busy=.22}
+function trySwap(G,a,b,c,d){if(c<0||d<0||c>=N||d>=N)return;const g1=B[b][a],g2=B[d][c];
+  swap(a,b,c,d);g1.sx=(a-c)*S;g1.sy=(b-d)*S;g2.sx=(c-a)*S;g2.sy=(d-b)*S;
+  /* 彩虹寶石：跟誰換就消掉那個顏色 */
+  if(g1.sp===2||g2.sp===2){const rb=g1.sp===2?g1:g2,ot=rb===g1?g2:g1;rb.c=ot.c===rb.c?rndC():ot.c;rb.sp=2;moves--;combo=0;
+    const kill=[];for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(B[y][x].c===ot.c||B[y][x]===rb)kill.push([x,y]);
+    kill.forEach(([x,y])=>{burst(OX+x*S+S/2,OY+y*S+S/2,GEMS[B[y][x].c].a,8);if(ice[y][x])ice[y][x]--;B[y][x]=mk(-1)});G.add(kill.length*20);G.sfx.boom();
+    for(let x=0;x<N;x++){const col=[];for(let y=N-1;y>=0;y--)if(B[y][x].c>=0)col.push(B[y][x]);let k=0;for(let y=N-1;y>=0;y--){const gg=col[k++];if(gg){gg.y+=0;B[y][x]=gg}else{const ng=mk(rndC());ng.y=S*(y+2);B[y][x]=ng}}}
+    selC=null;settle(G);return}
+  combo=0;if(find().length){moves--;anim={s:'chain',x:c,y:d};selC=null;G.sfx.move();busy=.16}
+  else{swap(a,b,c,d);g1.sx=0;g1.sy=0;g2.sx=0;g2.sy=0;g1.shake=.3;g2.shake=.3;G.beep(150,.1,'square',.05);selC=null}}
+/* 寶石外形：每色一種切割形狀，有漸層、亮面、反光 */
+function gemPath(g,c,r){g.beginPath();if(c===0){for(let k=0;k<8;k++){const a=k*Math.PI/4+Math.PI/8;g.lineTo(Math.cos(a)*r,Math.sin(a)*r)}}
+  else if(c===1){g.moveTo(0,-r);g.lineTo(r,0);g.lineTo(0,r);g.lineTo(-r,0)}else if(c===2){g.rect(-r*.82,-r*.82,r*1.64,r*1.64)}
+  else if(c===3){g.moveTo(0,-r);g.lineTo(r*.95,r*.75);g.lineTo(-r*.95,r*.75)}else if(c===4){for(let k=0;k<6;k++){const a=k*Math.PI/3;g.lineTo(Math.cos(a)*r,Math.sin(a)*r)}}
+  else if(c===5){for(let k=0;k<10;k++){const a=-Math.PI/2+k*Math.PI/5,rr=k%2?r*.5:r;g.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}}else{g.arc(0,0,r*.9,0,7)}g.closePath()}
+function drawGem(g,G,gm,x,y,sc){const c=gm.c;if(c<0)return;const P=GEMS[c],r=7.2*sc,sk=G.char;g.save();g.translate(x,y);
+  if(sk===2){g.shadowColor=P.a;g.shadowBlur=6}
+  g.fillStyle='rgba(0,0,0,.3)';g.save();g.translate(.8,1.2);gemPath(g,c,r);g.fill();g.restore();
+  const gr=sk===1?g.createRadialGradient(-r*.3,-r*.4,r*.1,0,0,r*1.1):g.createLinearGradient(-r,-r,r,r);
+  gr.addColorStop(0,P.l);gr.addColorStop(sk===1?.35:.45,P.a);gr.addColorStop(1,P.b);g.fillStyle=gr;gemPath(g,c,r);g.fill();g.shadowBlur=0;
+  if(sk!==1){g.save();gemPath(g,c,r*.55);g.fillStyle='rgba(255,255,255,.22)';g.fill();g.restore();g.strokeStyle='rgba(255,255,255,.35)';g.lineWidth=.35;g.beginPath();g.moveTo(-r*.55,-r*.55);g.lineTo(r*.55,r*.55);g.stroke()}
+  g.strokeStyle=sk===2?P.l:'rgba(0,0,0,.35)';g.lineWidth=.45;gemPath(g,c,r);g.stroke();
+  g.fillStyle='rgba(255,255,255,.85)';g.beginPath();g.ellipse(-r*.35,-r*.42,r*.22,r*.12,-.6,0,7);g.fill();
+  if(gm.sp===1){g.strokeStyle='#fff';g.lineWidth=.8;g.globalAlpha=.6+.4*Math.sin(tt*8);g.beginPath();g.arc(0,0,r*.45,0,7);g.stroke();g.globalAlpha=1}
+  if(gm.sp===2){const h=(tt*120)%360;g.strokeStyle='hsl('+h+',100%,70%)';g.lineWidth=1.2;g.beginPath();g.arc(0,0,r*.95,0,7);g.stroke();g.fillStyle='hsl('+((h+180)%360)+',100%,75%)';g.beginPath();g.arc(0,0,r*.3,0,7);g.fill()}
+  g.restore()}
+let rep=0;
+GE.run({id:'gemmatch',title:'GEM MATCH',w:VW,h:VH,chars:SKINS,lives:1,
+ start(G,lv){lvRef=lv;nc=lv<8?5:lv<25?6:7;moves=Math.max(14,26-Math.floor(lv/10));target=800+lv*220+Math.floor(lv*lv*2);parts=[];floatTxt=[];anim=null;combo=0;busy=0;hintT=6;tt=0;
+   ice=Array.from({length:N},(_,y)=>Array.from({length:N},(_,x)=>{if(lv<5)return 0;const s=Math.sin(lv*12.9898+x*78.233+y*37.719)*43758.5453;const f=s-Math.floor(s);return f<Math.min(.35,(lv-4)*.012)?(lv>30&&f<.06?2:1):0}));
+   fill();cur={x:3,y:4};selC=null;
+   if(!window._gmTap){window._gmTap=1;const cv=document.getElementById('cv');cv.addEventListener('pointerdown',e=>{const A=window.GE_API;if(!A||A.mode!=='play'||busy>0)return;const r=cv.getBoundingClientRect();
+     const lx=(e.clientX-r.left)/r.width*VW,ly=(e.clientY-r.top)/r.height*VH,x=Math.floor((lx-OX)/S),y=Math.floor((ly-OY)/S);if(x<0||y<0||x>=N||y>=N)return;
+     cur={x,y};if(selC&&Math.abs(selC.x-x)+Math.abs(selC.y-y)===1)trySwap(A,selC.x,selC.y,x,y);else{selC={x,y};A.sfx.blip()}})}},
+ step(G,dt,k,p){tt+=dt;hintT-=dt;
+   for(let y=0;y<N;y++)for(let x=0;x<N;x++){const gm=B[y][x];if(!gm)continue;if(gm.y>0)gm.y=Math.max(0,gm.y-dt*220);if(gm.sx)gm.sx*=Math.pow(.0001,dt);if(gm.sy)gm.sy*=Math.pow(.0001,dt);if(Math.abs(gm.sx||0)<.3)gm.sx=0;if(Math.abs(gm.sy||0)<.3)gm.sy=0;if(gm.shake>0)gm.shake-=dt}
+   parts.forEach(q=>{q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=120*dt;q.t-=dt});parts=parts.filter(q=>q.t>0);floatTxt.forEach(f=>{f.y-=dt*14;f.t-=dt});floatTxt=floatTxt.filter(f=>f.t>0);
+   const moving=B.some(r=>r.some(g=>g&&(g.y>0||g.sx||g.sy)));
+   if(busy>0){busy-=dt;return}
+   if(moving)return;
+   if(anim){const a=anim;if(resolve(G,a.x,a.y)){anim={s:'chain',x:null,y:null};busy=.12;return}anim=null;combo=0;
+     if(!anyMove()){fill();floatTxt.push({x:80,y:120,t:1.4,s:'SHUFFLE'})}}
+   else if(find().length){anim={s:'chain',x:null,y:null};return}
+   if(G.score>=target){G.add(moves*60);G.win();return}
+   if(moves<=0){G.lose();return}
+   /* 搖桿：推一下移動一格，按住會連續移動 */
+   const dir=p.L?[-1,0]:p.R?[1,0]:p.U?[0,-1]:p.D?[0,1]:null;rep-=dt;let held=null;if(k.L)held=[-1,0];else if(k.R)held=[1,0];else if(k.U)held=[0,-1];else if(k.D)held=[0,1];
+   let d=dir;if(dir)rep=.32;else if(held&&rep<=0){d=held;rep=.12}
+   if(d){if(selC){trySwap(G,selC.x,selC.y,selC.x+d[0],selC.y+d[1]);hintT=6}else{cur.x=Math.max(0,Math.min(N-1,cur.x+d[0]));cur.y=Math.max(0,Math.min(N-1,cur.y+d[1]));G.sfx.move()}}
+   if(p.A){if(selC&&selC.x===cur.x&&selC.y===cur.y)selC=null;else{selC={x:cur.x,y:cur.y};G.sfx.blip()}}
+   if(p.B)hintT=0},
+ draw(G){const g=G.g;const bg=g.createLinearGradient(0,0,0,VH);bg.addColorStop(0,'#1b1036');bg.addColorStop(1,'#0a2a3a');g.fillStyle=bg;g.fillRect(0,0,VW,VH);
+   for(let i=0;i<24;i++){g.fillStyle='rgba(255,255,255,'+(.05+.05*Math.sin(tt+i))+')';g.beginPath();g.arc((i*41)%VW,(i*67+tt*6)%VH,1+i%3,0,7);g.fill()}
+   /* 目標進度條 */const pr=Math.min(1,G.score/target);g.fillStyle='rgba(0,0,0,.4)';g.fillRect(4,14,VW-8,9);const pg=g.createLinearGradient(4,0,VW-4,0);pg.addColorStop(0,'#ff6bd6');pg.addColorStop(1,'#ffd23f');g.fillStyle=pg;g.fillRect(5,15,(VW-10)*pr,7);g.fillStyle='rgba(255,255,255,.35)';g.fillRect(5,15,(VW-10)*pr,2);
+   G.text(g,'GOAL '+target,6,27,'#ffd23f');G.text(g,'MOVES '+moves,VW-6,27,moves<=3?'#ff6b6b':'#7cf',1,'r');if(combo>1)G.text(g,'COMBO X'+combo,VW/2,36,'#fff',1,'c');
+   /* 棋盤：圓角半透明框、格子交錯色 */g.fillStyle='rgba(255,255,255,.07)';g.fillRect(OX-2,OY-2,N*S+4,N*S+4);
+   for(let y=0;y<N;y++)for(let x=0;x<N;x++){g.fillStyle=(x+y)%2?'rgba(255,255,255,.06)':'rgba(0,0,0,.18)';g.fillRect(OX+x*S,OY+y*S,S,S);
+     if(ice[y][x]){const ig=g.createLinearGradient(OX+x*S,OY+y*S,OX+x*S+S,OY+y*S+S);ig.addColorStop(0,'rgba(220,245,255,.55)');ig.addColorStop(1,'rgba(120,190,255,.35)');g.fillStyle=ig;g.fillRect(OX+x*S+.5,OY+y*S+.5,S-1,S-1);
+       g.strokeStyle='rgba(255,255,255,.7)';g.lineWidth=.4;g.beginPath();g.moveTo(OX+x*S+3,OY+y*S+4);g.lineTo(OX+x*S+8,OY+y*S+9);if(ice[y][x]>1){g.moveTo(OX+x*S+12,OY+y*S+3);g.lineTo(OX+x*S+16,OY+y*S+12)}g.stroke()}}
+   const hint=hintT<=0?anyMove():null;
+   for(let y=0;y<N;y++)for(let x=0;x<N;x++){const gm=B[y][x];if(!gm)continue;let px=OX+x*S+S/2+(gm.sx||0),py=OY+y*S+S/2-(gm.y||0)+(gm.sy||0);if(gm.shake>0)px+=Math.sin(gm.shake*60)*1.5;
+     if(py<OY-4)continue;let sc=1;if(selC&&selC.x===x&&selC.y===y)sc=1.08+Math.sin(tt*10)*.06;if(hint&&((hint[0]===x&&hint[1]===y)||(hint[2]===x&&hint[3]===y)))sc=1+Math.abs(Math.sin(tt*6))*.15;
+     drawGem(g,G,gm,px,py,sc)}
+   /* 遮住棋盤上方掉下來的寶石 */g.fillStyle=bg;g.fillRect(0,OY-10,VW,8);
+   const cx=OX+cur.x*S,cy=OY+cur.y*S;g.strokeStyle=selC?'#ffd23f':'#fff';g.lineWidth=1;g.globalAlpha=.7+.3*Math.sin(tt*8);g.strokeRect(cx+.5,cy+.5,S-1,S-1);g.globalAlpha=1;
+   if(selC){g.strokeStyle='#ffd23f';g.lineWidth=.6;g.setLineDash([2,1.5]);g.strokeRect(OX+selC.x*S+1.5,OY+selC.y*S+1.5,S-3,S-3);g.setLineDash([])}
+   g.globalCompositeOperation='lighter';parts.forEach(q=>{g.globalAlpha=Math.min(1,q.t*2);g.fillStyle=q.c;g.beginPath();g.arc(q.x,q.y,.5+q.t*1.5,0,7);g.fill()});g.globalAlpha=1;g.globalCompositeOperation='source-over';
+   floatTxt.forEach(f=>{G.text(g,f.s,f.x,f.y,'rgba(255,255,255,'+Math.min(1,f.t*2)+')',1,'c')});
+   G.text(g,'TAP 2 GEMS  OR  STICK + A   B HINT',VW/2,OY+N*S+10,'#667',1,'c')},
+ titleArt(G,f){tt=f;nc=7;for(let i=0;i<7;i++){const a=f*.8+i*Math.PI*2/7;drawGem(G.g,G,{c:i,sp:0},80+Math.cos(a)*40,120+Math.sin(a)*26,1.3)}}
+});
+</script></body></html>
