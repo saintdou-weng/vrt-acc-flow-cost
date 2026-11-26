@@ -52,5 +52,5 @@ function card(x,upc){
 Object.keys(T).forEach(k=>{const b=document.createElement('button');b.textContent=T[k][0];b.onclick=()=>{cur=k;document.querySelectorAll('.tabs button').forEach(z=>{z.classList.toggle('on',z===b);z.style.background=z===b?T[k][1]:'#fff'});render()};document.getElementById('tabs').appendChild(b);if(k==='all'){b.classList.add('on');b.style.background=T.all[1]}});
 fetch('feed.json?t='+Date.now()).then(r=>r.json()).then(j=>{F=j.items.sort((a,b)=>a.sendAt.localeCompare(b.sendAt));render()}).catch(e=>{document.getElementById('list').innerHTML='<div class="empty">讀取失敗：'+esc(String(e))+'</div>'});
 </script>
-<script src="https://saintdou-weng.github.io/PSJERP/music.js?v=2.28" defer></script><!-- 2026-11-25 Paul：ACC Flow 也套用 ♪ 音樂＋🎨 調色盤／背景／3D 等設定（每個平台各自記住） -->
+<script src="https://saintdou-weng.github.io/PSJERP/music.js?v=2.29" defer></script><!-- 2026-11-25 Paul：ACC Flow 也套用 ♪ 音樂＋🎨 調色盤／背景／3D 等設定（每個平台各自記住） -->
 </body></html>

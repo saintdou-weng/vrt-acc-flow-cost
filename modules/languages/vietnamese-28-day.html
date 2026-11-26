@@ -1529,5 +1529,5 @@ function updateProgress(){let done=JSON.parse(localStorage.getItem('vi28done')||
 function renderQuiz(){let box=document.getElementById('quizBox');box.innerHTML=QUIZ.map((it,i)=>`<div class='quiz-q'><b>${i+1}. ${it.q}</b>${it.opts.map((o,j)=>`<label><input type='radio' name='q${i}' value='${j}'> ${o}</label>`).join('')}</div>`).join('')}
 function gradeQuiz(){let s=0;QUIZ.forEach((it,i)=>{let x=document.querySelector(`input[name=q${i}]:checked`);if(x&&Number(x.value)===it.ans)s++});let msg=s>=9?'非常好：可以進入下一階段。':s>=7?'合格：再複習錯題相關課程。':'先回看 Day 1–14，每天只補三句。';document.getElementById('score').textContent=`得分：${s} / 10。${msg}`;}
 renderQuiz();updateProgress();
-</script><script src="https://saintdou-weng.github.io/PSJERP/music.js?v=2.28" defer></script><!-- 2026-11-25 Paul：ACC Flow 也套用 ♪ 音樂＋🎨 調色盤／背景／3D 等設定（每個平台各自記住） -->
+</script><script src="https://saintdou-weng.github.io/PSJERP/music.js?v=2.29" defer></script><!-- 2026-11-25 Paul：ACC Flow 也套用 ♪ 音樂＋🎨 調色盤／背景／3D 等設定（每個平台各自記住） -->
 </body></html>
