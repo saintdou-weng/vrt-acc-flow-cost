@@ -16,7 +16,7 @@ header{position:sticky;top:0;z-index:5;background:rgba(244,239,230,.96);backdrop
 .tabs button.on{color:var(--acc);border-color:var(--acc)}
 main{max-width:1100px;margin:auto;padding:10px 12px 70px}
 .stat{font-size:.82em;color:var(--muted);margin:2px 0 8px}
-.groups{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}
+.groups{display:flex;gap:6px;flex-wrap:wrap;padding-bottom:6px}
 .chip{flex:none;border:1.5px solid var(--line);background:#fff;border-radius:18px;padding:5px 12px;font:inherit;font-size:.86em;cursor:pointer;white-space:nowrap}
 .chip.on{background:var(--acc);color:#fff;border-color:var(--acc)}
 .cats{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
@@ -77,7 +77,7 @@ main{max-width:1100px;margin:auto;padding:10px 12px 70px}
 .tapL{left:0;width:25%}.tapR{right:0;width:25%}.tapC{left:25%;width:50%}
 </style></head><body>
 <header><div class="hin"><a class="back" href="../../os/index.html?view=edu">← 知識學習</a><h1>📚 書庫</h1><input id="q" placeholder="🔍 搜尋書名"></div>
-<div class="tabs"><button data-tab="shelf" class="on">書架</button><button data-tab="lib">書城</button><button data-tab="hist">閱讀紀錄</button></div></header>
+<div class="tabs"><button data-tab="shelf" class="on">書架</button><button data-tab="lib">書城</button><button data-tab="comic">🎨 漫畫</button><button data-tab="hist">閱讀紀錄</button></div></header>
 <main id="app"><div class="empty">載入中…</div></main>
 
 <div id="reader" data-th="paper">
@@ -128,6 +128,8 @@ async function start(){
     api('lib=prog').then(p=>{if(p.ok){for(const id in p.prog){const a=PROG[id],b=p.prog[id];if(!a||b.ts>a.ts)PROG[id]=b}store('acc_lib_prog',PROG);if(!$('reader').classList.contains('on'))render()}}).catch(()=>{});
   }catch(e){$('app').innerHTML='<div class="empty">讀取失敗：'+esc(e)+'</div>'}}
 const BY={};function book(id){if(CAT&&!Object.keys(BY).length)CAT.books.forEach(b=>BY[b.id]=b);return BY[id]}
+const ICON={biz:'💼',fin:'💰',self:'🌱',lit:'📖',hum:'🏛️',sci:'🔬',life:'☕',misc:'📰',comic:'🎨'};
+function gIcon(g){return ICON[g.id]||g.icon||'📚'}
 function catName(id){for(const g of CAT.groups)for(const c of g.cats)if(c.id===id)return c.name;return id}
 function groupOf(id){for(const g of CAT.groups)if(g.cats.some(c=>c.id===id))return g;return null}
 function pct(id){const p=PROG[id];return p&&p.n?Math.min(100,Math.round(p.p/p.n*100)):0}
@@ -145,12 +147,15 @@ function render(){
   }else if(TAB==='hist'&&!q){
     h+=reading.length?reading.slice(0,100).map(id=>{const b=book(id),p=PROG[id];return '<div class="hist" data-id="'+id+'">'+cover(b,true)+'<div class="info"><b>'+esc(b.title)+'</b><small>'+esc(catName(b.cat))+'・第 '+p.p+' / '+(p.n||'?')+' 頁・'+ago(p.ts)+(p.done?'・✅ 讀完':'')+'</small><div class="bar"><i style="width:'+pct(id)+'%"></i></div></div></div>'}).join(''):'<div class="empty">還沒有閱讀紀錄</div>';
   }else{
-    h+='<div class="stat">共 <b>'+CAT.books.length+'</b> 本'+(CAT.dupes?'・已排除重複 '+CAT.dupes+' 個':'')+(CAT.blurry?'・模糊不收 '+CAT.blurry+' 本':'')+'・更新 '+esc(CAT.updated||'')+'</div>';
-    h+='<div class="groups"><button class="chip '+(G==='all'?'on':'')+'" data-g="all">全部</button>'+CAT.groups.map(g=>'<button class="chip '+(G===g.id?'on':'')+'" data-g="'+g.id+'">'+g.icon+' '+esc(g.name)+'</button>').join('')+'</div>';
+    const isC=TAB==='comic',GS=TAB==='lib'||isC?CAT.groups.filter(g=>(g.id==='comic')===isC):CAT.groups,inT=b=>GS.includes(groupOf(b.cat));
+    if(isC)G='comic';else if(G==='comic')G='all';
+    const TB=CAT.books.filter(inT);
+    h+='<div class="stat">共 <b>'+TB.length+'</b> '+(isC?'卷漫畫':'本書')+(CAT.dupes?'・已排除重複 '+CAT.dupes+' 個':'')+(CAT.blurry?'・模糊不收 '+CAT.blurry+' 本':'')+'・更新 '+esc(CAT.updated||'')+'</div>';
+    if(!isC)h+='<div class="groups"><button class="chip '+(G==='all'?'on':'')+'" data-g="all">全部</button>'+GS.map(g=>'<button class="chip '+(G===g.id?'on':'')+'" data-g="'+g.id+'">'+gIcon(g)+' '+esc(g.name)+'</button>').join('')+'</div>';
     if(G!=='all'){const g=CAT.groups.find(x=>x.id===G),cnt=id=>CAT.books.filter(b=>b.cat===id).length;
-      h+='<div class="cats"><button class="chip '+(C?'':'on')+'" data-c="">全部</button>'+g.cats.filter(c=>cnt(c.id)).map(c=>'<button class="chip '+(C===c.id?'on':'')+'" data-c="'+c.id+'">'+esc(c.name)+'<small>'+cnt(c.id)+'</small></button>').join('')+'</div>'}
-    const L=CAT.books.filter(b=>(!q||b.title.toLowerCase().includes(q))&&(G==='all'||(groupOf(b.cat)||{}).id===G)&&(!C||b.cat===C));
-    h+=L.length?'<div class="grid">'+L.slice(0,240).map(card).join('')+'</div>'+(L.length>240?'<div class="empty">還有 '+(L.length-240)+' 本，請搜尋或選類別</div>':''):'<div class="empty">沒有找到</div>';
+      if(g)h+='<div class="cats"><button class="chip '+(C?'':'on')+'" data-c="">全部</button>'+g.cats.filter(c=>cnt(c.id)).map(c=>'<button class="chip '+(C===c.id?'on':'')+'" data-c="'+c.id+'">'+esc(c.name)+'<small>'+cnt(c.id)+'</small></button>').join('')+'</div>'}
+    const L=TB.filter(b=>(!q||b.title.toLowerCase().includes(q))&&(G==='all'||(groupOf(b.cat)||{}).id===G)&&(!C||b.cat===C));
+    h+=L.length?'<div class="grid">'+L.slice(0,240).map(card).join('')+'</div>'+(L.length>240?'<div class="empty">還有 '+(L.length-240)+' '+(isC?'卷':'本')+'，請搜尋或選類別</div>':''):'<div class="empty">沒有找到</div>';
   }
   $('app').innerHTML=h;
   document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{G=b.dataset.g;C='';render()});
@@ -159,7 +164,7 @@ function render(){
   lazyCovers();
 }
 function cover(b,small){const g=groupOf(b.cat),i=Math.max(0,CAT.groups.indexOf(g)),p=pct(b.id);
-  return '<div class="cv" data-cv="'+b.id+'" style="background:linear-gradient(135deg,'+COL[i%COL.length]+',#2a2018)">'+(g?g.icon:'📄')+(small?'':(b.type==='img'?'<span class="badge">漫畫</span>':b.q==='text'?'<span class="badge">可文字</span>':''))+(p?'<div class="pbar"><i style="width:'+p+'%"></i></div>':'')+'</div>'}
+  return '<div class="cv" data-cv="'+b.id+'" style="background:linear-gradient(135deg,'+COL[i%COL.length]+',#2a2018)">'+(g?gIcon(g):'📄')+(small?'':(b.type==='img'?'<span class="badge">漫畫</span>':b.q==='text'?'<span class="badge">可文字</span>':''))+(p?'<div class="pbar"><i style="width:'+p+'%"></i></div>':'')+'</div>'}
 function card(b){const p=PROG[b.id];return '<div class="book" data-id="'+b.id+'">'+cover(b)+'<b>'+esc(b.title)+'</b><small>'+(p?(p.done?'✅ 讀完':'讀到 '+pct(b.id)+'%'):esc(catName(b.cat)))+'</small></div>'}
 /* 封面：捲到才載入，存在本機下次秒開 */
 const CVC={};try{localStorage.removeItem('acc_lib_cv')}catch(e){}
