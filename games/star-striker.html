@@ -13,7 +13,7 @@ GE.run({id:'starstriker',title:'STAR STRIKER',w:160,h:240,chars:SHIPS.map(s=>s.n
    if(lv%5===0)boss={x:60,y:-40,hp:40+lv*8,max:40+lv*8,t:0}},
  step(G,dt,k,p){const sh=SHIPS[G.char],sp=90*sh.s;
    stars.forEach(s=>{s.y+=s.v*dt;if(s.y>240){s.y=0;s.x=Math.random()*160}});
-   if(k.L)pl.x-=sp*dt;if(k.R)pl.x+=sp*dt;if(k.U)pl.y-=sp*dt;if(k.D)pl.y+=sp*dt;pl.x=Math.max(0,Math.min(151,pl.x));pl.y=Math.max(30,Math.min(230,pl.y));
+   pl.x+=G.ax*sp*dt;pl.y+=G.ay*sp*dt;pl.x=Math.max(0,Math.min(151,pl.x));pl.y=Math.max(30,Math.min(230,pl.y));
    cool-=dt;if(k.A&&cool<=0){cool=sh.f;const pw=Math.min(3,1+Math.floor(G.level/4));shots.push({x:pl.x+4,y:pl.y});if(pw>1){shots.push({x:pl.x,y:pl.y+3,vx:-25},{x:pl.x+8,y:pl.y+3,vx:25})}G.sfx.shoot()}
    if(p.B&&bomb>0){bomb--;G.sfx.boom();ens.forEach(e=>{burst(e.x+3,e.y+2,'#ff0',8);G.add(50)});ens=[];ebs=[];if(boss)boss.hp-=15}
    shots.forEach(s=>{s.y-=220*dt;s.x+=(s.vx||0)*dt});shots=shots.filter(s=>s.y>-5);

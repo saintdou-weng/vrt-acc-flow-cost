@@ -14,7 +14,7 @@ let touchX=null;addEventListener('touchmove',e=>{const r=document.getElementById
 addEventListener('mousemove',e=>{const r=document.getElementById('cv').getBoundingClientRect();if(e.clientY>r.top&&e.clientY<r.bottom)touchX=(e.clientX-r.left)/r.width*160});
 GE.run({id:'brickblast',title:'BRICK BLAST',w:160,h:240,chars:PADS.map(p=>p.n),lives:3,
  start(G,lv){layout(lv);pad={x:64,w:32};balls=[{x:80,y:214,vx:0,vy:0}];held=1;drops=[];parts=[];wide=0;slowT=0},
- step(G,dt,k,p){const sp=140;if(k.L)pad.x-=sp*dt;if(k.R)pad.x+=sp*dt;if(touchX!=null){pad.x+=(touchX-pad.w/2-pad.x)*Math.min(1,dt*18)}
+ step(G,dt,k,p){const sp=160;pad.x+=G.ax*sp*dt;if(touchX!=null){pad.x+=(touchX-pad.w/2-pad.x)*Math.min(1,dt*18)}
    pad.w=wide>0?48:32;wide-=dt;slowT-=dt;pad.x=Math.max(0,Math.min(160-pad.w,pad.x));
    if(held){balls[0].x=pad.x+pad.w/2;balls[0].y=214;if(p.A||p.U||(touchX!=null&&p.B===undefined&&Math.random()<0)){}if(p.A||p.U){held=0;const v=95+G.level*3;balls[0].vx=v*.6;balls[0].vy=-v;G.sfx.jump()}}
    const f=slowT>0?.6:1;
