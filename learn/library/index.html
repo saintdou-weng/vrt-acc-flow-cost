@@ -93,6 +93,7 @@ main{max-width:1100px;margin:auto;padding:10px 12px 70px}
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="s2t.js"></script>
 <script>
 const GAS='https://script.google.com/macros/s/AKfycbzojXP0ixSsJqO1Ri2lfkdazTF-9XxoDqRYI0B4OEThkvjc95zacRflYtuArOd8ewHp/exec';
 const INLINE_MAX=40*1024*1024;
@@ -124,7 +125,7 @@ async function start(){
     if(!j.ok){if(j.error==='PASS'){store('acc_lib_k','');return gate('密碼不對')}throw j.error}
     store('acc_lib_k',K);
     if(!j.catalog){$('app').innerHTML='<div class="empty">書庫目錄還在整理中，完成後就會出現。</div>';return}
-    CAT=j.catalog;render();
+    CAT=j.catalog;CAT.books.forEach(b=>b.title=toTrad(b.title));render();
     api('lib=prog').then(p=>{if(p.ok){for(const id in p.prog){const a=PROG[id],b=p.prog[id];if(!a||b.ts>a.ts)PROG[id]=b}store('acc_lib_prog',PROG);if(!$('reader').classList.contains('on'))render()}}).catch(()=>{});
   }catch(e){$('app').innerHTML='<div class="empty">讀取失敗：'+esc(e)+'</div>'}}
 const BY={};function book(id){if(CAT&&!Object.keys(BY).length)CAT.books.forEach(b=>BY[b.id]=b);return BY[id]}
@@ -222,7 +223,7 @@ async function draw(dir){
 }
 async function pageText(n){if(TXT[n])return TXT[n];const tc=await (await PDF.getPage(n)).getTextContent();let s='',lastY=null;
   tc.items.forEach(it=>{const y=it.transform[5];if(lastY!==null&&Math.abs(y-lastY)>2)s+=(Math.abs(y-lastY)>18?'\n\n':'\n');s+=it.str;lastY=y});
-  s=s.replace(/[\u2E80-\u2FDF]/g,c=>c.normalize('NFKC')).replace(/([^\n。！？」.!?])\n(?!\n)/g,'$1');return TXT[n]=s.trim()}
+  s=toTrad(s.replace(/[\u2E80-\u2FDF]/g,c=>c.normalize('NFKC'))).replace(/([^\n。！？」.!?])\n(?!\n)/g,'$1');return TXT[n]=s.trim()}
 function imgSrc(i){if(!CACHE[i]){const k='img:'+IMGS[i].id;
   CACHE[i]=cget(k).then(v=>v||api('lib=img&id='+IMGS[i].id).then(j=>{const d='data:'+j.type+';base64,'+j.b64;cput(k,d,d.length);return d}))}return CACHE[i]}
 let saveT=null;
