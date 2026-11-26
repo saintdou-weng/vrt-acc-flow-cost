@@ -94,6 +94,14 @@ main{max-width:1100px;margin:auto;padding:10px 12px 70px}
 #reader[data-th="eink"] #page canvas,#reader[data-th="eink"] #page img{filter:grayscale(1) contrast(1.35)}
 #reader.sharp[data-th="day"] #page canvas{filter:contrast(1.25)}
 #reader.sharp[data-th="paper"] #page canvas{filter:sepia(.35) contrast(1.3)}
+/* 2026-11-26 Paul：字太小 → A＋ 可以放大超過螢幕寬（左右上下拖著看）；🖋 加深讓淡淡的字變黑 */
+#reader.zoom #page canvas,#reader.zoom #page img{max-width:none}#reader.zoom #stage{justify-content:flex-start}#reader.zoom #page{margin:0 auto}
+#reader.dk1 #page canvas,#reader.dk1 #page img{filter:grayscale(.2) contrast(1.7) brightness(.93)!important}
+#reader.dk2 #page canvas,#reader.dk2 #page img{filter:grayscale(.4) contrast(2.4) brightness(.86)!important}
+#reader[data-th="night"].dk1 #page canvas,#reader[data-th="night"].dk2 #page canvas{filter:invert(1) hue-rotate(180deg) contrast(1.6)!important}
+#rJump{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:20;background:var(--rbar);color:inherit;padding:16px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);text-align:center}
+#rJump.on{display:block}#rJump input{font:inherit;font-size:1.4em;width:6em;text-align:center;padding:6px;border-radius:8px;border:1px solid rgba(128,128,128,.5)}#rJump button{margin:8px 4px 0;font:inherit;padding:6px 14px;border-radius:8px;border:1px solid rgba(128,128,128,.5);background:var(--acc);color:#fff}
+.bk-fail{position:absolute;top:4px;right:4px;background:#b91c1c;color:#fff;border-radius:6px;padding:1px 5px;font-size:.7em}.book{position:relative}
 .msg{padding:40px;text-align:center;opacity:.8}
 .sum{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center}
 .sum.on{display:flex}
@@ -106,7 +114,8 @@ main{max-width:1100px;margin:auto;padding:10px 12px 70px}
 <main id="app"><div class="empty">載入中…</div></main>
 
 <div id="reader" data-th="paper">
-  <div class="rbar"><button id="rClose">✕</button><span class="t" id="rTitle"></span><span id="rPage"></span><a id="rDrive" target="_blank" rel="noopener">雲端</a></div>
+  <div class="rbar"><button id="rClose">✕</button><span class="t" id="rTitle"></span><span id="rPage" title="點一下跳到第幾頁" style="cursor:pointer;text-decoration:underline dotted">—</span><button id="rJumpBtn">🔢 跳頁</button><a id="rDrive" target="_blank" rel="noopener">雲端</a><button id="rDel" title="從書庫移除">🗑</button></div>
+  <div id="rJump"><div>跳到第幾頁？</div><input id="rJumpN" type="number" inputmode="numeric" min="1"><div><button id="rJumpGo">前往</button><button id="rJumpX" style="background:transparent;color:inherit">取消</button></div></div>
   <div id="stage"><div id="page"></div></div>
   <div class="sum" id="sumBox"><div class="box" id="sumBody"></div></div>
   <div class="rbar bottom">
@@ -116,7 +125,7 @@ main{max-width:1100px;margin:auto;padding:10px 12px 70px}
       <div class="optrow"><span>翻頁</span><button data-fl="r2l">⬅️ 左翻</button><button data-fl="l2r">➡️ 右翻（日漫）</button><button data-fl="v">⬇️ 上下捲</button></div>
       <div class="optrow"><span>版面</span><button data-ly="w">單頁</button><button data-ly="fit">整頁</button><button data-ly="dual">雙頁</button></div>
       <div class="optrow"><span>底色</span><button data-th="day">☀️ 白</button><button data-th="paper">📜 護眼</button><button data-th="eink">📖 電子紙</button><button data-th="night">🌙 夜間</button></div>
-      <div class="optrow"><button id="rMode">文字模式</button><button id="rSharp">✨ 清晰</button><button id="rMinus">A−</button><button id="rPlus">A＋</button></div>
+      <div class="optrow"><button id="rMode">文字模式</button><button id="rSharp">✨ 清晰</button><button id="rMinus">A−</button><button id="rPlus">A＋</button><button id="rDark">🖋 加深</button></div>
     </div>
   </div>
 </div>
@@ -133,7 +142,8 @@ function load(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.par
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 let K=load('acc_lib_k',''),CAT=null,TAB='shelf',G='all',C='',Q='';
 let PROG=load('acc_lib_prog',{});            // 每本的進度 {id:{p,n,ts,done}}，同步到雲端（手機、電腦共用）
-let SET=Object.assign({th:'paper',sharp:true,fs:20,mode:'page',flip:'r2l',ly:'w'},load('acc_lib_set',{}));
+let SET=Object.assign({th:'paper',sharp:true,fs:20,mode:'page',flip:'r2l',ly:'w',dark:0},load('acc_lib_set',{}));
+let HIDDEN=new Set(load('acc_lib_hidden',[])),FAIL=new Set(load('acc_lib_fail',[]));
 let SER='';                                  // 正在看的系列
 /* ===== 本機快取（看過的書不重複下載）：上限 600MB，滿了先清最久沒讀的 ===== */
 const CACHE_MAX=600*1024*1024;
@@ -155,10 +165,16 @@ async function start(){
     if(!j.ok){if(j.error==='PASS'){store('acc_lib_k','');return gate('密碼不對')}throw j.error}
     store('acc_lib_k',K);
     if(!j.catalog){$('app').innerHTML='<div class="empty">書庫目錄還在整理中，完成後就會出現。</div>';return}
-    CAT=j.catalog;CAT.books.forEach(b=>{b.title=toTrad(b.title);if(b.sr)b.sr=toTrad(b.sr)});SERIES=null;render();
-    api('lib=prog').then(p=>{if(p.ok){for(const id in p.prog){const a=PROG[id],b=p.prog[id];if(!a||b.ts>a.ts)PROG[id]=b}store('acc_lib_prog',PROG);if(!$('reader').classList.contains('on'))render()}}).catch(()=>{});
+    CAT=j.catalog;CAT.books.forEach(b=>{b.title=toTrad(b.title);if(b.sr)b.sr=toTrad(b.sr)});CAT.all=CAT.books;CAT.books=CAT.all.filter(b=>!HIDDEN.has(b.id));SERIES=null;render();
+    api('lib=prog').then(p=>{if(p.ok){for(const id in p.prog){const a=PROG[id],b=p.prog[id];if(!a||b.ts>a.ts)PROG[id]=b}store('acc_lib_prog',PROG);let ch=false;for(const id in PROG){const h=+PROG[id].n===-1;if(h&&!HIDDEN.has(id)){HIDDEN.add(id);ch=true}else if(!h&&HIDDEN.has(id)&&PROG[id].ts>(HID_TS[id]||'')){HIDDEN.delete(id);ch=true}}if(ch){store('acc_lib_hidden',[...HIDDEN]);CAT.books=CAT.all.filter(b=>!HIDDEN.has(b.id));BYreset();SERIES=null}if(!$('reader').classList.contains('on'))render()}}).catch(()=>{});
   }catch(e){$('app').innerHTML='<div class="empty">讀取失敗：'+esc(e)+'</div>'}}
-const BY={};function book(id){if(CAT&&!Object.keys(BY).length)CAT.books.forEach(b=>BY[b.id]=b);return BY[id]}
+const BY={};function book(id){if(CAT&&!Object.keys(BY).length)(CAT.all||CAT.books).forEach(b=>BY[b.id]=b);return BY[id]}
+function BYreset(){for(const k in BY)delete BY[k]}
+const HID_TS=load('acc_lib_hid_ts',{});
+/* 2026-11-26 Paul：打不開的書可以刪掉 → 從書庫移除（雲端檔案不動；手機、電腦同步；「閱讀紀錄」最下面可以還原） */
+function hideBook(id,on){const b=book(id);if(!b)return;const ts=new Date().toISOString();HID_TS[id]=ts;store('acc_lib_hid_ts',HID_TS);
+  if(on){HIDDEN.add(id);PROG[id]={p:0,n:-1,ts,done:false};api('lib=progset&id='+id+'&p=0&n=-1').catch(()=>{})}else{HIDDEN.delete(id);PROG[id]={p:1,n:0,ts,done:false};api('lib=progset&id='+id+'&p=1&n=0').catch(()=>{})}
+  store('acc_lib_hidden',[...HIDDEN]);store('acc_lib_prog',PROG);CAT.books=CAT.all.filter(x=>!HIDDEN.has(x.id));SERIES=null}
 const ICON={biz:'💼',fin:'💰',self:'🌱',lit:'📖',hum:'🏛️',sci:'🔬',life:'☕',misc:'📰',comic:'🎨'};
 function gIcon(g){return ICON[g.id]||g.icon||'📚'}
 function catName(id){for(const g of CAT.groups)for(const c of g.cats)if(c.id===id)return c.name;return id}
@@ -169,7 +185,7 @@ function ago(ts){if(!ts)return'';const d=(Date.now()-new Date(ts))/1000;return d
 function render(){
   document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===TAB));
   const q=Q.toLowerCase();let h='';
-  const reading=Object.keys(PROG).filter(id=>book(id)).sort((a,b)=>(PROG[b].ts||'').localeCompare(PROG[a].ts||''));
+  const reading=Object.keys(PROG).filter(id=>book(id)&&!HIDDEN.has(id)&&+PROG[id].n!==-1).sort((a,b)=>(PROG[b].ts||'').localeCompare(PROG[a].ts||''));
   if(TAB==='shelf'&&!q){
     const now=reading.filter(id=>!PROG[id].done),done=reading.filter(id=>PROG[id].done);
     h+='<div class="stat">書架上 '+now.length+' 本在讀・'+done.length+' 本讀完・書庫共 '+CAT.books.length+' 本</div>';
@@ -177,6 +193,7 @@ function render(){
     if(done.length)h+='<b>✅ 讀完了</b><div class="grid" style="margin-top:8px">'+done.map(id=>card(book(id))).join('')+'</div>';
   }else if(TAB==='hist'&&!q){
     h+=reading.length?reading.slice(0,100).map(id=>{const b=book(id),p=PROG[id];return '<div class="hist" data-id="'+id+'">'+cover(b,true)+'<div class="info"><b>'+esc(b.title)+'</b><small>'+esc(catName(b.cat))+'・第 '+p.p+' / '+(p.n||'?')+' 頁・'+ago(p.ts)+(p.done?'・✅ 讀完':'')+'</small><div class="bar"><i style="width:'+pct(id)+'%"></i></div></div></div>'}).join(''):'<div class="empty">還沒有閱讀紀錄</div>';
+    if(HIDDEN.size)h+='<div class="stat" style="margin-top:18px">🗑 已從書庫移除 '+HIDDEN.size+' 本（雲端檔案還在）</div>'+[...HIDDEN].map(id=>{const b=book(id);return b?'<div class="hist"><div class="info"><b>'+esc(b.title)+'</b><small><button onclick="hideBook(\''+id+'\',false);render()" style="font:inherit;border-radius:8px;padding:2px 10px">↩ 還原</button></small></div></div>':''}).join('');
   }else{
     const isC=TAB==='comic',GS=TAB==='lib'||isC?CAT.groups.filter(g=>(g.id==='comic')===isC):CAT.groups,inT=b=>GS.includes(groupOf(b.cat));
     if(isC)G='comic';else if(G==='comic')G='all';
@@ -224,7 +241,7 @@ function serCard(k){const L=SERIES[k],b=L[0],done=L.filter(x=>PROG[x.id]&&PROG[x
   const cv=cover(b).replace('class="cv"','class="cv stack"').replace(/<span class="badge">[^<]*<\/span>/,'<span class="vols">'+L.length+(b.type==='img'?' 卷':' 冊')+'</span>');
   return '<div class="book" data-ser="'+esc(k)+'">'+cv+'<b>'+esc(serName(k))+'</b><small>'+(last?'讀到第 '+(L.indexOf(last)+1)+' '+(b.type==='img'?'卷':'冊'):'共 '+L.length+(b.type==='img'?' 卷':' 冊'))+(done?'・✅ '+done:'')+'</small></div>'}
 function nextInSeries(b){const L=SERIES&&SERIES[b._s];if(!L||L.length<2)return null;const i=L.indexOf(b);return i>=0&&i<L.length-1?L[i+1]:null}
-function card(b){const p=PROG[b.id];return '<div class="book" data-id="'+b.id+'">'+cover(b)+'<b>'+esc(b.title)+'</b><small>'+(p?(p.done?'✅ 讀完':'讀到 '+pct(b.id)+'%'):esc(catName(b.cat)))+'</small></div>'}
+function card(b){const p=PROG[b.id];return '<div class="book" data-id="'+b.id+'">'+(FAIL.has(b.id)?'<span class="bk-fail">打不開</span>':'')+cover(b)+'<b>'+esc(b.title)+'</b><small>'+(p?(p.done?'✅ 讀完':'讀到 '+pct(b.id)+'%'):esc(catName(b.cat)))+'</small></div>'}
 /* 封面：捲到才載入，存在本機下次秒開 */
 const CVC={};try{localStorage.removeItem('acc_lib_cv')}catch(e){}
 const io=('IntersectionObserver' in window)?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){io.unobserve(e.target);putCover(e.target)}}),{rootMargin:'200px'}):null;
@@ -243,7 +260,7 @@ $('q').oninput=e=>{Q=e.target.value.trim();if(Q&&TAB!=='lib')TAB='lib';if(CAT)re
 let B=null,PDF=null,IMGS=null,CACHE={},PG=1,N=1,TXT={},busy=false;
 function applySet(){const r=$('reader');r.dataset.th=SET.th;r.classList.toggle('sharp',SET.sharp);
   document.querySelectorAll('#reader button[data-th]').forEach(b=>b.classList.toggle('on',b.dataset.th===SET.th));
-  $('rSharp').classList.toggle('on',SET.sharp);document.querySelectorAll('[data-fl]').forEach(b=>b.classList.toggle('on',b.dataset.fl===SET.flip));document.querySelectorAll('[data-ly]').forEach(b=>b.classList.toggle('on',b.dataset.ly===SET.ly));r.classList.toggle('vmode',SET.flip==='v');$('rMode').classList.toggle('on',SET.mode==='text');store('acc_lib_set',SET)}
+  $('rSharp').classList.toggle('on',SET.sharp);r.classList.toggle('dk1',SET.dark===1);r.classList.toggle('dk2',SET.dark===2);r.classList.toggle('zoom',SET.fs>20&&SET.mode!=='text');$('rDark').classList.toggle('on',!!SET.dark);$('rDark').textContent=['🖋 加深','🖋 加深 1','🖋 加深 2'][SET.dark||0];document.querySelectorAll('[data-fl]').forEach(b=>b.classList.toggle('on',b.dataset.fl===SET.flip));document.querySelectorAll('[data-ly]').forEach(b=>b.classList.toggle('on',b.dataset.ly===SET.ly));r.classList.toggle('vmode',SET.flip==='v');$('rMode').classList.toggle('on',SET.mode==='text');store('acc_lib_set',SET)}
 async function openBook(id){
   B=book(id);if(!B)return;PDF=null;IMGS=null;CACHE={};TXT={};$('stage').onscroll=null;if(VIO)VIO.disconnect();document.querySelectorAll('.leaf,.nextVol').forEach(x=>x.remove());
   $('reader').classList.add('on');$('reader').classList.remove('hide');$('rTitle').textContent=B.title;
@@ -251,6 +268,7 @@ async function openBook(id){
   applySet();$('rMode').style.display=B.type==='pdf'?'':'none';
   PG=(PROG[id]&&PROG[id].p)||1;$('page').className='';$('page').innerHTML='<div class="msg">開書中…</div>';
   try{
+    if(FAIL.has(id)){FAIL.delete(id);store('acc_lib_fail',[...FAIL])}
     if(B.type==='img'){let L=await cget('imgs:'+id);if(!L){const j=await api('lib=imgs&id='+id);if(!j.ok)throw j.error;L=j.images;cput('imgs:'+id,L,JSON.stringify(L).length)}IMGS=L;N=IMGS.length}
     else if(B.type==='pdf'&&B.size<=INLINE_MAX&&window.pdfjsLib){
       let u8=await cget('pdf2:'+id);
@@ -264,14 +282,14 @@ async function openBook(id){
       PDF=await pdfjsLib.getDocument({data:u8,cMapUrl:'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',cMapPacked:true,standardFontDataUrl:'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/standard_fonts/'}).promise;N=PDF.numPages}
     else{$('page').innerHTML='<iframe src="https://drive.google.com/file/d/'+id+'/preview" style="width:100vw;height:78vh;border:0;background:#fff"></iframe>';N=0;$('rPage').textContent='（大檔用雲端預覽）';saveProg();return}
     PG=Math.min(Math.max(1,PG),N);$('rSlider').max=N;await draw(0);clearTimeout(window._hb);window._hb=setTimeout(()=>{if(!$('rOpts').classList.contains('on'))toggleBars(true)},2500);
-  }catch(e){$('page').innerHTML='<div class="msg">開不起來：'+esc(e)+'<br><a href="'+$('rDrive').href+'" target="_blank">改用 Google 雲端開啟（要登入你的 Google 帳號）</a></div>'}
+  }catch(e){FAIL.add(id);store('acc_lib_fail',[...FAIL]);$('page').innerHTML='<div class="msg">這本開不起來：'+esc(e)+'<br><small>雲端也打不開的話，通常是檔案本身壞了或沒傳完整。</small><br><br><button onclick="document.getElementById(\'rDel\').click()" style="font:inherit;padding:8px 16px;border-radius:10px;border:0;background:#b91c1c;color:#fff">🗑 從書庫移除</button>　<a href="'+$('rDrive').href+'" target="_blank">改用 Google 雲端開啟</a></div>'}
 }
 function dualOn(){return SET.ly==='dual'&&SET.flip!=='v'&&!(SET.mode==='text'&&PDF)}
 async function renderOne(el,n,W,H){                                 // 在 W×H 的空間畫第 n 頁
-  if(IMGS){const src=await imgSrc(n-1);const st=SET.ly==='w'&&!H?'width:'+Math.round(SET.fs/20*100)+'%;max-width:100%':'max-width:'+W+'px;max-height:'+H+'px;width:auto;height:auto';
+  if(IMGS){const src=await imgSrc(n-1);const z=SET.fs/20,st=SET.ly==='w'&&!H?'width:'+Math.round(z*100)+'%':(z>1?'width:'+Math.round(W*z)+'px;height:auto':'max-width:'+W+'px;max-height:'+H+'px;width:auto;height:auto');
     el.innerHTML='<img src="'+src+'" style="'+st+'">';return}
   const page=await PDF.getPage(n),v1=page.getViewport({scale:1});
-  let sc=W/v1.width;if(H)sc=Math.min(sc,H/v1.height);if(SET.ly==='w'&&!H)sc*=SET.fs/20;
+  let sc=W/v1.width;if(H)sc=Math.min(sc,H/v1.height);if((SET.ly==='w'&&!H)||(H&&SET.fs>20))sc*=SET.fs/20;
   const q=Math.min(3,(window.devicePixelRatio||1)*(SET.sharp?2:1.25));
   const vp=page.getViewport({scale:sc*q}),c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;c.style.width=(vp.width/q)+'px';
   await page.render({canvasContext:c.getContext('2d',{alpha:false}),viewport:vp}).promise;el.innerHTML='';el.appendChild(c)}
@@ -361,7 +379,17 @@ document.querySelectorAll('#reader button[data-th]').forEach(b=>b.onclick=()=>{S
 $('rOpts').addEventListener('click',e=>e.stopPropagation());
 $('rSharp').onclick=()=>{SET.sharp=!SET.sharp;applySet();draw(0)};
 $('rMode').onclick=()=>{SET.mode=SET.mode==='text'?'page':'text';applySet();draw(0)};
-$('rPlus').onclick=()=>{SET.fs=Math.min(34,SET.fs+2);applySet();draw(0)};$('rMinus').onclick=()=>{SET.fs=Math.max(14,SET.fs-2);applySet();draw(0)};
+$('rPlus').onclick=()=>{SET.fs=Math.min(SET.mode==='text'?34:60,SET.fs+(SET.mode==='text'?2:4));applySet();redrawZoom()};$('rMinus').onclick=()=>{SET.fs=Math.max(SET.mode==='text'?14:20,SET.fs-(SET.mode==='text'?2:4));applySet();redrawZoom()};
+function redrawZoom(){if(SET.flip==='v'){$('page').querySelectorAll('.vp').forEach(el=>{el.classList.remove('ok');el.innerHTML='第 '+el.dataset.n+' 頁';el.style.minHeight=''});drawScroll()}else draw(0);toast2((SET.mode==='text'?'字級 ':'放大 ')+Math.round(SET.fs/20*100)+'%')}
+function toast2(t){let el=document.getElementById('zt');if(!el){el=document.createElement('div');el.id='zt';el.style.cssText='position:fixed;left:50%;top:60px;transform:translateX(-50%);z-index:30;background:rgba(0,0,0,.75);color:#fff;padding:6px 14px;border-radius:20px;font-weight:700';document.body.appendChild(el)}el.textContent=t;el.style.display='';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',1200)}
+$('rDark').onclick=()=>{SET.dark=((SET.dark||0)+1)%3;applySet()};
+/* 🔢 跳頁：不用一頁一頁翻（拉下面的長條也可以） */
+function openJump(){if(!N)return;$('rJumpN').max=N;$('rJumpN').value=PG;$('rJumpN').placeholder='1 – '+N;$('rJump').classList.add('on');setTimeout(()=>{$('rJumpN').focus();$('rJumpN').select()},50)}
+$('rJumpBtn').onclick=e=>{e.stopPropagation();openJump()};$('rPage').onclick=e=>{e.stopPropagation();openJump()};
+$('rJump').addEventListener('click',e=>e.stopPropagation());$('rJumpX').onclick=()=>$('rJump').classList.remove('on');
+$('rJumpGo').onclick=()=>{const n=Math.round(+$('rJumpN').value);$('rJump').classList.remove('on');if(!n||!N)return;PG=Math.min(Math.max(1,n),N);if(SET.flip==='v')scrollToPage(PG);else draw(1)};
+$('rJumpN').addEventListener('keydown',e=>{if(e.key==='Enter')$('rJumpGo').click()});
+$('rDel').onclick=e=>{e.stopPropagation();if(!B)return;if(!confirm('把「'+B.title+'」從書庫移除？\n（雲端檔案不會刪掉，之後可以在「閱讀紀錄」最下面還原）'))return;const id=B.id;$('rClose').click();hideBook(id,true);render()};
 /* 📝 書的精華 */
 $('rOptBtn').onclick=e=>{e.stopPropagation();$('rOpts').classList.toggle('on')};
 $('rSum').onclick=async()=>{if(!B)return;const box=$('sumBox'),body=$('sumBody');box.classList.add('on');
