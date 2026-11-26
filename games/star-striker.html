@@ -1,0 +1,42 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Star Striker 星際突擊</title><link rel="stylesheet" href="game.css"></head><body><canvas id="cv"></canvas>
+<script src="engine.js"></script><script>
+/* 星際突擊（縱向射擊）：每關打完敵機隊伍過關，第 5、10…關有魔王；◀▶▲▼ 移動、A 射擊（按住連發）、B 炸彈（每關 1 顆） */
+const SHIPS=[{n:'FALCON',c:['','#e8eef7','#3d8bff','#ff4d4d','#ffd23f'],s:1.0,f:.16},{n:'HORNET',c:['','#f5f0c8','#2fbf71','#ff9a3d','#fff'],s:1.25,f:.2},{n:'TITAN',c:['','#d8d8e8','#a050ff','#ff3d7f','#7cf'],s:.85,f:.12}];
+const SHIP=['....1....','...121...','...121...','..12221..','.1122211.','112232211','1.14.41.1','...4.4...'];
+const EN=[['.a.a.','aaaaa','abbba','.a.a.'],['..a..','.aaa.','aabaa','a.a.a'],['a...a','.aaa.','abbba','.a.a.']];
+let pl,shots,ens,ebs,stars,parts,cool,bomb,boss,spawned,toSpawn,inv;
+function burst(x,y,c,n){for(let i=0;i<n;i++)parts.push({x,y,vx:(Math.random()-.5)*80,vy:(Math.random()-.5)*80,t:.5,c})}
+GE.run({id:'starstriker',title:'STAR STRIKER',w:160,h:240,chars:SHIPS.map(s=>s.n),lives:3,
+ start(G,lv){pl={x:76,y:210};shots=[];ens=[];ebs=[];parts=[];cool=0;bomb=1;inv=2;spawned=0;toSpawn=12+lv*3;boss=null;
+   stars=stars||Array.from({length:50},()=>({x:Math.random()*160,y:Math.random()*240,v:20+Math.random()*60}));
+   if(lv%5===0)boss={x:60,y:-40,hp:40+lv*8,max:40+lv*8,t:0}},
+ step(G,dt,k,p){const sh=SHIPS[G.char],sp=90*sh.s;
+   stars.forEach(s=>{s.y+=s.v*dt;if(s.y>240){s.y=0;s.x=Math.random()*160}});
+   if(k.L)pl.x-=sp*dt;if(k.R)pl.x+=sp*dt;if(k.U)pl.y-=sp*dt;if(k.D)pl.y+=sp*dt;pl.x=Math.max(0,Math.min(151,pl.x));pl.y=Math.max(30,Math.min(230,pl.y));
+   cool-=dt;if(k.A&&cool<=0){cool=sh.f;const pw=Math.min(3,1+Math.floor(G.level/4));shots.push({x:pl.x+4,y:pl.y});if(pw>1){shots.push({x:pl.x,y:pl.y+3,vx:-25},{x:pl.x+8,y:pl.y+3,vx:25})}G.sfx.shoot()}
+   if(p.B&&bomb>0){bomb--;G.sfx.boom();ens.forEach(e=>{burst(e.x+3,e.y+2,'#ff0',8);G.add(50)});ens=[];ebs=[];if(boss)boss.hp-=15}
+   shots.forEach(s=>{s.y-=220*dt;s.x+=(s.vx||0)*dt});shots=shots.filter(s=>s.y>-5);
+   if(!boss&&spawned<toSpawn&&Math.random()<dt*(1.2+G.level*.12)){spawned++;const ty=G.rnd(0,2);ens.push({x:G.rnd(5,145),y:-6,ty,t:0,hp:1+Math.floor(G.level/6)+(ty===2?1:0),ox:0})}
+   ens.forEach(e=>{e.t+=dt;e.y+=(28+G.level*1.5)*dt;e.x+=Math.sin(e.t*2+e.ty)*(e.ty===1?50:20)*dt;
+     if(Math.random()<dt*(.25+G.level*.03))ebs.push({x:e.x+2,y:e.y+4,vx:(pl.x-e.x)*.4,vy:70+G.level*2})});
+   if(boss){boss.t+=dt;boss.y=Math.min(20,boss.y+20*dt);boss.x=60+Math.sin(boss.t)*50;if(Math.random()<dt*(2+G.level*.1))for(let a=-1;a<=1;a++)ebs.push({x:boss.x+20,y:boss.y+18,vx:a*40,vy:90})}
+   ebs.forEach(b=>{b.x+=b.vx*dt;b.y+=b.vy*dt});ebs=ebs.filter(b=>b.y<245&&b.x>-5&&b.x<165);
+   shots.forEach(s=>{ens.forEach(e=>{if(!s.dead&&Math.abs(s.x-e.x-2)<5&&Math.abs(s.y-e.y-2)<5){s.dead=1;e.hp--;if(e.hp<=0){e.dead=1;burst(e.x+2,e.y+2,'#fa3',10);G.add(100);G.sfx.hit()}}});
+     if(boss&&!s.dead&&s.x>boss.x&&s.x<boss.x+40&&s.y<boss.y+20&&s.y>boss.y){s.dead=1;boss.hp--;if(boss.hp<=0){burst(boss.x+20,boss.y+10,'#f55',60);G.add(5000);G.sfx.boom();boss=null;spawned=toSpawn}}});
+   shots=shots.filter(s=>!s.dead);ens=ens.filter(e=>!e.dead&&e.y<245);
+   inv-=dt;if(inv<=0&&(ebs.some(b=>Math.abs(b.x-pl.x-4)<4&&Math.abs(b.y-pl.y-4)<4)||ens.some(e=>Math.abs(e.x-pl.x)<7&&Math.abs(e.y-pl.y)<7))){burst(pl.x+4,pl.y+4,'#7cf',30);G.sfx.boom();G.lives--;inv=2;ebs=[];if(G.lives<=0){G.lose();return}}
+   parts.forEach(q=>{q.x+=q.vx*dt;q.y+=q.vy*dt;q.t-=dt});parts=parts.filter(q=>q.t>0);
+   if(!boss&&spawned>=toSpawn&&!ens.length)G.win()},
+ draw(G){const g=G.g;g.fillStyle='#02030a';g.fillRect(0,0,160,240);stars.forEach(s=>{g.fillStyle=s.v>55?'#fff':'#557';g.fillRect(s.x,s.y,1,s.v>55?2:1)});
+   const cols=[['#ff4d6d','#ffd23f'],['#4dff7a','#29d3ff'],['#c36bff','#ff9a3d']];
+   ens.forEach(e=>G.sprite(g,EN[e.ty],{a:cols[e.ty][0],b:cols[e.ty][1]},e.x,e.y,1.4));
+   if(boss){g.fillStyle='#5a1a3a';g.fillRect(boss.x,boss.y,40,18);g.fillStyle='#c33';g.fillRect(boss.x+4,boss.y+4,32,6);g.fillStyle='#ff0';g.fillRect(boss.x+10,boss.y+12,4,4);g.fillRect(boss.x+26,boss.y+12,4,4);
+     g.fillStyle='#300';g.fillRect(20,14,120,3);g.fillStyle='#f33';g.fillRect(20,14,120*boss.hp/boss.max,3)}
+   g.fillStyle='#ff5';shots.forEach(s=>g.fillRect(s.x,s.y,1,4));g.fillStyle='#f6f';ebs.forEach(b=>g.fillRect(b.x,b.y,2,2));
+   parts.forEach(q=>{g.fillStyle=q.c;g.fillRect(q.x,q.y,1,1)});
+   if(inv<=0||Math.floor(inv*10)%2){const c=SHIPS[G.char].c;G.sprite(g,SHIP,{1:c[1],2:c[2],3:c[3],4:c[4]},pl.x,pl.y,1)}
+   for(let i=0;i<G.lives;i++){g.fillStyle='#7cf';g.fillRect(2+i*6,232,4,4)}G.text(g,'B'+bomb,150,232,'#fa5',1,'r')},
+ titleArt(G,f){G.sprite(G.g,SHIP,{1:'#e8eef7',2:'#3d8bff',3:'#ff4d4d',4:'#ffd23f'},70,100+Math.sin(f*3)*4,2)}
+});
+</script></body></html>

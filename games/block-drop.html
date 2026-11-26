@@ -1,0 +1,36 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Block Drop 落下方塊</title><link rel="stylesheet" href="game.css"></head><body><canvas id="cv"></canvas>
+<script src="engine.js"></script><script>
+/* 落下方塊（俄羅斯方塊類）：每關消 10 行過關，越後面越快；◀▶ 移動、A/▲ 旋轉、▼ 加速、B 直接落下 */
+const SH=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]],[[0,1,1],[1,1,0]],[[1,1,0],[0,1,1]]];
+const SKIN=[['#29d3ff','#ffe14d','#c36bff','#3d7bff','#ff9a3d','#4dff7a','#ff4d6d'],['#9ad','#dda','#b9d','#89c','#dba','#9d9','#d9a'],['#f0f','#0ff','#ff0','#f80','#0f8','#80f','#f08']];
+const CW=10,CH=20,S=10,OX=6,OY=22;
+let B,P,NX,t,fall,lines,target,lockT;
+const rot=m=>m[0].map((_,i)=>m.map(r=>r[i]).reverse());
+const fits=(m,x,y)=>m.every((r,j)=>r.every((v,i)=>!v||(x+i>=0&&x+i<CW&&y+j<CH&&(y+j<0||!B[y+j][x+i]))));
+function newP(){const k=NX;NX=Math.floor(Math.random()*7);P={m:SH[k],k,x:3,y:-1};if(!fits(P.m,P.x,P.y))GE_API.lose()}
+GE.run({id:'blockdrop',title:'BLOCK DROP',w:160,h:236,chars:['NEON','PASTEL','ARCADE'],
+ start(G,lv){B=Array.from({length:CH},()=>Array(CW).fill(0));NX=Math.floor(Math.random()*7);newP();t=0;lines=0;target=10;fall=Math.max(0.06,0.8*Math.pow(0.86,lv-1));lockT=0;
+   /* 後面的關卡下面先有幾行垃圾方塊 */const junk=Math.min(8,Math.floor((lv-1)/3));for(let j=0;j<junk;j++){const r=CH-1-j,h=G.rnd(0,CW-1);for(let i=0;i<CW;i++)B[r][i]=i===h?0:(Math.random()<.7?G.rnd(1,7):0)}},
+ step(G,dt,k,p){
+   if(p.L&&fits(P.m,P.x-1,P.y)){P.x--;G.sfx.move()} if(p.R&&fits(P.m,P.x+1,P.y)){P.x++;G.sfx.move()}
+   if(p.A||p.U){const r=rot(P.m);for(const dx of [0,-1,1,-2,2])if(fits(r,P.x+dx,P.y)){P.m=r;P.x+=dx;G.sfx.blip();break}}
+   if(p.B){while(fits(P.m,P.x,P.y+1)){P.y++;G.add(2)}lockT=9}
+   t+=dt*(k.D?12:1);
+   if(t>=fall){t=0;if(fits(P.m,P.x,P.y+1)){P.y++;if(k.D)G.add(1)}else lockT=9}
+   if(lockT>=9){lockT=0;P.m.forEach((r,j)=>r.forEach((v,i)=>{if(v&&P.y+j>=0)B[P.y+j][P.x+i]=P.k+1}));
+     let n=0;for(let j=CH-1;j>=0;j--){if(B[j].every(v=>v)){B.splice(j,1);B.unshift(Array(CW).fill(0));n++;j++}}
+     if(n){lines+=n;G.add([0,100,300,500,800][n]*G.level);n>=4?G.sfx.clear():G.sfx.coin()}else G.sfx.hit();
+     if(lines>=target){G.win();return}newP()}},
+ draw(G){const g=G.g,pal=SKIN[G.char];g.fillStyle='#070a18';g.fillRect(0,0,G.w,G.h);
+   g.fillStyle='#10163a';g.fillRect(OX-2,OY-2,CW*S+4,CH*S+4);g.fillStyle='#000';g.fillRect(OX,OY,CW*S,CH*S);
+   const cell=(x,y,c)=>{g.fillStyle=c;g.fillRect(x,y,S,S);g.fillStyle='rgba(255,255,255,.35)';g.fillRect(x,y,S,2);g.fillRect(x,y,2,S);g.fillStyle='rgba(0,0,0,.35)';g.fillRect(x,y+S-2,S,2);g.fillRect(x+S-2,y,2,S)};
+   for(let j=0;j<CH;j++)for(let i=0;i<CW;i++)if(B[j][i])cell(OX+i*S,OY+j*S,pal[B[j][i]-1]);else{g.fillStyle='#0b1028';g.fillRect(OX+i*S+4,OY+j*S+4,1,1)}
+   let gy=P.y;while(fits(P.m,P.x,gy+1))gy++;
+   P.m.forEach((r,j)=>r.forEach((v,i)=>{if(v&&gy+j>=0){g.strokeStyle='rgba(255,255,255,.25)';g.strokeRect(OX+(P.x+i)*S+.5,OY+(gy+j)*S+.5,S-1,S-1)}}));
+   P.m.forEach((r,j)=>r.forEach((v,i)=>{if(v&&P.y+j>=0)cell(OX+(P.x+i)*S,OY+(P.y+j)*S,pal[P.k])}));
+   const px=OX+CW*S+8;G.text(g,'NEXT',px,OY,'#7cf');SH[NX].forEach((r,j)=>r.forEach((v,i)=>{if(v){g.fillStyle=pal[NX];g.fillRect(px+i*7,OY+10+j*7,6,6)}}));
+   G.text(g,'LINES',px,OY+40,'#7cf');G.text(g,lines+'/'+target,px,OY+48,'#fff');G.text(g,'SPEED',px,OY+64,'#7cf');G.text(g,String(G.level),px,OY+72,'#fff')},
+ titleArt(G,f){const g=G.g;for(let i=0;i<16;i++){g.fillStyle=SKIN[0][i%7];g.fillRect(10+i*9,80+Math.round(Math.sin(f*2+i)*6),8,8)}}
+});
+</script></body></html>

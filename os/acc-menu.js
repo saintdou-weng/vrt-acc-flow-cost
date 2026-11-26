@@ -45,6 +45,7 @@
       ['🎞️','小說影片','Novel Video','../modules/novel-to-video.html','小說影片'],
       ['🔎','OCR','OCR','../modules/ocr-tool.html','文字辨識'],
       ['🎱','樂透統計','Lottery','../modules/lottery-ai.html','統計'],
+      ['🕹️','小遊戲','Arcade','../games/index.html','像素小遊戲・無限關・記進度・可選關選角色'],
       ['💰','VRT ERP 財務','ERP Finance','https://saintdou-weng.github.io/PSJERP/?s=fin','ERP 原入口']]}
   ];
   window.ACC_OS_GROUPS=GROUPS;

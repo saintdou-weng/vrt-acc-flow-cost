@@ -1,0 +1,33 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>小遊戲大廳 · ACC Flow</title>
+<style>
+body{margin:0;background:#05060f;color:#e5e7eb;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif}
+header{position:sticky;top:0;z-index:2;background:#0b0e1d;border-bottom:1px solid #1f2540;padding:10px 12px}
+header .r{display:flex;align-items:center;gap:10px}header a{color:#7cf;text-decoration:none;font-weight:700}header h1{flex:1;margin:0;font-size:18px;letter-spacing:1px}
+header button{background:#1a1f3a;border:1px solid #2a3260;color:#fff;border-radius:8px;padding:5px 10px;font-size:15px}
+.cats{display:flex;gap:6px;overflow-x:auto;margin-top:8px}.cats button{white-space:nowrap;border-radius:99px;font-size:13px}.cats button.on{background:#ffd23f;color:#111;border-color:#ffd23f}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;padding:14px;max-width:1100px;margin:0 auto}
+.card{background:#0c0f20;border:1px solid #1f2540;border-radius:12px;overflow:hidden;cursor:pointer;text-decoration:none;color:inherit;transition:transform .12s,border-color .12s}
+.card:hover,.card:active{transform:translateY(-2px);border-color:#ffd23f}
+.card canvas{display:block;width:100%;image-rendering:pixelated;background:#000}
+.card .i{padding:7px 9px}.card b{display:block;font-family:ui-monospace,Menlo,monospace;font-size:13px}.card small{color:#9aa3c7;font-size:12px}.card .p{font-size:11px;color:#ffd23f;margin-top:2px}
+.note{max-width:1100px;margin:0 auto;padding:0 14px 30px;color:#6b7399;font-size:12px}
+</style></head><body>
+<header><div class="r"><a href="../os/index.html?view=acc">◀ ACC</a><h1>🕹️ 小遊戲大廳</h1><button id="snd"></button></div><div class="cats" id="cats"></div></header>
+<div class="grid" id="grid"></div>
+<p class="note">每個遊戲：無限關卡、打過的關可以選、輸了可以接關、自動記住進度（這台裝置），右上角可以關聲音。手機有虛擬搖桿（左十字、右 A／B），電腦用方向鍵＋空白鍵（A）／X（B）、Enter 暫停。</p>
+<script src="engine.js"></script><script src="list.js"></script><script>
+const LS=GE.LS;let CAT='all';
+const snd=document.getElementById('snd');const paint=()=>snd.textContent=LS.get('arc_mute',false)?'🔇':'🔊';paint();snd.onclick=()=>{LS.set('arc_mute',!LS.get('arc_mute',false));paint()};
+function thumb(cv,gm){cv.width=80;cv.height=100;const g=cv.getContext('2d');g.fillStyle='#000';g.fillRect(0,0,80,100);
+  const sv=LS.get('arc_'+gm.id,null);GE.text(g,sv?('HI '+(sv.hi||0)):'NEW',2,2,'#fff');GE.text(g,gm.v,78,93,gm.c1,1,'r');
+  for(let i=0;i<14;i++){g.fillStyle=i%2?gm.c1:gm.c2;g.fillRect(4+i*5.3,70+Math.round(Math.sin(i*.8)*4),4,4)}
+  const w=gm.t.split(' ');w.forEach((s,i)=>{GE.text(g,s,40,26+i*14,i?gm.c2:gm.c1,2,'c')});
+  GE.text(g,'PRESS A',40,82,'#9a9',1,'c')}
+function render(){document.getElementById('cats').innerHTML=Object.entries(ARC_CATS).map(([k,v])=>'<button data-c="'+k+'" class="'+(k===CAT?'on':'')+'">'+v+'</button>').join('');
+  document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{CAT=b.dataset.c;render()});
+  const gr=document.getElementById('grid');gr.innerHTML='';
+  ARC_GAMES.filter(x=>CAT==='all'||x.cat===CAT).forEach(gm=>{const sv=LS.get('arc_'+gm.id,null),a=document.createElement('a');a.className='card';a.href=gm.file;
+    a.innerHTML='<canvas></canvas><div class="i"><b>'+gm.t+'</b><small>'+gm.zh+'</small><div class="p">'+(sv?'▶ 第 '+(sv.level||1)+' 關・已開 '+(sv.unlocked||1)+' 關':'☆ 還沒玩過')+'</div></div>';gr.appendChild(a);thumb(a.querySelector('canvas'),gm)})}
+render();
+</script></body></html>

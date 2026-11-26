@@ -1,0 +1,31 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Neon Snake 霓虹貪吃蛇</title><link rel="stylesheet" href="game.css"></head><body><canvas id="cv"></canvas>
+<script src="engine.js"></script><script>
+/* 霓虹貪吃蛇：吃滿這關的果子過關，越後面越快、牆越多（無限關）；方向鍵轉彎，也可以在畫面上滑動 */
+const SK=[{n:'NEON',h:'#4dff7a',b:'#1fae4a'},{n:'FIRE',h:'#ffd23f',b:'#ff6b3d'},{n:'ICE',h:'#bff',b:'#29a3ff'}];
+const C=8,GW=19,GH=26,OY=24;let sn,dir,nd,food,walls,acc,need,eaten,gold;
+function free(){let p;do p={x:Math.floor(Math.random()*GW),y:Math.floor(Math.random()*GH)};while(sn.some(s=>s.x===p.x&&s.y===p.y)||walls.some(w=>w.x===p.x&&w.y===p.y));return p}
+let sx=null,sy=null;addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+addEventListener('touchend',e=>{if(sx==null)return;const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.max(Math.abs(dx),Math.abs(dy))>25)turn(Math.abs(dx)>Math.abs(dy)?(dx>0?'R':'L'):(dy>0?'D':'U'));sx=null},{passive:true});
+const V={U:[0,-1],D:[0,1],L:[-1,0],R:[1,0]},OPP={U:'D',D:'U',L:'R',R:'L'};function turn(d){if(d!==OPP[dir])nd=d}
+GE.run({id:'neonsnake',title:'NEON SNAKE',w:160,h:236,chars:SK.map(s=>s.n),lives:1,
+ start(G,lv){sn=[{x:9,y:20},{x:9,y:21},{x:9,y:22}];dir=nd='U';walls=[];const n=Math.min(60,(lv-1)*3);
+   for(let i=0;i<n;i++){const x=G.rnd(0,GW-1),y=G.rnd(0,GH-6);if(Math.abs(x-9)>1)walls.push({x,y})}
+   if(lv>4)for(let x=3;x<GW-3;x++)if(lv%3===2)walls.push({x,y:8});food=free();gold=null;acc=0;need=5+Math.min(15,lv);eaten=0},
+ step(G,dt,k,p){for(const d of ['U','D','L','R'])if(p[d])turn(d);
+   acc+=dt;const tick=Math.max(.05,.16-G.level*.006);if(acc<tick)return;acc=0;dir=nd;
+   const h={x:(sn[0].x+V[dir][0]+GW)%GW,y:(sn[0].y+V[dir][1]+GH)%GH};
+   if(sn.some(s=>s.x===h.x&&s.y===h.y)||walls.some(w=>w.x===h.x&&w.y===h.y)){G.sfx.boom();G.lose();return}
+   sn.unshift(h);if(h.x===food.x&&h.y===food.y){eaten++;G.add(10*G.level);G.sfx.coin();food=free();if(!gold&&Math.random()<.25)gold={...free(),t:6};if(eaten>=need){G.win();return}}
+   else if(gold&&h.x===gold.x&&h.y===gold.y){G.add(100*G.level);G.sfx.clear();gold=null;sn.pop()}else sn.pop();
+   if(gold){gold.t-=tick;if(gold.t<=0)gold=null}},
+ draw(G){const g=G.g;g.fillStyle='#04050d';g.fillRect(0,0,160,236);g.strokeStyle='#1d2a5a';g.strokeRect(3.5,OY-.5,GW*C+1,GH*C+1);
+   for(let y=0;y<GH;y++)for(let x=0;x<GW;x++){g.fillStyle='#0a0f22';g.fillRect(4+x*C+3,OY+y*C+3,1,1)}
+   walls.forEach(w=>{g.fillStyle='#5a5f9a';g.fillRect(4+w.x*C,OY+w.y*C,C,C);g.fillStyle='#8a90d0';g.fillRect(4+w.x*C,OY+w.y*C,C,1)});
+   g.fillStyle='#ff4d6d';g.fillRect(4+food.x*C+1,OY+food.y*C+2,6,5);g.fillStyle='#4dff7a';g.fillRect(4+food.x*C+3,OY+food.y*C,2,2);
+   if(gold&&(gold.t>2||Math.floor(gold.t*8)%2)){g.fillStyle='#ffd23f';g.fillRect(4+gold.x*C+1,OY+gold.y*C+1,6,6)}
+   const s=SK[G.char];sn.forEach((q,i)=>{g.fillStyle=i?s.b:s.h;g.fillRect(4+q.x*C+1,OY+q.y*C+1,C-2,C-2);if(!i){g.fillStyle='#000';g.fillRect(4+q.x*C+2,OY+q.y*C+2,1,1);g.fillRect(4+q.x*C+5,OY+q.y*C+2,1,1)}});
+   G.text(g,eaten+'/'+need,80,12,'#7cf',1,'c')},
+ titleArt(G,f){const s=SK[G.char];for(let i=0;i<14;i++){G.g.fillStyle=i?s.b:s.h;G.g.fillRect(130-i*7,100+Math.round(Math.sin(f*4-i*.6)*8),6,6)}}
+});
+</script></body></html>
