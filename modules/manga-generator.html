@@ -160,6 +160,24 @@ input:focus, textarea:focus, select:focus { border-color: var(--ink); background
 .toggle-row button.on { background: var(--ink); color: var(--paper); }
 .toggle-row button:hover:not(.on) { background: #f0f0f0; }
 
+/* Style preset chips */
+.style-group-title { font-size: 11px; color: var(--muted); margin: 10px 0 6px; }
+.style-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.style-chip {
+  border: 2px solid var(--ink); background: #fff; color: #444;
+  padding: 7px 12px; font-family: 'Noto Serif TC', serif; font-size: 12px;
+  cursor: pointer; min-height: 36px; line-height: 1.3;
+}
+.style-chip.on { background: var(--ink); color: var(--paper); }
+.style-desc { margin-top: 8px; font-size: 11.5px; color: #555; line-height: 1.6; background: #faf7f0; border-left: 3px solid var(--ink); padding: 6px 10px; }
+.engine-note { margin: 0 0 12px; padding: 8px 12px; font-size: 12px; background: #fff7e0; border: 1px solid #e6c766; color: #7a5a00; display: none; }
+.engine-note.show { display: block; }
+/* AI image layer */
+.ai-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .5s; z-index: 2; }
+.ai-img.loaded { opacity: 1; }
+.panel-art .img-wait { position: absolute; left: 6px; bottom: 6px; z-index: 3; font-size: 9px; background: rgba(0,0,0,.6); color: #fff; padding: 2px 6px; font-family: 'Share Tech Mono', monospace; }
+.panel-art.has-img .img-wait { display: none; }
+
 .options-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -380,6 +398,8 @@ input:focus, textarea:focus, select:focus { border-color: var(--ink); background
 .bubble b { font-size: 9px; display: block; color: #888; margin-bottom: 1px; }
 .bubble.thought { border-style: dashed; font-style: italic; border-radius: 40px; }
 .bubble.tl { top:8px; left:8px; }
+.panel.has-cap .bubble.tl, .panel.has-cap .bubble.tr { top:42px; }
+@media (max-width:560px){ .bubble{font-size:9.5px;padding:3px 7px;max-width:72%} .panel-caption{font-size:9.5px;padding:4px 7px} .panel.has-cap .bubble.tl,.panel.has-cap .bubble.tr{top:36px} .bubble.bl,.bubble.br{bottom:8px} }
 .bubble.tr { top:8px; right:8px; }
 .bubble.bl { bottom:30px; left:8px; }
 .bubble.br { bottom:30px; right:8px; }
@@ -569,11 +589,15 @@ input:focus, textarea:focus, select:focus { border-color: var(--ink); background
       <div>
         <label>作品標題</label>
         <input type="text" id="work-title" placeholder="我的漫畫作品" />
-        <label>漫畫風格</label>
-        <div class="toggle-row" id="style-toggle">
-          <button class="on" data-val="japanese">日式</button>
-          <button data-val="american">美式</button>
-          <button data-val="realistic">寫實</button>
+        <label>對白語言</label>
+        <div class="toggle-row" id="lang-toggle">
+          <button class="on" data-val="zh">中文</button>
+          <button data-val="en">English</button>
+        </div>
+        <label>分鏡引擎</label>
+        <div class="toggle-row" id="engine-toggle">
+          <button class="on" data-val="ai">AI 自動分鏡</button>
+          <button data-val="local">本機快速分鏡</button>
         </div>
       </div>
       <div>
@@ -588,8 +612,20 @@ input:focus, textarea:focus, select:focus { border-color: var(--ink); background
           <button class="on" data-val="normal">中（~1000字/頁）</button>
           <button data-val="dense">密（~1500字/頁）</button>
         </div>
+        <label style="margin-top:16px;">每格畫面</label>
+        <div class="toggle-row" id="art-toggle">
+          <button class="on" data-val="ai">AI 繪圖</button>
+          <button data-val="svg">簡易示意圖</button>
+        </div>
       </div>
     </div>
+    <label style="margin-top:18px;">漫畫畫風（只模仿線條、上色、構圖，不使用任何現有作品角色）</label>
+    <div class="style-group-title">基本畫風</div>
+    <div class="style-chips" id="style-chips-base"></div>
+    <div class="style-group-title">年代＋類型預設</div>
+    <div class="style-chips" id="style-chips-era"></div>
+    <input type="text" id="style-custom" style="margin-top:8px;" placeholder="或自己描述畫風（選填，會疊加在所選畫風上），例：粗獷墨線、復古網點、夕陽橘色調" />
+    <div class="style-desc" id="style-desc"></div>
     <div class="info-box">
       💡 <strong>人物自動提取</strong>：系統會在生成前先讓 AI 分析全文，自動識別主要人物的外觀、性格與關係，並在整個生成過程中保持一致。你也可以在下方補充。
     </div>
@@ -609,6 +645,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--ink); background
     <h3>📋 自動識別角色檔</h3>
     <div class="char-cards" id="char-cards-list"></div>
   </div>
+  <div class="engine-note" id="engine-note"></div>
   <div id="episodes-container"></div>
 </div>
 
@@ -623,7 +660,12 @@ input:focus, textarea:focus, select:focus { border-color: var(--ink); background
 // ═══════════════════════════════════════════
 const S = {
   style: 'japanese',
+  styleCustom: '',
   color: 'bw',
+  lang: 'zh',        // 對白語言 zh | en
+  engine: 'ai',      // 分鏡引擎 ai | local
+  art: 'ai',         // 每格畫面 ai（Pollinations）| svg
+  offline: false,    // AI 分鏡服務失敗後自動改用本機分鏡
   density: 'normal',
   title: '',
   rawText: '',
@@ -637,6 +679,45 @@ const S = {
 };
 
 const DENSITY_MAP = { light: 500, normal: 1000, dense: 1500 };
+
+// ═══════════════════════════════════════════
+//  畫風預設（只描述線條／上色／構圖，不指涉任何現有作品或角色）
+// ═══════════════════════════════════════════
+const STYLE_PRESETS = {
+  japanese:   { g:'base', zh:'日漫', svg:'japanese', desc:'日式漫畫：清晰輪廓線、誇張表情與動態、速度線、網點陰影、情緒爆炸格', en:'japanese manga style, clean expressive line art, dynamic poses, speed lines, screentone shading' },
+  american:   { g:'base', zh:'美漫', svg:'american', desc:'美式漫畫：粗獷線條、強烈陰影、大字體音效、動態構圖、厚重色塊', en:'american comic book style, bold heavy inks, strong shadows, dynamic composition, flat bold colors' },
+  realistic:  { g:'base', zh:'寫實', svg:'realistic', desc:'寫實漫畫：細膩線條、電影式構圖、精確比例、光影層次', en:'realistic graphic novel style, detailed linework, accurate anatomy, cinematic lighting and composition' },
+  ancient:    { g:'base', zh:'古代', svg:'realistic', desc:'古代風：古裝服飾、木構建築、水墨背景、典雅構圖', en:'ancient chinese historical illustration style, traditional hanfu costumes, wooden architecture, ink wash background, elegant composition' },
+  xuanhuan:   { g:'base', zh:'玄幻', svg:'japanese', desc:'玄幻風：仙俠法術光效、浮空山脈、華麗法袍、雲霧與符文', en:'eastern fantasy xianxia illustration style, glowing magic effects, floating mountains, ornate flowing robes, mist and runes' },
+  watercolor: { g:'base', zh:'水彩', svg:'realistic', desc:'水彩風：柔和暈染、紙張紋理、淡雅色調、手繪筆觸', en:'soft watercolor painting style, gentle color bleeding, paper texture, delicate hand-painted brush strokes' },
+  sports90:   { g:'era', zh:'90 年代熱血籃球運動風', svg:'japanese', desc:'粗墨線、強烈速度線、寫實運動員比例、網點陰影、汗水與緊繃表情', en:'1990s sports manga style, thick bold ink lines, intense speed lines, realistic athletic proportions, screentone shading, sweat and intense expressions, basketball court action' },
+  myth80:     { g:'era', zh:'80 年代神話戰士熱血動畫風', svg:'japanese', desc:'閃亮鎧甲、星空與宇宙光效、賽璐珞上色、英雄式站姿', en:'1980s retro anime style, shining ornate mythological armor, starry cosmic light effects, cel shading, heroic poses, vintage cel animation look' },
+  hkwuxia:    { g:'era', zh:'港漫武俠彩色風', svg:'american', desc:'厚塗全彩、肌肉線條、飄逸衣袍、氣勁光效、水墨山水背景', en:'hong kong wuxia comic style, fully painted rich colors, muscular martial artists, flowing robes, dramatic qi energy effects, ink landscape backgrounds' },
+  shoujo:     { g:'era', zh:'少女漫畫風', svg:'japanese', desc:'纖細線條、閃亮大眼、花朵與光點背景、柔和網點', en:'classic shoujo manga style, delicate fine lines, large sparkling eyes, flowers and sparkles in background, soft screentones, romantic mood' },
+  hero:       { g:'era', zh:'美式英雄漫畫風', svg:'american', desc:'粗黑墨線、半色調網點、強烈透視、鮮豔原色', en:'classic american superhero comic style, bold black inks, halftone dots, dramatic foreshortening, vivid primary colors' },
+  noir2000:   { g:'era', zh:'2000 年代都市黑色懸疑風', svg:'realistic', desc:'高反差黑白、雨夜霓虹、硬派陰影、電影感構圖', en:'2000s urban noir graphic novel style, high contrast, rainy neon night, hard dramatic shadows, cinematic framing' },
+};
+const CAMERA_EN = { '遠景':'wide establishing shot', '中景':'medium shot', '近景':'medium close-up', '特寫':'dramatic close-up of face', '俯角':'high angle bird eye view', '俯視':'high angle bird eye view', '仰角':'low angle worm eye view', '仰視':'low angle worm eye view' };
+const MOOD_EN = { '緊張':'tense', '平靜':'calm', '喜悅':'joyful', '悲傷':'sad', '憤怒':'angry', '恐懼':'fearful', '震驚':'shocked' };
+
+function stylePreset() { return STYLE_PRESETS[S.style] || STYLE_PRESETS.japanese; }
+
+function renderStyleChips() {
+  ['base','era'].forEach(g => {
+    const box = document.getElementById('style-chips-' + g);
+    if (!box) return;
+    box.innerHTML = Object.entries(STYLE_PRESETS).filter(([,p]) => p.g === g)
+      .map(([k,p]) => `<button type="button" class="style-chip${k===S.style?' on':''}" data-style="${k}">${p.zh}</button>`).join('');
+  });
+  const d = document.getElementById('style-desc');
+  if (d) d.textContent = '🎨 ' + stylePreset().zh + '：' + stylePreset().desc;
+}
+document.addEventListener('click', e => {
+  const chip = e.target.closest('.style-chip');
+  if (!chip) return;
+  S.style = chip.dataset.style;
+  renderStyleChips();
+});
 
 // ═══════════════════════════════════════════
 //  TEXT ANALYSIS & CHUNKING
@@ -698,12 +779,16 @@ document.querySelectorAll('.toggle-row').forEach(row => {
       btn.classList.add('on');
       if (row.id === 'style-toggle') S.style = btn.dataset.val;
       if (row.id === 'color-toggle') S.color = btn.dataset.val;
+      if (row.id === 'lang-toggle') S.lang = btn.dataset.val;
+      if (row.id === 'engine-toggle') S.engine = btn.dataset.val;
+      if (row.id === 'art-toggle') S.art = btn.dataset.val;
       if (row.id === 'density-toggle') { S.density = btn.dataset.val; updateStats(); }
     });
   });
 });
 
 $('big-text').addEventListener('input', updateStats);
+renderStyleChips();
 
 function updateStats() {
   const text = $('big-text').value;
@@ -741,6 +826,11 @@ async function launchPipeline() {
   S.rawText = text;
   S.title = $('work-title').value.trim() || '我的漫畫';
   S.extraNotes = $('extra-char-notes').value.trim();
+  S.styleCustom = ($('style-custom')?.value || '').trim();
+  S.offline = S.engine === 'local';
+  IMGQ.q = [];
+  const note = $('engine-note');
+  if (note) { note.classList.toggle('show', S.offline); note.textContent = S.offline ? '⚡ 使用本機快速分鏡：依對白「」與句子自動分格，不呼叫 AI。' : ''; }
   const cpc = DENSITY_MAP[S.density];
   S.chunks = smartChunk(text, cpc);
   S.total = S.chunks.length;
@@ -761,11 +851,14 @@ async function launchPipeline() {
 
   // STEP 1: Extract characters from full text
   try {
+    if (S.offline) throw new Error('local');
     await extractCharacters(text, S.extraNotes);
-    renderCharSheet();
+    if (!S.characters.length) throw new Error('empty');
   } catch(e) {
-    console.warn('角色提取失敗，繼續生成:', e);
+    if (e.message !== 'local') { console.warn('AI 角色提取失敗，改用本機規則：', e.message); setOffline(e.message); }
+    S.characters = localExtractCharacters(text, S.extraNotes);
   }
+  renderCharSheet();
 
   // STEP 2: Sequential page generation
   S.running = true;
@@ -782,7 +875,12 @@ async function launchPipeline() {
     insertSkeleton(chunk.id, chunk.episodeNum, chunk.pageNum);
 
     try {
-      const pageData = await generatePageAPI(chunk, S.characters, S.style, S.color, S.title);
+      let pageData = null;
+      if (!S.offline) {
+        try { pageData = await generatePageAPI(chunk, S.characters, S.style, S.color, S.title); }
+        catch (err) { console.warn('AI 分鏡失敗，改用本機分鏡：', err.message); setOffline(err.message); }
+      }
+      if (!pageData || !Array.isArray(pageData.panels) || !pageData.panels.length) pageData = localStoryboard(chunk, S.characters);
       S.pages[chunk.id] = pageData;
       chunk.status = 'done';
       replaceSkeleton(chunk.id, chunk.episodeNum, chunk.pageNum, pageData);
@@ -796,7 +894,7 @@ async function launchPipeline() {
     }
 
     // Small delay to avoid rate limiting
-    if (i < S.chunks.length - 1) await sleep(800);
+    if (i < S.chunks.length - 1) await sleep(S.offline ? 120 : 800);
   }
 
   updateProgress(S.done, S.total, S.done === S.total ? '✓ 全部生成完成！' : `完成 ${S.done}/${S.total} 頁`);
@@ -833,7 +931,8 @@ ${extraNotes ? '補充說明：\n' + extraNotes : ''}
       "role": "主角/配角/反派/其他",
       "appearance": "詳細外觀（髮色、髮型、眼睛、身形、服裝特徵）",
       "personality": "個性特徵",
-      "signature": "辨識標誌（如疤痕、飾品）"
+      "signature": "辨識標誌（如疤痕、飾品）",
+      "appearanceEn": "英文外觀描述（gender, age, hair, eyes, outfit；20 words 內，供繪圖保持一致）"
     }
   ],
   "worldSetting": "世界觀/背景設定摘要",
@@ -855,11 +954,11 @@ ${extraNotes ? '補充說明：\n' + extraNotes : ''}
 //  API: GENERATE ONE PAGE
 // ═══════════════════════════════════════════
 async function generatePageAPI(chunk, characters, style, colorMode, workTitle) {
-  const styleDesc = {
-    japanese: '日式少年漫畫：清晰輪廓線、誇張表情與動態、速度線、網點陰影、情緒爆炸格',
-    american: '美式超級英雄漫畫：粗獷線條、強烈陰影、大字體音效、動態構圖、厚重色塊',
-    realistic: '寫實漫畫：細膩線條、電影式構圖、精確比例、光影層次、電影感運鏡'
-  }[style];
+  const preset = STYLE_PRESETS[style] || STYLE_PRESETS.japanese;
+  const styleDesc = preset.zh + '：' + preset.desc + (S.styleCustom ? '；使用者補充：' + S.styleCustom : '');
+  const langLine = S.lang === 'en'
+    ? '【對白語言】所有 caption、dialogues.text、sfx 一律用自然的英文（English）撰寫，角色名保留原名。'
+    : '【對白語言】所有 caption、dialogues.text、sfx 用繁體中文。';
 
   const colorDesc = colorMode === 'color'
     ? '彩色渲染，用豐富色彩傳達情緒'
@@ -877,6 +976,7 @@ async function generatePageAPI(chunk, characters, style, colorMode, workTitle) {
 【作品】${workTitle} — 第${chunk.pageNum}頁
 【風格】${styleDesc}
 【色彩】${colorDesc}
+${langLine}
 ${worldBlock}
 ${charBlock}
 
@@ -893,6 +993,7 @@ ${chunk.text}
       "id": 1,
       "span": "normal|span2|span3|rowspan2",
       "sceneDesc": "場景視覺描述（構圖+人物+動作+背景，40字內）",
+      "artPrompt": "英文繪圖描述：人物外觀、動作、表情、背景（30 words 內，不要寫畫風、不要寫任何文字或對白）",
       "cameraAngle": "遠景|中景|近景|特寫|俯角|仰角",
       "caption": "敘事旁白（選填，25字內）",
       "dialogues": [
@@ -943,6 +1044,224 @@ function safeParseJSON(raw) {
 }
 
 // ═══════════════════════════════════════════
+//  本機分鏡備援（不需 AI；AI 服務連不上時自動切換）
+// ═══════════════════════════════════════════
+function setOffline(reason) {
+  if (S.offline) return;
+  S.offline = true;
+  const note = $('engine-note');
+  if (note) {
+    note.textContent = '⚠ AI 分鏡服務暫時無法連線（' + String(reason || '').slice(0, 60) + '），已自動改用本機快速分鏡繼續生成。';
+    note.classList.add('show');
+  }
+}
+
+const QUOTE_RE = /[「“"]([^」”"]{1,200})[」”"]/g;
+const NAME_STOP = new Set(['他們','我們','你們','她們','自己','大家','這時','然後','於是','突然','只見','忽然','一個','那個','這個','什麼','怎麼','因為','所以','但是','可是','如果','已經','還是','終於','不過','沒有','一聲','聲音','低聲','大聲','笑著','輕聲','冷冷','淡淡','緩緩','回頭','忍不住','小聲','喃喃','接著','對他','對她','問道','說道']);
+const NAME_PREFIX = /^[對向跟和與把被讓叫給朝替是在]/;
+function cleanName(n, text) {
+  n = (n || '').trim();
+  if (n.length === 3 && NAME_PREFIX.test(n)) n = n.slice(1);
+  if (n.length === 3) {
+    const tail = n.slice(1), occ = x => text.split(x).length - 1;
+    if (occ(tail) > occ(n) * 1.5) n = tail;
+  }
+  return NAME_STOP.has(n) ? '' : n;
+}
+
+function localExtractCharacters(text, extraNotes) {
+  const count = {};
+  const occ = x => text.split(x).length - 1;
+  const okName = n => n && n.length >= 2 && !NAME_STOP.has(n) && !/[地著了得的氣聲們這那裡]$/.test(n) && !/^[我你他她它這那一不也就又在]/.test(n);
+  // ① 句首主詞：名字常出現在子句開頭（2 字與 3 字並比，決定第 3 字是否屬於名字）
+  const g2 = {}, g3 = {};
+  for (const m of text.matchAll(/(?:^|[。！？，；、\n」”])\s*([一-龥]{2,3})/gm)) {
+    const w = m[1]; g2[w.slice(0, 2)] = (g2[w.slice(0, 2)] || 0) + 1; if (w.length === 3) g3[w] = (g3[w] || 0) + 1;
+  }
+  Object.entries(g3).forEach(([w, c]) => { if (c >= 2 && c >= 0.6 * (g2[w.slice(0, 2)] || 0) && okName(w)) { count[w] = c * 2; delete g2[w.slice(0, 2)]; } });
+  Object.entries(g2).forEach(([w, c]) => { if (c >= 2 && okName(w)) count[w] = (count[w] || 0) + c; });
+  // ② 對白標記：名字說：「…」／名字：「…」
+  const add = n => { n = cleanName(n, text); if (!okName(n)) return; count[n] = (count[n] || 0) + 3; };
+  for (const m of text.matchAll(/([一-龥]{2,3})(?:[說道問喊叫笑答吼]{1,2})?[：:]\s*[「“"]/g)) add(m[1]);
+  // 僅保留全文出現至少 2 次者
+  Object.keys(count).forEach(n => { if (occ(n) < 2) delete count[n]; });
+  // 名字互為子字串時保留較長者
+  Object.keys(count).forEach(n => { if (Object.keys(count).some(o => o !== n && o.includes(n) && occ(o) >= occ(n) * 0.7)) delete count[n]; });
+  // 補充說明裡「名字 —」或「名字：」優先
+  const notes = {};
+  (extraNotes || '').split(/\n/).forEach(line => {
+    const m = line.match(/^\s*(?:主角|配角|反派)?\s*([一-龥A-Za-z]{2,8})\s*[—\-：:]\s*(.+)$/);
+    if (m) { notes[m[1]] = m[2].trim(); count[m[1]] = (count[m[1]] || 0) + 100; }
+  });
+  const names = Object.entries(count).filter(([n, c]) => c >= 3 || notes[n]).sort((a, b) => (notes[b[0]] ? 1e6 : 0) + occ(b[0]) - (notes[a[0]] ? 1e6 : 0) - occ(a[0])).slice(0, 6).map(x => x[0]);
+  return names.map((n, i) => ({
+    name: n,
+    role: i === 0 ? '主角' : '配角',
+    appearance: notes[n] || '',
+    personality: '',
+    signature: '',
+    appearanceEn: '',
+  }));
+}
+
+function detectMood(t) {
+  if (/哭|淚|悲|傷心|難過|嗚/.test(t)) return '悲傷';
+  if (/怒|氣死|可惡|混帳|吼/.test(t)) return '憤怒';
+  if (/怕|恐|顫抖|毛骨|陰森/.test(t)) return '恐懼';
+  if (/竟然|居然|什麼[！!?？]|不可能|愣住|震/.test(t)) return '震驚';
+  if (/笑|開心|太好了|哈哈|高興/.test(t)) return '喜悅';
+  if (/[！!]{1}|快|危險|衝|追|打|砍/.test(t)) return '緊張';
+  return '平靜';
+}
+function detectSfx(t) {
+  const m = t.match(/(砰|轟隆?|啪|咚|嘩啦?|唰|鏘|喀嚓|嗖|噹|碰|咻|叮|呼|轟)/);
+  if (m) return S.lang === 'en' ? ({ '砰':'BANG!', '轟':'BOOM!', '轟隆':'RUMBLE!', '啪':'SLAP!', '咚':'THUD!', '嘩':'SPLASH!', '嘩啦':'SPLASH!', '唰':'SWISH!', '鏘':'CLANG!', '喀嚓':'CRACK!', '嗖':'WHOOSH!', '噹':'DONG!', '碰':'BAM!', '咻':'ZIP!', '叮':'DING!', '呼':'WHOOSH!' }[m[1]] || 'BAM!') : m[1] + '！';
+  return '';
+}
+
+function localStoryboard(chunk, characters) {
+  const text = chunk.text.replace(/\r/g, '');
+  const names = (characters || []).map(c => c.name);
+  const units = [];
+  let last = 0;
+  const pushNarr = seg => {
+    seg.split(/(?<=[。！？!?…])\s*|\n+/).map(x => x.trim().replace(/[，,]\s*[^，,。！？]{0,8}[說道問喊叫答][：:]$/, '。'))
+      .filter(x => x.length > 1 && !/^[^。！？]{0,8}[說道問喊叫答][：:，,]?$/.test(x)).forEach(x => units.push({ kind: 'n', text: x }));
+  };
+  for (const m of text.matchAll(QUOTE_RE)) {
+    const before = text.slice(last, m.index);
+    pushNarr(before);
+    // 說話者：引號前 16 字內最後出現的已知角色，或「某某說：」
+    const tail = text.slice(Math.max(0, m.index - 16), m.index);
+    let speaker = '', pos = -1;
+    names.forEach(n => { const k = tail.lastIndexOf(n); if (k > pos) { pos = k; speaker = n; } });
+    if (!speaker) {
+      const after = text.slice(m.index + m[0].length, m.index + m[0].length + 14);
+      const am = after.match(/^[，,]?\s*([一-龥]{2,3}?)(?:[^。！？「]{0,5})[說道問喊叫答]/);
+      if (am) speaker = names.find(n => after.startsWith(n) || after.slice(0, 5).includes(n)) || '';
+    }
+    if (/^[砰轟隆啪咚嘩啦唰鏘喀嚓嗖噹碰咻叮呼！!…\s]+$/.test(m[1])) { units.push({ kind: 's', text: m[1].trim() }); last = m.index + m[0].length; continue; }
+    if (!speaker) { const mm = tail.match(/([一-龥]{2,3})(?:說|道|問|喊|叫|答)[：:，,]?\s*$/); if (mm) { speaker = cleanName(mm[1], text); if (/[地著了得的氣]$/.test(speaker)) speaker = ''; } }
+    units.push({ kind: 'd', char: speaker, text: m[1].trim() });
+    last = m.index + m[0].length;
+  }
+  pushNarr(text.slice(last));
+  if (!units.length) units.push({ kind: 'n', text: text.slice(0, 60) });
+
+  const N = units.length >= 6 ? 6 : units.length >= 4 ? 4 : Math.max(3, units.length);
+  const layoutType = N === 6 ? (chunk.pageNum % 2 ? 'A' : 'C') : N === 4 ? (chunk.pageNum % 2 ? 'B' : 'E') : 'D';
+  const per = units.length / N;
+  const panels = [];
+  for (let i = 0; i < N; i++) {
+    const group = units.slice(Math.floor(i * per), Math.floor((i + 1) * per) || undefined);
+    const narr = group.filter(u => u.kind === 'n').map(u => u.text).join('');
+    const dias = group.filter(u => u.kind === 'd');
+    const sfxU = group.find(u => u.kind === 's');
+    const all = narr + dias.map(d => d.text).join('');
+    const mood = detectMood(all);
+    let cam;
+    if (i === 0) cam = '遠景';
+    else if (/抬頭|仰望|高聳|俯瞰著他|居高/.test(all)) cam = '仰角';
+    else if (/低頭|俯視|從高處|鳥瞰|整座/.test(all)) cam = '俯角';
+    else if (mood === '震驚' || mood === '憤怒' || mood === '悲傷') cam = '特寫';
+    else if (dias.length) cam = i % 3 === 2 ? '近景' : '中景';
+    else cam = i % 2 ? '中景' : '遠景';
+    const focus = (dias[0] && dias[0].char) || names.find(n => all.includes(n)) || '';
+    panels.push({
+      id: i + 1,
+      span: 'normal',
+      sceneDesc: (narr || all).slice(0, 40),
+      cameraAngle: cam,
+      caption: narr && dias.length ? narr.slice(0, 25) + (narr.length > 25 ? '…' : '') : (!dias.length ? narr.slice(0, 40) + (narr.length > 40 ? '…' : '') : ''),
+      dialogues: dias.slice(0, 2).map((d, di) => ({ char: d.char, text: d.text.length > 40 ? d.text.slice(0, 39) + '…' : d.text, type: /^[（(].*[)）]$|心想|暗想/.test(d.text) ? 'thought' : (/[！!]{1,}$/.test(d.text) ? 'shout' : 'speech'), pos: di === 0 ? 'tl' : 'br' })),
+      sfx: sfxU ? (S.lang === 'en' ? detectSfx(sfxU.text) || 'BAM!' : sfxU.text) : detectSfx(all),
+      mood,
+      focusChar: focus,
+    });
+  }
+  return { pageTitle: '', layoutType, panels, local: true };
+}
+
+// ═══════════════════════════════════════════
+//  AI 繪圖（Pollinations 免金鑰公開服務）
+// ═══════════════════════════════════════════
+function hashSeed(str) {
+  let h = 2166136261;
+  for (const ch of String(str)) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); }
+  return Math.abs(h) % 1000000;
+}
+
+// 本機分鏡沒有英文繪圖描述時，用關鍵字把中文場景／外觀轉成英文提示詞
+const ZH_EN = [
+  ['雨夜','rainy night'],['下雨','rain'],['雨','rain'],['雪','snow'],['夜','night'],['黃昏','sunset'],['夕陽','sunset'],['清晨','early morning'],['月','moonlight'],['星空','starry sky'],['霧','fog'],['閃電','lightning'],
+  ['霓虹','neon lights'],['街','city street'],['巷','narrow alley'],['城市','city'],['大樓','skyscraper'],['頂樓','rooftop'],['屋頂','rooftop'],['地鐵','subway station'],['車站','train station'],['月台','platform'],['學校','school'],['教室','classroom'],['操場','school field'],['球場','sports court'],['籃球','basketball'],['足球','soccer'],['醫院','hospital'],['辦公室','office'],['咖啡','cafe'],['房間','room interior'],['廢墟','ruins'],['廢棄','abandoned'],
+  ['宮殿','palace'],['皇宮','imperial palace'],['客棧','ancient inn'],['寺','temple'],['山','mountains'],['森林','forest'],['竹林','bamboo forest'],['河','river'],['湖','lake'],['海','sea'],['沙漠','desert'],['戰場','battlefield'],['城門','city gate'],['天空','sky'],['雲','clouds'],
+  ['劍','sword'],['刀','blade'],['槍','gun'],['晶片','glowing chip'],['手機','smartphone'],['書','book'],['信','letter'],['火','fire'],['爆炸','explosion'],['光','glowing light'],['法術','magic spell'],['龍','dragon'],['馬','horse'],['車','car'],
+  ['跑','running'],['衝','dashing'],['追','chasing'],['逃','escaping'],['打','fighting'],['抱','embracing'],['哭','crying'],['笑','smiling'],['抬頭','looking up'],['低頭','looking down'],['站','standing'],['坐','sitting'],['抓住','grabbing'],
+  ['兩人','two people'],['男人','man'],['女人','woman'],['少年','teenage boy'],['少女','teenage girl'],['男生','young man'],['女生','young woman'],['男孩','boy'],['女孩','girl'],['老人','old man'],['士兵','soldiers'],['人群','crowd'],
+  ['黑髮','black hair'],['黑色亂髮','messy black hair'],['亂髮','messy hair'],['長髮','long hair'],['短髮','short hair'],['金髮','blonde hair'],['白髮','white hair'],['馬尾','ponytail'],['疤','scar on face'],['眼鏡','glasses'],['校服','school uniform'],['西裝','suit'],['風衣','trench coat'],['外套','jacket'],['鎧甲','armor'],['長袍','long robe'],['斗篷','cloak'],['紅','red'],['藍','blue'],['白','white'],['黑','black'],
+];
+function zhToPrompt(t) {
+  if (!t) return '';
+  if (!/[一-龥]/.test(t)) return t;
+  const out = [];
+  let rest = String(t);
+  ZH_EN.forEach(([zh, en]) => { if (rest.includes(zh)) { if (!out.includes(en)) out.push(en); rest = rest.split(zh).join(' '); } });
+  return out.slice(0, 12).join(', ');
+}
+
+function buildImageURL(panel, index, chunkSeed) {
+  const p = stylePreset();
+  const ch = (S.characters || []).find(c => c.name && c.name === panel.focusChar);
+  const scene = panel.artPrompt || panel.sceneDesc || '';
+  const parts = [
+    p.en,
+    /[一-龥]/.test(S.styleCustom) ? '' : S.styleCustom,
+    S.color === 'color' ? 'full color' : 'black and white manga, monochrome ink, screentone',
+    CAMERA_EN[panel.cameraAngle] || 'medium shot',
+    MOOD_EN[panel.mood] ? MOOD_EN[panel.mood] + ' mood' : '',
+    panel.artPrompt ? scene : zhToPrompt(scene),
+    ch ? (ch.appearanceEn || zhToPrompt(ch.appearance)) : '',
+    S.worldSetting && !panel.artPrompt ? zhToPrompt(S.worldSetting) : '',
+    zhToPrompt(S.styleCustom) === S.styleCustom ? '' : zhToPrompt(S.styleCustom),
+    'original characters, single comic panel, no text, no speech bubbles, no logo, no watermark',
+  ].filter(Boolean).join(', ').slice(0, 700);
+  const wide = panel.span === 'span2' || panel.span === 'span3';
+  const tall = panel.span === 'rowspan2';
+  const w = wide ? 768 : tall ? 448 : 576, h = tall ? 704 : 432;
+  // 同一角色固定種子，讓前後格外觀較一致；無主角的格用頁碼＋格號
+  const seed = ch ? hashSeed(S.title + '|' + ch.name) : hashSeed(S.title + '|' + chunkSeed + '|' + index);
+  return `https://image.pollinations.ai/prompt/${encodeURIComponent(parts)}?width=${w}&height=${h}&seed=${seed}&nologo=true`;
+}
+
+// 依序載入圖片（同時最多 2 張，失敗重試 1 次，最後保留示意圖）
+const IMGQ = { q: [], busy: 0, max: 2 };
+function pumpImgs() {
+  while (IMGQ.busy < IMGQ.max && IMGQ.q.length) {
+    const img = IMGQ.q.shift();
+    if (!img.isConnected || !img.dataset.src) continue;
+    IMGQ.busy++;
+    let tries = 0, finished = false, timer = null;
+    const finish = ok => {
+      if (finished) return; finished = true; clearTimeout(timer);
+      IMGQ.busy--;
+      const art = img.parentElement;
+      if (ok) { img.classList.add('loaded'); art && art.classList.add('has-img'); }
+      else { const w = art && art.querySelector('.img-wait'); if (w) w.textContent = '示意圖（AI 繪圖暫不可用）'; img.remove(); }
+      pumpImgs();
+    };
+    const attempt = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => img.onerror(), 90000);
+      img.src = img.dataset.src + (tries ? '&retry=' + tries : '');
+    };
+    img.onload = () => finish(true);
+    img.onerror = () => { if (finished) return; if (tries++ < 1) setTimeout(attempt, 5000); else finish(false); };
+    attempt();
+  }
+}
+
+// ═══════════════════════════════════════════
 //  RENDER: CHARACTER SHEET
 // ═══════════════════════════════════════════
 function renderCharSheet() {
@@ -954,7 +1273,7 @@ function renderCharSheet() {
     <div class="char-card">
       <strong>${c.name}</strong>
       <div class="char-role">${c.role}</div>
-      <div>外觀：${c.appearance}</div>
+      ${c.appearance ? `<div>外觀：${c.appearance}</div>` : '<div style="color:#999">外觀：未設定（可在「補充人物說明」填寫，AI 繪圖會更一致）</div>'}
       ${c.personality ? `<div>個性：${c.personality}</div>` : ''}
       ${c.signature ? `<div>標誌：${c.signature}</div>` : ''}
     </div>
@@ -1011,13 +1330,15 @@ function replaceSkeleton(chunkId, epNum, pageNum, pageData) {
   wrap.innerHTML = `
     <div class="page-topbar">
       <span><strong>P.${pageNum}</strong> ${pageData.pageTitle ? '— ' + esc(pageData.pageTitle) : ''}</span>
-      <span class="mono" style="font-size:9px;">${S.style} · ${S.color === 'color' ? '彩色' : '黑白'}</span>
+      <span class="mono" style="font-size:9px;">${esc(stylePreset().zh)} · ${S.color === 'color' ? '彩色' : '黑白'}${S.offline ? ' · 本機分鏡' : ''}</span>
     </div>
     <div class="manga-grid ${layoutClass}">
       ${panels.map((p, i) => renderPanelHTML(p, i, S.color, S.style, chunkId)).join('')}
     </div>
     <div class="page-stamp">P.${pageNum}</div>
   `;
+  wrap.querySelectorAll('img.ai-img[data-src]').forEach(img => IMGQ.q.push(img));
+  pumpImgs();
 }
 
 function markSkeletonError(chunkId, msg) {
@@ -1036,7 +1357,10 @@ function renderPanelHTML(panel, index, colorMode, style, seed) {
   const spanClass = panel.span === 'span2' ? 'span2' : panel.span === 'span3' ? 'span3' : panel.span === 'rowspan2' ? 'rowspan2' : '';
   const isColor = colorMode === 'color';
 
-  const artSvg = buildPanelArt(panel, index, seed, isColor, style);
+  const artSvg = buildPanelArt(panel, index, seed, isColor, (STYLE_PRESETS[style] || {}).svg || 'japanese');
+  const imgHTML = S.art === 'ai'
+    ? `<img class="ai-img" alt="${esc(panel.sceneDesc || '')}" data-src="${esc(buildImageURL(panel, index, seed))}"><span class="img-wait">AI 繪圖中…</span>`
+    : '';
 
   const captionHTML = panel.caption
     ? `<div class="panel-caption">${esc(panel.caption)}</div>` : '';
@@ -1050,8 +1374,8 @@ function renderPanelHTML(panel, index, colorMode, style, seed) {
   const sfxHTML = panel.sfx ? `<div class="sfx">${esc(panel.sfx)}</div>` : '';
 
   return `
-    <div class="panel ${spanClass}" onclick="zoomPanel(this, ${index}, ${seed})">
-      <div class="panel-art">${artSvg}</div>
+    <div class="panel ${spanClass}${panel.caption ? ' has-cap' : ''}" onclick="zoomPanel(this, ${index}, ${seed})">
+      <div class="panel-art">${artSvg}${imgHTML}</div>
       ${captionHTML}
       ${dialoguesHTML}
       ${sfxHTML}
