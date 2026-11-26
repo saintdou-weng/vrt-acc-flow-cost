@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4efe6">
+<title>書庫 · ACC Flow</title>
+<style>
+:root{--bg:#f4efe6;--card:#fffdf8;--ink:#2d2a24;--muted:#6f685c;--line:#e2d7c3;--acc:#c0662b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif}
+header{position:sticky;top:0;z-index:5;background:rgba(244,239,230,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hin{max-width:1100px;margin:auto;padding:8px 12px;display:flex;gap:8px;align-items:center}
+.hin h1{font-size:1.05em;margin:0;white-space:nowrap}
+.back{color:inherit;text-decoration:none;border:1px solid var(--line);border-radius:9px;padding:3px 9px;font-size:.85em;background:#fff;white-space:nowrap}
+#q{flex:1;min-width:0;padding:7px 12px;border-radius:20px;border:1.5px solid var(--line);font:inherit;background:#fff}
+.tabs{max-width:1100px;margin:auto;display:flex;gap:4px;padding:0 12px}
+.tabs button{border:none;background:none;font:inherit;padding:8px 12px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;font-weight:700}
+.tabs button.on{color:var(--acc);border-color:var(--acc)}
+main{max-width:1100px;margin:auto;padding:10px 12px 70px}
+.stat{font-size:.82em;color:var(--muted);margin:2px 0 8px}
+.groups{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}
+.chip{flex:none;border:1.5px solid var(--line);background:#fff;border-radius:18px;padding:5px 12px;font:inherit;font-size:.86em;cursor:pointer;white-space:nowrap}
+.chip.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.cats{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
+.cats .chip.on{background:#f3dfcc;color:var(--ink)}
+.cats small{color:var(--muted);margin-left:3px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:14px 12px}
+.book{cursor:pointer;display:flex;flex-direction:column;gap:5px}
+.cv{position:relative;aspect-ratio:3/4;border-radius:6px 10px 10px 6px;overflow:hidden;box-shadow:0 4px 10px rgba(60,40,20,.18),inset 4px 0 0 rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;color:#fff;font-size:2em;transition:transform .15s}
+.book:hover .cv{transform:translateY(-3px)}
+.cv img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cv .pbar{position:absolute;left:0;right:0;bottom:0;height:5px;background:rgba(0,0,0,.25)}
+.cv .pbar i{display:block;height:100%;background:#ffb54d}
+.cv .badge{position:absolute;top:5px;right:5px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;border-radius:8px;padding:0 6px;z-index:1}
+.book b{font-size:.82em;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-all}
+.book small{color:var(--muted);font-size:.72em}
+.hist{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0;display:flex;gap:10px;align-items:center;cursor:pointer}
+.hist .cv{width:46px;flex:none;font-size:1.1em}
+.hist .info{flex:1;min-width:0}.hist .info b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist .bar{height:5px;background:#eee3d0;border-radius:4px;overflow:hidden;margin-top:4px}.hist .bar i{display:block;height:100%;background:var(--acc)}
+.gate{max-width:360px;margin:60px auto;background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;text-align:center}
+.gate input{width:100%;padding:9px 12px;border-radius:10px;border:1.5px solid var(--line);font:inherit;margin:10px 0}
+.btn{border:none;background:var(--acc);color:#fff;border-radius:10px;padding:8px 16px;font:inherit;cursor:pointer}
+.empty{color:var(--muted);text-align:center;padding:30px}
+/* ===== 閱讀器 ===== */
+#reader{position:fixed;inset:0;z-index:20;display:none;flex-direction:column;--rb:#efe4c8;--rf:#3a2f1e;--rbar:rgba(239,228,200,.96)}
+#reader.on{display:flex}
+#reader[data-th="night"]{--rb:#121212;--rf:#cfcac2;--rbar:rgba(25,25,25,.96)}
+#reader[data-th="paper"]{--rb:#efe4c8;--rf:#3a2f1e;--rbar:rgba(239,228,200,.96)}
+#reader[data-th="eink"]{--rb:#f2f2f0;--rf:#000;--rbar:rgba(242,242,240,.97)}
+#reader[data-th="day"]{--rb:#ffffff;--rf:#1d1d1d;--rbar:rgba(255,255,255,.96)}
+#reader{background:var(--rb);color:var(--rf)}
+.rbar{display:flex;gap:6px;align-items:center;padding:6px 8px;background:var(--rbar);font-size:.88em;transition:opacity .25s;z-index:3}
+.rbar.bottom{flex-wrap:wrap;justify-content:center}
+#reader.hide .rbar{opacity:0;pointer-events:none}
+.rbar .t{flex:1;min-width:80px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700}
+.rbar button,.rbar a{background:transparent;color:inherit;border:1px solid rgba(128,128,128,.4);border-radius:8px;padding:4px 9px;font:inherit;cursor:pointer;text-decoration:none}
+.rbar button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.rbar input[type=range]{flex:1 1 100%;accent-color:var(--acc)}
+#stage{flex:1;overflow:auto;position:relative;perspective:1800px;display:flex;justify-content:center;align-items:flex-start}
+#page{transform-origin:left center;max-width:100%;padding:8px 0}
+#page canvas,#page img{display:block;max-width:100%;margin:auto;box-shadow:0 2px 14px rgba(0,0,0,.25)}
+#page.txt{max-width:720px;padding:22px 22px 80px;font-family:"Noto Serif TC","Songti TC","PMingLiU",serif;text-align:justify;white-space:pre-wrap;word-break:break-word;-webkit-font-smoothing:antialiased}
+.flipL{animation:flipL .45s ease}.flipR{animation:flipR .45s ease}
+@keyframes flipL{0%{transform:rotateY(0);opacity:1}45%{transform:rotateY(-80deg);opacity:.35}55%{transform:rotateY(80deg);opacity:.35}100%{transform:rotateY(0);opacity:1}}
+@keyframes flipR{0%{transform:rotateY(0);opacity:1}45%{transform:rotateY(80deg);opacity:.35}55%{transform:rotateY(-80deg);opacity:.35}100%{transform:rotateY(0);opacity:1}}
+#reader[data-th="night"] #page canvas{filter:invert(1) hue-rotate(180deg) contrast(1.05)}
+#reader[data-th="night"] #page img{filter:brightness(.8)}
+#reader[data-th="paper"] #page canvas{filter:sepia(.35) contrast(1.08)}
+#reader[data-th="eink"] #page canvas,#reader[data-th="eink"] #page img{filter:grayscale(1) contrast(1.35)}
+#reader.sharp[data-th="day"] #page canvas{filter:contrast(1.25)}
+#reader.sharp[data-th="paper"] #page canvas{filter:sepia(.35) contrast(1.3)}
+.msg{padding:40px;text-align:center;opacity:.8}
+.sum{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center}
+.sum.on{display:flex}
+.sum .box{background:var(--rb);color:var(--rf);width:min(760px,100%);max-height:82vh;overflow:auto;border-radius:16px 16px 0 0;padding:16px 18px 30px;line-height:1.8}
+.sum h3{margin:.2em 0 .4em}.sum li{margin:.25em 0}.sum .x{float:right;border:none;background:none;font-size:1.3em;color:inherit;cursor:pointer}
+.tapL,.tapR,.tapC{position:fixed;top:56px;bottom:96px;z-index:2}
+.tapL{left:0;width:25%}.tapR{right:0;width:25%}.tapC{left:25%;width:50%}
+</style></head><body>
+<header><div class="hin"><a class="back" href="../../os/index.html?view=edu">← 知識學習</a><h1>📚 書庫</h1><input id="q" placeholder="🔍 搜尋書名"></div>
+<div class="tabs"><button data-tab="shelf" class="on">書架</button><button data-tab="lib">書城</button><button data-tab="hist">閱讀紀錄</button></div></header>
+<main id="app"><div class="empty">載入中…</div></main>
+
+<div id="reader" data-th="paper">
+  <div class="rbar"><button id="rClose">✕</button><span class="t" id="rTitle"></span><span id="rPage"></span><a id="rDrive" target="_blank" rel="noopener">雲端</a></div>
+  <div id="stage"><div id="page"></div></div>
+  <div class="sum" id="sumBox"><div class="box" id="sumBody"></div></div>
+  <div class="tapL" id="tapL"></div><div class="tapC" id="tapC"></div><div class="tapR" id="tapR"></div>
+  <div class="rbar bottom">
+    <input type="range" id="rSlider" min="1" max="1" value="1">
+    <button data-th="day">☀️ 白</button><button data-th="paper">📜 護眼</button><button data-th="eink">📖 電子紙</button><button data-th="night">🌙 夜間</button>
+    <button id="rSum">📝 精華</button><button id="rMode">文字模式</button><button id="rSharp">✨ 清晰</button><button id="rMinus">A−</button><button id="rPlus">A＋</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+const GAS='https://script.google.com/macros/s/AKfycbzojXP0ixSsJqO1Ri2lfkdazTF-9XxoDqRYI0B4OEThkvjc95zacRflYtuArOd8ewHp/exec';
+const INLINE_MAX=40*1024*1024;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const COL=['#a0522d','#2f5d7c','#4f7a35','#9a3a24','#b9852c','#5a3a7a','#2a7a6a','#7a2a4a','#3a5a7a'];
+function load(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}}
+function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+let K=load('acc_lib_k',''),CAT=null,TAB='shelf',G='all',C='',Q='';
+let PROG=load('acc_lib_prog',{});            // 每本的進度 {id:{p,n,ts,done}}，同步到雲端（手機、電腦共用）
+let SET=Object.assign({th:'paper',sharp:true,fs:20,mode:'page'},load('acc_lib_set',{}));
+/* ===== 本機快取（看過的書不重複下載）：上限 600MB，滿了先清最久沒讀的 ===== */
+const CACHE_MAX=600*1024*1024;
+const IDB=new Promise((ok,no)=>{try{const r=indexedDB.open('acc_lib',1);r.onupgradeneeded=()=>{r.result.createObjectStore('b')};r.onsuccess=()=>ok(r.result);r.onerror=()=>ok(null)}catch(e){ok(null)}});
+async function idb(mode,fn){const db=await IDB;if(!db)return null;return new Promise(ok=>{try{const tx=db.transaction('b',mode),st=tx.objectStore('b');const r=fn(st);tx.oncomplete=()=>ok(r&&r.result);tx.onerror=()=>ok(null)}catch(e){ok(null)}})}
+async function cget(k){const v=await idb('readonly',st=>st.get(k));if(v){const m=load('acc_lib_cm',{});if(m[k]){m[k].ts=Date.now();store('acc_lib_cm',m)}}return v}
+async function cput(k,v,size){const m=load('acc_lib_cm',{});m[k]={s:size,ts:Date.now()};
+  let tot=Object.values(m).reduce((a,x)=>a+x.s,0);const old=Object.keys(m).sort((a,b)=>m[a].ts-m[b].ts);
+  while(tot>CACHE_MAX&&old.length){const o=old.shift();if(o===k)continue;tot-=m[o].s;delete m[o];await idb('readwrite',st=>st.delete(o))}
+  store('acc_lib_cm',m);await idb('readwrite',st=>st.put(v,k))}
+const api=qs=>fetch(GAS+'?k='+encodeURIComponent(K)+'&'+qs).then(r=>r.json());
+
+function gate(err){$('app').innerHTML='<div class="gate"><div style="font-size:2em">🔒</div><b>書庫密碼</b><p style="color:#6f685c;font-size:.88em">同一台裝置輸入一次就會記住</p><input id="pw" type="password"><div style="color:#9a3a24;min-height:1.4em">'+(err||'')+'</div><button class="btn" id="go">進入</button></div>';
+  $('go').onclick=()=>{K=$('pw').value.trim();start()};$('pw').onkeydown=e=>{if(e.key==='Enter')$('go').click()}}
+async function start(){
+  if(!K)return gate();
+  $('app').innerHTML='<div class="empty">載入書庫…</div>';
+  try{const j=await api('lib=cat');
+    if(!j.ok){if(j.error==='PASS'){store('acc_lib_k','');return gate('密碼不對')}throw j.error}
+    store('acc_lib_k',K);
+    if(!j.catalog){$('app').innerHTML='<div class="empty">書庫目錄還在整理中，完成後就會出現。</div>';return}
+    CAT=j.catalog;render();
+    api('lib=prog').then(p=>{if(p.ok){for(const id in p.prog){const a=PROG[id],b=p.prog[id];if(!a||b.ts>a.ts)PROG[id]=b}store('acc_lib_prog',PROG);if(!$('reader').classList.contains('on'))render()}}).catch(()=>{});
+  }catch(e){$('app').innerHTML='<div class="empty">讀取失敗：'+esc(e)+'</div>'}}
+const BY={};function book(id){if(CAT&&!Object.keys(BY).length)CAT.books.forEach(b=>BY[b.id]=b);return BY[id]}
+function catName(id){for(const g of CAT.groups)for(const c of g.cats)if(c.id===id)return c.name;return id}
+function groupOf(id){for(const g of CAT.groups)if(g.cats.some(c=>c.id===id))return g;return null}
+function pct(id){const p=PROG[id];return p&&p.n?Math.min(100,Math.round(p.p/p.n*100)):0}
+function ago(ts){if(!ts)return'';const d=(Date.now()-new Date(ts))/1000;return d<3600?Math.max(1,Math.round(d/60))+' 分鐘前':d<86400?Math.round(d/3600)+' 小時前':Math.round(d/86400)+' 天前'}
+
+function render(){
+  document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===TAB));
+  const q=Q.toLowerCase();let h='';
+  const reading=Object.keys(PROG).filter(id=>book(id)).sort((a,b)=>(PROG[b].ts||'').localeCompare(PROG[a].ts||''));
+  if(TAB==='shelf'&&!q){
+    const now=reading.filter(id=>!PROG[id].done),done=reading.filter(id=>PROG[id].done);
+    h+='<div class="stat">書架上 '+now.length+' 本在讀・'+done.length+' 本讀完・書庫共 '+CAT.books.length+' 本</div>';
+    h+=now.length?'<b>📖 正在讀</b><div class="grid" style="margin:8px 0 18px">'+now.map(id=>card(book(id))).join('')+'</div>':'<div class="empty">書架是空的，到「書城」挑一本開始讀吧！</div>';
+    if(done.length)h+='<b>✅ 讀完了</b><div class="grid" style="margin-top:8px">'+done.map(id=>card(book(id))).join('')+'</div>';
+  }else if(TAB==='hist'&&!q){
+    h+=reading.length?reading.slice(0,100).map(id=>{const b=book(id),p=PROG[id];return '<div class="hist" data-id="'+id+'">'+cover(b,true)+'<div class="info"><b>'+esc(b.title)+'</b><small>'+esc(catName(b.cat))+'・第 '+p.p+' / '+(p.n||'?')+' 頁・'+ago(p.ts)+(p.done?'・✅ 讀完':'')+'</small><div class="bar"><i style="width:'+pct(id)+'%"></i></div></div></div>'}).join(''):'<div class="empty">還沒有閱讀紀錄</div>';
+  }else{
+    h+='<div class="stat">共 <b>'+CAT.books.length+'</b> 本'+(CAT.dupes?'・已排除重複 '+CAT.dupes+' 個':'')+(CAT.blurry?'・模糊不收 '+CAT.blurry+' 本':'')+'・更新 '+esc(CAT.updated||'')+'</div>';
+    h+='<div class="groups"><button class="chip '+(G==='all'?'on':'')+'" data-g="all">全部</button>'+CAT.groups.map(g=>'<button class="chip '+(G===g.id?'on':'')+'" data-g="'+g.id+'">'+g.icon+' '+esc(g.name)+'</button>').join('')+'</div>';
+    if(G!=='all'){const g=CAT.groups.find(x=>x.id===G),cnt=id=>CAT.books.filter(b=>b.cat===id).length;
+      h+='<div class="cats"><button class="chip '+(C?'':'on')+'" data-c="">全部</button>'+g.cats.filter(c=>cnt(c.id)).map(c=>'<button class="chip '+(C===c.id?'on':'')+'" data-c="'+c.id+'">'+esc(c.name)+'<small>'+cnt(c.id)+'</small></button>').join('')+'</div>'}
+    const L=CAT.books.filter(b=>(!q||b.title.toLowerCase().includes(q))&&(G==='all'||(groupOf(b.cat)||{}).id===G)&&(!C||b.cat===C));
+    h+=L.length?'<div class="grid">'+L.slice(0,240).map(card).join('')+'</div>'+(L.length>240?'<div class="empty">還有 '+(L.length-240)+' 本，請搜尋或選類別</div>':''):'<div class="empty">沒有找到</div>';
+  }
+  $('app').innerHTML=h;
+  document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{G=b.dataset.g;C='';render()});
+  document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{C=b.dataset.c;render()});
+  document.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>openBook(b.dataset.id));
+  lazyCovers();
+}
+function cover(b,small){const g=groupOf(b.cat),i=Math.max(0,CAT.groups.indexOf(g)),p=pct(b.id);
+  return '<div class="cv" data-cv="'+b.id+'" style="background:linear-gradient(135deg,'+COL[i%COL.length]+',#2a2018)">'+(g?g.icon:'📄')+(small?'':(b.type==='img'?'<span class="badge">漫畫</span>':b.q==='text'?'<span class="badge">可文字</span>':''))+(p?'<div class="pbar"><i style="width:'+p+'%"></i></div>':'')+'</div>'}
+function card(b){const p=PROG[b.id];return '<div class="book" data-id="'+b.id+'">'+cover(b)+'<b>'+esc(b.title)+'</b><small>'+(p?(p.done?'✅ 讀完':'讀到 '+pct(b.id)+'%'):esc(catName(b.cat)))+'</small></div>'}
+/* 封面：捲到才載入，存在本機下次秒開 */
+const CVC={};try{localStorage.removeItem('acc_lib_cv')}catch(e){}
+const io=('IntersectionObserver' in window)?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){io.unobserve(e.target);putCover(e.target)}}),{rootMargin:'200px'}):null;
+function lazyCovers(){document.querySelectorAll('[data-cv]').forEach(el=>{if(CVC[el.dataset.cv])return putCover(el);io?io.observe(el):putCover(el)})}
+let cvBusy=0;
+async function putCover(el){const id=el.dataset.cv,b=book(id);if(!b||el.querySelector('img'))return;
+  let src=CVC[id]||await cget('cv:'+id);
+  if(src)CVC[id]=src;
+  else{if(cvBusy>=3)return setTimeout(()=>putCover(el),700);cvBusy++;            // 封面最多同時 3 個
+    try{const j=await api('lib=thumb&id='+id+(b.type==='img'?'&folder=1':''));if(j.ok){src='data:'+j.type+';base64,'+j.b64;CVC[id]=src;cput('cv:'+id,src,src.length)}}catch(e){}cvBusy--}
+  if(src){const im=new Image();im.src=src;im.alt='';el.prepend(im)}}
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{TAB=b.dataset.tab;render()});
+$('q').oninput=e=>{Q=e.target.value.trim();if(Q&&TAB!=='lib')TAB='lib';if(CAT)render()};
+
+/* ===== 閱讀器 ===== */
+let B=null,PDF=null,IMGS=null,CACHE={},PG=1,N=1,TXT={},busy=false;
+function applySet(){const r=$('reader');r.dataset.th=SET.th;r.classList.toggle('sharp',SET.sharp);
+  document.querySelectorAll('#reader button[data-th]').forEach(b=>b.classList.toggle('on',b.dataset.th===SET.th));
+  $('rSharp').classList.toggle('on',SET.sharp);$('rMode').classList.toggle('on',SET.mode==='text');store('acc_lib_set',SET)}
+async function openBook(id){
+  B=book(id);if(!B)return;PDF=null;IMGS=null;CACHE={};TXT={};
+  $('reader').classList.add('on');$('reader').classList.remove('hide');$('rTitle').textContent=B.title;
+  $('rDrive').href=B.type==='img'?'https://drive.google.com/drive/folders/'+id:'https://drive.google.com/file/d/'+id+'/view';
+  applySet();$('rMode').style.display=B.type==='pdf'?'':'none';
+  PG=(PROG[id]&&PROG[id].p)||1;$('page').className='';$('page').innerHTML='<div class="msg">開書中…</div>';
+  try{
+    if(B.type==='img'){let L=await cget('imgs:'+id);if(!L){const j=await api('lib=imgs&id='+id);if(!j.ok)throw j.error;L=j.images;cput('imgs:'+id,L,JSON.stringify(L).length)}IMGS=L;N=IMGS.length}
+    else if(B.type==='pdf'&&B.size<=INLINE_MAX&&window.pdfjsLib){
+      let u8=await cget('pdf:'+id);
+      if(u8)u8=new Uint8Array(u8);
+      else{const parts=[];let total=1;                                              // 一段一段下載，不同時開多條
+        for(let p=0;p<total;p++){const j=await api('lib=pdf&id='+id+'&part='+p);if(!j.ok)throw j.error;total=j.total;parts.push(j.b64);$('page').innerHTML='<div class="msg">下載中 '+Math.round((p+1)/total*100)+'%（之後不用再下載）</div>'}
+        const bin=atob(parts.join(''));u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
+        await cput('pdf:'+id,u8.buffer.slice(0),u8.length)}
+      pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      PDF=await pdfjsLib.getDocument({data:u8,cMapUrl:'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',cMapPacked:true,standardFontDataUrl:'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/standard_fonts/'}).promise;N=PDF.numPages}
+    else{$('page').innerHTML='<iframe src="https://drive.google.com/file/d/'+id+'/preview" style="width:100vw;height:78vh;border:0;background:#fff"></iframe>';N=0;$('rPage').textContent='（大檔用雲端預覽）';saveProg();return}
+    PG=Math.min(Math.max(1,PG),N);$('rSlider').max=N;await draw(0);
+  }catch(e){$('page').innerHTML='<div class="msg">開不起來：'+esc(e)+'<br><a href="'+$('rDrive').href+'" target="_blank">改用雲端開啟</a></div>'}
+}
+async function draw(dir){
+  if(busy)return;busy=true;
+  const pg=$('page');$('rPage').textContent=PG+' / '+N;$('rSlider').value=PG;
+  try{
+    if(IMGS){const src=await imgSrc(PG-1);pg.className='';pg.innerHTML='<img src="'+src+'" style="width:'+Math.round(SET.fs/20*100)+'%">';[PG,PG+1].forEach(i=>IMGS[i]&&imgSrc(i))}
+    else if(SET.mode==='text'&&PDF){const t=await pageText(PG);pg.className='txt';pg.style.fontSize=SET.fs+'px';pg.style.lineHeight='1.9';pg.textContent=t||'（這一頁沒有可抽出的文字，請切回「頁面模式」）'}
+    else if(PDF){const page=await PDF.getPage(PG),w=Math.min($('stage').clientWidth,1000)-8,v1=page.getViewport({scale:1});
+      const sc=w/v1.width*(SET.fs/20),q=Math.min(3,(window.devicePixelRatio||1)*(SET.sharp?2:1.25));
+      const vp=page.getViewport({scale:sc*q}),c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;c.style.width=(vp.width/q)+'px';
+      await page.render({canvasContext:c.getContext('2d',{alpha:false}),viewport:vp}).promise;pg.className='';pg.innerHTML='';pg.appendChild(c)}
+    if(dir){pg.classList.remove('flipL','flipR');void pg.offsetWidth;pg.classList.add(dir>0?'flipL':'flipR')}
+    $('stage').scrollTop=0;saveProg();
+  }finally{busy=false}
+}
+async function pageText(n){if(TXT[n])return TXT[n];const tc=await (await PDF.getPage(n)).getTextContent();let s='',lastY=null;
+  tc.items.forEach(it=>{const y=it.transform[5];if(lastY!==null&&Math.abs(y-lastY)>2)s+=(Math.abs(y-lastY)>18?'\n\n':'\n');s+=it.str;lastY=y});
+  s=s.replace(/[\u2E80-\u2FDF]/g,c=>c.normalize('NFKC')).replace(/([^\n。！？」.!?])\n(?!\n)/g,'$1');return TXT[n]=s.trim()}
+function imgSrc(i){if(!CACHE[i]){const k='img:'+IMGS[i].id;
+  CACHE[i]=cget(k).then(v=>v||api('lib=img&id='+IMGS[i].id).then(j=>{const d='data:'+j.type+';base64,'+j.b64;cput(k,d,d.length);return d}))}return CACHE[i]}
+let saveT=null;
+let lastSent={};
+function saveProg(){if(!B)return;PROG[B.id]={p:PG,n:N,ts:new Date().toISOString(),done:N>0&&PG>=N};store('acc_lib_prog',PROG);
+  const id=B.id,p=PG,n=N;if(lastSent[id]===p+'/'+n)return;                     // 頁數沒變就不上傳
+  clearTimeout(saveT);saveT=setTimeout(()=>{lastSent[id]=p+'/'+n;api('lib=progset&id='+id+'&p='+p+'&n='+n).catch(()=>{delete lastSent[id]})},1500)}
+function go(d){if(!N||busy)return;const n=PG+d;if(n<1||n>N)return;PG=n;draw(d)}
+$('tapR').onclick=()=>go(1);$('tapL').onclick=()=>go(-1);$('tapC').onclick=()=>$('reader').classList.toggle('hide');
+$('rSlider').oninput=e=>{$('rPage').textContent=e.target.value+' / '+N};$('rSlider').onchange=e=>{PG=+e.target.value;draw(1)};
+document.querySelectorAll('#reader button[data-th]').forEach(b=>b.onclick=()=>{SET.th=b.dataset.th;applySet()});
+$('rSharp').onclick=()=>{SET.sharp=!SET.sharp;applySet();draw(0)};
+$('rMode').onclick=()=>{SET.mode=SET.mode==='text'?'page':'text';applySet();draw(0)};
+$('rPlus').onclick=()=>{SET.fs=Math.min(34,SET.fs+2);applySet();draw(0)};$('rMinus').onclick=()=>{SET.fs=Math.max(14,SET.fs-2);applySet();draw(0)};
+/* 📝 書的精華 */
+$('rSum').onclick=async()=>{if(!B)return;const box=$('sumBox'),body=$('sumBody');box.classList.add('on');
+  const close='<button class="x" onclick="document.getElementById(\'sumBox\').classList.remove(\'on\')">✕</button>';
+  body.innerHTML=close+'<div class="msg">讀取精華…</div>';
+  try{let S=await cget('sum:'+B.id);
+    if(!S){const j=await api('lib=sum&id='+B.id);if(!j.ok)throw j.error;S=j.summary;if(S)cput('sum:'+B.id,S,JSON.stringify(S).length);
+      if(!S){if(!j.queued)await api('lib=sumreq&id='+B.id+'&t='+encodeURIComponent(B.title));
+        body.innerHTML=close+'<h3>📝 '+esc(B.title)+'</h3><p>這本書的精華還沒生成，<b>已經排進待生成清單</b>。每天中午會自動整理，完成後再按一次「📝 精華」就看得到。</p><p style="opacity:.7;font-size:.9em">每本只生成一次，生成後存起來，之後打開不用再等。漫畫、純圖片掃描書沒有文字，可能無法生成。</p>';return}}
+    const L=a=>a&&a.length?'<ul>'+a.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'';
+    body.innerHTML=close+'<h3>📝 '+esc(B.title)+'</h3>'+(S.oneLine?'<p><b>一句話：</b>'+esc(S.oneLine)+'</p>':'')+
+      (S.keyPoints?'<h4>🔑 重點</h4>'+L(S.keyPoints):'')+(S.chapters?'<h4>📚 章節摘要</h4>'+S.chapters.map(c=>'<p><b>'+esc(c.t)+'</b>　'+esc(c.s)+'</p>').join(''):'')+
+      (S.quotes?'<h4>💬 金句</h4>'+L(S.quotes):'')+(S.actions?'<h4>🛠️ 可以怎麼用</h4>'+L(S.actions):'')+'<p style="opacity:.6;font-size:.8em">AI 依書的內容整理，僅供參考・'+esc(S.at||'')+'</p>';
+  }catch(e){body.innerHTML=close+'<div class="msg">讀取失敗：'+esc(e)+'</div>'}};
+$('rClose').onclick=()=>{saveProg();$('reader').classList.remove('on');$('page').innerHTML='';PDF=null;IMGS=null;B=null;render()};
+document.addEventListener('keydown',e=>{if(!$('reader').classList.contains('on'))return;if(e.key==='ArrowRight'||e.key===' ')go(1);if(e.key==='ArrowLeft')go(-1);if(e.key==='Escape')$('rClose').click()});
+let tx=0,ty=0;
+[$('stage'),$('tapL'),$('tapR'),$('tapC')].forEach(el=>{
+  el.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+  el.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)){e.preventDefault();go(dx<0?1:-1)}})});
+start();
+</script>
+</body></html>
