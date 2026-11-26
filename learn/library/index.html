@@ -48,7 +48,10 @@ main{max-width:1100px;margin:auto;padding:10px 12px 70px}
 #reader[data-th="eink"]{--rb:#f2f2f0;--rf:#000;--rbar:rgba(242,242,240,.97)}
 #reader[data-th="day"]{--rb:#ffffff;--rf:#1d1d1d;--rbar:rgba(255,255,255,.96)}
 #reader{background:var(--rb);color:var(--rf)}
-.rbar{display:flex;gap:6px;align-items:center;padding:6px 8px;background:var(--rbar);font-size:.88em;transition:opacity .25s;z-index:3}
+.rbar{display:flex;gap:6px;align-items:center;padding:6px 8px;background:var(--rbar);font-size:.88em;transition:opacity .25s,transform .25s;z-index:4;position:absolute;left:0;right:0;top:0;box-shadow:0 1px 8px rgba(0,0,0,.15)}
+.rbar.bottom{top:auto;bottom:0;box-shadow:0 -1px 8px rgba(0,0,0,.15)}
+#rOpts{display:none;flex:1 1 100%;flex-wrap:wrap;gap:6px;justify-content:center}#rOpts.on{display:flex}
+.rbar .pg{font-size:.85em;opacity:.8;white-space:nowrap}
 .rbar.bottom{flex-wrap:wrap;justify-content:center}
 #reader.hide .rbar{opacity:0;pointer-events:none}
 .rbar .t{flex:1;min-width:80px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700}
@@ -57,7 +60,9 @@ main{max-width:1100px;margin:auto;padding:10px 12px 70px}
 .rbar input[type=range]{flex:1 1 100%;accent-color:var(--acc)}
 .optrow{flex:1 1 100%;display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap}.optrow span{opacity:.7;font-size:.9em}
 #page .dual{display:flex;gap:4px;justify-content:center;align-items:flex-start}#page .dual>div{display:flex;justify-content:center}
-#stage{flex:1;overflow:auto;position:relative;perspective:1800px;display:flex;justify-content:center;align-items:flex-start}
+#stage{position:absolute;inset:0;overflow:auto;perspective:1800px;display:flex;justify-content:center;align-items:flex-start;padding:48px 0 64px}
+#reader.hide #stage{padding:0}
+#stage.fitv{align-items:center}
 #page{transform-origin:left center;max-width:100%;padding:8px 0}
 #page canvas,#page img{display:block;max-width:100%;margin:auto;box-shadow:0 2px 14px rgba(0,0,0,.25)}
 #page.txt{max-width:720px;padding:22px 22px 80px;font-family:"Noto Serif TC","Songti TC","PMingLiU",serif;text-align:justify;white-space:pre-wrap;word-break:break-word;-webkit-font-smoothing:antialiased}
@@ -76,7 +81,7 @@ main{max-width:1100px;margin:auto;padding:10px 12px 70px}
 #page.vs .vp{min-height:60vh;margin:0 auto 10px;display:flex;justify-content:center;align-items:center;opacity:.8;font-size:.85em}
 #page.vs .vp.ok{min-height:0;opacity:1}
 #page.vs .vp.txt{display:block;max-width:720px;padding:18px 22px;font-family:"Noto Serif TC","Songti TC","PMingLiU",serif;text-align:justify;white-space:pre-wrap;word-break:break-word;line-height:1.9}
-#reader.vmode .tapL,#reader.vmode .tapR,#reader.vmode .tapC{display:none}
+
 /* 系列 */
 .cv .vols{position:absolute;left:6px;bottom:8px;background:rgba(0,0,0,.7);color:#fff;font-size:12px;line-height:1.5;padding:1px 8px;border-radius:9px;z-index:1}
 .cv.stack{box-shadow:4px 4px 0 -1px #d8c8b0,8px 8px 0 -2px #c4b294}
@@ -94,8 +99,7 @@ main{max-width:1100px;margin:auto;padding:10px 12px 70px}
 .sum.on{display:flex}
 .sum .box{background:var(--rb);color:var(--rf);width:min(760px,100%);max-height:82vh;overflow:auto;border-radius:16px 16px 0 0;padding:16px 18px 30px;line-height:1.8}
 .sum h3{margin:.2em 0 .4em}.sum li{margin:.25em 0}.sum .x{float:right;border:none;background:none;font-size:1.3em;color:inherit;cursor:pointer}
-.tapL,.tapR,.tapC{position:fixed;top:56px;bottom:96px;z-index:2}
-.tapL{left:0;width:25%}.tapR{right:0;width:25%}.tapC{left:25%;width:50%}
+
 </style></head><body>
 <header><div class="hin"><a class="back" href="../../os/index.html?view=edu">← 知識學習</a><h1>📚 書庫</h1><input id="q" placeholder="🔍 搜尋書名"></div>
 <div class="tabs"><button data-tab="shelf" class="on">書架</button><button data-tab="lib">書城</button><button data-tab="comic">🎨 漫畫</button><button data-tab="hist">閱讀紀錄</button></div></header>
@@ -105,13 +109,15 @@ main{max-width:1100px;margin:auto;padding:10px 12px 70px}
   <div class="rbar"><button id="rClose">✕</button><span class="t" id="rTitle"></span><span id="rPage"></span><a id="rDrive" target="_blank" rel="noopener">雲端</a></div>
   <div id="stage"><div id="page"></div></div>
   <div class="sum" id="sumBox"><div class="box" id="sumBody"></div></div>
-  <div class="tapL" id="tapL"></div><div class="tapC" id="tapC"></div><div class="tapR" id="tapR"></div>
   <div class="rbar bottom">
-    <input type="range" id="rSlider" min="1" max="1" value="1">
-    <div class="optrow"><span>翻頁</span><button data-fl="r2l">⬅️ 左翻</button><button data-fl="l2r">➡️ 右翻（日漫）</button><button data-fl="v">⬇️ 上下捲</button></div>
-    <div class="optrow"><span>版面</span><button data-ly="w">單頁</button><button data-ly="fit">整頁</button><button data-ly="dual">雙頁</button></div>
-    <button data-th="day">☀️ 白</button><button data-th="paper">📜 護眼</button><button data-th="eink">📖 電子紙</button><button data-th="night">🌙 夜間</button>
-    <button id="rSum">📝 精華</button><button id="rMode">文字模式</button><button id="rSharp">✨ 清晰</button><button id="rMinus">A−</button><button id="rPlus">A＋</button>
+    <input type="range" id="rSlider" min="1" max="1" value="1" style="flex:1 1 auto">
+    <button id="rOptBtn">⚙️ 設定</button><button id="rSum">📝 精華</button>
+    <div id="rOpts">
+      <div class="optrow"><span>翻頁</span><button data-fl="r2l">⬅️ 左翻</button><button data-fl="l2r">➡️ 右翻（日漫）</button><button data-fl="v">⬇️ 上下捲</button></div>
+      <div class="optrow"><span>版面</span><button data-ly="w">單頁</button><button data-ly="fit">整頁</button><button data-ly="dual">雙頁</button></div>
+      <div class="optrow"><span>底色</span><button data-th="day">☀️ 白</button><button data-th="paper">📜 護眼</button><button data-th="eink">📖 電子紙</button><button data-th="night">🌙 夜間</button></div>
+      <div class="optrow"><button id="rMode">文字模式</button><button id="rSharp">✨ 清晰</button><button id="rMinus">A−</button><button id="rPlus">A＋</button></div>
+    </div>
   </div>
 </div>
 
@@ -257,7 +263,7 @@ async function openBook(id){
       pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
       PDF=await pdfjsLib.getDocument({data:u8,cMapUrl:'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',cMapPacked:true,standardFontDataUrl:'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/standard_fonts/'}).promise;N=PDF.numPages}
     else{$('page').innerHTML='<iframe src="https://drive.google.com/file/d/'+id+'/preview" style="width:100vw;height:78vh;border:0;background:#fff"></iframe>';N=0;$('rPage').textContent='（大檔用雲端預覽）';saveProg();return}
-    PG=Math.min(Math.max(1,PG),N);$('rSlider').max=N;await draw(0);
+    PG=Math.min(Math.max(1,PG),N);$('rSlider').max=N;await draw(0);clearTimeout(window._hb);window._hb=setTimeout(()=>{if(!$('rOpts').classList.contains('on'))toggleBars(true)},2500);
   }catch(e){$('page').innerHTML='<div class="msg">開不起來：'+esc(e)+'<br><a href="'+$('rDrive').href+'" target="_blank">改用 Google 雲端開啟（要登入你的 Google 帳號）</a></div>'}
 }
 function dualOn(){return SET.ly==='dual'&&SET.flip!=='v'&&!(SET.mode==='text'&&PDF)}
@@ -271,7 +277,7 @@ async function renderOne(el,n,W,H){                                 // 在 W×H 
   await page.render({canvasContext:c.getContext('2d',{alpha:false}),viewport:vp}).promise;el.innerHTML='';el.appendChild(c)}
 async function renderInto(el,n,scroll){                            // 把第 n 頁（雙頁時 n、n+1）畫進 el
   if(SET.mode==='text'&&PDF){const t=await pageText(n);el.classList.add('txt');el.style.fontSize=SET.fs+'px';el.textContent=t||'（這一頁沒有可抽出的文字，請切回「頁面模式」）';return}
-  const st=$('stage'),W=Math.min(st.clientWidth,1400)-8,H=st.clientHeight-16;
+  const st=$('stage'),hid=$('reader').classList.contains('hide'),W=Math.min(st.clientWidth,1400)-8,H=window.innerHeight-(hid?20:124);
   if(scroll||SET.ly==='w')return renderOne(el,n,Math.min(W,1000),0);
   if(SET.ly==='fit')return renderOne(el,n,W,H);
   const a=document.createElement('div'),b=document.createElement('div'),box=document.createElement('div');box.className='dual';
@@ -342,16 +348,22 @@ function saveProg(){if(!B)return;PROG[B.id]={p:PG,n:N,ts:new Date().toISOString(
   clearTimeout(saveT);saveT=setTimeout(()=>{lastSent[id]=p+'/'+n;api('lib=progset&id='+id+'&p='+p+'&n='+n).catch(()=>{delete lastSent[id]})},1500)}
 function go(d){if(!N||busy)return;const n=PG+d*(dualOn()?2:1);if(n<1||n>N){if(n>N&&B){const nx=nextInSeries(B);if(nx){saveProg();openBook(nx.id)}}return}PG=n;if(SET.flip==='v')return scrollToPage(n);draw(d)}
 const side=x=>SET.flip==='l2r'?-x:x;                       // 日漫：左邊是下一頁
-$('tapR').onclick=()=>go(side(1));$('tapL').onclick=()=>go(side(-1));
-$('stage').addEventListener('click',e=>{if(SET.flip==='v'&&!e.target.closest('a,button'))$('reader').classList.toggle('hide')});$('tapC').onclick=()=>$('reader').classList.toggle('hide');
+let lastSwipe=0;
+$('stage').addEventListener('click',e=>{if(e.target.closest('a,button,iframe'))return;if(Date.now()-lastSwipe<400)return;
+  const x=e.clientX/window.innerWidth;
+  if(SET.flip==='v'||(x>.3&&x<.7)){toggleBars();return}
+  go(side(x>=.7?1:-1))});
+function toggleBars(force){const r=$('reader');const hide=force!==undefined?force:!r.classList.contains('hide');r.classList.toggle('hide',hide);if(hide)$('rOpts').classList.remove('on');if(SET.ly!=='w'&&SET.flip!=='v'&&B)setTimeout(()=>draw(0),260)}
 $('rSlider').oninput=e=>{$('rPage').textContent=e.target.value+' / '+N};$('rSlider').onchange=e=>{PG=+e.target.value;if(SET.flip==='v')scrollToPage(PG);else draw(1)};
 document.querySelectorAll('[data-fl]').forEach(b=>b.onclick=()=>{SET.flip=b.dataset.fl;applySet();$('stage').onscroll=null;if(VIO)VIO.disconnect();draw(0)});
 document.querySelectorAll('[data-ly]').forEach(b=>b.onclick=()=>{SET.ly=b.dataset.ly;applySet();if(dualOn()&&PG%2===0&&PG>1)PG--;draw(0)});
 document.querySelectorAll('#reader button[data-th]').forEach(b=>b.onclick=()=>{SET.th=b.dataset.th;applySet()});
+$('rOpts').addEventListener('click',e=>e.stopPropagation());
 $('rSharp').onclick=()=>{SET.sharp=!SET.sharp;applySet();draw(0)};
 $('rMode').onclick=()=>{SET.mode=SET.mode==='text'?'page':'text';applySet();draw(0)};
 $('rPlus').onclick=()=>{SET.fs=Math.min(34,SET.fs+2);applySet();draw(0)};$('rMinus').onclick=()=>{SET.fs=Math.max(14,SET.fs-2);applySet();draw(0)};
 /* 📝 書的精華 */
+$('rOptBtn').onclick=e=>{e.stopPropagation();$('rOpts').classList.toggle('on')};
 $('rSum').onclick=async()=>{if(!B)return;const box=$('sumBox'),body=$('sumBody');box.classList.add('on');
   const close='<button class="x" onclick="document.getElementById(\'sumBox\').classList.remove(\'on\')">✕</button>';
   body.innerHTML=close+'<div class="msg">讀取精華…</div>';
@@ -367,9 +379,9 @@ $('rSum').onclick=async()=>{if(!B)return;const box=$('sumBox'),body=$('sumBody')
 $('rClose').onclick=()=>{saveProg();document.querySelectorAll('.leaf,.nextVol').forEach(x=>x.remove());$('stage').onscroll=null;if(VIO)VIO.disconnect();$('reader').classList.remove('on');$('page').innerHTML='';PDF=null;IMGS=null;B=null;render()};
 document.addEventListener('keydown',e=>{if(!$('reader').classList.contains('on'))return;if(e.key===' '||e.key==='ArrowDown')go(1);if(e.key==='ArrowUp')go(-1);if(e.key==='ArrowRight')go(side(1));if(e.key==='ArrowLeft')go(side(-1));if(e.key==='Escape')$('rClose').click()});
 let tx=0,ty=0;
-[$('stage'),$('tapL'),$('tapR'),$('tapC')].forEach(el=>{
+[$('stage')].forEach(el=>{
   el.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
-  el.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;if(SET.flip!=='v'&&Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)){e.preventDefault();go(side(dx<0?1:-1))}})});
+  el.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;if(SET.flip!=='v'&&Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5){lastSwipe=Date.now();go(side(dx<0?1:-1))}})});
 let rzT=null;window.addEventListener('resize',()=>{if(!$('reader').classList.contains('on')||SET.flip==='v')return;clearTimeout(rzT);rzT=setTimeout(()=>draw(0),300)});
 start();
 </script>
