@@ -11,7 +11,7 @@ header{position:sticky;top:0;z-index:5;background:rgba(244,239,230,.96);backdrop
 .hin h1{font-size:1.05em;margin:0;white-space:nowrap}
 .back{color:inherit;text-decoration:none;border:1px solid var(--line);border-radius:9px;padding:3px 9px;font-size:.85em;background:#fff;white-space:nowrap}
 #q{flex:1;min-width:0;padding:7px 12px;border-radius:20px;border:1.5px solid var(--line);font:inherit;background:#fff}
-.tabs{max-width:1100px;margin:auto;display:flex;gap:4px;padding:0 12px}
+.tabs{max-width:1100px;margin:auto;display:flex;gap:2px;padding:0 8px;overflow-x:auto;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}.tabs button{white-space:nowrap;flex:none}
 .tabs button{border:none;background:none;font:inherit;padding:8px 12px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;font-weight:700}
 .tabs button.on{color:var(--acc);border-color:var(--acc)}
 main{max-width:1100px;margin:auto;padding:10px 12px 70px}
@@ -108,7 +108,43 @@ main{max-width:1100px;margin:auto;padding:10px 12px 70px}
 .sum .box{background:var(--rb);color:var(--rf);width:min(760px,100%);max-height:82vh;overflow:auto;border-radius:16px 16px 0 0;padding:16px 18px 30px;line-height:1.8}
 .sum h3{margin:.2em 0 .4em}.sum li{margin:.25em 0}.sum .x{float:right;border:none;background:none;font-size:1.3em;color:inherit;cursor:pointer}
 
+
+/* ===== 2026-11-27 照片相簿：縮圖牆＋放大左右滑＋分類 ===== */
+#album{position:fixed;inset:0;z-index:25;background:var(--bg,#f4efe6);color:inherit;display:none;flex-direction:column}
+#album.on{display:flex}
+#album .ah{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid rgba(128,128,128,.3)}
+#album .ah b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#album button{font:inherit;border:1px solid rgba(128,128,128,.45);background:rgba(255,255,255,.6);color:inherit;border-radius:10px;padding:6px 10px;cursor:pointer}
+#album button.on{background:var(--acc,#b5651d);color:#fff;border-color:transparent}
+#album .chips{display:flex;gap:6px;overflow-x:auto;padding:6px 10px;scrollbar-width:none}#album .chips::-webkit-scrollbar{display:none}
+#album .chips button{flex:none;white-space:nowrap;padding:4px 10px;font-size:.9em;border-radius:999px}#album .chips small{opacity:.7;margin-left:3px}
+#album .chips .lb{flex:none;align-self:center;font-size:.8em;opacity:.65}
+#alGrid{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;align-content:start;padding:2px}
+@media(min-width:700px){#alGrid{grid-template-columns:repeat(6,1fr)}}
+#alGrid .ph{position:relative;height:0;padding-top:100%;background:rgba(128,128,128,.18);overflow:hidden;cursor:pointer}
+#alGrid .ph img{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;display:block}
+#alGrid .ph img:not([src]){visibility:hidden}
+#alGrid .ph .tg{position:absolute;left:3px;bottom:3px;background:rgba(0,0,0,.6);color:#fff;font-size:.68em;padding:0 5px;border-radius:6px}
+#alGrid .ph .ck{position:absolute;right:4px;top:4px;width:22px;height:22px;border-radius:50%;border:2px solid #fff;background:rgba(0,0,0,.3);color:#fff;font-size:14px;line-height:19px;text-align:center}
+#alGrid .ph.sel{outline:3px solid var(--acc,#b5651d);outline-offset:-3px}#alGrid .ph.sel .ck{background:var(--acc,#b5651d)}
+#alGrid .more{grid-column:1/-1;padding:14px;text-align:center}
+#alBar{display:none;gap:6px;overflow-x:auto;padding:8px 10px;border-top:1px solid rgba(128,128,128,.3);align-items:center}#alBar.on{display:flex}#alBar button{flex:none;white-space:nowrap}
+#lb{position:fixed;inset:0;z-index:40;background:#000;color:#fff;display:none;flex-direction:column;touch-action:none}
+#lb.on{display:flex}
+#lb .lt{display:flex;align-items:center;gap:8px;padding:8px 10px;font-size:.9em}#lb .lt span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.85}
+#lb button,#lb a{font:inherit;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;border-radius:10px;padding:6px 10px;text-decoration:none;cursor:pointer}
+#lb button.on{background:#e0a030;color:#111}
+#lbStage{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#lbStage img{width:100%;height:100%;object-fit:contain;transition:transform .18s;will-change:transform}
+#lbStage .nav{position:absolute;top:0;bottom:0;width:22%;display:flex;align-items:center;justify-content:center;font-size:2em;opacity:.0}#lbStage .nav.l{left:0}#lbStage .nav.r{right:0}
+@media(pointer:fine){#lbStage .nav{opacity:.5}}
+#lbCats{display:flex;gap:6px;overflow-x:auto;padding:8px 10px;scrollbar-width:none}#lbCats button{flex:none;white-space:nowrap}
+#lbLoad{position:absolute;right:10px;bottom:8px;font-size:.8em;opacity:.7}
 </style></head><body>
+<div id="album"><div class="ah"><button id="alBack">←</button><b id="alTitle"></b><button id="alSort">新→舊</button><button id="alSel">☑ 選取</button></div>
+  <div class="chips" id="alKinds"></div><div class="chips" id="alCats"></div><div id="alGrid"></div><div id="alBar"></div></div>
+<div id="lb"><div class="lt"><button id="lbClose">✕</button><span id="lbName"></span><a id="lbDrive" target="_blank" rel="noopener">Drive</a></div>
+  <div id="lbStage"><img id="lbImg" alt=""><div class="nav l" id="lbPrev">‹</div><div class="nav r" id="lbNext">›</div><div id="lbLoad"></div></div><div id="lbCats"></div></div>
 <header><div class="hin"><a class="back" href="../../os/index.html?view=edu">← 知識學習</a><h1>📚 書庫</h1><input id="q" placeholder="🔍 搜尋書名"></div>
 <div class="tabs"><button data-tab="shelf" class="on">書架</button><button data-tab="lib">書城</button><button data-tab="comic">🎨 漫畫</button><button data-tab="photo">📷 照片</button><button data-tab="hist">閱讀紀錄</button></div></header>
 <main id="app"><div class="empty">載入中…</div></main>
@@ -228,7 +264,7 @@ function render(){
     if(done.length)h+='<b>✅ 讀完了</b><div class="grid" style="margin-top:8px">'+done.map(id=>card(book(id))).join('')+'</div>';
   }else if(TAB==='photo'){
     const PL=photoList().filter(b=>!q||b.title.toLowerCase().includes(q));
-    h+='<div class="stat">共 <b>'+PL.length+'</b> 本相簿・照片在你的 Google Drive，點相簿就能一張一張看（⚙️ 可改成直向捲動）</div>';
+    h+='<div class="stat">共 <b>'+PL.length+'</b> 本相簿・照片在你的 Google Drive，點相簿先看縮圖，點照片放大後左右滑；可以替照片貼分類（家庭、工廠、旅遊…）</div>';
     h+=PL.length?'<div class="grid">'+PL.map(b=>card(b)+(b.mine?'<button onclick="event.stopPropagation();if(confirm(\'從這裡拿掉這本相簿？（雲端照片不會刪）\'))delAlbum(\''+b.id+'\')" style="grid-column:auto;justify-self:start;font:inherit;font-size:.8em;border-radius:8px;padding:2px 10px;margin-top:-6px">🗑 拿掉</button>':'')).join('')+'</div>':'<div class="empty">沒有找到</div>';
     h+='<div style="margin-top:22px;padding:14px;border:1px dashed rgba(128,128,128,.5);border-radius:14px"><b>＋ 加一本相簿</b><p class="stat" style="margin:.3em 0 .6em">在 Google Drive 開那個放照片的資料夾 →「分享／複製連結」→ 貼在下面。</p><input id="alUrl" placeholder="貼上 Google Drive 資料夾連結" style="width:100%;box-sizing:border-box;font:inherit;padding:8px;border-radius:10px;border:1px solid rgba(128,128,128,.5);margin-bottom:6px"><input id="alName" placeholder="相簿名稱（例如 2024 西港）" style="width:100%;box-sizing:border-box;font:inherit;padding:8px;border-radius:10px;border:1px solid rgba(128,128,128,.5);margin-bottom:6px"><button class="btn" onclick="addAlbum()">加入</button> <span id="alMsg" style="color:#9a3a24"></span></div>';
   }else if(TAB==='hist'&&!q){
@@ -301,8 +337,73 @@ let B=null,PDF=null,IMGS=null,CACHE={},PG=1,N=1,TXT={},busy=false;
 function applySet(){const r=$('reader');r.dataset.th=SET.th;r.classList.toggle('sharp',SET.sharp);
   document.querySelectorAll('#reader button[data-th]').forEach(b=>b.classList.toggle('on',b.dataset.th===SET.th));
   $('rSharp').classList.toggle('on',SET.sharp);r.classList.toggle('dk1',SET.dark===1);r.classList.toggle('dk2',SET.dark===2);r.classList.toggle('zoom',SET.fs>20&&SET.mode!=='text');$('rDark').classList.toggle('on',!!SET.dark);$('rDark').textContent=['🖋 加深','🖋 加深 1','🖋 加深 2'][SET.dark||0];document.querySelectorAll('[data-fl]').forEach(b=>b.classList.toggle('on',b.dataset.fl===SET.flip));document.querySelectorAll('[data-ly]').forEach(b=>b.classList.toggle('on',b.dataset.ly===SET.ly));r.classList.toggle('vmode',SET.flip==='v');$('rMode').classList.toggle('on',SET.mode==='text');store('acc_lib_set',SET)}
+/* ===== 照片相簿（像手機相簿）=====
+   點相簿 → 縮圖牆（上下滑、捲到才載入、存本機下次秒開）；點照片 → 放大，左右滑換張、往下滑關閉、點兩下放大。
+   「性質」自動分（看檔名）：相機照片／截圖／WhatsApp／其他圖片。「分類」是你自己貼的標籤（家庭、工廠、旅遊…可自己加），
+   可以在放大時點下面的標籤，或按「☑ 選取」一次選很多張再貼。標籤存在這台裝置；雲端若有 AI 分好的標籤檔（summaries/<相簿代號>.json 的 photoTags）也會讀進來，手動貼的優先。 */
+let PCATS=load('acc_lib_pcats',['家庭','工廠','旅遊','美食','朋友','文件','其他']),PTAG=load('acc_lib_ptags',{}),AITAG={},AL=null,LBI=-1,LBF=[];
+function kindOf(n){n=String(n||'').toLowerCase();if(/screenshot|screen[_ ]shot|截圖|螢幕/.test(n))return '截圖';if(/-wa\d|whatsapp/.test(n))return 'WhatsApp';if(/^(img|pxl|dsc|dscn|mvimg|pano|p_|cimg|photo)[_-]?\d|^\d{8}[_-]\d{4,6}|^\d{4}-\d{2}-\d{2}/.test(n))return '相機照片';return '其他圖片'}
+const tagOf=id=>PTAG[id]!==undefined?PTAG[id]:(AITAG[id]||'');
+function setTag(ids,c){ids.forEach(id=>{if(c)PTAG[id]=c;else PTAG[id]=''});store('acc_lib_ptags',PTAG)}
+const thQ=[];let thBusy=0;const THC={};
+async function getThumb(id){if(THC[id])return THC[id];let s=await cget('th:'+id);if(!s){let j=null;try{j=await api('lib=thumb&id='+id)}catch(e){}
+    if(!j||!j.ok||!j.b64){try{j=await api('lib=img&id='+id)}catch(e){j=null}}
+    if(j&&j.b64){s='data:'+j.type+';base64,'+j.b64;if(s.length<400000)cput('th:'+id,s,s.length)}}
+  if(s)THC[id]=s;return s}
+function pumpTh(){while(thBusy<4&&thQ.length){const el=thQ.shift();if(!el.isConnected)continue;thBusy++;getThumb(el.dataset.th).then(s=>{if(s&&el.isConnected){el.src=s}}).catch(()=>{}).then(()=>{thBusy--;pumpTh()})}}
+const thIO=('IntersectionObserver' in window)?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){thIO.unobserve(e.target);thQ.push(e.target);pumpTh()}}),{root:null,rootMargin:'400px'}):null;
+function alFiltered(){let L=AL.L.filter(x=>(!AL.fk||x.k===AL.fk)&&(!AL.fc||(AL.fc==='-'?!tagOf(x.id):tagOf(x.id)===AL.fc)));if(AL.desc)L=L.slice().reverse();return L}
+async function openAlbum(id){const b=book(id);if(!b)return;AL={id,title:b.title,L:[],fk:'',fc:'',desc:true,sel:null,show:240};AITAG={};
+  $('album').classList.add('on');$('alTitle').textContent=b.title;$('alGrid').innerHTML='<div class="more">開相簿中…</div>';$('alKinds').innerHTML=$('alCats').innerHTML='';history.pushState({al:1},'');
+  try{let L=await cget('imgs:'+id);if(!L){const j=await api('lib=imgs&id='+id);if(!j.ok)throw j.error;L=j.images;cput('imgs:'+id,L,JSON.stringify(L).length)}
+    AL.L=L.map(x=>({id:x.id,name:x.name||'',k:kindOf(x.name)})).sort((a,c)=>a.name.localeCompare(c.name,'en',{numeric:true}));
+    PROG[id]={p:1,n:AL.L.length,ts:new Date().toISOString(),done:false};store('acc_lib_prog',PROG);
+    renderAlbum();
+    api('lib=sum&id='+id).then(j=>{const t=j&&j.ok&&j.summary&&j.summary.photoTags;if(t&&AL&&AL.id===id){AITAG=t;if(t._cats)t._cats.forEach(c=>{if(!PCATS.includes(c))PCATS.push(c)});renderAlbum()}}).catch(()=>{});
+  }catch(e){$('alGrid').innerHTML='<div class="more">這本相簿開不起來：'+esc(e)+'</div>'}}
+function renderAlbum(){if(!AL)return;const cnt=(f)=>AL.L.filter(f).length,ks=['相機照片','截圖','WhatsApp','其他圖片'];
+  $('alKinds').innerHTML='<span class="lb">性質</span><button data-k="" class="'+(AL.fk?'':'on')+'">全部<small>'+AL.L.length+'</small></button>'+ks.filter(k=>cnt(x=>x.k===k)).map(k=>'<button data-k="'+k+'" class="'+(AL.fk===k?'on':'')+'">'+k+'<small>'+cnt(x=>x.k===k)+'</small></button>').join('');
+  $('alCats').innerHTML='<span class="lb">分類</span><button data-c="" class="'+(AL.fc?'':'on')+'">全部</button>'+PCATS.map(c=>'<button data-c="'+esc(c)+'" class="'+(AL.fc===c?'on':'')+'">'+esc(c)+'<small>'+cnt(x=>tagOf(x.id)===c)+'</small></button>').join('')+'<button data-c="-" class="'+(AL.fc==='-'?'on':'')+'">未分類<small>'+cnt(x=>!tagOf(x.id))+'</small></button><button id="alNewCat">＋ 新分類</button>';
+  const F=alFiltered();LBF=F;$('alSort').textContent=AL.desc?'新→舊':'舊→新';$('alSel').classList.toggle('on',!!AL.sel);
+  $('alGrid').innerHTML=F.length?F.slice(0,AL.show).map((x,i)=>'<div class="ph'+(AL.sel&&AL.sel.has(x.id)?' sel':'')+'" data-i="'+i+'"><img data-th="'+x.id+'" alt="" loading="lazy">'+(tagOf(x.id)?'<span class="tg">'+esc(tagOf(x.id))+'</span>':'')+(AL.sel?'<span class="ck">'+(AL.sel.has(x.id)?'✓':'')+'</span>':'')+'</div>').join('')+(F.length>AL.show?'<div class="more"><button id="alMore">再看 '+Math.min(240,F.length-AL.show)+' 張（還有 '+(F.length-AL.show)+' 張）</button></div>':''):'<div class="more">這個分類還沒有照片</div>';
+  document.querySelectorAll('#alGrid img[data-th]').forEach(el=>{if(THC[el.dataset.th])el.src=THC[el.dataset.th];else if(thIO)thIO.observe(el);else{thQ.push(el);pumpTh()}});
+  document.querySelectorAll('#alKinds [data-k]').forEach(b=>b.onclick=()=>{AL.fk=b.dataset.k;AL.show=240;renderAlbum();$('alGrid').scrollTop=0});
+  document.querySelectorAll('#alCats [data-c]').forEach(b=>b.onclick=()=>{AL.fc=b.dataset.c;AL.show=240;renderAlbum();$('alGrid').scrollTop=0});
+  $('alNewCat').onclick=()=>{const n=(prompt('新分類名稱（例如：宿舍、驗廠、小孩）')||'').trim();if(n&&!PCATS.includes(n)){PCATS.push(n);store('acc_lib_pcats',PCATS);renderAlbum()}};
+  if($('alMore'))$('alMore').onclick=()=>{const st=$('alGrid').scrollTop;AL.show+=240;renderAlbum();$('alGrid').scrollTop=st};
+  document.querySelectorAll('#alGrid .ph').forEach(d=>d.onclick=()=>{const x=F[+d.dataset.i];if(AL.sel){AL.sel.has(x.id)?AL.sel.delete(x.id):AL.sel.add(x.id);d.classList.toggle('sel');d.querySelector('.ck').textContent=AL.sel.has(x.id)?'✓':'';paintBar()}else openLb(+d.dataset.i)});
+  paintBar()}
+function paintBar(){const bar=$('alBar');if(!AL||!AL.sel){bar.classList.remove('on');return}bar.classList.add('on');
+  bar.innerHTML='<b style="flex:none">已選 '+AL.sel.size+' 張 →</b>'+PCATS.map(c=>'<button data-sc="'+esc(c)+'">'+esc(c)+'</button>').join('')+'<button data-sc="">清除分類</button>';
+  bar.querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{if(!AL.sel.size)return;setTag([...AL.sel],b.dataset.sc);AL.sel=new Set();const st=$('alGrid').scrollTop;renderAlbum();$('alGrid').scrollTop=st})}
+function closeAlbum(){$('album').classList.remove('on');AL=null;thQ.length=0;render()}
+$('alBack').onclick=()=>history.back();$('alSort').onclick=()=>{AL.desc=!AL.desc;renderAlbum();$('alGrid').scrollTop=0};$('alSel').onclick=()=>{AL.sel=AL.sel?null:new Set();const st=$('alGrid').scrollTop;renderAlbum();$('alGrid').scrollTop=st};
+/* 放大看：先放縮圖，原圖載好再換上；最近看的幾張留在記憶體 */
+const FULL=new Map();let lbZoom=false;
+async function getFull(id){if(FULL.has(id))return FULL.get(id);const j=await api('lib=img&id='+id);if(!j||!j.b64)throw 'x';const s='data:'+j.type+';base64,'+j.b64;FULL.set(id,s);if(FULL.size>10)FULL.delete(FULL.keys().next().value);return s}
+function openLb(i){$('lb').classList.add('on');history.pushState({lb:1},'');showLb(i)}
+function showLb(i){if(!LBF.length)return;LBI=(i+LBF.length)%LBF.length;const x=LBF[LBI],im=$('lbImg');lbZoom=false;im.style.transform='';
+  $('lbName').textContent=(LBI+1)+' / '+LBF.length+'　'+x.name;$('lbDrive').href='https://drive.google.com/file/d/'+x.id+'/view';
+  im.src=FULL.get(x.id)||THC[x.id]||'';$('lbLoad').textContent=FULL.has(x.id)?'':'載入原圖…';
+  if(!FULL.has(x.id))getFull(x.id).then(s=>{if(LBF[LBI]&&LBF[LBI].id===x.id){im.src=s;$('lbLoad').textContent=''}}).catch(()=>{if(LBF[LBI]&&LBF[LBI].id===x.id)$('lbLoad').textContent='原圖載不到，可按 Drive 開'});
+  const nx=LBF[(LBI+1)%LBF.length];if(nx&&!FULL.has(nx.id))setTimeout(()=>{if(LBF[LBI]&&LBF[LBI].id===x.id)getFull(nx.id).catch(()=>{})},600);
+  const t=tagOf(x.id);$('lbCats').innerHTML=PCATS.map(c=>'<button data-lc="'+esc(c)+'" class="'+(t===c?'on':'')+'">'+esc(c)+'</button>').join('');
+  $('lbCats').querySelectorAll('[data-lc]').forEach(b=>b.onclick=()=>{setTag([x.id],tagOf(x.id)===b.dataset.lc?'':b.dataset.lc);showLb(LBI)})}
+function closeLb(){$('lb').classList.remove('on');if(AL){const st=$('alGrid').scrollTop;renderAlbum();$('alGrid').scrollTop=st}}
+$('lbClose').onclick=()=>history.back();$('lbPrev').onclick=()=>showLb(LBI-1);$('lbNext').onclick=()=>showLb(LBI+1);
+(function(){const st=$('lbStage');let x0=0,y0=0,t0=0,lastTap=0,mv=false;
+  st.addEventListener('touchstart',e=>{if(e.touches.length>1)return;x0=e.touches[0].clientX;y0=e.touches[0].clientY;t0=Date.now();mv=false},{passive:true});
+  st.addEventListener('touchmove',e=>{if(e.touches.length>1||lbZoom)return;const dx=e.touches[0].clientX-x0;mv=true;$('lbImg').style.transition='none';$('lbImg').style.transform='translateX('+dx+'px)'},{passive:true});
+  st.addEventListener('touchend',e=>{const im=$('lbImg');im.style.transition='';const t=e.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;
+    if(lbZoom){if(Math.abs(dx)<10&&Math.abs(dy)<10&&Date.now()-lastTap<320){lbZoom=false;im.style.transform=''}lastTap=Date.now();return}
+    if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){showLb(LBI+(dx<0?1:-1));return}
+    if(dy>90&&Math.abs(dy)>Math.abs(dx)){history.back();return}
+    im.style.transform='';
+    if(Math.abs(dx)<10&&Math.abs(dy)<10){if(Date.now()-lastTap<320){lbZoom=true;const r=st.getBoundingClientRect();im.style.transformOrigin=((t.clientX-r.left)/r.width*100)+'% '+((t.clientY-r.top)/r.height*100)+'%';im.style.transform='scale(2.6)'}lastTap=Date.now()}},{passive:true})})();
+window.addEventListener('keydown',e=>{if(!$('lb').classList.contains('on'))return;if(e.key==='ArrowLeft')showLb(LBI-1);else if(e.key==='ArrowRight')showLb(LBI+1);else if(e.key==='Escape')history.back()});
+window.addEventListener('popstate',()=>{if($('lb').classList.contains('on'))closeLb();else if($('album').classList.contains('on'))closeAlbum()});
 async function openBook(id){
-  B=book(id);if(!B)return;PDF=null;IMGS=null;CACHE={};TXT={};$('stage').onscroll=null;if(VIO)VIO.disconnect();document.querySelectorAll('.leaf,.nextVol').forEach(x=>x.remove());
+  B=book(id);if(!B)return;if(B.photo)return openAlbum(id);PDF=null;IMGS=null;CACHE={};TXT={};$('stage').onscroll=null;if(VIO)VIO.disconnect();document.querySelectorAll('.leaf,.nextVol').forEach(x=>x.remove());
   $('reader').classList.add('on');$('reader').classList.remove('hide');$('rTitle').textContent=B.title;
   $('rDrive').href=B.type==='img'?'https://drive.google.com/drive/folders/'+id:'https://drive.google.com/file/d/'+id+'/view';
   applySet();$('rMode').style.display=B.type==='pdf'?'':'none';
