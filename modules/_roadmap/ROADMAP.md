@@ -1,7 +1,31 @@
-# ACC Flow 個人工具改良 ROADMAP
+# ACC Flow 個人工具＋知識學習 改良 ROADMAP
 
-> 每晚排程自動改良 1～3 項，做完更新本檔。順序：漫畫生成 → 台股 → 影片分析 → 小說影片 → AI 簡報 → OCR。
-> 一個工具做到「完成」才換下一個。
+> 每晚排程自動改良 1～3 項，做完更新本檔。2026-11-27 Paul：「👤 個人工具」與「🎓 知識學習」兩個選單的東西都要在自動優化中，直到完整。
+> 一項做到「完成」才換下一項；全部完成後改成每晚巡檢（錯誤、壞連結、手機跑版）。
+
+## 總表
+| 輪 | 項目 | 檔案 | 完成度 |
+|---|---|---|---|
+| 1 | 漫畫生成 | modules/manga-generator.html | 進行中 |
+| 1 | 台股財報 | modules/twse-stock-analyzer.html | 未開始 |
+| 1 | 影片分析 | modules/video-analyzer.html | 未開始 |
+| 1 | 小說影片 | modules/novel-to-video.html | 未開始 |
+| 1 | AI 簡報 | modules/ai-ppt-generator.html | 未開始 |
+| 1 | OCR | modules/ocr-tool.html | 未開始 |
+| 2 | 個人管理 | modules/life-manager.html | 未開始 |
+| 2 | 旅遊規劃 | modules/travel-planner.html | 未開始 |
+| 2 | 樂透統計 | modules/lottery-ai.html | 未開始 |
+| 2 | 個人專用／全部工具頁 | learn/index.html?view=personal、view=tools | 未開始 |
+| 3 | 學習中心與各分類頁 | learn/index.html?view=learning | 未開始 |
+| 3 | 繼續閱讀／進度 | learn/index.html?focus=progress | 未開始 |
+| 3 | 語言學習 | modules/language-learning.html | 未開始 |
+| 3 | 每日一課閱讀頁 | learn/daily/index.html | 未開始 |
+| 3 | 書庫 | learn/library/index.html | 未開始 |
+
+（小遊戲由「小遊戲＋測驗每晚新增」排程負責；每日一課內容由每週六排程補。）
+
+## 群組訊息規則
+- 2026-11-27：ACC Flow 群組（AI_acc_flow）每則訊息／摘要底下都加「🎓 知識學習｜👤 個人工具」兩個連結；每日一課 feed.json 全部已加，README 與發送程式已同步。
 
 ## 目前輪到：🎨 漫畫生成（modules/manga-generator.html）
 
