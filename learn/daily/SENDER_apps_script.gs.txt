@@ -6,6 +6,9 @@
  * 不要把 token 寫進 GitHub。
  */
 var DAILY_FEED_URL = 'https://saintdou-weng.github.io/vrt-acc-flow-cost/learn/daily/feed.json';
+// 2026-11-27 Paul：發到 ACC Flow 群組的每則訊息底下都要有「知識學習｜個人工具」兩個連結（feed 裡已加；這裡是保險，缺了才補）
+var ACC_FOOTER = '\n🎓 <a href="https://saintdou-weng.github.io/vrt-acc-flow-cost/os/index.html?view=edu">知識學習</a>｜👤 <a href="https://saintdou-weng.github.io/vrt-acc-flow-cost/os/index.html?view=acc">個人工具</a>';
+function withAccFooter_(tg) { return tg.indexOf('view=edu') >= 0 ? tg : tg + ACC_FOOTER; }
 
 function dailyToken_() { return PropertiesService.getScriptProperties().getProperty('BOT_TOKEN'); }   // ← 改成專案現有的
 function dailyChatId_() { return PropertiesService.getScriptProperties().getProperty('CHAT_ID'); }    // ← AI_acc_flow 群組
@@ -25,7 +28,7 @@ function sendDailyLesson() {
     if (sent.indexOf(it.id) >= 0) return;                              // 發過了，不重發
     var res = UrlFetchApp.fetch('https://api.telegram.org/bot' + dailyToken_() + '/sendMessage', {
       method: 'post', muteHttpExceptions: true,
-      payload: { chat_id: dailyChatId_(), text: it.tg, parse_mode: 'HTML', disable_web_page_preview: 'true' }
+      payload: { chat_id: dailyChatId_(), text: withAccFooter_(it.tg), parse_mode: 'HTML', disable_web_page_preview: 'true' }
     });
     if (JSON.parse(res.getContentText()).ok) sent.push(it.id);
   });

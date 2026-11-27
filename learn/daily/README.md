@@ -13,7 +13,8 @@ Paul 2026-11-24 指示，所有內容用繁體中文。
 
 ## 寫法（每一則）
 - 一則只講一個重點，手機一個畫面左右能讀完（Telegram HTML，`tg` ≤ 3500 字元，只用 `<b> <i> <code> <a href> <tg-spoiler>`，`& < >` 要跳脫）。
-- 開頭：`<emoji> <b>線名｜主題名</b>` ＋ `<i>標題 n/總數・程度</i>`（build 程式自動加），結尾自動加「➡️ 下一則」與「📚 ACC Flow 每日一課」連結。
+- 開頭：`<emoji> <b>線名｜主題名</b>` ＋ `<i>標題 n/總數・程度</i>`（build 程式自動加），結尾自動加「➡️ 下一則」與「📚 ACC Flow 每日一課」連結，最後一行再加 `🎓 知識學習｜👤 個人工具` 兩個連結（2026-11-27 Paul 指示，發到 ACC Flow 群組的訊息或摘要底下都要有）：
+  `🎓 <a href="https://saintdou-weng.github.io/vrt-acc-flow-cost/os/index.html?view=edu">知識學習</a>｜👤 <a href="https://saintdou-weng.github.io/vrt-acc-flow-cost/os/index.html?view=acc">個人工具</a>`
 - 一定要有**例子**（優先用咖啡店、工廠、日常生活）；能用 `<code>` 文字圖表／對照表就用；語言課每個詞附 🔊 連結——一律連到本站的發音頁 `say.html?l=km|ms&t=<詞>&r=<羅馬拼音>&z=<中文>`（每個值都要 URL 編碼，tg 裡的 & 寫成 &amp;）；這頁大字顯示＋按 ▶ 直接播 Google 語音（2026-11-25 Paul：直接連 Google 翻譯在 Telegram 裡看不到字也聽不到，不要再用）、羅馬拼音、中文意思、**諧音或畫面聯想**（並提醒諧音只是掛鉤，發音以 🔊 為準）。
 - 每則最後一個「✏️／🗣️ 今日練習」，2 分鐘內做得完。
 - 只寫確定正確的事實；研究、年代、數字要是可靠的；連結只用真的存在的網址。
