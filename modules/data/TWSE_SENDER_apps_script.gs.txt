@@ -6,13 +6,14 @@
  * 資料全部來自 TWSE 官方（openapi.twse.com.tw、www.twse.com.tw），台灣休市日（TWSE 沒有今天的資料）自動不發。
  * Bot token 與群組 chat id 沿用專案已有的設定；不要把 token 寫進 GitHub。
  * 2026-11-27 Paul：台股情報由平台時間到了自己發群組；Claude 只負責改良工具與資料。
+ * 2026-11-27 已部署到 VRT-ACC-Flow-Cost-Cloud（檔案「台股收盤摘要.gs」）；改讀 www.twse.com.tw rwd（當天就更新），OpenAPI 只當備援——OpenAPI 常隔天才更新，原本會每天被當成休市。
  */
 var TWSE_WATCHLIST_URL = 'https://saintdou-weng.github.io/vrt-acc-flow-cost/modules/data/twse-watchlist.json';
 var TWSE_TOOL_URL = 'https://saintdou-weng.github.io/vrt-acc-flow-cost/modules/twse-stock-analyzer.html';
 var TWSE_ACC_FOOTER = '\n🎓 <a href="https://saintdou-weng.github.io/vrt-acc-flow-cost/os/index.html?view=edu">知識學習</a>｜👤 <a href="https://saintdou-weng.github.io/vrt-acc-flow-cost/os/index.html?view=acc">個人工具</a>';
 
-function twseToken_() { return PropertiesService.getScriptProperties().getProperty('BOT_TOKEN'); }   // ← 改成專案現有的
-function twseChatId_() { return PropertiesService.getScriptProperties().getProperty('CHAT_ID'); }    // ← AI_acc_flow 群組
+function twseToken_() { return configuredBotToken_(); }   // 沿用本專案設定（不寫進 GitHub）
+function twseChatId_() { return configuredChatId_(); }    // AI_acc_flow 群組（與每日一課同一個）
 
 function twseJson_(url) {
   var res = UrlFetchApp.fetch(url + (url.indexOf('?') >= 0 ? '&' : '?') + '_=' + Date.now(), { muteHttpExceptions: true, headers: { Accept: 'application/json' } });
@@ -32,10 +33,26 @@ function twseRocDate_(s) {
   return y + '-' + m + '-' + d;
 }
 
+/** www.twse.com.tw rwd（當天收盤後就更新）→ 轉成 {欄位名: 值} 陣列；失敗回傳 null */
+function twseRwdRows_(url) {
+  try {
+    var j = twseJson_(url);
+    if (j.stat !== 'OK') return null;
+    var t = j.tables && j.tables.length ? (j.tables.filter(function (x) { return x.data && x.data.length; })[0] || {}) : j;
+    var f = t.fields || j.fields, d = t.data || j.data;
+    if (!f || !d || !d.length) return null;
+    return d.map(function (row) { var o = {}; f.forEach(function (k, i) { o[String(k).trim()] = row[i]; }); return o; });
+  } catch (e) { return null; }
+}
+
 /** 組今天的摘要；回傳 {date, text} 或 {skip:原因} */
 function buildTwseDaily_(today) {
   // 1) 大盤：FMTQIK（當月每日成交與加權指數）
-  var mk = twseJson_('https://openapi.twse.com.tw/v1/exchangeReport/FMTQIK');
+  var ymd = today.replace(/-/g, '');
+  /* 證交所網站偶爾擋 Google 的部分主機 → 兩個網址各試，最多 4 次 */
+  var mk = null, srcs = ['https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?response=json&date=' + ymd, 'https://www.twse.com.tw/exchangeReport/FMTQIK?response=json&date=' + ymd];
+  for (var t = 0; t < 4 && !(mk && twseRocDate_(twsePick_(mk[mk.length - 1] || {}, ['日期', 'Date'])) === today); t++) { if (t) Utilities.sleep(1500); mk = twseRwdRows_(srcs[t % 2]); }
+  if (!mk || twseRocDate_(twsePick_(mk[mk.length - 1] || {}, ['日期', 'Date'])) !== today) mk = twseJson_('https://openapi.twse.com.tw/v1/exchangeReport/FMTQIK');   // 備援（OpenAPI 常隔天才更新）
   var last = mk[mk.length - 1] || {};
   var mkDate = twseRocDate_(twsePick_(last, ['Date', '日期']));
   if (mkDate !== today) return { skip: '台灣休市或資料尚未更新（TWSE 最新日期 ' + (mkDate || '無') + '）' };
@@ -49,10 +66,10 @@ function buildTwseDaily_(today) {
   // 2) 三大法人（BFI82U，單位元）
   var flowLine = '';
   try {
-    var f = twseJson_('https://www.twse.com.tw/rwd/zh/fund/BFI82U?response=json&dayDate=' + today.replace(/-/g, '') + '&type=day');
-    if (f.stat === 'OK' && f.data) {
+    var fr = twseRwdRows_('https://www.twse.com.tw/rwd/zh/fund/BFI82U?response=json&dayDate=' + ymd + '&type=day');   // 欄位：單位名稱／買進金額／賣出金額／買賣差額
+    if (fr && fr.length) {
       var net = {};
-      f.data.forEach(function (r) { net[String(r[0])] = twseNum_(r[3]); });
+      fr.forEach(function (r) { var ks = Object.keys(r); net[String(r['單位名稱'] != null ? r['單位名稱'] : r[ks[0]])] = twseNum_(r['買賣差額'] != null ? r['買賣差額'] : r[ks[3]]); });
       var foreign = null, dealer = null, trust = null, total = null;
       Object.keys(net).forEach(function (n) {
         if (n.indexOf('外資') >= 0) foreign = (foreign || 0) + net[n];
@@ -66,7 +83,7 @@ function buildTwseDaily_(today) {
   } catch (err) { flowLine = ''; }
 
   // 3) 觀察清單：各產業代表股今日漲跌
-  var all = twseJson_('https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL');
+  var all = twseRwdRows_('https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY_ALL?response=json&date=' + ymd) || (Utilities.sleep(1500), twseRwdRows_('https://www.twse.com.tw/exchangeReport/STOCK_DAY_ALL?response=json&date=' + ymd)) || twseJson_('https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL');
   var byCode = {};
   all.forEach(function (r) { byCode[String(twsePick_(r, ['Code', '證券代號']))] = r; });
   var wl = twseJson_(TWSE_WATCHLIST_URL);
