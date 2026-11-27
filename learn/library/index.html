@@ -110,7 +110,7 @@ main{max-width:1100px;margin:auto;padding:10px 12px 70px}
 
 </style></head><body>
 <header><div class="hin"><a class="back" href="../../os/index.html?view=edu">← 知識學習</a><h1>📚 書庫</h1><input id="q" placeholder="🔍 搜尋書名"></div>
-<div class="tabs"><button data-tab="shelf" class="on">書架</button><button data-tab="lib">書城</button><button data-tab="comic">🎨 漫畫</button><button data-tab="hist">閱讀紀錄</button></div></header>
+<div class="tabs"><button data-tab="shelf" class="on">書架</button><button data-tab="lib">書城</button><button data-tab="comic">🎨 漫畫</button><button data-tab="photo">📷 照片</button><button data-tab="hist">閱讀紀錄</button></div></header>
 <main id="app"><div class="empty">載入中…</div></main>
 
 <div id="reader" data-th="paper">
@@ -187,7 +187,23 @@ async function start(){
     CAT=j.catalog;CAT.books=CAT.books.filter(viewable);CAT.books.forEach(b=>{b.raw=b.title;b.title=tidy(TFIX[b.id]||toTrad(b.title));if(b.sr)b.sr=toTrad(b.sr);if(b.type==='img'&&b.sr&&b.sr!=='新增資料夾'&&/^第?\s*[0-9０-９一二三四五六七八九十百]+\s*[卷集話话冊册回]?$/.test(b.title))b.title=b.sr+' '+b.title});CAT.all=CAT.books;CAT.books=CAT.all.filter(b=>!HIDDEN.has(b.id));SERIES=null;render();
     api('lib=prog').then(p=>{if(p.ok){for(const id in p.prog){const a=PROG[id],b=p.prog[id];if(!a||b.ts>a.ts)PROG[id]=b}store('acc_lib_prog',PROG);let ch=false;for(const id in PROG){const h=+PROG[id].n===-1;if(h&&!HIDDEN.has(id)){HIDDEN.add(id);ch=true}else if(!h&&HIDDEN.has(id)&&PROG[id].ts>(HID_TS[id]||'')){HIDDEN.delete(id);ch=true}}if(ch){store('acc_lib_hidden',[...HIDDEN]);CAT.books=CAT.all.filter(b=>!HIDDEN.has(b.id));BYreset();SERIES=null}if(!$('reader').classList.contains('on'))render()}}).catch(()=>{});
   }catch(e){$('app').innerHTML='<div class="empty">讀取失敗：'+esc(e)+'</div>'}}
-const BY={};function book(id){if(CAT&&!Object.keys(BY).length)(CAT.all||CAT.books).forEach(b=>BY[b.id]=b);return BY[id]}
+/* ===== 2026-11-27 Paul：書庫加「📷 照片」分頁放個人照片 =====
+   照片在 Google Drive「laptop backup」裡各年份手機備份的相機／WhatsApp 資料夾；每個資料夾當成一本相簿，用跟漫畫一樣的方式看（翻頁／直向捲動、放大、記住看到哪）。
+   其他資料夾可以在分頁最下面貼 Drive 資料夾連結自己加（存在這台裝置）。只放資料夾代號，照片本身不在這個網站上，要書庫密碼才看得到。 */
+const PHOTO_ALBUMS=[
+  ['1OUCFq37PSNIQUJWiuFx8PbLqQK1F2T_Q','2018 相機'],['1hJzF55cS02P0CWEnwPjrJcNnGOwKpRma','2018-10 相機'],['1qTT2cjFfcGVecMtxw_QSXchlNmsfC7h1','2018-11 相機'],
+  ['1ld8adfpypA0JL1omm99-VvVHQ_vHJv5s','2019-01 相機'],['1QcJtAWnaBZiznfRHSIrQc_f9apozWh1M','2019-01 WhatsApp'],['1bsZs0JALk9Cun11QT86UF8bQ1MU4iWSK','2019-06 相機'],['1iX_0-FeSjNQ0E-1G9XBFVNC8iYLCCiyj','2019 備份 相機'],
+  ['1dxmWhET7qcOhZtB5rbEEsXIEhMapfM8H','2020 相機'],['1TYS5cM1BZsNElw9_Fntx7AAh60D59ubd','2020 photos 相機'],
+  ['1w4pF6yo6AZrmYHwim8g8zqvkZh3HeHAQ','2021 相機'],['1t5xUHXHYasq58YnqYLzQah3GHGcy4dvV','2021 WhatsApp'],
+  ['1s7nZ6Z4BKZ_fKu9BIWzC3of1i7QKq93n','2023 Google Photos'],['18gSaidOlXQr8pxKiMmm11M45cBMpZVQ2','2023 Pictures'],['1goeVpC4f3xAjR7F--N2An_X1QpFt637m','WhatsApp 圖片（備份）']];
+let MYALB=load('acc_lib_albums',[]);                       // 自己加的相簿 [[id,名稱],…]
+function photoList(){return PHOTO_ALBUMS.concat(MYALB).map(a=>({id:a[0],title:a[1],raw:a[1],type:'img',cat:'photo',photo:1,mine:MYALB.includes(a)}))}
+function folderId(t){t=String(t||'').trim();const m=t.match(/folders\/([\w-]{20,})/)||t.match(/[?&]id=([\w-]{20,})/)||t.match(/^([\w-]{25,})$/);return m?m[1]:''}
+function addAlbum(){const id=folderId($('alUrl').value),nm=$('alName').value.trim();if(!id){$('alMsg').textContent='看不出資料夾代號，請貼 Google Drive 資料夾的連結';return}
+  if(PHOTO_ALBUMS.concat(MYALB).some(a=>a[0]===id)){$('alMsg').textContent='這個資料夾已經在相簿裡了';return}
+  MYALB.push([id,nm||'我的相簿 '+(MYALB.length+1)]);store('acc_lib_albums',MYALB);BYreset();render()}
+function delAlbum(id){MYALB=MYALB.filter(a=>a[0]!==id);store('acc_lib_albums',MYALB);BYreset();render()}
+const BY={};function book(id){if(CAT&&!Object.keys(BY).length){(CAT.all||CAT.books).forEach(b=>BY[b.id]=b);photoList().forEach(b=>{if(!BY[b.id])BY[b.id]=b})}return BY[id]}
 function BYreset(){for(const k in BY)delete BY[k]}
 const HID_TS=load('acc_lib_hid_ts',{});
 /* 2026-11-26 Paul：打不開的書可以刪掉 → 從書庫移除（雲端檔案不動；手機、電腦同步；「閱讀紀錄」最下面可以還原） */
@@ -196,7 +212,7 @@ function hideBook(id,on){const b=book(id);if(!b)return;const ts=new Date().toISO
   store('acc_lib_hidden',[...HIDDEN]);store('acc_lib_prog',PROG);CAT.books=CAT.all.filter(x=>!HIDDEN.has(x.id));SERIES=null}
 const ICON={biz:'💼',fin:'💰',self:'🌱',lit:'📖',hum:'🏛️',sci:'🔬',life:'☕',misc:'📰',comic:'🎨'};
 function gIcon(g){return ICON[g.id]||g.icon||'📚'}
-function catName(id){for(const g of CAT.groups)for(const c of g.cats)if(c.id===id)return c.name;return id}
+function catName(id){if(id==='photo')return '照片';for(const g of CAT.groups)for(const c of g.cats)if(c.id===id)return c.name;return id}
 function groupOf(id){for(const g of CAT.groups)if(g.cats.some(c=>c.id===id))return g;return null}
 function pct(id){const p=PROG[id];return p&&p.n?Math.min(100,Math.round(p.p/p.n*100)):0}
 function ago(ts){if(!ts)return'';const d=(Date.now()-new Date(ts))/1000;return d<3600?Math.max(1,Math.round(d/60))+' 分鐘前':d<86400?Math.round(d/3600)+' 小時前':Math.round(d/86400)+' 天前'}
@@ -210,6 +226,11 @@ function render(){
     h+='<div class="stat">書架上 '+now.length+' 本在讀・'+done.length+' 本讀完・書庫共 '+CAT.books.length+' 本</div>';
     h+=now.length?'<b>📖 正在讀</b><div class="grid" style="margin:8px 0 18px">'+now.map(id=>card(book(id))).join('')+'</div>':'<div class="empty">書架是空的，到「書城」挑一本開始讀吧！</div>';
     if(done.length)h+='<b>✅ 讀完了</b><div class="grid" style="margin-top:8px">'+done.map(id=>card(book(id))).join('')+'</div>';
+  }else if(TAB==='photo'){
+    const PL=photoList().filter(b=>!q||b.title.toLowerCase().includes(q));
+    h+='<div class="stat">共 <b>'+PL.length+'</b> 本相簿・照片在你的 Google Drive，點相簿就能一張一張看（⚙️ 可改成直向捲動）</div>';
+    h+=PL.length?'<div class="grid">'+PL.map(b=>card(b)+(b.mine?'<button onclick="event.stopPropagation();if(confirm(\'從這裡拿掉這本相簿？（雲端照片不會刪）\'))delAlbum(\''+b.id+'\')" style="grid-column:auto;justify-self:start;font:inherit;font-size:.8em;border-radius:8px;padding:2px 10px;margin-top:-6px">🗑 拿掉</button>':'')).join('')+'</div>':'<div class="empty">沒有找到</div>';
+    h+='<div style="margin-top:22px;padding:14px;border:1px dashed rgba(128,128,128,.5);border-radius:14px"><b>＋ 加一本相簿</b><p class="stat" style="margin:.3em 0 .6em">在 Google Drive 開那個放照片的資料夾 →「分享／複製連結」→ 貼在下面。</p><input id="alUrl" placeholder="貼上 Google Drive 資料夾連結" style="width:100%;box-sizing:border-box;font:inherit;padding:8px;border-radius:10px;border:1px solid rgba(128,128,128,.5);margin-bottom:6px"><input id="alName" placeholder="相簿名稱（例如 2024 西港）" style="width:100%;box-sizing:border-box;font:inherit;padding:8px;border-radius:10px;border:1px solid rgba(128,128,128,.5);margin-bottom:6px"><button class="btn" onclick="addAlbum()">加入</button> <span id="alMsg" style="color:#9a3a24"></span></div>';
   }else if(TAB==='hist'&&!q){
     h+=reading.length?reading.slice(0,100).map(id=>{const b=book(id),p=PROG[id];return '<div class="hist" data-id="'+id+'">'+cover(b,true)+'<div class="info"><b>'+esc(b.title)+'</b><small>'+esc(catName(b.cat))+'・第 '+p.p+' / '+(p.n||'?')+' 頁・'+ago(p.ts)+(p.done?'・✅ 讀完':'')+'</small><div class="bar"><i style="width:'+pct(id)+'%"></i></div></div></div>'}).join(''):'<div class="empty">還沒有閱讀紀錄</div>';
     if(HIDDEN.size)h+='<div class="stat" style="margin-top:18px">🗑 已從書庫移除 '+HIDDEN.size+' 本（雲端檔案還在）</div>'+[...HIDDEN].map(id=>{const b=book(id);return b?'<div class="hist"><div class="info"><b>'+esc(b.title)+'</b><small><button onclick="hideBook(\''+id+'\',false);render()" style="font:inherit;border-radius:8px;padding:2px 10px">↩ 還原</button></small></div></div>':''}).join('');
@@ -241,7 +262,7 @@ function render(){
   lazyCovers();
 }
 function cover(b,small){const g=groupOf(b.cat),i=Math.max(0,CAT.groups.indexOf(g)),p=pct(b.id);
-  return '<div class="cv" data-cv="'+b.id+'" style="background:linear-gradient(135deg,'+COL[i%COL.length]+',#2a2018)">'+(g?gIcon(g):'📄')+(small?'':(b.type==='img'?'<span class="badge">漫畫</span>':b.q==='text'?'<span class="badge">可文字</span>':''))+(p?'<div class="pbar"><i style="width:'+p+'%"></i></div>':'')+'</div>'}
+  return '<div class="cv" data-cv="'+b.id+'" style="background:linear-gradient(135deg,'+COL[i%COL.length]+',#2a2018)">'+(b.photo?'📷':g?gIcon(g):'📄')+(small?'':(b.photo?'<span class="badge">相簿</span>':b.type==='img'?'<span class="badge">漫畫</span>':b.q==='text'?'<span class="badge">可文字</span>':''))+(p?'<div class="pbar"><i style="width:'+p+'%"></i></div>':'')+'</div>'}
 /* ===== 系列：同書名不同卷／話放一起 ===== */
 const NUM='0-9０-９零〇一二三四五六七八九十百千兩';
 const VOLRE=new RegExp('(第\\s*['+NUM+']+\\s*[卷集話话册冊部篇回期章輯辑本]|vol\\.?\\s*\\d+|\\bv\\.?\\d+\\b|#\\s*\\d+|[（(\\[【]\\s*['+NUM+']+\\s*[)）\\]】]|\\d+\\s*[卷集話话册冊期本]|[（(]?(完|完結|全集)[)）]?)','gi');
@@ -273,7 +294,7 @@ async function putCover(el){const id=el.dataset.cv,b=book(id);if(!b||el.querySel
     try{const j=await api('lib=thumb&id='+id+(b.type==='img'?'&folder=1':''));if(j.ok){src='data:'+j.type+';base64,'+j.b64;CVC[id]=src;cput('cv:'+id,src,src.length)}}catch(e){}cvBusy--}
   if(src){const im=new Image();im.src=src;im.alt='';el.prepend(im)}}
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{TAB=b.dataset.tab;SER='';render()});
-$('q').oninput=e=>{Q=e.target.value.trim();if(Q&&TAB!=='lib')TAB='lib';if(CAT)render()};
+$('q').oninput=e=>{Q=e.target.value.trim();if(Q&&TAB!=='lib'&&TAB!=='photo')TAB='lib';if(CAT)render()};
 
 /* ===== 閱讀器 ===== */
 let B=null,PDF=null,IMGS=null,CACHE={},PG=1,N=1,TXT={},busy=false;
