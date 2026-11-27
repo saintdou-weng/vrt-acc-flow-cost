@@ -20,3 +20,17 @@ body{display:flex;flex-direction:column;align-items:center}
 .ge-menu .lv input{width:74px;text-align:center;font:inherit;font-size:18px;font-weight:800;border-radius:10px;border:1px solid #2a3260;background:#05060f;color:#ffd23f}
 .ge-menu .go{background:#16a34a;border-color:#16a34a;font-size:15px;flex:1}.ge-menu .go2{background:#ea580c;border-color:#ea580c;flex:1}
 .ge-menu .hint{text-align:center;color:#8890b8;font-size:12px}
+
+/* 2026-11-27 操控方式可選：搖桿／十字鍵／隨處滑＋左右手互換 */
+.ge-pad .dpad{display:none;pointer-events:auto;width:150px;height:150px;position:relative;touch-action:none;border-radius:50%;background:radial-gradient(circle,rgba(40,48,90,.35),rgba(25,30,60,.6))}
+.ge-pad .dpad u{position:absolute;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#fff;font-size:22px;background:rgba(50,60,115,.9);border:2px solid #4a58a0;box-sizing:border-box}
+.ge-pad .dpad .u{left:50px;top:0;width:50px;height:52px;border-radius:12px 12px 0 0;border-bottom:0}.ge-pad .dpad .d{left:50px;bottom:0;width:50px;height:52px;border-radius:0 0 12px 12px;border-top:0}
+.ge-pad .dpad .l{left:0;top:50px;width:52px;height:50px;border-radius:12px 0 0 12px;border-right:0}.ge-pad .dpad .r{right:0;top:50px;width:52px;height:50px;border-radius:0 12px 12px 0;border-left:0}
+.ge-pad .dpad:before{content:"";position:absolute;left:50px;top:50px;width:50px;height:50px;background:rgba(50,60,115,.9)}
+.ge-pad .dpad.ku .u,.ge-pad .dpad.kd .d,.ge-pad .dpad.kl .l,.ge-pad .dpad.kr .r{background:#7f92ff;color:#111}
+.ge-pad.ctl-dpad .stick{display:none}.ge-pad.ctl-dpad .dpad{display:block}
+.ge-pad.ctl-float .stick{visibility:hidden}
+.ge-pad.swap{flex-direction:row-reverse}.ge-pad.swap .ab{flex-direction:row-reverse}
+.ge-ghost{position:fixed;display:none;width:104px;height:104px;margin:-52px 0 0 -52px;border-radius:50%;border:2px solid rgba(150,170,255,.7);background:rgba(60,70,130,.25);pointer-events:none;z-index:4}
+.ge-ghost i{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#8ea0ff,#3d4aa0);opacity:.85}
+.ge-menu .ctl span{align-self:center;color:#8890b8;font-size:12px}.ge-menu .ctl button{padding:6px 8px;font-size:13px}

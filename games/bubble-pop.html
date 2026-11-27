@@ -1,0 +1,59 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Bubble Pop 泡泡龍</title><link rel="stylesheet" href="game.css"></head><body><canvas id="cv"></canvas>
+<script src="engine.js"></script><script>
+/* 泡泡龍（原創，2026-11-27）：瞄準發射泡泡，三顆以上同色相連就消掉，沒有連到天花板的會整串掉下來。清光過關（無限關，越後面顏色越多、排數越多、天花板下降越快）。
+   操作：直接點畫面上想打的位置就發射（最簡單）；或搖桿左右轉砲台、A 發射、B 和下一顆交換。虛線是瞄準線，會顯示牆壁反彈。 */
+const VW=160,VH=236,C=10,D=16,RAD=8,OX=0,TOP=14,RH=13.86,SX=80,SY=214;
+const COL=[['#ff7a7a','#c0182b'],['#6fd0ff','#1663c7'],['#7df08c','#13893a'],['#ffe680','#c98a00'],['#d19bff','#6a22c7'],['#ffb366','#c5530a'],['#f4f6fa','#7d8698']];
+const SKIN=['GLASS','CANDY','FACE'];
+let B,drop,ang,ball,cur,nxt,nc,shots,parts,falls,tt,seed,lv,limitShots;
+const R=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};
+const pos=(r,c)=>({x:OX+RAD+c*D+((r+drop.par)%2?RAD:0),y:TOP+drop.y+RAD+r*RH});
+const cols=r=>((r+drop.par)%2?C-1:C);
+function nb(r,c){const odd=(r+drop.par)%2;const o=odd?[[0,-1],[0,1],[-1,0],[-1,1],[1,0],[1,1]]:[[0,-1],[0,1],[-1,-1],[-1,0],[1,-1],[1,0]];return o.map(([dr,dc])=>[r+dr,c+dc]).filter(([a,b])=>a>=0&&b>=0&&b<cols(a))}
+const get=(r,c)=>B[r]&&B[r][c]!=null?B[r][c]:null;
+function colorsLeft(){const s=new Set();B.forEach(r=>r&&r.forEach(v=>{if(v!=null)s.add(v)}));return[...s]}
+function pick(){const cl=colorsLeft();return cl.length?cl[Math.floor(Math.random()*cl.length)]:0}
+function gen(l){lv=l;seed=l*7331+3;nc=Math.min(7,3+Math.floor((l+1)/3));const rows=Math.min(11,4+Math.floor(l/2));drop={y:0,par:0};B=[];
+  for(let r=0;r<rows;r++){B[r]=[];let prev=Math.floor(R()*nc);for(let c=0;c<cols(r);c++){if(R()>.45)prev=Math.floor(R()*nc);B[r][c]=(l>6&&R()<.06)?null:prev}}}
+function burst(x,y,c,n){for(let i=0;i<n;i++){const a=Math.random()*7,v=20+Math.random()*50;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,t:.4+Math.random()*.3,c})}}
+function place(G,x,y){/* 找最近的空格 */let best=null,bd=1e9;const maxR=B.length+1;for(let r=0;r<=maxR;r++)for(let c=0;c<cols(r);c++){if(get(r,c)!=null)continue;if(r>0&&!nb(r,c).some(([a,b])=>get(a,b)!=null))continue;const p=pos(r,c),d=(p.x-x)**2+(p.y-y)**2;if(d<bd){bd=d;best=[r,c]}}
+  if(!best)return;const[r,c]=best;B[r]=B[r]||[];B[r][c]=ball.c;
+  /* 同色相連 */const seen=new Set([r+','+c]),q=[[r,c]];while(q.length){const[a,b]=q.pop();nb(a,b).forEach(([e,f])=>{if(get(e,f)===ball.c&&!seen.has(e+','+f)){seen.add(e+','+f);q.push([e,f])}})}
+  if(seen.size>=3){seen.forEach(k=>{const[a,b]=k.split(',').map(Number),p=pos(a,b);burst(p.x,p.y,COL[B[a][b]][0],8);B[a][b]=null});G.add(seen.size*10);G.sfx.coin();
+    /* 沒連到天花板的掉下來 */const ok=new Set(),qq=[];for(let cc=0;cc<cols(0);cc++)if(get(0,cc)!=null){ok.add('0,'+cc);qq.push([0,cc])}while(qq.length){const[a,b]=qq.pop();nb(a,b).forEach(([e,f])=>{if(get(e,f)!=null&&!ok.has(e+','+f)){ok.add(e+','+f);qq.push([e,f])}})}
+    let n=0;B.forEach((row,a)=>row&&row.forEach((v,b)=>{if(v!=null&&!ok.has(a+','+b)){const p=pos(a,b);falls.push({x:p.x,y:p.y,vx:(Math.random()-.5)*30,vy:-20,c:v});B[a][b]=null;n++}}));if(n){G.add(n*n*10);G.sfx.clear()}}
+  else G.sfx.move();
+  shots++;if(shots%limitShots===0){drop.y+=RH;G.sfx.hit()}}
+function lowest(){let m=-1;B.forEach((row,r)=>row&&row.forEach(v=>{if(v!=null)m=Math.max(m,r)}));return m}
+function drawBub(g,G,x,y,c,r){r=r||RAD;const P=COL[c],sk=G.char;const gr=g.createRadialGradient(x-r*.35,y-r*.4,r*.1,x,y,r);gr.addColorStop(0,sk===1?'#fff':P[0]);gr.addColorStop(sk===1?.4:.55,P[0]);gr.addColorStop(1,P[1]);g.fillStyle=gr;g.beginPath();g.arc(x,y,r-.3,0,7);g.fill();
+  g.strokeStyle='rgba(0,0,0,.35)';g.lineWidth=.4;g.stroke();g.fillStyle='rgba(255,255,255,.75)';g.beginPath();g.ellipse(x-r*.35,y-r*.42,r*.28,r*.16,-.6,0,7);g.fill();
+  /* 每色一個記號，色弱也分得出來 */g.fillStyle='rgba(0,0,0,.35)';const s=r*.3;if(sk===2){g.fillRect(x-r*.35,y-r*.1,1.2,1.6);g.fillRect(x+r*.2,y-r*.1,1.2,1.6);g.fillRect(x-r*.25,y+r*.35,r*.5,.8)}
+  else if(c===0){g.beginPath();g.arc(x,y+1,s,0,7);g.fill()}else if(c===1){g.fillRect(x-s,y+1-s,s*2,s*2)}else if(c===2){g.beginPath();g.moveTo(x,y-s+1);g.lineTo(x+s,y+s+1);g.lineTo(x-s,y+s+1);g.fill()}else if(c===3){g.fillRect(x-s,y+.4,s*2,1.2);g.fillRect(x-.6,y-s+1,1.2,s*2)}
+  else if(c===4){g.beginPath();g.moveTo(x,y-s+1);g.lineTo(x+s,y+1);g.lineTo(x,y+s+1);g.lineTo(x-s,y+1);g.fill()}else if(c===5){g.fillRect(x-s,y,s*2,.9);g.fillRect(x-s,y+2,s*2,.9)}}
+function fire(G){if(ball)return;ball={x:SX,y:SY,vx:Math.sin(ang)*230,vy:-Math.cos(ang)*230,c:cur};cur=nxt;nxt=pick();G.sfx.shoot()}
+GE.run({id:'bubblepop',title:'BUBBLE POP',w:VW,h:VH,chars:SKIN,lives:1,
+ start(G,l){gen(l);ang=0;ball=null;shots=0;parts=[];falls=[];tt=0;limitShots=Math.max(4,9-Math.floor(l/8));cur=pick();nxt=pick();
+   if(!window._bpTap){window._bpTap=1;const cv=document.getElementById('cv');cv.addEventListener('pointerdown',e=>{const A=window.GE_API;if(!A||A.mode!=='play'||ball)return;const r=cv.getBoundingClientRect(),lx=(e.clientX-r.left)/r.width*VW,ly=(e.clientY-r.top)/r.height*VH;if(ly>SY-6)return;ang=Math.max(-1.35,Math.min(1.35,Math.atan2(lx-SX,SY-ly)));fire(A)})}},
+ step(G,dt,k,p){tt+=dt;const ax=G.ax;if(Math.abs(ax)>.12)ang=Math.max(-1.35,Math.min(1.35,ang+ax*Math.abs(ax)*1.8*dt+ax*.25*dt));
+   if(p.A||p.U)fire(G);if(p.B&&!ball){const t=cur;cur=nxt;nxt=t;G.sfx.blip()}
+   if(ball){let steps=4;while(steps--&&ball){ball.x+=ball.vx*dt/4;ball.y+=ball.vy*dt/4;if(ball.x<RAD){ball.x=RAD;ball.vx=-ball.vx}if(ball.x>VW-RAD){ball.x=VW-RAD;ball.vx=-ball.vx}
+       let hit=ball.y<=TOP+drop.y+RAD;if(!hit)for(let r=0;r<B.length&&!hit;r++)for(let c=0;c<cols(r);c++)if(get(r,c)!=null){const q=pos(r,c);if((q.x-ball.x)**2+(q.y-ball.y)**2<(D-2.5)**2){hit=true;break}}
+       if(hit){place(G,ball.x,ball.y);ball=null}}}
+   falls.forEach(f=>{f.vy+=400*dt;f.x+=f.vx*dt;f.y+=f.vy*dt});falls=falls.filter(f=>f.y<VH+10);parts.forEach(q=>{q.x+=q.vx*dt;q.y+=q.vy*dt;q.t-=dt});parts=parts.filter(q=>q.t>0);
+   const cl=colorsLeft();if(!cl.length&&!ball){G.add(500);G.win();return}if(cl.length){if(!cl.includes(cur))cur=pick();if(!cl.includes(nxt))nxt=pick()}
+   const lo=lowest();if(lo>=0&&pos(lo,0).y+RAD>SY-16)G.lose()},
+ draw(G){const g=G.g;const bg=g.createLinearGradient(0,0,0,VH);const h=(lv*37)%360;bg.addColorStop(0,'hsl('+h+',45%,16%)');bg.addColorStop(1,'hsl('+((h+60)%360)+',50%,8%)');g.fillStyle=bg;g.fillRect(0,0,VW,VH);
+   for(let i=0;i<14;i++){g.strokeStyle='rgba(255,255,255,.06)';g.lineWidth=.5;g.beginPath();g.arc((i*53)%VW,VH-((i*71+tt*10)%VH),3+i%4,0,7);g.stroke()}
+   /* 天花板 */const cg=g.createLinearGradient(0,TOP+drop.y-8,0,TOP+drop.y);cg.addColorStop(0,'#555c72');cg.addColorStop(1,'#2a2f40');g.fillStyle=cg;g.fillRect(0,10,VW,TOP+drop.y-10);g.fillStyle='#8a93b0';g.fillRect(0,TOP+drop.y-1.2,VW,1.2);
+   B.forEach((row,r)=>row&&row.forEach((v,c)=>{if(v!=null){const p=pos(r,c);drawBub(g,G,p.x,p.y,v)}}));
+   g.strokeStyle='rgba(255,90,90,.5)';g.setLineDash([3,3]);g.lineWidth=.6;g.beginPath();g.moveTo(0,SY-16);g.lineTo(VW,SY-16);g.stroke();
+   /* 瞄準線（含反彈） */if(!ball){g.strokeStyle='rgba(255,255,255,.55)';g.setLineDash([1.5,3]);g.lineWidth=.7;g.beginPath();let x=SX,y=SY,vx=Math.sin(ang),vy=-Math.cos(ang);g.moveTo(x,y);for(let i=0;i<120;i++){x+=vx*2;y+=vy*2;if(x<RAD||x>VW-RAD)vx=-vx;if(y<TOP+drop.y+RAD)break;let stop=false;for(let r=0;r<B.length&&!stop;r++)for(let c=0;c<cols(r);c++)if(get(r,c)!=null){const q=pos(r,c);if((q.x-x)**2+(q.y-y)**2<(D-2.5)**2){stop=true;break}}if(stop)break;g.lineTo(x,y)}g.stroke()}g.setLineDash([]);
+   /* 砲台 */g.save();g.translate(SX,SY);g.rotate(ang);const pg=g.createLinearGradient(-4,0,4,0);pg.addColorStop(0,'#8a93b0');pg.addColorStop(.5,'#e6e9f2');pg.addColorStop(1,'#5a6078');g.fillStyle=pg;g.fillRect(-3.5,-20,7,14);g.fillStyle='#ffd23f';g.fillRect(-4.5,-21,9,2);g.restore();
+   const bs=g.createRadialGradient(SX-3,SY+1,2,SX,SY+4,13);bs.addColorStop(0,'#7a84a8');bs.addColorStop(1,'#2a2f40');g.fillStyle=bs;g.beginPath();g.arc(SX,SY+6,12,Math.PI,0);g.fill();
+   if(!ball)drawBub(g,G,SX,SY,cur);else drawBub(g,G,ball.x,ball.y,ball.c);drawBub(g,G,SX+34,SY+8,nxt,6);G.text(g,'NEXT',SX+26,SY+17,'#889');
+   falls.forEach(f=>drawBub(g,G,f.x,f.y,f.c));g.globalCompositeOperation='lighter';parts.forEach(q=>{g.globalAlpha=Math.min(1,q.t*2.5);g.fillStyle=q.c;g.beginPath();g.arc(q.x,q.y,.6+q.t*2,0,7);g.fill()});g.globalAlpha=1;g.globalCompositeOperation='source-over';
+   const left=limitShots-shots%limitShots;G.text(g,'DROP IN '+left,4,SY+10,left<=2?'#f77':'#9ab');G.text(g,'TAP TO SHOOT',4,SY+17,'#667')},
+ titleArt(G,f){for(let i=0;i<7;i++)drawBub(G.g,G,26+i*18,110+Math.sin(f*3+i)*8,i,8)}
+});
+</script></body></html>

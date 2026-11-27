@@ -1,0 +1,59 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Gold Grabber 搶金塊</title><link rel="stylesheet" href="game.css"></head><body><canvas id="cv"></canvas>
+<script src="engine.js"></script><script>
+/* 搶金塊（原創，2026-11-27）：鉤子左右擺，按 A（或往下推、或直接點畫面）放鉤；抓到的東西越重拉得越慢。時間內賺到目標金額過關（無限關，每關礦坑由關卡號產生）。
+   金塊大中小、鑽石最值錢又輕、石頭不值錢又重、神秘袋隨機；抓到不想要的可以按 B 用炸藥炸掉（每關 3 支）。後面關卡有會跑的地鼠叼著鑽石。 */
+const VW=160,VH=230,HX=80,HY=38;
+const MINERS=[{n:'RED',c:'#e5383b',d:'#8d1b1d'},{n:'BLUE',c:'#2f7de1',d:'#173f80'},{n:'GREEN',c:'#2fb34a',d:'#16642a'}];
+const K={g1:{r:4.5,v:50,w:1.3},g2:{r:7.5,v:150,w:2.2},g3:{r:11.5,v:500,w:4},rk:{r:8,v:15,w:3.6},rk2:{r:11,v:30,w:5},dm:{r:4,v:600,w:1},bag:{r:6,v:0,w:1.8},mole:{r:5,v:650,w:1.2}};
+let items,ang,L,st,held,money,goal,timeL,dyn,parts,tt,seed,pops,lv;
+const R=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};
+function gen(l){lv=l;seed=l*6151+17;items=[];const n=9+Math.min(9,Math.floor(l/2));const pool=['g1','g1','g2','g2','g3','rk','rk','bag','dm'];if(l>4)pool.push('rk2','dm');if(l>8)pool.push('rk2','rk','g3');
+  for(let i=0,tries=0;i<n&&tries<400;tries++){const k=pool[Math.floor(R()*pool.length)],d=K[k],x=14+R()*(VW-28),y=78+R()*(VH-96);if(items.some(o=>Math.hypot(o.x-x,o.y-y)<o.r+d.r+5))continue;
+    items.push({k,x,y,r:d.r,v:k==='bag'?[50,100,200,400,700][Math.floor(R()*5)]:d.v,w:d.w,rot:R()*6});i++}
+  if(l>5)for(let i=0;i<Math.min(3,Math.floor(l/6));i++)items.push({k:'mole',x:20+R()*120,y:90+i*40,r:5,v:650,w:1.2,vx:(R()<.5?-1:1)*(18+Math.min(30,l)),rot:0});
+  const sum=items.reduce((a,o)=>a+(o.k[0]==='r'?0:o.v),0);goal=Math.min(200+l*60,Math.floor(sum*.5/10)*10)}
+function burst(x,y,n,c){for(let i=0;i<n;i++){const a=Math.random()*7,v=20+Math.random()*50;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-20,t:.5+Math.random()*.3,c})}}
+function drawItem(g,G,o){const x=o.x,y=o.y,r=o.r;g.save();g.translate(x,y);
+  if(o.k[0]==='g'){g.rotate(o.rot);const gr=g.createRadialGradient(-r*.35,-r*.4,r*.1,0,0,r*1.1);gr.addColorStop(0,'#fffbe0');gr.addColorStop(.35,'#ffd23f');gr.addColorStop(1,'#a86a00');g.fillStyle=gr;
+    g.beginPath();for(let k=0;k<9;k++){const a=k*Math.PI*2/9,rr=r*(.82+.18*Math.sin(k*2.3+o.rot*3));g.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}g.closePath();g.fill();g.strokeStyle='rgba(90,50,0,.6)';g.lineWidth=.4;g.stroke();
+    g.fillStyle='rgba(255,255,255,.8)';g.beginPath();g.ellipse(-r*.3,-r*.35,r*.25,r*.12,-.6,0,7);g.fill();if(Math.sin(tt*5+x)>.92){g.fillStyle='#fff';g.fillRect(r*.2,-r*.6,.6,2.4);g.fillRect(r*.2-.9,-r*.6+.9,2.4,.6)}}
+  else if(o.k[0]==='r'){g.rotate(o.rot);const gr=g.createLinearGradient(-r,-r,r,r);gr.addColorStop(0,'#b9bcc4');gr.addColorStop(1,'#4a4d57');g.fillStyle=gr;g.beginPath();for(let k=0;k<7;k++){const a=k*Math.PI*2/7,rr=r*(.8+.2*Math.cos(k*3.1));g.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}g.closePath();g.fill();
+    g.strokeStyle='rgba(0,0,0,.4)';g.lineWidth=.4;g.stroke();g.beginPath();g.moveTo(-r*.4,-r*.2);g.lineTo(r*.1,r*.1);g.lineTo(r*.4,-r*.3);g.stroke()}
+  else if(o.k==='dm'){const gr=g.createLinearGradient(-r,-r,r,r);gr.addColorStop(0,'#fff');gr.addColorStop(.5,'#7fe9ff');gr.addColorStop(1,'#1689c7');g.fillStyle=gr;g.beginPath();g.moveTo(-r,-r*.3);g.lineTo(-r*.5,-r);g.lineTo(r*.5,-r);g.lineTo(r,-r*.3);g.lineTo(0,r);g.closePath();g.fill();
+    g.strokeStyle='rgba(255,255,255,.8)';g.lineWidth=.3;g.beginPath();g.moveTo(-r,-r*.3);g.lineTo(r,-r*.3);g.moveTo(-r*.5,-r);g.lineTo(0,r);g.lineTo(r*.5,-r);g.stroke()}
+  else if(o.k==='bag'){const gr=g.createRadialGradient(-2,-1,1,0,0,r);gr.addColorStop(0,'#d9a066');gr.addColorStop(1,'#6b3a1e');g.fillStyle=gr;g.beginPath();g.ellipse(0,1,r,r*.9,0,0,7);g.fill();g.fillStyle='#8a5a2e';g.fillRect(-2,-r*.95,4,2.4);G.text(g,'?',-1,-1.5,'#fff3c0')}
+  else if(o.k==='mole'){if(o.vx>0)g.scale(-1,1);const gr=g.createRadialGradient(-1,-2,1,0,0,6);gr.addColorStop(0,'#b08a6a');gr.addColorStop(1,'#5a3a22');g.fillStyle=gr;g.beginPath();g.ellipse(0,0,6,4,0,0,7);g.fill();g.fillStyle='#ffb3c0';g.beginPath();g.arc(-6,0,1.1,0,7);g.fill();g.fillStyle='#111';g.fillRect(-4,-2,1,1);
+    g.fillStyle='#7fe9ff';g.beginPath();g.moveTo(-8.5,-2.5);g.lineTo(-6,-4.5);g.lineTo(-4,-2.5);g.lineTo(-6.2,0);g.fill()}
+  g.restore()}
+GE.run({id:'goldgrabber',title:'GOLD GRABBER',w:VW,h:VH,chars:MINERS.map(m=>m.n),lives:1,
+ start(G,l){gen(l);ang=0;L=12;st='swing';held=null;money=0;timeL=45+Math.min(25,l);dyn=3;parts=[];pops=[];tt=0;
+   if(!window._ggTap){window._ggTap=1;document.getElementById('cv').addEventListener('pointerdown',()=>{window._ggFire=1})}window._ggFire=0},
+ step(G,dt,k,p){tt+=dt;timeL-=dt;const fire=p.A||p.D||window._ggFire;window._ggFire=0;
+   items.forEach(o=>{if(o.k==='mole'&&o!==held){o.x+=o.vx*dt;if(o.x<10||o.x>VW-10)o.vx=-o.vx}});
+   if(st==='swing'){ang=Math.sin(tt*(1.5+Math.min(.8,lv*.02)))*1.25;if(fire){st='out';G.sfx.shoot()}}
+   else if(st==='out'){L+=120*dt;const tx=HX+Math.sin(ang)*L,ty=HY+Math.cos(ang)*L;const hit=items.find(o=>Math.hypot(o.x-tx,o.y-ty)<o.r+2);
+     if(hit){held=hit;st='back';G.sfx.hit()}else if(tx<2||tx>VW-2||ty>VH-3)st='back'}
+   else{const sp=held?120/held.w:190;L-=sp*dt;if(held){held.x=HX+Math.sin(ang)*(L+held.r);held.y=HY+Math.cos(ang)*(L+held.r);
+       if(p.B&&dyn>0){dyn--;burst(held.x,held.y,24,'#ffb347');G.sfx.boom();items=items.filter(o=>o!==held);held=null}}
+     if(L<=12){L=12;st='swing';if(held){money+=held.v;G.add(held.v);pops.push({s:'+$'+held.v,t:1.2,c:held.v>=300?'#7fe9ff':held.v<50?'#aaa':'#ffd23f'});held.v>=100?G.sfx.coin():G.sfx.move();burst(HX,HY+6,held.v>=300?20:8,'#ffd23f');items=items.filter(o=>o!==held);held=null}}}
+   parts.forEach(q=>{q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=120*dt;q.t-=dt});parts=parts.filter(q=>q.t>0);pops.forEach(q=>q.t-=dt);pops=pops.filter(q=>q.t>0);
+   if(money>=goal&&st==='swing'){G.add(Math.round(timeL)*10);G.win();return}
+   if(timeL<=0||(!items.some(o=>o.k[0]!=='r')&&st==='swing'&&money<goal))G.lose()},
+ draw(G){const g=G.g;const sky=g.createLinearGradient(0,0,0,50);sky.addColorStop(0,'#6ec6ff');sky.addColorStop(1,'#d8f3ff');g.fillStyle=sky;g.fillRect(0,0,VW,50);
+   const gd=g.createLinearGradient(0,48,0,VH);gd.addColorStop(0,'#8a5a2e');gd.addColorStop(.5,'#5a3618');gd.addColorStop(1,'#2e1a0a');g.fillStyle=gd;g.fillRect(0,48,VW,VH-48);
+   g.fillStyle='#4cc35a';g.fillRect(0,46,VW,3);g.fillStyle='rgba(0,0,0,.15)';for(let i=0;i<70;i++)g.fillRect((i*47+lv*13)%VW,54+(i*31)%(VH-58),2+(i%3),1);
+   g.fillStyle='rgba(255,255,255,.05)';for(let i=0;i<5;i++)g.fillRect(0,70+i*34+(lv*7)%20,VW,6);
+   items.forEach(o=>drawItem(g,G,o));
+   /* 礦工與絞盤 */const m=MINERS[G.char];g.fillStyle='#6b4a2a';g.fillRect(HX-14,40,28,6);g.fillStyle='#3a2a1a';g.fillRect(HX-2,34,4,6);
+   const rg=g.createRadialGradient(HX-1,35,1,HX,36,5);rg.addColorStop(0,'#ddd');rg.addColorStop(1,'#666');g.fillStyle=rg;g.beginPath();g.arc(HX,36,4,0,7);g.fill();
+   const bob=st==='back'?Math.sin(tt*20)*.6:0;g.fillStyle=m.c;g.fillRect(HX+7,30+bob,7,9);g.fillStyle=m.d;g.fillRect(HX+12,30+bob,2,9);g.fillStyle='#ffd7b0';g.fillRect(HX+8,24+bob,5,6);g.fillStyle='#ffd23f';g.fillRect(HX+7,22+bob,7,3);g.fillStyle='#fff7c0';g.fillRect(HX+6,24+bob,2,1);g.fillStyle='#111';g.fillRect(HX+9,26+bob,1,1);g.fillStyle='#3a2414';g.fillRect(HX+5,33+bob,4,1.5);
+   /* 繩子與鉤子 */const tx=HX+Math.sin(ang)*L,ty=HY+Math.cos(ang)*L;g.strokeStyle='#2a2a2a';g.lineWidth=.7;g.beginPath();g.moveTo(HX,HY);g.lineTo(tx,ty);g.stroke();
+   g.save();g.translate(tx,ty);g.rotate(-ang);g.strokeStyle='#d0d4dc';g.lineWidth=1.1;g.lineCap='round';const op=held?.5:1;g.beginPath();g.moveTo(0,-1);g.lineTo(0,1.5);g.moveTo(0,1.5);g.quadraticCurveTo(-4.5*op-1,2,-3.5*op-.5,6);g.moveTo(0,1.5);g.quadraticCurveTo(4.5*op+1,2,3.5*op+.5,6);g.stroke();g.restore();
+   if(st==='swing'){g.strokeStyle='rgba(255,255,255,.25)';g.setLineDash([2,3]);g.lineWidth=.4;g.beginPath();g.moveTo(tx,ty);g.lineTo(HX+Math.sin(ang)*200,HY+Math.cos(ang)*200);g.stroke();g.setLineDash([])}
+   g.globalCompositeOperation='lighter';parts.forEach(q=>{g.globalAlpha=Math.min(1,q.t*2);g.fillStyle=q.c;g.fillRect(q.x-.8,q.y-.8,1.6,1.6)});g.globalAlpha=1;g.globalCompositeOperation='source-over';
+   pops.forEach(q=>G.text(g,q.s,HX-30,30-(1.2-q.t)*12,q.c,1,'c'));
+   G.text(g,'$'+money+' / '+goal,4,12,money>=goal?'#5f5':'#fff');G.text(g,'TIME '+Math.max(0,Math.ceil(timeL)),VW-4,12,timeL<10?'#f55':'#fff',1,'r');G.text(g,'TNT '+dyn,4,20,'#f96')},
+ titleArt(G,f){tt=f;[['g3',50,120],['g2',80,140],['dm',105,115],['g1',118,138],['bag',35,145]].forEach(([k,x,y],i)=>drawItem(G.g,G,{k,x,y:y+Math.sin(f*2+i)*3,r:K[k].r,rot:i}))}
+});
+</script></body></html>

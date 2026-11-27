@@ -39,7 +39,7 @@
    'U:101101101101111,V:101101101101010,W:101101111111101,X:101101010101101,Y:101101010010010,Z:111001010100111, :000000000000000,-:000000111000000,.:000000000000010,!:010010010000010,' +
    '/:001001010100100,x:000101010101000,>:100010001010100,<:001010100010001,=:000111000111000,+:000010111010000,%:101001010100101,?:111001011000010').split(',').forEach(function (s) {
     var p = s.indexOf(':', 1); FONT[s.slice(0, p)] = s.slice(p + 1).replace(/\s/g, ''); });
-  FONT[':'] = '000010000010000';
+  FONT[':'] = '000010000010000'; FONT['$'] = '011110010011110'; FONT["'"] = '010010000000000'; FONT[','] = '000000000010100';
   function text(g, str, x, y, col, sc, align) {
     str = String(str).toUpperCase(); sc = sc || 1; var w = str.length * 4 * sc - sc;
     if (align === 'c') x -= Math.floor(w / 2); else if (align === 'r') x -= w;
@@ -59,7 +59,9 @@
     var KEY = 'arc_' + G.id, SAVE = LS.get(KEY, { best: 0, unlocked: 1, level: 1, char: 0, hi: 0 });
     var cv = document.getElementById('cv') || (function () { var c = document.createElement('canvas'); c.id = 'cv'; document.body.appendChild(c); return c; })();
     /* 2026-11-26 Paul：畫面太粗糙 → 畫布用 4 倍解析度畫（座標不變），線條、小數位置和文字都更細緻 */
-    var RES = 4; cv.width = G.w * RES; cv.height = G.h * RES; var g = cv.getContext('2d'); g.imageSmoothingEnabled = false; g.setTransform(RES, 0, 0, RES, 0, 0);
+    /* 2026-11-27 Paul：畫質要清楚 → 解析度跟著手機螢幕的實際像素（最多 8 倍），不再固定 4 倍放大而糊掉 */
+    var _pad0 = W.matchMedia('(pointer:coarse)').matches ? 170 : 20, _s0 = Math.min((W.innerWidth - 8) / G.w, (W.innerHeight - _pad0) / G.h);
+    var RES = Math.max(4, Math.min(8, Math.ceil(_s0 * (W.devicePixelRatio || 1)))); cv.width = G.w * RES; cv.height = G.h * RES; var g = cv.getContext('2d'); g.imageSmoothingEnabled = false; g.setTransform(RES, 0, 0, RES, 0, 0);
     function fit() { var pad = W.matchMedia('(pointer:coarse)').matches ? 170 : 20, s = Math.max(1, Math.floor(Math.min((W.innerWidth - 8) / G.w, (W.innerHeight - pad) / G.h) * 2) / 2);
       s = Math.min((W.innerWidth - 8) / G.w, (W.innerHeight - pad) / G.h); cv.style.width = Math.floor(G.w * s) + 'px'; cv.style.height = Math.floor(G.h * s) + 'px'; }
     W.addEventListener('resize', fit); fit();
@@ -69,15 +71,40 @@
     W.addEventListener('keyup', function (e) { var k = MAP[e.key] || MAP[e.key.toLowerCase && e.key.toLowerCase()]; if (k) keys[k] = 0; });
     /* 手機：左邊十字鍵、右邊 A／B，按住可連發 */
     var pad = document.createElement('div'); pad.className = 'ge-pad';
-    pad.innerHTML = '<div class="stick"><i></i></div><div class="ab"><b data-k="B">B</b><b data-k="A">A</b></div>';
+    pad.innerHTML = '<div class="stick"><i></i></div><div class="dpad"><u class="u">▲</u><u class="l">◀</u><u class="r">▶</u><u class="d">▼</u></div><div class="ab"><b data-k="B">B</b><b data-k="A">A</b></div>';
     document.body.appendChild(pad);
+    /* 2026-11-27 Paul：操控方式要能選 → 🕹 搖桿（類比）／✚ 十字鍵（8 方向、一按就全速、手指可在上面滑）／👆 隨處滑（手指按在畫面哪裡，搖桿就出現在哪裡）；還可左右手互換。存在這台裝置（arc_ctl、arc_swap），所有遊戲共用 */
+    var CTL = LS.get('arc_ctl', 'stick'), SWAP = LS.get('arc_swap', false);
+    var ghost = document.createElement('div'); ghost.className = 'ge-ghost'; ghost.innerHTML = '<i></i>'; document.body.appendChild(ghost);
+    function applyCtl() { pad.className = 'ge-pad ctl-' + CTL + (SWAP ? ' swap' : ''); ghost.style.display = 'none'; if (typeof endStick === 'function') endStick(); }
     /* 2026-11-26 Paul：方向鍵難按 → 圓形搖桿，手指在圈內自由移動（8 方向＋類比值 API.ax／API.ay，-1～1） */
     var stick = pad.querySelector('.stick'), knob = stick.querySelector('i'), sid = null, AX = 0, AY = 0;
     function setStick(x, y) { var r = stick.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, R = r.width / 2 - 14, dx = x - cx, dy = y - cy, d = Math.hypot(dx, dy);
       if (d > R) { dx = dx / d * R; dy = dy / d * R; } knob.style.transform = 'translate(' + dx + 'px,' + dy + 'px)'; AX = dx / R; AY = dy / R;
       var dead = 0.32, nk = { L: AX < -dead && Math.abs(AX) > Math.abs(AY) * 0.45, R: AX > dead && Math.abs(AX) > Math.abs(AY) * 0.45, U: AY < -dead && Math.abs(AY) > Math.abs(AX) * 0.45, D: AY > dead && Math.abs(AY) > Math.abs(AX) * 0.45 };
       ['L', 'R', 'U', 'D'].forEach(function (k) { if (nk[k] && !keys[k]) pressed[k] = 1; keys[k] = nk[k] ? 1 : 0; }); }
-    function endStick() { sid = null; AX = AY = 0; knob.style.transform = ''; ['L', 'R', 'U', 'D'].forEach(function (k) { keys[k] = 0; }); }
+    function endStick() { sid = null; fid = null; did = null; AX = AY = 0; knob.style.transform = ''; ghost.style.display = 'none'; dp.className = 'dpad'; ['L', 'R', 'U', 'D'].forEach(function (k) { keys[k] = 0; }); }
+    function setKeys(nk) { ['L', 'R', 'U', 'D'].forEach(function (k) { if (nk[k] && !keys[k]) pressed[k] = 1; keys[k] = nk[k] ? 1 : 0; }); }
+    /* 十字鍵：整個十字是一個觸控區，看手指在中心的哪個方向（8 方向），手指滑過去就換方向，不用抬起來 */
+    var dp = pad.querySelector('.dpad'), did = null;
+    function setDpad(x, y) { var r = dp.getBoundingClientRect(), dx = x - (r.left + r.width / 2), dy = y - (r.top + r.height / 2), d = Math.hypot(dx, dy); AX = AY = 0;
+      if (d < r.width * 0.09) { setKeys({}); dp.className = 'dpad'; return; } var a = Math.atan2(dy, dx), o = Math.round(a / (Math.PI / 4)), nk = { R: o === 0 || o === 1 || o === -1, D: o === 1 || o === 2 || o === 3, L: o === 3 || o === 4 || o === -4 || o === -3, U: o === -1 || o === -2 || o === -3 };
+      setKeys(nk); dp.className = 'dpad' + (nk.L ? ' kl' : '') + (nk.R ? ' kr' : '') + (nk.U ? ' ku' : '') + (nk.D ? ' kd' : ''); }
+    dp.addEventListener('touchstart', function (e) { e.preventDefault(); var t = e.changedTouches[0]; did = t.identifier; setDpad(t.clientX, t.clientY); ac(); }, { passive: false });
+    dp.addEventListener('touchmove', function (e) { e.preventDefault(); for (var i = 0; i < e.changedTouches.length; i++) { var t = e.changedTouches[i]; if (t.identifier === did) setDpad(t.clientX, t.clientY); } }, { passive: false });
+    dp.addEventListener('touchend', function (e) { e.preventDefault(); endStick(); }, { passive: false }); dp.addEventListener('touchcancel', endStick);
+    var dmd = false; dp.addEventListener('mousedown', function (e) { dmd = true; setDpad(e.clientX, e.clientY); }); W.addEventListener('mouseup', function () { if (dmd) { dmd = false; endStick(); } }); W.addEventListener('mousemove', function (e) { if (dmd) setDpad(e.clientX, e.clientY); });
+    /* 隨處滑：按鈕、選單以外的任何地方按下去就是搖桿中心 */
+    var fid = null, fx = 0, fy = 0, FR = 46, gk = ghost.querySelector('i');
+    document.addEventListener('touchstart', function (e) { if (CTL !== 'float' || fid !== null) return; var t = e.changedTouches[0], el = t.target; if (el.closest && el.closest('.ab,.ge-bar,.ge-menu,a,button,input')) return;
+      fid = t.identifier; fx = t.clientX; fy = t.clientY; ghost.style.left = fx + 'px'; ghost.style.top = fy + 'px'; ghost.style.display = 'block'; gk.style.transform = ''; ac(); }, { passive: true });
+    document.addEventListener('touchmove', function (e) { if (fid === null) return; for (var i = 0; i < e.changedTouches.length; i++) { var t = e.changedTouches[i]; if (t.identifier !== fid) continue; var dx = t.clientX - fx, dy = t.clientY - fy, d = Math.hypot(dx, dy);
+        if (d > FR) { /* 手指拉太遠，中心跟著走，回頭比較快 */ fx += dx / d * (d - FR); fy += dy / d * (d - FR); ghost.style.left = fx + 'px'; ghost.style.top = fy + 'px'; dx = dx / d * FR; dy = dy / d * FR; }
+        gk.style.transform = 'translate(' + dx + 'px,' + dy + 'px)'; AX = dx / FR; AY = dy / FR; var dead = 0.3;
+        setKeys({ L: AX < -dead && Math.abs(AX) > Math.abs(AY) * 0.45, R: AX > dead && Math.abs(AX) > Math.abs(AY) * 0.45, U: AY < -dead && Math.abs(AY) > Math.abs(AX) * 0.45, D: AY > dead && Math.abs(AY) > Math.abs(AX) * 0.45 }); } }, { passive: true });
+    function fEnd(e) { if (fid === null) return; for (var i = 0; i < e.changedTouches.length; i++) if (e.changedTouches[i].identifier === fid) endStick(); }
+    document.addEventListener('touchend', fEnd); document.addEventListener('touchcancel', fEnd);
+    applyCtl();
     stick.addEventListener('touchstart', function (e) { e.preventDefault(); var t = e.changedTouches[0]; sid = t.identifier; setStick(t.clientX, t.clientY); ac(); }, { passive: false });
     stick.addEventListener('touchmove', function (e) { e.preventDefault(); for (var i = 0; i < e.changedTouches.length; i++) { var t = e.changedTouches[i]; if (t.identifier === sid) setStick(t.clientX, t.clientY); } }, { passive: false });
     stick.addEventListener('touchend', function (e) { e.preventDefault(); endStick(); }, { passive: false }); stick.addEventListener('touchcancel', endStick);
@@ -114,10 +141,13 @@
     function paintMenu() {
       if (mode !== 'title') { menu.style.display = 'none'; return; } menu.style.display = '';
       menu.innerHTML = (G.chars && G.chars.length > 1 ? '<div class="row">' + G.chars.map(function (c, i) { return '<button class="chip' + (i === char ? ' on' : '') + '" data-ch="' + i + '">' + c + '</button>'; }).join('') + '</div>' : '') +
+        '<div class="row ctl"><span>操控</span>' + [['stick', '🕹 搖桿'], ['dpad', '✚ 十字鍵'], ['float', '👆 隨處滑']].map(function (c) { return '<button class="chip' + (CTL === c[0] ? ' on' : '') + '" data-ctl="' + c[0] + '">' + c[1] + '</button>'; }).join('') + '<button class="chip' + (SWAP ? ' on' : '') + '" data-swap="1">⇄ 左右換</button></div>' +
         '<div class="row lv"><button data-d="-10">−10</button><button data-d="-1">−1</button><input id="geLv" type="number" min="1" max="999" inputmode="numeric" value="' + sel + '"><button data-d="1">+1</button><button data-d="10">+10</button></div>' +
         '<div class="row"><button class="go" data-go="sel">▶ 從第 ' + sel + ' 關開始</button>' + ((SAVE.level || 1) > 1 ? '<button class="go2" data-go="cont">⏩ 接著玩 第 ' + (SAVE.level || 1) + ' 關</button>' : '') + '</div>' +
         '<div class="hint">已過 ' + (SAVE.best || 0) + ' 關・最高分 ' + (SAVE.hi || 0) + '</div>';
       menu.querySelectorAll('[data-ch]').forEach(function (b) { b.onclick = function () { char = +b.dataset.ch; persist(); SFX.move(); paintMenu(); }; });
+      menu.querySelectorAll('[data-ctl]').forEach(function (b) { b.onclick = function () { CTL = b.dataset.ctl; LS.set('arc_ctl', CTL); applyCtl(); SFX.move(); paintMenu(); }; });
+      menu.querySelector('[data-swap]').onclick = function () { SWAP = !SWAP; LS.set('arc_swap', SWAP); applyCtl(); SFX.move(); paintMenu(); };
       menu.querySelectorAll('[data-d]').forEach(function (b) { b.onclick = function () { sel = Math.max(1, Math.min(999, sel + +b.dataset.d)); SFX.move(); paintMenu(); }; });
       var li = menu.querySelector('#geLv'); li.onchange = function () { sel = Math.max(1, Math.min(999, Math.round(+li.value) || 1)); paintMenu(); };
       menu.querySelectorAll('[data-go]').forEach(function (b) { b.onclick = function () { ac(); SFX.coin(); API.score = 0; menu.style.display = 'none'; begin(b.dataset.go === 'cont' ? (SAVE.level || 1) : sel); }; });
