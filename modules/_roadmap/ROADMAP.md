@@ -20,7 +20,7 @@
 | 3 | 繼續閱讀／進度 | learn/index.html?focus=progress | 未開始 |
 | 3 | 語言學習 | modules/language-learning.html | 未開始 |
 | 3 | 每日一課閱讀頁 | learn/daily/index.html | 未開始 |
-| 3 | 書庫 | learn/library/index.html | 未開始 |
+| 3 | 書庫 | learn/library/index.html | 進行中 |
 
 （小遊戲由「小遊戲＋測驗每晚新增」排程負責；每日一課內容由每週六排程補。）
 
@@ -44,6 +44,17 @@
 5. 角色卡可編輯（外觀中／英文），編輯後重新生成指定頁；單格「重畫」按鈕（換種子）。
 6. 本機分鏡在 English 模式只翻譯狀聲字，對白仍保留原文（翻譯需 AI 服務）——之後可在 AI 可用時補翻譯。
 7. 生成結果存到工作資料（acc-module-shell outputs 已包含 #episodes-container，確認圖片 URL 能還原）。
+
+## 📚 書庫（learn/library/index.html）
+### 已完成
+- 2026-11-27（Paul：不符標準的不用放，確保完整可看）
+  - 盤點：目錄 2,826 筆 → 上架 2,823（書 1,563、漫畫 1,260）。不上架：系統暗檔 1 個、散裝圖片資料夾 2 個（不是漫畫）；目錄整理時已排除重複 1,096、模糊 359、epub 12、zip 3、垃圾檔 90。
+  - 47 本檔名亂碼的書還原真正書名（頁面內 TFIX 對照表，雲端檔名不動；其中 10 本由檔名反推、1 本無法確定）。
+  - 書名整理 tidy()：拿掉下載站標記（文字版_PDF電子書、VDOOK、60de…），「[書名].作者」「《書名》作者」改成「書名｜作者」。
+  - 漫畫：只寫「第1卷」的補上作品名；「第298-299話」「番外」併回原系列。
+### 待辦
+1. GAS 端（程式不在 repo）：summary_requests.json 是 {id:{t,at}} 物件、排程無法改寫 → 精華做完後清單不會清掉，需在 GAS 加「已有精華就從清單移除」。
+2. 精華完成後在書卡上顯示「有精華」標記。
 
 ## 之後的工具
 - 📈 台股（twse-stock-analyzer.html）：產業分類代表股（modules/data/twse-watchlist.json 已有）、TWSE OpenAPI 財報、交叉驗算核對、大盤、多空參考訊號、頁首改為頁面自己即時讀 TWSE（大盤、三大法人、觀察清單強弱），不再依賴排程寫入的 twse-intel.json（舊檔保留當備援）；改良群組發送程式 TWSE_SENDER（內容、欄位容錯）、Audit 外部參考範本。

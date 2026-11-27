@@ -156,6 +156,25 @@ async function cput(k,v,size){const m=load('acc_lib_cm',{});m[k]={s:size,ts:Date
   store('acc_lib_cm',m);await idb('readwrite',st=>st.put(v,k))}
 const api=qs=>fetch(GAS+'?k='+encodeURIComponent(K)+'&'+qs).then(r=>r.json());
 
+/* ===== 2026-11-27 書名整理＋只上架完整可看的 =====
+   TFIX：47 本原始檔名是亂碼的書，依書的內容／檔名還原出的真正書名（雲端檔名不動）。 */
+const TFIX={"1KsvQc96VWDyMLARe4mHZtyGqdPLRrl-U":"實用口才必讀大全","1uFhENSr05PamJzaknI9Io9fxw6CgzR-O":"演講口才速查速用大全集","13ZmkEosXHBIA73Vz4H7ekjtF9j1mJNgW":"圖解魔術與科學：旅途消遣","1OhbQBgACBkLclCbw4ld_m7_rqr5_3mKJ":"圖解撲克魔術大全","1Zsdv9vc0A8PPBLdV7LpGZMuj4Ei6xxPz":"圖解大眾魔術","1Of1isihDywixEUvSvNNNZYCYYDstTNMA":"魔術時刻","1ovj0TJ2b5PEZgaitPhypXmkWR1hX3fiu":"中國魔術100例","1cH3Zy26LSmhsGxd_YujD9gHMrRi1CfcT":"活出全新的自己","1aDNcqNfUlDPXqo7NJ-xmOfBWspzySmyf":"管理學原理","1oPI7vPyzUwNBwHGPJ4-WxYzz4y_fusBm":"管理系統設計","11e43cVtqX3IEcqzCsZqMSjUNvmvkGpMd":"管理者有效溝通高效執行的藝術","13IXsZnQhif67JZeynuKsNB3jgTh_ESW-":"管理知識員工：挖掘企業智力資本","1PH2GzkNOUyHSdhaFwSvAp6ylPGS70f0t":"和諧與衝突：儒學與現代管理","1fVzZpktyd-XPA0T_YScDp0XR8It8yWXc":"撲克魔術圖文教程（第1期）","1KWijNcE9li3e9_AwxVOJKsLSP1E0ednu":"撲克魔術變法大全","1gZlAdWJnjcIhl8WVfRJj72VxCKRvAucE":"撲克魔術99法","1OPT5Q7aGJpYhIKCLUJjtxG0EYZaXgWx_":"國際管理與領導","1YV-oWwIVWUa0etQVjXqdWhds74TFuLDr":"關鍵衝突：如何把人際關係危機轉化為合作共贏","1ACSnETRioOTs_zJmo7-4Vn-K560g16ta":"供應鏈管理","19_OZuWyAF6TEr9FXXTHLfMvmJ7yDnMT_":"創建人脈的108個細節","1fpLyEx-HX1hETEHfyUbZkhg9e4h3cNRr":"公司就是朝廷","1AF1g7a5iwJTR3QBsJVBpUVAi5lbgjixS":"廣東人賺錢絕招","1MyFUhzNBm8PzJcXwDzD8CBBnThOAq9Uq":"奇妙撲克魔術99招","1UvIPpkRjAowovSqE-JLUaQyLHEOHMRkU":"3分鐘打造辦事高手","1EAYJxOfEklXCAJh3YD6RLjupGPFIFZV_":"5分鐘和陌生人成為朋友","1XYnI8kYhRjXKT9rH1NrlhuZeCgzZQAwm":"30歲前別結婚","1qpUmBPPVwEakSDHItg0IDkF5Tz6HnwqV":"76個超棒的錢幣小魔術","1-2nWpCrvXiojnxaUlt0nA5HcrWZJW81c":"口才與幽默全集","1RV3GKVh0XD2L-IqW_94kgsiAC4UWCqeW":"每天學點口才學大全集","14CJusMizF2pU8Enm8SxnlF9Ydxp73ATc":"圖解奇門遁甲大全（第1部）","1OhGGKgmOVIswXG_gMZLulXPJ4zE4wlYe":"圖解奇門遁甲大全（第2部）","19KklVL2Iv9apf7dML1Z8TA5w4_lb0qr9":"學習奇門遁甲的第一本書","1OuP_k9icS9LK9_AYlgbluQcRETeamheE":"奇門遁甲（1–4卷・原檔名亂碼）","1rTANBcmmIuNVg7CYQQg1JHq5DtNzE-P1":"三元奇門遁甲講義（下）","1EY-40ItwZ3TNmRi2zWOvHSZ0-CELtD1n":"三元奇門遁甲講義（上）","14qPWrnAiMQV_NPyzemHpLJGMZaOBCJ0S":"增補奇門遁甲白話精粹（增訂本）","1B9VjruaN3umSxQjiwWD_n_Fbd9Dmu5cU":"金函玉鏡奇門遁甲秘笈全書（下）","1F5TtJE07rpdz_2rcOddbReUGuwLTpz8v":"金函玉鏡奇門遁甲秘笈全書（上）","1LpANmhfPuQQhIJAG3V17nBpdmoojly2D":"遁甲之學（飛盤奇門）","1FIa55EwlAsCx8yx9iW2aV_-kUKUJFVnr":"奇門遁甲新述","1Fwz7h5ztk3EcTfCSe_581kRZZppOs70L":"奇門遁甲秘傳","1qcDoxfmlL7COsZ5L2x5r74LZhI1x69EO":"奇門遁甲應用學","1kwc88-jiP7N0DA6Dr_7a1BoAsaPSX_yQ":"奇門遁甲預測學","1x8EfPpIIocrUY2zkU1CUwHYhJU7lBV8-":"奇門遁甲白話精粹","162HovGQoimSVuXPX1gNt5Xp703FvQH4G":"專業演講技巧","1EuoSRlI3IgBgcqmjz3o_DrxlvEaNi0y1":"怎樣說話才打動人","1SalAoGFALE-nKVa_cOAWpTuK3fjlOkGe":"最實用的辦事口才"};
+const EDTAG='[.．]?\\s*(高清)?(掃描|彩圖|全彩|文字|高清)版?';
+function tidy(t){                                  // 拿掉下載站標記；[書名].作者、《書名》作者 拆成「書名｜作者」
+  t=String(t||'').replace(/\.(pdf|epub|zip)$/i,'')
+    .replace(/【[^】]*(文字版|電子書|下載|雅書)[^】]*】/g,'')
+    .replace(/[\[(（【]\s*(V版?|VDOOK[^\])）】]*|[\w.-]*(60de|yabook|mydbfx|vdook)[\w.-]*\.(com|org|net)|非高清|掃描版|文字版|\d)\s*[\])）】]/gi,'')
+    .replace(/_+/g,' ').trim();
+  const au=x=>x.replace(new RegExp(EDTAG,'g'),'').replace(/[.．]+/g,' ').trim();
+  let m=t.match(/^\[([^\]]{2,})\][.．]?\s*(.*)$/);
+  if(m&&!/原版|系列/.test(m[1])){const a=au(m[2]);t=m[1]+(a?'｜'+a:'')}
+  m=t.match(/^《([^》]{2,})》\s*(.*)$/);
+  if(m)t=m[1]+(m[2].trim()?'｜'+m[2].trim():'');
+  m=t.match(/^[\[(（【]([^\])）】]{1,10})[\])）】]\s*(.{2,})$/);                 // [英文原版]書名 → 書名（英文原版），排序才不會全擠在最前面
+  if(m)t=m[2]+'（'+m[1]+'）';
+  return t.replace(/\s{2,}/g,' ').trim()||'（未命名）'}
+/* 完整可看才上架：系統暗檔（._ 開頭）、幾乎是空的 PDF、沒幾張圖的漫畫資料夾都不列 */
+function viewable(b){return !/^\._/.test(b.title)&&!(b.type==='img'&&/^(ebooks|download)/i.test(b.sr||b.title))&&!(b.type==='pdf'&&b.size<20000)&&!(b.type==='img'&&b.count!=null&&b.count<3)}
 function gate(err){$('app').innerHTML='<div class="gate"><div style="font-size:2em">🔒</div><b>書庫密碼</b><p style="color:#6f685c;font-size:.88em">同一台裝置輸入一次就會記住</p><input id="pw" type="password"><div style="color:#9a3a24;min-height:1.4em">'+(err||'')+'</div><button class="btn" id="go">進入</button></div>';
   $('go').onclick=()=>{K=$('pw').value.trim();start()};$('pw').onkeydown=e=>{if(e.key==='Enter')$('go').click()}}
 async function start(){
@@ -165,7 +184,7 @@ async function start(){
     if(!j.ok){if(j.error==='PASS'){store('acc_lib_k','');return gate('密碼不對')}throw j.error}
     store('acc_lib_k',K);
     if(!j.catalog){$('app').innerHTML='<div class="empty">書庫目錄還在整理中，完成後就會出現。</div>';return}
-    CAT=j.catalog;CAT.books.forEach(b=>{b.title=toTrad(b.title);if(b.sr)b.sr=toTrad(b.sr)});CAT.all=CAT.books;CAT.books=CAT.all.filter(b=>!HIDDEN.has(b.id));SERIES=null;render();
+    CAT=j.catalog;CAT.books=CAT.books.filter(viewable);CAT.books.forEach(b=>{b.raw=b.title;b.title=tidy(TFIX[b.id]||toTrad(b.title));if(b.sr)b.sr=toTrad(b.sr);if(b.type==='img'&&b.sr&&b.sr!=='新增資料夾'&&/^第?\s*[0-9０-９一二三四五六七八九十百]+\s*[卷集話话冊册回]?$/.test(b.title))b.title=b.sr+' '+b.title});CAT.all=CAT.books;CAT.books=CAT.all.filter(b=>!HIDDEN.has(b.id));SERIES=null;render();
     api('lib=prog').then(p=>{if(p.ok){for(const id in p.prog){const a=PROG[id],b=p.prog[id];if(!a||b.ts>a.ts)PROG[id]=b}store('acc_lib_prog',PROG);let ch=false;for(const id in PROG){const h=+PROG[id].n===-1;if(h&&!HIDDEN.has(id)){HIDDEN.add(id);ch=true}else if(!h&&HIDDEN.has(id)&&PROG[id].ts>(HID_TS[id]||'')){HIDDEN.delete(id);ch=true}}if(ch){store('acc_lib_hidden',[...HIDDEN]);CAT.books=CAT.all.filter(b=>!HIDDEN.has(b.id));BYreset();SERIES=null}if(!$('reader').classList.contains('on'))render()}}).catch(()=>{});
   }catch(e){$('app').innerHTML='<div class="empty">讀取失敗：'+esc(e)+'</div>'}}
 const BY={};function book(id){if(CAT&&!Object.keys(BY).length)(CAT.all||CAT.books).forEach(b=>BY[b.id]=b);return BY[id]}
@@ -228,7 +247,7 @@ const NUM='0-9０-９零〇一二三四五六七八九十百千兩';
 const VOLRE=new RegExp('(第\\s*['+NUM+']+\\s*[卷集話话册冊部篇回期章輯辑本]|vol\\.?\\s*\\d+|\\bv\\.?\\d+\\b|#\\s*\\d+|[（(\\[【]\\s*['+NUM+']+\\s*[)）\\]】]|\\d+\\s*[卷集話话册冊期本]|[（(]?(完|完結|全集)[)）]?)','gi');
 function serKey(b){
   let t=String(b.title).replace(/【[^】]*(文字版|電子書|下載|雅書)[^】]*】|\(VDOOK[^)]*\)|\.(pdf|zip)$/gi,'').replace(/掃描版|高畫質|全彩版/g,'');
-  let k=t.replace(VOLRE,' ').replace(/[\s_\-.·・,，:：]+(\d+|[上中下])\s*$/,'').replace(/(\D)\d{1,4}\s*$/,'$1').replace(/[\s_\-.·・,，:：()（）\[\]]+$/,'').replace(/\s{2,}/g,' ').trim();
+  let k=t.replace(/第?\s*\d+\s*[-~～]\s*\d+\s*[卷集話话回]/g,' ').replace(/[\s\-_]*番外\s*\d*\s*$/,'').replace(VOLRE,' ').replace(/\s+TW\s*$/,'').replace(/[\s_\-.·・,，:：]+(\d+|[上中下])\s*$/,'').replace(/(\D)\d{1,4}\s*$/,'$1').replace(/[\s_\-.·・,，:：()（）\[\]]+$/,'').replace(/\s{2,}/g,' ').trim();
   if(k.replace(/[\d\s_\-.·・,，:：()（）\[\]#]/g,'').length<2)k=b.sr||k;   // 書名只剩數字（01、02…）就用資料夾名當系列
   return b.cat+'|'+k}
 function volNo(b){const m=String(b.title).match(/(\d+)(?!.*\d)/);return m?+m[1]:0}
