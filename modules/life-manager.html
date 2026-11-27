@@ -27,6 +27,13 @@
   --teal: #408080;
   --accent: var(--gold);
 }
+/* 2026-11-27 Paul：背景色固定 → 可選配色（🎨 按鈕輪流換，記在這台裝置） */
+html[data-lm="ivory"]{--bg:#f6f1e3;--bg2:#fffaf0;--bg3:#ece4cf;--border:#d6cbb0;--gold:#8a6410;--gold-light:#6b4c08;--gold-dim:#b89a50;--text:#2a2418;--text-dim:#6a5f48;--text-faint:#a89c80}
+html[data-lm="navy"]{--bg:#0d1b30;--bg2:#15294a;--bg3:#1d3660;--border:#2c4a78;--gold:#8fc4ff;--gold-light:#c4e0ff;--gold-dim:#4a78b0;--text:#e8f0fa;--text-dim:#9ab0cc;--text-faint:#4a6488}
+html[data-lm="grey"]{--bg:#eef0f3;--bg2:#ffffff;--bg3:#e0e4ea;--border:#c8ced8;--gold:#1f5fbf;--gold-light:#174a96;--gold-dim:#7fa3d8;--text:#1c2430;--text-dim:#5a6678;--text-faint:#9aa4b4}
+html[data-lm="green"]{--bg:#0f1f18;--bg2:#17301f;--bg3:#1f3f2a;--border:#2f5a3c;--gold:#8fe0a0;--gold-light:#c0f0c8;--gold-dim:#4a8a5a;--text:#e6f4e8;--text-dim:#9ac0a2;--text-faint:#4a6e52}
+.stat-card[onclick]{cursor:pointer;transition:transform .12s,border-color .12s}.stat-card[onclick]:active{transform:scale(.97)}.stat-card.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
+.stat-card .val,.stat-card .lbl{position:relative;z-index:2}
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
   background:var(--bg);
@@ -612,7 +619,8 @@ tr:hover .row-actions { opacity:1; }
 .api-dot.off { background:var(--red); }
 </style>
   <link rel="stylesheet" href="../acc-module-shell.css?v=20261121">
-  <script defer src="../acc-module-shell.js"></script>
+  <script>try{var _t=localStorage.getItem("lm_theme");if(_t)document.documentElement.setAttribute("data-lm",_t)}catch(e){}</script>
+  <script defer src="../acc-module-shell.js?v=20261127"></script>
 <style id="acc-mobile-fit">/* 2026-11-21 手機版：左側選單改成上方一排可滑動的分頁，內容用滿整個寬度 */
 @media(max-width:760px){
 body{display:block!important;height:auto!important;overflow:auto!important;padding-left:0!important;padding-right:0!important}
@@ -689,6 +697,7 @@ body{display:block!important;height:auto!important;overflow:auto!important;paddi
       <span class="s-icon">🔍</span>
       <input type="text" id="search-input" placeholder="搜尋..." oninput="doSearch()">
     </div>
+    <button class="topbar-btn" onclick="cycleTheme()" title="換配色">🎨 配色</button>
     <button class="topbar-btn" onclick="openImport()">🤖 智能匯入</button>
     <button class="topbar-btn primary" onclick="openAdd()">＋ 新增</button>
   </div>
@@ -870,7 +879,7 @@ function dbGetAll(store) {
   });
 }
 function dbAdd(store, item) {
-  return new Promise((res,rej)=>{
+  return new Promise((res0,rej)=>{const res=v=>{res0(v);try{window.accShellSave&&window.accShellSave()}catch(e){}};
     const tx = db.transaction(store,'readwrite');
     const req = tx.objectStore(store).add(item);
     req.onsuccess = ()=>res(req.result);
@@ -878,7 +887,7 @@ function dbAdd(store, item) {
   });
 }
 function dbPut(store, item) {
-  return new Promise((res,rej)=>{
+  return new Promise((res0,rej)=>{const res=v=>{res0(v);try{window.accShellSave&&window.accShellSave()}catch(e){}};
     const tx = db.transaction(store,'readwrite');
     const req = tx.objectStore(store).put(item);
     req.onsuccess = ()=>res(req.result);
@@ -886,7 +895,7 @@ function dbPut(store, item) {
   });
 }
 function dbDelete(store, id) {
-  return new Promise((res,rej)=>{
+  return new Promise((res0,rej)=>{const res=v=>{res0(v);try{window.accShellSave&&window.accShellSave()}catch(e){}};
     const tx = db.transaction(store,'readwrite');
     const req = tx.objectStore(store).delete(id);
     req.onsuccess = ()=>res();
@@ -993,10 +1002,10 @@ function renderInterview(data, el) {
   const pend = data.filter(d=>['待定','進行中'].includes(d.status)).length;
   el.innerHTML = `
     <div class="stats-row">
-      <div class="stat-card"><div class="val">${total}</div><div class="lbl">總計</div></div>
-      <div class="stat-card"><div class="val" style="color:#7ab080">${hired}</div><div class="lbl">錄取</div></div>
-      <div class="stat-card"><div class="val" style="color:#e07060">${rej}</div><div class="lbl">拒絕</div></div>
-      <div class="stat-card"><div class="val" style="color:#6090c0">${pend}</div><div class="lbl">進行中</div></div>
+      <div class="stat-card on" onclick="cardFilter(this,'')"><div class="val">${total}</div><div class="lbl">總計</div></div>
+      <div class="stat-card" onclick="cardFilter(this,'錄取')"><div class="val" style="color:#5aa868">${hired}</div><div class="lbl">錄取</div></div>
+      <div class="stat-card" onclick="cardFilter(this,'拒絕')"><div class="val" style="color:#d85a48">${rej}</div><div class="lbl">拒絕</div></div>
+      <div class="stat-card" onclick="cardFilter(this,'待定|進行中')"><div class="val" style="color:#4a88d0">${pend}</div><div class="lbl">待定＋進行中</div></div>
     </div>
     <div class="filter-bar">
       <div class="filter-pill active" onclick="filterTable(this,'')">全部</div>
@@ -1031,11 +1040,24 @@ function renderInterview(data, el) {
 
 function filterTable(pill, status) {
   document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
-  pill.classList.add('active');
+  if(pill) pill.classList.add('active');
+  const want = status ? status.split('|') : null;
   document.querySelectorAll('#interview-table tbody tr[data-status]').forEach(tr=>{
-    tr.style.display = (!status||tr.dataset.status===status) ? '' : 'none';
+    tr.style.display = (!want||want.includes(tr.dataset.status)) ? '' : 'none';
   });
 }
+/* 2026-11-27 上面的數字卡可以點：點了只列那一種，並捲到名單 */
+function cardFilter(card, status) {
+  document.querySelectorAll('.stat-card').forEach(c=>c.classList.remove('on')); card.classList.add('on');
+  const pill=[...document.querySelectorAll('.filter-pill')].find(p=>p.textContent.trim()===(status||'全部'));
+  filterTable(pill||null, status);
+  const t=document.getElementById('interview-table'); if(t) t.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+const LM_THEMES=['','ivory','grey','navy','green'];
+function cycleTheme(){ let i=LM_THEMES.indexOf(document.documentElement.getAttribute('data-lm')||''); const n=LM_THEMES[(i+1)%LM_THEMES.length];
+  if(n) document.documentElement.setAttribute('data-lm',n); else document.documentElement.removeAttribute('data-lm');
+  try{ n?localStorage.setItem('lm_theme',n):localStorage.removeItem('lm_theme') }catch(e){}
+  notify('配色：'+({'':'深色金','ivory':'象牙白','grey':'淺灰藍','navy':'深藍','green':'墨綠'})[n],'success'); }
 
 // ===== EXPENSE =====
 function renderExpense(data, el) {
