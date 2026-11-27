@@ -1,0 +1,142 @@
+/**
+ * 台股收盤摘要 → ACC Flow Telegram 群組（AI_acc_flow），由平台自己定時發，不靠 Claude。
+ * 裝在 ACC Flow 的 Apps Script 專案 VRT-ACC-Flow-Cost-Cloud（跟每日一課發送、TWSE relay 同一個專案），專案時區 Asia/Phnom_Penh。
+ * 安裝：把這段加進專案 → 執行一次 installTwseDailyTrigger()（每 10 分鐘檢查一次，只在柬埔寨時間 14:30～15:30（台灣 15:30～16:30）之間發一次）。
+ * 先執行 previewTwseDaily() 看記錄（不發送），確認數字正確再裝觸發器。
+ * 資料全部來自 TWSE 官方（openapi.twse.com.tw、www.twse.com.tw），台灣休市日（TWSE 沒有今天的資料）自動不發。
+ * Bot token 與群組 chat id 沿用專案已有的設定；不要把 token 寫進 GitHub。
+ * 2026-11-27 Paul：台股情報由平台時間到了自己發群組；Claude 只負責改良工具與資料。
+ */
+var TWSE_WATCHLIST_URL = 'https://saintdou-weng.github.io/vrt-acc-flow-cost/modules/data/twse-watchlist.json';
+var TWSE_TOOL_URL = 'https://saintdou-weng.github.io/vrt-acc-flow-cost/modules/twse-stock-analyzer.html';
+var TWSE_ACC_FOOTER = '\n🎓 <a href="https://saintdou-weng.github.io/vrt-acc-flow-cost/os/index.html?view=edu">知識學習</a>｜👤 <a href="https://saintdou-weng.github.io/vrt-acc-flow-cost/os/index.html?view=acc">個人工具</a>';
+
+function twseToken_() { return PropertiesService.getScriptProperties().getProperty('BOT_TOKEN'); }   // ← 改成專案現有的
+function twseChatId_() { return PropertiesService.getScriptProperties().getProperty('CHAT_ID'); }    // ← AI_acc_flow 群組
+
+function twseJson_(url) {
+  var res = UrlFetchApp.fetch(url + (url.indexOf('?') >= 0 ? '&' : '?') + '_=' + Date.now(), { muteHttpExceptions: true, headers: { Accept: 'application/json' } });
+  if (res.getResponseCode() !== 200) throw new Error('HTTP ' + res.getResponseCode() + ' ' + url);
+  return JSON.parse(res.getContentText());
+}
+function twseNum_(v) { var n = parseFloat(String(v == null ? '' : v).replace(/[,+\s]/g, '').replace(/^X/, '')); return isNaN(n) ? null : n; }
+function twsePick_(o, keys) { for (var i = 0; i < keys.length; i++) if (o[keys[i]] != null && o[keys[i]] !== '') return o[keys[i]]; return null; }
+function twseFmt_(n, d) { return n == null ? '—' : Number(n).toLocaleString('en-US', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
+function twseSign_(n, d) { return n == null ? '—' : (n > 0 ? '+' : '') + twseFmt_(n, d); }
+function twseEsc_(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+/** 民國日期 1151127 或 115/11/27 → 2026-11-27 */
+function twseRocDate_(s) {
+  s = String(s || '').replace(/\D/g, '');
+  if (s.length < 7) return '';
+  var y = +s.slice(0, s.length - 4) + 1911, m = s.slice(-4, -2), d = s.slice(-2);
+  return y + '-' + m + '-' + d;
+}
+
+/** 組今天的摘要；回傳 {date, text} 或 {skip:原因} */
+function buildTwseDaily_(today) {
+  // 1) 大盤：FMTQIK（當月每日成交與加權指數）
+  var mk = twseJson_('https://openapi.twse.com.tw/v1/exchangeReport/FMTQIK');
+  var last = mk[mk.length - 1] || {};
+  var mkDate = twseRocDate_(twsePick_(last, ['Date', '日期']));
+  if (mkDate !== today) return { skip: '台灣休市或資料尚未更新（TWSE 最新日期 ' + (mkDate || '無') + '）' };
+  var idx = twseNum_(twsePick_(last, ['TAIEX', '發行量加權股價指數']));
+  var chg = twseNum_(twsePick_(last, ['Change', '漲跌點數']));
+  var val = twseNum_(twsePick_(last, ['TradeValue', '成交金額']));
+  var prev = mk.length > 1 ? twseNum_(twsePick_(mk[mk.length - 2], ['TradeValue', '成交金額'])) : null;
+  var pct = (idx != null && chg != null && idx - chg) ? chg / (idx - chg) * 100 : null;
+  var arrow = chg > 0 ? '🔺' : chg < 0 ? '🔻' : '➖';
+
+  // 2) 三大法人（BFI82U，單位元）
+  var flowLine = '';
+  try {
+    var f = twseJson_('https://www.twse.com.tw/rwd/zh/fund/BFI82U?response=json&dayDate=' + today.replace(/-/g, '') + '&type=day');
+    if (f.stat === 'OK' && f.data) {
+      var net = {};
+      f.data.forEach(function (r) { net[String(r[0])] = twseNum_(r[3]); });
+      var foreign = null, dealer = null, trust = null, total = null;
+      Object.keys(net).forEach(function (n) {
+        if (n.indexOf('外資') >= 0) foreign = (foreign || 0) + net[n];
+        else if (n.indexOf('自營商') >= 0) dealer = (dealer || 0) + net[n];
+        else if (n.indexOf('投信') >= 0) trust = net[n];
+        else if (n.indexOf('合計') >= 0) total = net[n];
+      });
+      var e = function (v) { return v == null ? '—' : twseSign_(v / 1e8, 2) + ' 億'; };
+      flowLine = '💰 三大法人 ' + e(total) + '（外資 ' + e(foreign) + '｜投信 ' + e(trust) + '｜自營 ' + e(dealer) + '）';
+    }
+  } catch (err) { flowLine = ''; }
+
+  // 3) 觀察清單：各產業代表股今日漲跌
+  var all = twseJson_('https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL');
+  var byCode = {};
+  all.forEach(function (r) { byCode[String(twsePick_(r, ['Code', '證券代號']))] = r; });
+  var wl = twseJson_(TWSE_WATCHLIST_URL);
+  var sectors = [], movers = [];
+  (wl.sectors || []).forEach(function (s) {
+    var arr = [];
+    (s.stocks || []).forEach(function (st) {
+      var r = byCode[st.code]; if (!r) return;
+      var c = twseNum_(twsePick_(r, ['ClosingPrice', '收盤價'])), d = twseNum_(twsePick_(r, ['Change', '漲跌價差']));
+      if (c == null || d == null || c - d <= 0) return;
+      var p = d / (c - d) * 100;
+      arr.push(p); movers.push({ code: st.code, name: st.name, close: c, pct: p });
+    });
+    if (arr.length) sectors.push({ name: s.name, avg: arr.reduce(function (a, b) { return a + b; }, 0) / arr.length, n: arr.length });
+  });
+  sectors.sort(function (a, b) { return b.avg - a.avg; });
+  movers.sort(function (a, b) { return b.pct - a.pct; });
+  var secLine = function (s) { return (s.avg >= 0 ? '🟥 ' : '🟩 ') + twseEsc_(s.name) + ' ' + twseSign_(s.avg, 2) + '%'; };
+  var mvLine = function (m) { return twseEsc_(m.code + ' ' + m.name) + ' ' + twseFmt_(m.close, 2) + '（' + twseSign_(m.pct, 2) + '%）'; };
+  var big = ['2330', '2317', '2454', '2308', '2382', '2881'].map(function (c) { return movers.filter(function (m) { return m.code === c; })[0]; }).filter(Boolean);
+
+  var lines = [];
+  lines.push('📈 <b>台股收盤摘要</b>｜' + today);
+  lines.push(arrow + ' 加權指數 <b>' + twseFmt_(idx, 2) + '</b>　' + twseSign_(chg, 2) + ' 點（' + twseSign_(pct, 2) + '%）');
+  lines.push('💵 成交金額 ' + twseFmt_(val / 1e8, 0) + ' 億' + (prev ? '（前一日 ' + twseFmt_(prev / 1e8, 0) + ' 億）' : ''));
+  if (flowLine) lines.push(flowLine);
+  if (big.length) { lines.push(''); lines.push('<b>權值股</b>'); big.forEach(function (m) { lines.push('・' + mvLine(m)); }); }
+  if (sectors.length) {
+    lines.push(''); lines.push('<b>產業（代表股平均）強弱</b>');
+    if (sectors.length <= 7) sectors.forEach(function (s) { lines.push(secLine(s)); });
+    else { sectors.slice(0, 4).forEach(function (s) { lines.push(secLine(s)); }); lines.push('…'); sectors.slice(-3).forEach(function (s) { lines.push(secLine(s)); }); }
+  }
+  if (movers.length >= 6) {
+    lines.push(''); lines.push('<b>觀察清單漲幅前 3</b>'); movers.slice(0, 3).forEach(function (m) { lines.push('・' + mvLine(m)); });
+    lines.push('<b>觀察清單跌幅前 3</b>'); movers.slice(-3).reverse().forEach(function (m) { lines.push('・' + mvLine(m)); });
+  }
+  lines.push('');
+  lines.push('🔎 <a href="' + TWSE_TOOL_URL + '">打開台股工具看財報與多空參考</a>');
+  lines.push('<i>資料來源：臺灣證券交易所。僅供參考，不是投資建議。</i>');
+  lines.push(TWSE_ACC_FOOTER.slice(1));
+  return { date: today, text: lines.join('\n') };
+}
+
+/** 先看內容、不發送 */
+function previewTwseDaily() {
+  var today = Utilities.formatDate(new Date(), 'Asia/Taipei', 'yyyy-MM-dd');
+  var r = buildTwseDaily_(today);
+  Logger.log(r.skip || r.text);
+}
+
+function sendTwseDaily() {
+  var now = new Date();
+  var dow = Utilities.formatDate(now, 'Asia/Taipei', 'u');
+  if (dow === '6' || dow === '7') return;                                   // 週末
+  var hm = +Utilities.formatDate(now, 'Asia/Phnom_Penh', 'HHmm');
+  if (hm < 1430 || hm >= 1530) return;                                      // 柬埔寨 14:30～15:30（台灣 15:30～16:30，三大法人已公布）
+  var today = Utilities.formatDate(now, 'Asia/Taipei', 'yyyy-MM-dd');
+  var props = PropertiesService.getScriptProperties();
+  if (props.getProperty('TWSE_DAILY_SENT') === today) return;               // 今天發過了
+  var r;
+  try { r = buildTwseDaily_(today); } catch (e) { Logger.log('TWSE 讀取失敗，下次再試：' + e); return; }
+  if (r.skip) { if (hm >= 1520) props.setProperty('TWSE_DAILY_SENT', today); Logger.log(r.skip); return; }  // 休市：最後一輪才放棄
+  var res = UrlFetchApp.fetch('https://api.telegram.org/bot' + twseToken_() + '/sendMessage', {
+    method: 'post', muteHttpExceptions: true,
+    payload: { chat_id: twseChatId_(), text: r.text, parse_mode: 'HTML', disable_web_page_preview: 'true' }
+  });
+  if (JSON.parse(res.getContentText()).ok) props.setProperty('TWSE_DAILY_SENT', today);
+}
+
+function installTwseDailyTrigger() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'sendTwseDaily') ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('sendTwseDaily').timeBased().everyMinutes(10).create();
+}

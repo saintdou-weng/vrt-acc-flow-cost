@@ -25,6 +25,7 @@
 （小遊戲由「小遊戲＋測驗每晚新增」排程負責；每日一課內容由每週六排程補。）
 
 ## 群組訊息規則
+- 2026-11-27 Paul：台股情報由平台自己定時發群組（Apps Script 觸發器），Claude 不再每天發或寫情報；Claude 只負責改良台股工具的功能與資料完整、即時。發送程式：modules/data/TWSE_SENDER_apps_script.gs.txt（TWSE 官方大盤／三大法人／觀察清單產業強弱，休市自動不發，附兩個連結）。**待部署**：加進 Apps Script 專案 VRT-ACC-Flow-Cost-Cloud → previewTwseDaily() 看記錄 → installTwseDailyTrigger()。
 - 2026-11-27：ACC Flow 群組（AI_acc_flow）每則訊息／摘要底下都加「🎓 知識學習｜👤 個人工具」兩個連結；每日一課 feed.json 全部已加，README 與發送程式已同步。
 
 ## 目前輪到：🎨 漫畫生成（modules/manga-generator.html）
@@ -45,7 +46,7 @@
 7. 生成結果存到工作資料（acc-module-shell outputs 已包含 #episodes-container，確認圖片 URL 能還原）。
 
 ## 之後的工具
-- 📈 台股（twse-stock-analyzer.html）：產業分類代表股（modules/data/twse-watchlist.json 已有）、TWSE OpenAPI 財報、交叉驗算核對、大盤、多空參考訊號、頁首每日情報（twse-intel.json）、Audit 外部參考範本。
+- 📈 台股（twse-stock-analyzer.html）：產業分類代表股（modules/data/twse-watchlist.json 已有）、TWSE OpenAPI 財報、交叉驗算核對、大盤、多空參考訊號、頁首改為頁面自己即時讀 TWSE（大盤、三大法人、觀察清單強弱），不再依賴排程寫入的 twse-intel.json（舊檔保留當備援）；改良群組發送程式 TWSE_SENDER（內容、欄位容錯）、Audit 外部參考範本。
 - 🎬 影片分析、📖 小說影片、📊 AI 簡報、🔤 OCR：先實際使用找出最影響使用的問題再改。
 
 ## 做不到／跳過紀錄
